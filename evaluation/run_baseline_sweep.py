@@ -1,0 +1,49 @@
+import os
+import pandas as pd
+from moabb.datasets import BNCI2014_001
+from moabb.paradigms import MotorImagery
+from moabb.evaluations import WithinSessionEvaluation
+
+from models.eegnet import create_eegnet_classifier
+from models.reegnet import create_reegnet_classifier
+from config import DEFAULT_PARADIGM
+
+def run_baseline(subject_list, model, model_name):
+    dataset = BNCI2014_001()
+    dataset.subject_list = subject_list
+
+    paradigm = DEFAULT_PARADIGM
+
+    evaluation = WithinSessionEvaluation(
+        paradigm=paradigm,
+        datasets=[dataset],
+        overwrite=True,
+        hdf5_path=None,
+    )
+
+    results = evaluation.process({f"{model_name}+MotorImagery": model})
+    out_path = f"results/{model_name}_baseline_subjects1-5.csv"
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    results.to_csv(out_path, index=False)
+    print(f"Saved subject sweep results to {out_path}")
+    print(results)
+
+def run_baseline_reegnet(subject_list):
+    reegnet = create_reegnet_classifier(
+        n_chans=22,
+        n_times=1001,
+        n_outputs=2
+    )
+    run_baseline(subject_list, reegnet, "reegnet")
+
+def run_baseline_eegnet(subject_list):
+    eegnet = create_eegnet_classifier(
+        n_chans=22,n_times=1001,n_outputs=2)
+    run_baseline(subject_list, eegnet, "eegnet")
+
+
+if __name__ == "__main__":
+    # Evaluate on first 5 subjects
+    subject_list = [1, 2, 3, 4, 5]
+    run_baseline_eegnet(subject_list)
+    # run_baseline_reegnet(subject_list=subject_list)

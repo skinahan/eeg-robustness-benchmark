@@ -1,0 +1,40 @@
+import torch
+from braindecode.models import EEGNetv4
+from braindecode import EEGClassifier
+from skorch.dataset import ValidSplit
+from skorch.callbacks import EarlyStopping, LRScheduler
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+
+
+def create_eegnet_classifier(n_chans, n_times, n_outputs, device='cpu', seed=42):
+    """
+    Return a configured EEGClassifier using EEGNetv4.
+
+    Parameters:
+    - n_chans: int
+    - n_times: int
+    - n_outputs: int
+    - device: 'cuda' or 'cpu'
+    - seed: int, random seed for reproducibility
+
+    Returns:
+    - EEGClassifier instance
+    """
+    return EEGClassifier(
+        EEGNetv4,
+        criterion=torch.nn.CrossEntropyLoss,
+        optimizer=torch.optim.AdamW,
+        optimizer__lr=1e-3,
+        batch_size=64,
+        max_epochs=300,
+        module__n_chans=n_chans,
+        module__n_times=n_times,
+        module__n_outputs=n_outputs,
+        train_split=ValidSplit(0.2, stratified=True, random_state=seed),
+        module__final_conv_length='auto',
+        device=device,
+        callbacks=[
+            EarlyStopping(patience=75, monitor='valid_loss'),
+            LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=30)
+        ]
+    )

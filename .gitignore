@@ -1,0 +1,18 @@
+# .gitignore
+__pycache__/
+*.pyc
+*.pkl
+*.log
+.ipynb_checkpoints/
+results/
+evaluation/results/
+*.h5
+*.csv
+.env
+.venv
+debug/
+output/
+*.swp
+.DS_Store
+.idea/
+.vscode/
