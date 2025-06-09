@@ -34,6 +34,7 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
         drop_prob: float = 0.15,
         sfreq: Optional[float] = None,
         chs_info=None,      # <— dummy catch‐all
+        lstm_hidden_size: int = 32,
     ):
         # this calls EEGModuleMixin.__init__ under the hood
         super().__init__(
@@ -42,7 +43,7 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
             n_times=n_times,
             sfreq=sfreq,
         )
-        hidden_size = 32
+        hidden_size = lstm_hidden_size
         # ignore chs_info completely
         # … then define all your conv1, depthwise, lstm, etc. as before …
 
