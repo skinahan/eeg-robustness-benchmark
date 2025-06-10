@@ -146,9 +146,9 @@ def run_model_sweep_reegnet():
 
 if __name__ == "__main__":
     warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
-    run_model_sweep_eegnet()
-    #run_model_sweep_reegnet()
-    
+    # run_model_sweep_eegnet()
+    run_model_sweep_reegnet()
+
     # Record end time
     end_time = time.time()
     print(f"Script ended at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")

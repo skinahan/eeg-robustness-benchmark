@@ -29,9 +29,5 @@ def get_model_registry():
 
 MODEL_REGISTRY = get_model_registry()
 
-# Default training hyperparameters (can be used in search or configs)
-DEFAULT_HPARAMS = {
-    "optimizer__lr": [1e-3, 5e-4],
-    "batch_size": [32, 64],
-    "max_epochs": [300],
-}
+# Toggle CUDA support
+USE_CUDA = True  # Set to False for CPU-only runs

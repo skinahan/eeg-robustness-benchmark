@@ -1,4 +1,14 @@
+import sys
 import os
+import time
+from datetime import datetime
+
+
+# dynamically set the project root as the module search path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(current_dir)
+sys.path.insert(0, project_root)
+
 import pandas as pd
 from moabb.datasets import BNCI2014_001
 from moabb.paradigms import MotorImagery
@@ -22,7 +32,7 @@ def run_baseline(subject_list, model, model_name):
     )
 
     results = evaluation.process({f"{model_name}+MotorImagery": model})
-    out_path = f"results/{model_name}_baseline_subjects1-5.csv"
+    out_path = f"results/{model_name}_baseline_subjects{subject_list[0]}-{subject_list[-1]}.csv"
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     results.to_csv(out_path, index=False)
     print(f"Saved subject sweep results to {out_path}")
@@ -43,7 +53,6 @@ def run_baseline_eegnet(subject_list):
 
 
 if __name__ == "__main__":
-    # Evaluate on first 5 subjects
-    subject_list = [1, 2, 3, 4, 5]
+    subject_list = range(1,10)
     run_baseline_eegnet(subject_list)
     # run_baseline_reegnet(subject_list=subject_list)
