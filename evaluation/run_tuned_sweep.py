@@ -24,11 +24,11 @@ def run_tuned_sweep_reegnet(subject_list):
         n_outputs=2
     )
 
-    param_grid = {
+    reegnet_param_grid = {
         "module__drop_prob": [0.1, 0.15, 0.25],
-        "module__lstm__hidden_size": [16, 32, 64],
-        "optimizer__lr": [1e-4, 5e-4, 1e-3],
-        "batch_size": [16, 32, 64]
+        "module__lstm_hidden_size": [8, 16, 32, 64],
+        "optimizer__lr": [1e-3, 5e-4, 1e-4],
+        "batch_size": [8, 16, 32, 64]
     }
 
     paradigm = MotorImagery(
@@ -51,14 +51,14 @@ def run_tuned_sweep_reegnet(subject_list):
 
     results = evaluation.process(
         pipelines={"REEGNet+MotorImagery": reegnet},
-        param_grid=param_grid
+        param_grid=reegnet_param_grid
     )
 
-    results.to_csv("results/reegnet_tuned_subjects1-5.csv", index=False)
+    results.to_csv(f"results/reegnet_tuned_subjects{subject_list[0]}-{subject_list[-1]}.csv", index=False)
     print(results)
 
 
 
 if __name__ == "__main__":
-    subject_list = [1, 2, 3, 4, 5]
+    subject_list = [1, 2, 3]
     run_tuned_sweep_reegnet(subject_list)

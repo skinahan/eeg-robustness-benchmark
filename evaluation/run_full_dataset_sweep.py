@@ -1,12 +1,17 @@
 # evaluation/run_full_dataset_sweep.py
 import sys
 import os
-
+import time
+from datetime import datetime
 
 # dynamically set the project root as the module search path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.insert(0, project_root)
+
+# Record start time
+start_time = time.time()
+print(f"Script started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 import pandas as pd
 from moabb.datasets import BNCI2014_001
@@ -143,3 +148,8 @@ if __name__ == "__main__":
     warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
     run_model_sweep_eegnet()
     #run_model_sweep_reegnet()
+    
+    # Record end time
+    end_time = time.time()
+    print(f"Script ended at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Total runtime: {(end_time - start_time) / 60:.2f} minutes")
