@@ -153,3 +153,29 @@ class TrainOnlyNoiseClassifier(BaseEstimator, ClassifierMixin):
             return self.base_pipeline[-1].decision_function(X)
         else:
             raise NotImplementedError("Underlying model does not support decision_function()")
+
+    def get_params(self, deep=True):
+        params = super().get_params(deep=deep)
+        if deep and hasattr(self.base_pipeline, 'get_params'):
+            base_params = self.base_pipeline.get_params().copy()
+            for key in list(base_params.keys()):
+                base_params[f'base_pipeline__{key}'] = base_params.pop(key)
+            params.update(base_params)
+        return params
+
+    def set_params(self, **params):
+        base_params = {}
+        own_params = {}
+
+        for key, value in params.items():
+            if key.startswith('base_pipeline__'):
+                base_params[key[len('base_pipeline__'):]] = value
+            else:
+                own_params[key] = value
+
+        if base_params:
+            self.base_pipeline.set_params(**base_params)
+        if own_params:
+            super().set_params(**own_params)
+
+        return self

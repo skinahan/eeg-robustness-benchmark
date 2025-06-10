@@ -124,22 +124,22 @@ def run_evaluation(
 def get_param_grid(model_name: str) -> Dict[str, Any]:
     param_grids = {
         "eegnet": {
-            "module__drop_prob": [0.1, 0.15],
-            "optimizer__lr": [1e-4, 5e-4],
-            "batch_size": [16, 32]
+            "base_pipeline__module__drop_prob": [0.1, 0.15],
+            "base_pipeline__optimizer__lr": [1e-4, 5e-4],
+            "base_pipeline__batch_size": [16, 32]
         },
         "reegnet": {
-            "module__drop_prob": [0.1, 0.15, 0.25],
-            "module__lstm_hidden_size": [8, 16, 32, 64],
-            "optimizer__lr": [1e-3, 5e-4, 1e-4],
-            "batch_size": [8, 16, 32, 64]
+            "base_pipeline__module__drop_prob": [0.1, 0.15, 0.25],
+            "base_pipeline__module__lstm_hidden_size": [8, 16, 32, 64],
+            "base_pipeline__optimizer__lr": [1e-3, 5e-4, 1e-4],
+            "base_pipeline__batch_size": [8, 16, 32, 64]
         }
     }
     # If not found, fallback to a reasonable default
     return param_grids.get(model_name, {
-        "module__drop_prob": [0.1, 0.2],
-        "optimizer__lr": [1e-4],
-        "batch_size": [32]
+        "base_pipeline__module__drop_prob": [0.1, 0.2],
+        "base_pipeline__optimizer__lr": [1e-4],
+        "base_pipeline__batch_size": [32]
     })
 
 
