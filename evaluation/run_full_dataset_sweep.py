@@ -1,6 +1,13 @@
 # evaluation/run_full_dataset_sweep.py
-
+import sys
 import os
+
+
+# dynamically set the project root as the module search path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(current_dir)
+sys.path.insert(0, project_root)
+
 import pandas as pd
 from moabb.datasets import BNCI2014_001
 from moabb.paradigms import MotorImagery
@@ -134,5 +141,5 @@ def run_model_sweep_reegnet():
 
 if __name__ == "__main__":
     warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
-    # run_model_sweep_eegnet()
-    run_model_sweep_reegnet()
+    run_model_sweep_eegnet()
+    #run_model_sweep_reegnet()
