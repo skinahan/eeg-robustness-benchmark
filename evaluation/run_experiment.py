@@ -123,12 +123,12 @@ def run_evaluation(
 # Param grid selector
 def get_param_grid(model_name: str) -> Dict[str, Any]:
     param_grids = {
-        "EEGNetv4": {
+        "eegnet": {
             "module__drop_prob": [0.1, 0.15],
             "optimizer__lr": [1e-4, 5e-4],
             "batch_size": [16, 32]
         },
-        "REEGNet": {
+        "reegnet": {
             "module__drop_prob": [0.1, 0.15, 0.25],
             "module__lstm_hidden_size": [8, 16, 32, 64],
             "optimizer__lr": [1e-3, 5e-4, 1e-4],
@@ -156,6 +156,7 @@ if __name__ == "__main__":
     # Example param_grid for EEGNet/REEGNet (can be adapted per model)
     # Use the selected param grid
     param_grid = get_param_grid(args.model)
+    print("Using param grid: {}".format(param_grid))
     subjects = list(range(1,10))
     model_fn = MODEL_REGISTRY[args.model]
     run_evaluation(
