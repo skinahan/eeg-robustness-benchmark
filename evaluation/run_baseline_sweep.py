@@ -1,6 +1,7 @@
 import sys
 import os
 import time
+import warnings
 from datetime import datetime
 
 
@@ -53,6 +54,7 @@ def run_baseline_eegnet(subject_list):
 
 
 if __name__ == "__main__":
+    warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
     subject_list = range(1,10)
     run_baseline_eegnet(subject_list)
     # run_baseline_reegnet(subject_list=subject_list)

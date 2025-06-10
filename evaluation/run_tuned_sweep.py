@@ -1,4 +1,6 @@
 import os
+import warnings
+
 import pandas as pd
 from moabb.datasets import BNCI2014_001
 from moabb.paradigms import MotorImagery
@@ -60,5 +62,6 @@ def run_tuned_sweep_reegnet(subject_list):
 
 
 if __name__ == "__main__":
+    warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
     subject_list = [1, 2, 3]
     run_tuned_sweep_reegnet(subject_list)

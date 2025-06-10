@@ -2,6 +2,7 @@
 import sys
 import os
 import time
+import warnings
 from datetime import datetime
 
 
@@ -145,6 +146,7 @@ def get_param_grid(model_name: str) -> Dict[str, Any]:
 
 
 if __name__ == "__main__":
+    warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
     parser = argparse.ArgumentParser(description="Run MOABB experiment with optional noise augmentation.")
     parser.add_argument("--model", type=str, choices=list(MODEL_REGISTRY.keys()), required=True)
     parser.add_argument("--noise_type", type=str, default=None, choices=['dropout', 'gaussian', 'eog'])
