@@ -28,6 +28,3 @@ def get_model_registry():
     }
 
 MODEL_REGISTRY = get_model_registry()
-
-# Toggle CUDA support
-USE_CUDA = True  # Set to False for CPU-only runs

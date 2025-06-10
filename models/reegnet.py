@@ -10,7 +10,6 @@ import torch.nn.functional as F
 from typing import Optional
 from sklearn.base import TransformerMixin, BaseEstimator
 import numpy as np
-from config import USE_CUDA
 
 class To4DArray(TransformerMixin, BaseEstimator):
     """
@@ -138,7 +137,7 @@ def create_reegnet_classifier(n_chans=22, n_times=1001, n_outputs=2):
         module__n_times=n_times,
         module__n_outputs=n_outputs,
         train_split=ValidSplit(0.2, stratified=True, random_state=42),
-        device= 'cuda' if USE_CUDA and torch.cuda.is_available() else 'cpu',
+        device= 'cuda' if torch.cuda.is_available() else 'cpu',
         callbacks=[
             EarlyStopping(patience=40, monitor='valid_loss'),
             LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=30)

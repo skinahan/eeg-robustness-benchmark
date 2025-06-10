@@ -5,8 +5,6 @@ from skorch.dataset import ValidSplit
 from skorch.callbacks import EarlyStopping, LRScheduler
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
-from config import USE_CUDA
-
 
 def create_eegnet_classifier(n_chans, n_times, n_outputs, seed=42):
     """
@@ -34,7 +32,7 @@ def create_eegnet_classifier(n_chans, n_times, n_outputs, seed=42):
         module__n_outputs=n_outputs,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         module__final_conv_length='auto',
-        device='cuda' if USE_CUDA and torch.cuda.is_available() else 'cpu',
+        device='cuda' if torch.cuda.is_available() else 'cpu',
         callbacks=[
             EarlyStopping(patience=75, monitor='valid_loss'),
             LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=30)
