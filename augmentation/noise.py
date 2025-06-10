@@ -147,10 +147,10 @@ class TrainOnlyNoiseClassifier(BaseEstimator, ClassifierMixin):
             raise NotImplementedError("Underlying model does not support predict_proba()")
 
     def decision_function(self, X):
+        # If base_pipeline directly supports decision_function
         if hasattr(self.base_pipeline, 'decision_function'):
             return self.base_pipeline.decision_function(X)
-        elif hasattr(self.base_pipeline[-1], 'decision_function'):
-            return self.base_pipeline[-1].decision_function(X)
+        # Otherwise, raise NotImplemented
         else:
             raise NotImplementedError("Underlying model does not support decision_function()")
 
