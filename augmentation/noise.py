@@ -104,3 +104,52 @@ def inject_scaled_eog_signal(data, info, scale_factor=4.0, seed=42):
     raw_scaled._data += scaled_eog
 
     return raw_scaled.get_data() * 1e6 if is_microvolts else raw_scaled.get_data()
+
+
+from sklearn.base import BaseEstimator, ClassifierMixin
+
+class TrainOnlyNoiseClassifier(BaseEstimator, ClassifierMixin):
+    def __init__(self, base_pipeline, noise_type='dropout', intensity=25.0, seed=42):
+        self.base_pipeline = base_pipeline
+        self.noise_type = noise_type
+        self.intensity = intensity
+        self.seed = seed
+
+    def fit(self, X, y):
+        augmenter = EEGNoiseAugmentor(
+            noise_type=self.noise_type,
+            intensity=self.intensity,
+            seed=self.seed
+        )
+        X_aug = augmenter.fit_transform(X)
+
+        self.base_pipeline.fit(X_aug, y)
+
+        # ✅ Expose fitted classes_ attribute from the wrapped classifier
+        if hasattr(self.base_pipeline, "classes_"):
+            self.classes_ = self.base_pipeline.classes_
+        elif hasattr(self.base_pipeline[-1], "classes_"):
+            self.classes_ = self.base_pipeline[-1].classes_
+        else:
+            raise AttributeError("Base pipeline does not expose `classes_` after fit")
+
+        return self
+
+    def predict(self, X):
+        return self.base_pipeline.predict(X)
+
+    def predict_proba(self, X):
+        if hasattr(self.base_pipeline, 'predict_proba'):
+            return self.base_pipeline.predict_proba(X)
+        elif hasattr(self.base_pipeline[-1], 'predict_proba'):
+            return self.base_pipeline[-1].predict_proba(X)
+        else:
+            raise NotImplementedError("Underlying model does not support predict_proba()")
+
+    def decision_function(self, X):
+        if hasattr(self.base_pipeline, 'decision_function'):
+            return self.base_pipeline.decision_function(X)
+        elif hasattr(self.base_pipeline[-1], 'decision_function'):
+            return self.base_pipeline[-1].decision_function(X)
+        else:
+            raise NotImplementedError("Underlying model does not support decision_function()")

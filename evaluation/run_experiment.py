@@ -24,7 +24,7 @@ from moabb.paradigms import MotorImagery
 from moabb.evaluations import WithinSessionEvaluation
 
 from config import MODEL_REGISTRY
-from augmentation.noise import EEGNoiseAugmentor
+from augmentation.noise import EEGNoiseAugmentor, TrainOnlyNoiseClassifier
 
 
 def run_evaluation(
@@ -54,13 +54,14 @@ def run_evaluation(
     # Model pipeline
     base_model = model_fn(n_chans=22, n_times=1001, n_outputs=2)
 
-    if noise_type:
-        full_pipeline = Pipeline([
-            ('augment', EEGNoiseAugmentor(noise_type=noise_type, intensity=intensity, seed=42)),
-            ('model', base_model)
-        ])
-    else:
-        full_pipeline = base_model
+    full_pipeline = base_model
+
+    train_only_aug_clf = TrainOnlyNoiseClassifier(
+        base_pipeline=full_pipeline,
+        noise_type=noise_type,
+        intensity=intensity,
+        seed=42
+    )
 
     # Evaluation setup
     evaluation = WithinSessionEvaluation(
@@ -80,7 +81,7 @@ def run_evaluation(
 
             # Grid search for hyperparameter tuning
             grid = GridSearchCV(
-                full_pipeline,
+                train_only_aug_clf,
                 param_grid=param_grid,
                 cv=3,
                 scoring='roc_auc',
@@ -148,14 +149,14 @@ if __name__ == "__main__":
     parser.add_argument("--model", type=str, choices=list(MODEL_REGISTRY.keys()), required=True)
     parser.add_argument("--noise_type", type=str, default=None, choices=['dropout', 'gaussian', 'eog'])
     parser.add_argument("--intensity", type=float, default=None)
-    parser.add_argument("--subjects", type=int, nargs="*", default=None)
+    # parser.add_argument("--subjects", type=int, nargs="*", default=None)
 
     args = parser.parse_args()
 
     # Example param_grid for EEGNet/REEGNet (can be adapted per model)
     # Use the selected param grid
     param_grid = get_param_grid(args.model)
-
+    subjects = list(range(1,10))
     model_fn = MODEL_REGISTRY[args.model]
     run_evaluation(
         model_fn=model_fn,
@@ -163,5 +164,5 @@ if __name__ == "__main__":
         param_grid=param_grid,
         noise_type=args.noise_type,
         intensity=args.intensity,
-        subject_list=args.subjects,
+        subject_list=subjects#args.subjects,
     )
