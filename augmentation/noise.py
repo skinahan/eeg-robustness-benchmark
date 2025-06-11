@@ -71,7 +71,14 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
 
     def _apply_eog_noise(self, data):
         n_epochs, n_channels, n_times = data.shape
-        ch_names = [f"EEG {i}" for i in range(n_channels)]
+        ch_names = [
+            'Fz', 'FC3', 'FC1', 'FCz', 'FC2', 'FC4',
+            'C5', 'C3', 'C1', 'Cz', 'C2', 'C4', 'C6',
+            'CP3', 'CP1', 'CPz', 'CP2', 'CP4',
+            'P1', 'Pz', 'P2', 'POz'
+        ]
+
+        #ch_names = [f"EEG {i}" for i in range(n_channels)]
         info = mne.create_info(ch_names=ch_names, sfreq=250, ch_types=['eeg'] * n_channels)
 
         noisy_epochs = []
