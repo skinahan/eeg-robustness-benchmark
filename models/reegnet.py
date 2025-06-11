@@ -141,6 +141,7 @@ def create_reegnet_classifier(n_chans=22, n_times=1001, n_outputs=2):
         callbacks=[
             EarlyStopping(patience=40, monitor='valid_loss'),
             LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=30)
-        ]
+        ],
+        verbose=0  # Suppress epoch-level output
     )
 

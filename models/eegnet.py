@@ -36,5 +36,6 @@ def create_eegnet_classifier(n_chans, n_times, n_outputs, seed=42):
         callbacks=[
             EarlyStopping(patience=75, monitor='valid_loss'),
             LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=30)
-        ]
+        ],
+        verbose=0
     )

@@ -3,6 +3,7 @@ import sys
 import os
 import time
 from datetime import datetime
+from tqdm import tqdm
 
 # dynamically set the project root as the module search path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -49,6 +50,10 @@ def run_model_sweep(
     # Use all subjects in the dataset
     dataset = BNCI2014_001()
 
+    single_subject = True
+    if single_subject:
+        dataset.subject_list = [1]
+
     evaluation = WithinSessionEvaluation(
         paradigm=paradigm,
         datasets=[dataset],
@@ -69,8 +74,9 @@ def run_model_sweep(
                 param_grid=param_grid,
                 cv=3,
                 scoring='roc_auc',
-                n_jobs=1,
-                return_train_score=True
+                n_jobs=4,
+                return_train_score=True,
+                verbose=10
             )
             grid.fit(X, y_encoded)
 
@@ -130,11 +136,18 @@ def run_model_sweep_reegnet():
     )
 
     reegnet_param_grid = {
-        "module__drop_prob": [0.1, 0.15, 0.25],
-        "module__lstm_hidden_size": [8, 16, 32, 64],
-        "optimizer__lr": [1e-3, 5e-4, 1e-4],
-        "batch_size": [8, 16, 32, 64]
+        "module__drop_prob": [0.1, 0.15],
+        "module__lstm_hidden_size": [16, 32],
+        "optimizer__lr": [1e-3, 1e-4],
+        "batch_size": [16, 32]
     }
+    #
+    # reegnet_param_grid = {
+    #     "module__drop_prob": [0.1, 0.15, 0.25],
+    #     "module__lstm_hidden_size": [8, 16, 32, 64],
+    #     "optimizer__lr": [1e-3, 5e-4, 1e-4],
+    #     "batch_size": [8, 16, 32, 64]
+    # }
 
     run_model_sweep(
         model_name="REEGNetv4+MotorImagery",
