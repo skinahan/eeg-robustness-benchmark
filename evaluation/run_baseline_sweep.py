@@ -4,8 +4,6 @@ import time
 import warnings
 from datetime import datetime
 
-from models.cnnncp import create_cnnncp_classifier
-
 # dynamically set the project root as the module search path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
@@ -18,6 +16,8 @@ from moabb.evaluations import WithinSessionEvaluation
 
 from models.eegnet import create_eegnet_classifier
 from models.reegnet import create_reegnet_classifier
+from models.cnnncp import create_cnnncp_classifier
+
 from config import DEFAULT_PARADIGM
 
 def run_baseline(subject_list, model, model_name):
