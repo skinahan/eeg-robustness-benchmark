@@ -243,10 +243,17 @@ def plot_per_subject_roc_auc(
 
 if __name__ == '__main__':
     input_dir = '../sol_results/results'
-    # aggregated_df = aggregate_results(input_dir)
-    # aggregated_df.to_csv(os.path.join(input_dir, 'aggregated_results.csv'))
-    aggregated_df = pd.read_csv(os.path.join(input_dir, 'aggregated_results.csv'))
+    aggregated_df = aggregate_results(input_dir)
+    aggregated_df.to_csv(os.path.join(input_dir, 'aggregated_results.csv'))
+    # aggregated_df = pd.read_csv(os.path.join(input_dir, 'aggregated_results.csv'))
+
     plot_dropout_train_performance(aggregated_df, 'EEGNet')
     plot_dropout_test_performance(aggregated_df, "EEGNet")
     plot_per_subject_roc_auc(aggregated_df, model_name="EEGNet", tuned=False)
     plot_per_subject_roc_auc(aggregated_df, model_name="EEGNet", tuned=True)
+
+    plot_dropout_train_performance(aggregated_df, 'REEGNet')
+    plot_dropout_test_performance(aggregated_df, "REEGNet")
+    plot_per_subject_roc_auc(aggregated_df, model_name="REEGNet", tuned=False)
+    plot_per_subject_roc_auc(aggregated_df, model_name="REEGNet", tuned=True)
+
