@@ -163,7 +163,6 @@ def plot_noise_performance(aggregated_df, model_name, noise_type, session_type, 
 
     print(f"Plot saved to {output_file}")
 
-
 def plot_dropout_test_performance(aggregated_df, model_name):
     """
     Wrapper for plotting dropout noise performance on the test set for a given model.
@@ -186,6 +185,27 @@ def plot_dropout_train_performance(aggregated_df, model_name):
         session_type='0train'
     )
 
+def plot_gaussian_test_performance(aggregated_df, model_name):
+    """
+    Wrapper for plotting gaussian noise performance on the test set for a given model.
+    """
+    plot_noise_performance(
+        aggregated_df=aggregated_df,
+        model_name=model_name,
+        noise_type='gaussian',
+        session_type='1test'
+    )
+
+def plot_gaussian_train_performance(aggregated_df, model_name):
+    """
+    Wrapper for plotting gaussian noise performance on the train set for a given model.
+    """
+    plot_noise_performance(
+        aggregated_df=aggregated_df,
+        model_name=model_name,
+        noise_type='gaussian',
+        session_type='0train'
+    )
 
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -240,17 +260,21 @@ def plot_per_subject_roc_auc(
     plt.close()
     print(f"Plot saved to {out_file}")
 
+def eegnet_plots(aggregated_df):
+    plot_dropout_train_performance(aggregated_df, 'EEGNet')
+    plot_dropout_test_performance(aggregated_df, "EEGNet")
+    plot_gaussian_train_performance(aggregated_df, "EEGNet")
+    plot_gaussian_test_performance(aggregated_df, "EEGNet")
+    plot_per_subject_roc_auc(aggregated_df, model_name="EEGNet", tuned=False)
+    plot_per_subject_roc_auc(aggregated_df, model_name="EEGNet", tuned=True)
 
 if __name__ == '__main__':
     input_dir = '../sol_results/results'
-    aggregated_df = aggregate_results(input_dir)
-    aggregated_df.to_csv(os.path.join(input_dir, 'aggregated_results.csv'))
-    # aggregated_df = pd.read_csv(os.path.join(input_dir, 'aggregated_results.csv'))
+    # aggregated_df = aggregate_results(input_dir)
+    # aggregated_df.to_csv(os.path.join(input_dir, 'aggregated_results.csv'))
+    aggregated_df = pd.read_csv(os.path.join(input_dir, 'aggregated_results.csv'))
 
-    plot_dropout_train_performance(aggregated_df, 'EEGNet')
-    plot_dropout_test_performance(aggregated_df, "EEGNet")
-    plot_per_subject_roc_auc(aggregated_df, model_name="EEGNet", tuned=False)
-    plot_per_subject_roc_auc(aggregated_df, model_name="EEGNet", tuned=True)
+    eegnet_plots(aggregated_df)
 
     plot_dropout_train_performance(aggregated_df, 'REEGNet')
     plot_dropout_test_performance(aggregated_df, "REEGNet")

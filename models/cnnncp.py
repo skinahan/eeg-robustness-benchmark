@@ -123,16 +123,15 @@ class CNNNCP(EEGModuleMixin, nn.Module):
                   nn.init.constant_(module.bias, 0)
 
 
-def prepare_cnn_ncpnet_model(
+def create_cnnncp_classifier(
         n_chans,
         n_times,
         n_outs,
-        net_size=7,
+        net_size=32,
         net_sparsity=0.80,
-        lr=5e-2,
-        batch_size=32,
-        weight_decay=0.0,
-        useOVRSettings=False
+        lr=1e-4,
+        batch_size=8,
+        weight_decay=0.0#1e-3
 ):
   set_seeds(SEED)
 
@@ -146,20 +145,22 @@ def prepare_cnn_ncpnet_model(
       CNNNCP,
       criterion=torch.nn.CrossEntropyLoss,
       optimizer=torch.optim.AdamW,
-      optimizer__lr=1e-4,
-      optimizer__weight_decay=1e-3,
-      batch_size=64,
+      optimizer__lr=lr,
+      optimizer__weight_decay=weight_decay,
+      batch_size=batch_size,
       max_epochs=200,
       module__n_chans=n_chans,
       module__n_times=n_times,
       module__n_outputs=n_outs,
+      module__ncp_hidden_dim=net_size,
+      module__sparsity=net_sparsity,
       train_split=ValidSplit(0.2, stratified=True, random_state=42),
       device='cuda' if torch.cuda.is_available() else 'cpu',
       callbacks=[
           EarlyStopping(patience=40, monitor='valid_loss'),
-          LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=30)
+          LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=20)
       ],
-      verbose=0  # Suppress epoch-level output
+      # verbose=0  # Suppress epoch-level output
   )
 
   return cnn_ncp_net

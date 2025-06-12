@@ -4,6 +4,7 @@ import time
 import warnings
 from datetime import datetime
 
+from models.cnnncp import create_cnnncp_classifier
 
 # dynamically set the project root as the module search path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -52,9 +53,14 @@ def run_baseline_eegnet(subject_list):
         n_chans=22,n_times=1001,n_outputs=2)
     run_baseline(subject_list, eegnet, "eegnet")
 
+def run_baseline_cnn_ncp(subject_list):
+    cnn_ncp_net = create_cnnncp_classifier(
+        n_chans=22,n_times=1001,n_outs=2)
+    run_baseline(subject_list, cnn_ncp_net, "cnn_ncp")
 
 if __name__ == "__main__":
     warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
     subject_list = range(1,10)
-    run_baseline_eegnet(subject_list)
+    #run_baseline_eegnet(subject_list)
     # run_baseline_reegnet(subject_list=subject_list)
+    run_baseline_cnn_ncp(subject_list)
