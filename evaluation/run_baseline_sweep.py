@@ -3,6 +3,8 @@ import os
 import time
 import warnings
 from datetime import datetime
+import numpy as np
+import sklearn
 
 # dynamically set the project root as the module search path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -19,6 +21,7 @@ from models.reegnet import create_reegnet_classifier
 from models.cnnncp import create_cnnncp_classifier
 
 from config import DEFAULT_PARADIGM
+import torch.cuda
 
 def run_baseline(subject_list, model, model_name):
     dataset = BNCI2014_001()

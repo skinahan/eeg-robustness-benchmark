@@ -32,6 +32,16 @@ def aggregate_results(input_dir):
             'batch_size': 64,
             'module__drop_prob': 0.15,
             'module__lstm_hidden_size': 32
+        },
+        'CNN_NCP': {
+            'optimizer__lr': 1e-4,
+            'batch_size': 8,
+            'module__net_size': 32
+        },
+        'CNN_NCPv2': {
+            'optimizer__lr': 1e-4,
+            'batch_size': 8,
+            'module__net_size': 32
         }
     }
 
@@ -198,7 +208,6 @@ def plot_gaussian_train_performance(aggregated_df, model_name):
         session_type='0train'
     )
 
-
 def plot_eog_test_performance(aggregated_df, model_name):
     """
     Wrapper for plotting eog noise performance on the test set for a given model.
@@ -295,10 +304,11 @@ def cnn_ncp_plots(aggregated_df):
 
 if __name__ == '__main__':
     input_dir = '../sol_results/results'
-    # aggregated_df = aggregate_results(input_dir)
-    # aggregated_df.to_csv(os.path.join(input_dir, 'aggregated_results.csv'))
-    aggregated_df = pd.read_csv(os.path.join(input_dir, 'aggregated_results.csv'))
+    aggregated_df = aggregate_results(input_dir)
+    aggregated_df.to_csv(os.path.join(input_dir, 'aggregated_results.csv'))
+    # aggregated_df = pd.read_csv(os.path.join(input_dir, 'aggregated_results.csv'))
 
     eegnet_plots(aggregated_df)
     reegnet_plots(aggregated_df)
+    cnn_ncp_plots(aggregated_df)
 

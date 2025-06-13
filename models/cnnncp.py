@@ -27,6 +27,119 @@ class Conv2dWithConstraint(nn.Conv2d):
         return super(Conv2dWithConstraint, self).forward(x)
 
 
+class CNNNCPv2(EEGModuleMixin, nn.Module):
+  def __init__(
+          self,
+          n_chans,
+          n_times,
+          n_outputs,
+          ncp_hidden_dim=32,
+          cnn_output_dim=16,  # Matches EEGNet feature extractor's output
+          sparsity=0.8,
+          drop_prob=float(0.15),
+  ):
+      super().__init__(
+          n_outputs=n_outputs,
+          n_chans=n_chans,
+          n_times=n_times,
+          input_window_seconds=None,
+          sfreq=None,
+      )
+      # Ensure input dimensions [batch_size, 1, n_chans, n_times]
+      self.ensure4d = Ensure4d()
+      kernel_length = 128
+      depthwise_kernel_length = 16
+      pool1_kernel_size = 8
+      pool1_stride_size = 4
+      pool2_kernel_size = 16
+      pool2_stride_size = 8
+      conv_spatial_max_norm = float(1.0)
+      batch_norm_momentum = 0.01
+      batch_norm_eps = 1e-3
+
+      F1 = 8
+      D = 2
+      F2 = F1 * D
+
+      # Feature Extractor (CNN Head)
+      self.feature_extractor = nn.Sequential(
+          Ensure4d(),
+          Rearrange("batch ch t 1 -> batch 1 ch t"),
+          # 1. Input Conv2D:
+          nn.Conv2d(1, F1, (1, kernel_length), bias=False, padding=(0, kernel_length // 2)),
+          # bnorm_1
+          nn.BatchNorm2d(F1, momentum=batch_norm_momentum, affine=True, eps=batch_norm_eps),
+
+          # 2. Depthwise Conv2D:
+          Conv2dWithConstraint(F1, F1 * D, (n_chans, 1), max_norm=conv_spatial_max_norm, groups=F1, bias=False),
+          nn.BatchNorm2d(F1 * D, momentum=batch_norm_momentum, eps=batch_norm_eps),
+          nn.ELU(),
+
+          # 3. Average Pooling:
+          nn.AvgPool2d((1, pool1_kernel_size), stride=(1, pool1_stride_size)),
+
+          # 4. Dropout:
+          nn.Dropout(p=drop_prob),
+      )
+
+      # Sequential Model (NCP)
+      ncp_out_size = F2
+      wiring = AutoNCP(ncp_hidden_dim, ncp_out_size, sparsity_level=sparsity,
+                        seed=SEED)  # Wiring configuration for NCP
+      self.ncp = CfC(cnn_output_dim, wiring, return_sequences=True)
+
+      # conv_separable_depth
+      self.sep_depthwise = nn.Conv2d(F1 * D, F1 * D, (1, depthwise_kernel_length), bias=False, groups=F1 * D,
+                padding=(0, depthwise_kernel_length // 2))
+      # conv_separable_point
+      self.sep_pointwise = nn.Conv2d(F1 * D, F2, (1, 1), bias=False)
+      # bnorm_2
+      self.bn3 = nn.BatchNorm2d(F2, momentum=batch_norm_momentum, affine=True, eps=batch_norm_eps)
+      self.elu = nn.ELU()
+      self.dropout2 = nn.Dropout(drop_prob)
+      self.global_pool = nn.AdaptiveAvgPool2d((1, 1))
+      self.fc = nn.Linear(ncp_out_size, n_outputs)
+
+      self._glorot_weight_zero_bias()
+
+  def forward(self, x):
+      x = self.feature_extractor(x)  # Output: [batch_size, cnn_output_dim, reduced_n_times, 1]
+      x = x.squeeze(2).permute(0, 2, 1)
+      # x, _ = self.ncp(x)  # Output: [batch_size, reduced_n_times, ncp_hidden_dim]
+      x, _ = self.ncp(x)
+      x = x.permute(0, 2, 1).unsqueeze(3)
+
+      x = self.sep_depthwise(x)
+      x = self.sep_pointwise(x)
+      x = self.bn3(x)
+      x = self.elu(x)
+      x = self.dropout2(x)
+      x = self.global_pool(x)
+      x = x.view(x.shape[0], -1)
+      x = self.fc(x)
+      return x
+
+  def _glorot_weight_zero_bias(self):
+      """Initialize parameters of all modules by initializing weights with
+    glorot
+    uniform/xavier initialization, and setting biases to zero. Weights from
+    batch norm layers are set to 1.
+
+    Parameters
+    ----------
+    model: Module
+    """
+      for module in self.modules():
+          if hasattr(module, "weight"):
+              if "BatchNorm" not in module.__class__.__name__:
+                  nn.init.xavier_uniform_(module.weight, gain=1)
+              else:
+                  nn.init.constant_(module.weight, 1)
+          if hasattr(module, "bias"):
+              if module.bias is not None:
+                  nn.init.constant_(module.bias, 0)
+
+
 class CNNNCP(EEGModuleMixin, nn.Module):
   def __init__(
           self,
@@ -127,10 +240,10 @@ def create_cnnncp_classifier(
         n_chans,
         n_times,
         n_outs,
-        net_size=32,
+        net_size=19,
         net_sparsity=0.80,
-        lr=1e-4,
-        batch_size=8,
+        lr=1e-3,
+        batch_size=32,
         weight_decay=0.0#1e-3
 ):
   set_seeds(SEED)
@@ -142,7 +255,7 @@ def create_cnnncp_classifier(
       net_size = new_net_size
 
   cnn_ncp_net = EEGClassifier(
-      CNNNCP,
+      CNNNCPv2,
       criterion=torch.nn.CrossEntropyLoss,
       optimizer=torch.optim.AdamW,
       optimizer__lr=lr,
@@ -158,9 +271,12 @@ def create_cnnncp_classifier(
       device='cuda' if torch.cuda.is_available() else 'cpu',
       callbacks=[
           EarlyStopping(patience=40, monitor='valid_loss'),
-          LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=20)
+          LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=30)
       ],
       # verbose=0  # Suppress epoch-level output
   )
+  if torch.cuda.is_available():
+      cnn_ncp_net.initialize()
+      cnn_ncp_net.module_.cuda()
 
   return cnn_ncp_net

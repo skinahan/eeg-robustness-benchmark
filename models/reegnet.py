@@ -108,8 +108,10 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
 
         # 5. LSTM:
         x, _ = self.lstm(x)
+
         # 6. Reshape for Separable Conv2D:
         x = x.permute(0, 2, 1).unsqueeze(3)
+
         # 7. Separable Conv2D:
         x = self.sep_depthwise(x)
         x = self.sep_pointwise(x)
