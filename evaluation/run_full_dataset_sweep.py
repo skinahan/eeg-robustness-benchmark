@@ -3,7 +3,6 @@ import sys
 import os
 import time
 from datetime import datetime
-from tqdm import tqdm
 
 # dynamically set the project root as the module search path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -14,18 +13,25 @@ sys.path.insert(0, project_root)
 start_time = time.time()
 print(f"Script started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
+import numpy as np
+import sklearn
+import torch
+import torch.cuda
 import pandas as pd
+from typing import Dict, Any
+
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import GridSearchCV
+
 from moabb.datasets import BNCI2014_001
 from moabb.paradigms import MotorImagery
 from moabb.evaluations import WithinSessionEvaluation
-from typing import Dict, Any
-from models.eegnet import create_eegnet_classifier
-import numpy as np
-from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import GridSearchCV
-import warnings
 
+from models.eegnet import create_eegnet_classifier
 from models.reegnet import create_reegnet_classifier
+from models.cnnncp import create_cnnncp_classifier
+
+import warnings
 
 
 def run_model_sweep(
@@ -49,10 +55,10 @@ def run_model_sweep(
 
     # Use all subjects in the dataset
     dataset = BNCI2014_001()
-    #
-    # single_subject = False
-    # if single_subject:
-    #     dataset.subject_list = [1]
+
+    single_subject = True
+    if single_subject:
+        dataset.subject_list = [1]
 
     evaluation = WithinSessionEvaluation(
         paradigm=paradigm,
@@ -67,14 +73,13 @@ def run_model_sweep(
             X, y, metadata = paradigm.get_data(dataset, subjects=[subject])
             label_encoder = LabelEncoder()
             y_encoded = label_encoder.fit_transform(y)
-
             # Run the inner CV search manually
             grid = GridSearchCV(
                 model_pipeline,
                 param_grid=param_grid,
                 cv=3,
                 scoring='roc_auc',
-                n_jobs=4,
+                n_jobs=1,#4,
                 return_train_score=True,
                 verbose=10
             )
@@ -141,13 +146,6 @@ def run_model_sweep_reegnet():
         "optimizer__lr": [1e-3, 1e-4],
         "batch_size": [16, 32]
     }
-    #
-    # reegnet_param_grid = {
-    #     "module__drop_prob": [0.1, 0.15, 0.25],
-    #     "module__lstm_hidden_size": [8, 16, 32, 64],
-    #     "optimizer__lr": [1e-3, 5e-4, 1e-4],
-    #     "batch_size": [8, 16, 32, 64]
-    # }
 
     run_model_sweep(
         model_name="REEGNetv4+MotorImagery",
@@ -157,10 +155,35 @@ def run_model_sweep_reegnet():
         output_csv="results/reegnet_tuned_subjects_all.csv"
     )
 
+def run_model_sweep_cnn_ncp():
+
+    cnn_ncp_pipeline = create_cnnncp_classifier(
+        n_chans=22,
+        n_times=1001,
+        n_outs=2
+    )
+
+    cnn_ncp_param_grid = {
+        "module__ncp_hidden_dim": [11, 14],
+        "module__sparsity": [0.6, 0.8],
+        "optimizer__lr": [1e-3, 1e-4],
+        "batch_size": [16, 32]
+    }
+
+    run_model_sweep(
+        model_name="CNN_NCP+MotorImagery",
+        model_pipeline=cnn_ncp_pipeline,
+        param_grid=cnn_ncp_param_grid,
+        hdf5_path="checkpoints/cnn_ncp_tuned_subjects_all.h5",
+        output_csv="results/cnn_ncp_tuned_subjects_all.csv"
+    )
+
+
 if __name__ == "__main__":
     warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
     # run_model_sweep_eegnet()
-    run_model_sweep_reegnet()
+    # run_model_sweep_reegnet()
+    run_model_sweep_cnn_ncp()
 
     # Record end time
     end_time = time.time()

@@ -77,24 +77,36 @@ class CNNNCPv2(EEGModuleMixin, nn.Module):
 
           # 3. Average Pooling:
           nn.AvgPool2d((1, pool1_kernel_size), stride=(1, pool1_stride_size)),
-
+          # nn.AvgPool2d((1, 16), stride=(1, 8)),
           # 4. Dropout:
           nn.Dropout(p=drop_prob),
       )
 
       # Sequential Model (NCP)
-      ncp_out_size = F2
-      wiring = AutoNCP(ncp_hidden_dim, ncp_out_size, sparsity_level=sparsity,
-                        seed=SEED)  # Wiring configuration for NCP
-      self.ncp = CfC(cnn_output_dim, wiring, return_sequences=True)
+      ncp_out_size = 16
+
+      wiring = AutoNCP(
+          ncp_hidden_dim,
+          ncp_out_size,
+          sparsity_level=sparsity,
+          seed=SEED
+      )  # Wiring configuration for NCP
+
+      self.ncp = CfC(
+          cnn_output_dim,
+          wiring,
+          return_sequences=True,
+          # mode="pure",
+          # mixed_memory=False
+      ).cuda()
 
       # conv_separable_depth
-      self.sep_depthwise = nn.Conv2d(F1 * D, F1 * D, (1, depthwise_kernel_length), bias=False, groups=F1 * D,
+      self.sep_depthwise = nn.Conv2d(ncp_out_size, ncp_out_size, (1, depthwise_kernel_length), bias=False, groups=ncp_out_size,
                 padding=(0, depthwise_kernel_length // 2))
       # conv_separable_point
-      self.sep_pointwise = nn.Conv2d(F1 * D, F2, (1, 1), bias=False)
+      self.sep_pointwise = nn.Conv2d(ncp_out_size, ncp_out_size, (1, 1), bias=False)
       # bnorm_2
-      self.bn3 = nn.BatchNorm2d(F2, momentum=batch_norm_momentum, affine=True, eps=batch_norm_eps)
+      self.bn3 = nn.BatchNorm2d(ncp_out_size, momentum=batch_norm_momentum, affine=True, eps=batch_norm_eps)
       self.elu = nn.ELU()
       self.dropout2 = nn.Dropout(drop_prob)
       self.global_pool = nn.AdaptiveAvgPool2d((1, 1))
@@ -241,7 +253,7 @@ def create_cnnncp_classifier(
         n_times,
         n_outs,
         net_size=19,
-        net_sparsity=0.80,
+        net_sparsity=0.8,
         lr=1e-3,
         batch_size=32,
         weight_decay=0.0#1e-3

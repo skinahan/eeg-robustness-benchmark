@@ -5,11 +5,16 @@ import warnings
 from datetime import datetime
 import numpy as np
 import sklearn
-
+import time
+from datetime import datetime
 # dynamically set the project root as the module search path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.insert(0, project_root)
+
+# Record start time
+start_time = time.time()
+print(f"Script started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 import pandas as pd
 from moabb.datasets import BNCI2014_001
@@ -66,4 +71,9 @@ if __name__ == "__main__":
     subject_list = range(1,10)
     #run_baseline_eegnet(subject_list)
     # run_baseline_reegnet(subject_list=subject_list)
-    run_baseline_cnn_ncp(subject_list)
+    run_baseline_cnn_ncp([1])
+    # Record end time
+    end_time = time.time()
+    print(f"Script ended at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Total runtime: {(end_time - start_time) / 60:.2f} minutes")
+
