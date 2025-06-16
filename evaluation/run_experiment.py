@@ -136,7 +136,7 @@ def get_param_grid(model_name: str) -> Dict[str, Any]:
             "base_pipeline__batch_size": [16, 32]
         },
         "cnnncp": {
-            "base_pipeline__module__ncp_hidden_dim": [11, 14],
+            "base_pipeline__module__ncp_hidden_dim": [19, 24],
             "base_pipeline__module__sparsity": [0.6, 0.8],
             "base_pipeline__optimizer__lr": [1e-3, 1e-4],
             "base_pipeline__batch_size": [16, 32]

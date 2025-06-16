@@ -164,7 +164,7 @@ def run_model_sweep_cnn_ncp():
     )
 
     cnn_ncp_param_grid = {
-        "module__ncp_hidden_dim": [11, 14],
+        "module__ncp_hidden_dim": [19, 24],
         "module__sparsity": [0.6, 0.8],
         "optimizer__lr": [1e-3, 1e-4],
         "batch_size": [16, 32]
