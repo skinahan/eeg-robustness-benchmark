@@ -7,6 +7,9 @@ import numpy as np
 import sklearn
 import time
 from datetime import datetime
+
+from skorch.callbacks import EpochScoring
+
 # dynamically set the project root as the module search path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
@@ -64,6 +67,9 @@ def run_baseline_eegnet(subject_list):
 def run_baseline_cnn_ncp(subject_list):
     cnn_ncp_net = create_cnnncp_classifier(
         n_chans=22,n_times=1001,n_outs=2)
+    cnn_ncp_net.train_split = None
+    cnn_ncp_net.max_epochs = 100
+    cnn_ncp_net.callbacks = []#[EpochScoring('accuracy', lower_is_better=False, name='train_acc')]
     run_baseline(subject_list, cnn_ncp_net, "cnn_ncp")
 
 if __name__ == "__main__":

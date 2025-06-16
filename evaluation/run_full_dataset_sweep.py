@@ -56,9 +56,9 @@ def run_model_sweep(
     # Use all subjects in the dataset
     dataset = BNCI2014_001()
 
-    single_subject = True
-    if single_subject:
-        dataset.subject_list = [1]
+    # single_subject = True
+    # if single_subject:
+    #     dataset.subject_list = [1]
 
     evaluation = WithinSessionEvaluation(
         paradigm=paradigm,
