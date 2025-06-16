@@ -79,7 +79,7 @@ def run_model_sweep(
                 param_grid=param_grid,
                 cv=3,
                 scoring='roc_auc',
-                n_jobs=1,#4,
+                n_jobs=4,
                 return_train_score=True,
                 verbose=10
             )
