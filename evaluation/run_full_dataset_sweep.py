@@ -163,6 +163,10 @@ def run_model_sweep_cnn_ncp():
         n_outs=2
     )
 
+    cnn_ncp_pipeline.train_split = None
+    cnn_ncp_pipeline.max_epochs = 100
+    cnn_ncp_pipeline.callbacks = []
+
     cnn_ncp_param_grid = {
         "module__ncp_hidden_dim": [19, 24],
         "module__sparsity": [0.6, 0.8],
