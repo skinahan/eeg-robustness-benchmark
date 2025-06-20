@@ -1,0 +1,18 @@
+# === Channel Dropout Augmentation ===
+drop_prob: 0.25  # Probability to drop each channel
+channel_drop: !new:speechbrain.augment.time_domain.ChannelDrop
+    drop_prob: !ref <drop_prob>
+    drop_rand: True  # Randomize dropped channels across samples
+    drop_val: 0.0    # Replace dropped channels with zero
+    drop_replace: True  # Actively replace with drop_val
+
+# === Augmenter Wrapper ===
+augment: !new:speechbrain.augment.augmenter.Augmenter
+    parallel_augment: False
+    concat_original: True
+    parallel_augment_fixed_bs: False
+    repeat_augment: 1
+    shuffle_augmentations: False
+    min_augmentations: 1
+    max_augmentations: 1
+    augmentations: [!ref <channel_drop>]
