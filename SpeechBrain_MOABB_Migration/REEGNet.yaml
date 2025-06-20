@@ -88,7 +88,6 @@ lstm_hidden_size: 16
 sfreq: 250  # Sampling frequency
 n_outputs: 4  # For MI task in BNCI2014001 (Left, Right, Feet, Tongue)
 weight_decay: 0.0001
-device: !ref <device>
 
 # Epochs
 number_of_epochs: 200
