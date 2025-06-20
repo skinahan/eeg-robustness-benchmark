@@ -106,7 +106,7 @@ scheduler: !name:torch.optim.lr_scheduler.ReduceLROnPlateau
 dims_to_normalize: 1 # 1 (time) or 2 (EEG channels)
 normalize: !name:speechbrain.processing.signal_processing.mean_std_norm
     dims: !ref <dims_to_normalize>
-model: !new:models.reegnet.reegnet
+model: !new:models.reegnet.REEGNet
     n_chans: !ref <C>
     n_times: !ref <T>
     n_outputs: !ref <n_outputs>
