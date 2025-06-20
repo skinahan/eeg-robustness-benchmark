@@ -6,7 +6,7 @@ import time
 from datetime import datetime
 
 from config import MODEL_REGISTRY
-from globals import set_seeds
+from globals import set_seeds, get_seed
 
 # dynamically set the project root as the module search path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -130,13 +130,13 @@ def run_model_sweep_eegnet():
         "optimizer__lr": [1e-4, 5e-4],
         "batch_size": [16, 32]
     }
-
+    seed = get_seed()
     run_model_sweep(
         model_name="EEGNetv4+MotorImagery",
         model_pipeline=eegnet_pipeline,
         param_grid=eegnet_param_grid,
         hdf5_path="checkpoints/eegnet_tuned_subjects_all.h5",
-        output_csv="results/eegnet_tuned_subjects_all.csv"
+        output_csv=f"results/eegnet_tuned_subjects_all_seed{seed}.csv"
     )
 
 def run_model_sweep_reegnet():
@@ -156,13 +156,13 @@ def run_model_sweep_reegnet():
         "optimizer__lr": [1e-3, 1e-4],
         "batch_size": [16, 32]
     }
-
+    seed = get_seed()
     run_model_sweep(
         model_name="REEGNetv4+MotorImagery",
         model_pipeline=reegnet_pipeline,
         param_grid=reegnet_param_grid,
         hdf5_path="checkpoints/reegnet_tuned_subjects_all.h5",
-        output_csv="results/reegnet_tuned_subjects_all.csv"
+        output_csv=f"results/reegnet_tuned_subjects_all_seed{seed}.csv"
     )
 
 def run_model_sweep_cnn_ncp():
@@ -184,13 +184,13 @@ def run_model_sweep_cnn_ncp():
         "optimizer__lr": [1e-3, 1e-4],
         "batch_size": [16, 32]
     }
-
+    seed = get_seed()
     run_model_sweep(
         model_name="CNN_NCP+MotorImagery",
         model_pipeline=cnn_ncp_pipeline,
         param_grid=cnn_ncp_param_grid,
         hdf5_path="checkpoints/cnn_ncp_tuned_subjects_all.h5",
-        output_csv="results/cnn_ncp_tuned_subjects_all.csv"
+        output_csv=f"results/cnn_ncp_tuned_subjects_all_seed{seed}.csv"
     )
 
 
