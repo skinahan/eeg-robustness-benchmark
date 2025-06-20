@@ -61,6 +61,8 @@ lr: 0.0001 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
 max_lr: !ref <lr> # Upper bound of the cycle (max value of the lr)
 base_lr: 0.00000001 # Lower bound in the cycle (min value of the lr)
 step_size_multiplier: 5 #from 2 to 8
+batch_size_exponent: 4 # @orion_step1: --batch_size_exponent~"uniform(4, 6,discrete=True)"
+batch_size: !ref 2 ** <batch_size_exponent>
 step_size: !apply:round
   - !apply:operator.truediv
     - !apply:operator.mul
@@ -79,8 +81,7 @@ optimizer: !name:torch.optim.Adam
     lr: !ref <lr>
 epoch_counter: !new:speechbrain.utils.epoch_loop.EpochCounter  # epoch counter
     limit: !ref <number_of_epochs>
-batch_size_exponent: 4 # @orion_step1: --batch_size_exponent~"uniform(4, 6,discrete=True)"
-batch_size: !ref 2 ** <batch_size_exponent>
+
 valid_ratio: 0.2
 drop_prob: 0.15
 lstm_hidden_size: 16
