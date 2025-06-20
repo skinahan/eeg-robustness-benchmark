@@ -121,6 +121,9 @@ def run_model_sweep_eegnet():
         n_times=1001,
         n_outputs=2
     )
+    eegnet_pipeline.train_split = None
+    eegnet_pipeline.max_epochs = 100
+    eegnet_pipeline.callbacks = []
 
     eegnet_param_grid = {
         "module__drop_prob": [0.1, 0.15],
@@ -143,6 +146,9 @@ def run_model_sweep_reegnet():
         n_times=1001,
         n_outputs=2
     )
+    reegnet_pipeline.train_split = None
+    reegnet_pipeline.max_epochs = 100
+    reegnet_pipeline.callbacks = []
 
     reegnet_param_grid = {
         "module__drop_prob": [0.1, 0.15],
@@ -170,7 +176,7 @@ def run_model_sweep_cnn_ncp():
     cnn_ncp_pipeline.train_split = None
     cnn_ncp_pipeline.max_epochs = 100
     cnn_ncp_pipeline.callbacks = []
-    cnn_ncp_pipeline.verbose = 0
+    # cnn_ncp_pipeline.verbose = 0
 
     cnn_ncp_param_grid = {
         "module__ncp_hidden_dim": [19, 24],
@@ -199,7 +205,7 @@ if __name__ == "__main__":
         run_model_sweep_eegnet()
     elif args.model == "reegnet":
         run_model_sweep_reegnet()
-    elif args.model == "cnnncp":
+    elif args.model == "cnn_ncp":
         run_model_sweep_cnn_ncp()
     warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
 
