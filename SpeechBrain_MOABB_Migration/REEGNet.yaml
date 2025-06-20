@@ -50,20 +50,36 @@ metrics:
     cm: !ref <cm>
 
 # Training HPARS
+n_train_examples: 100  # it will be replaced in the train script
+# checkpoints to average
+avg_models: 10 # @orion_step1: --avg_models~"uniform(1, 15,discrete=True)"
+lr: 0.0001 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
+# Learning rate scheduling (cyclic learning rate is used here)
+max_lr: !ref <lr> # Upper bound of the cycle (max value of the lr)
+base_lr: 0.00000001 # Lower bound in the cycle (min value of the lr)
+step_size_multiplier: 5 #from 2 to 8
+step_size: !apply:round
+    - !ref <step_size_multiplier> * <n_train_examples> / <batch_size>
+lr_annealing: !new:speechbrain.nnet.schedulers.CyclicLRScheduler
+    base_lr: !ref <base_lr>
+    max_lr: !ref <max_lr>
+    step_size: !ref <step_size>
+label_smoothing: 0.0
+loss: !name:speechbrain.nnet.losses.nll_loss
+    label_smoothing: !ref <label_smoothing>
+optimizer: !name:torch.optim.Adam
+    lr: !ref <lr>
+epoch_counter: !new:speechbrain.utils.epoch_loop.EpochCounter  # epoch counter
+    limit: !ref <number_of_epochs>
+batch_size_exponent: 4 # @orion_step1: --batch_size_exponent~"uniform(4, 6,discrete=True)"
+batch_size: !ref 2 ** <batch_size_exponent>
+valid_ratio: 0.2
 drop_prob: 0.15
 lstm_hidden_size: 16
 sfreq: 250  # Sampling frequency
 n_outputs: 4  # For MI task in BNCI2014001 (Left, Right, Feet, Tongue)
-lr: 0.001
 weight_decay: 0.0001
-output_folder: !ref <output_folder>
-seed: !ref <seed>
 device: !ref <device>
-optimizer: !name:torch.optim.Adam
-    lr: !ref <lr>
-    weight_decay: !ref <weight_decay>
-# Loss function
-loss: !name:speechbrain.nnet.losses.nll_loss
 
 # Epochs
 number_of_epochs: 200
@@ -72,28 +88,9 @@ scheduler: !name:torch.optim.lr_scheduler.ReduceLROnPlateau
     patience: 30
     verbose: False
 
-# --------------------
-# Data Parameters
-# --------------------
-train_mode: leave-one-session-out
-data_iterator_name: leave-one-session-out
-eval_metric: acc
-eval_set: test
-preprocessing:
-  - !new:speechbrain.dataio.preprocess.Normalize
-
-# --------------------
-# Saving and Logging
-# --------------------
-save_folder: !ref <output_folder>/<seed>
-checkpoints_dir: !ref <save_folder>/save
-train_log: !ref <save_folder>/train_log.txt
-valid_metrics: !ref <save_folder>/valid_metrics.pkl
-test_metrics: !ref <save_folder>/test_metrics.pkl
-
-# --------------------
-# Model Configuration
-# --------------------
+dims_to_normalize: 1 # 1 (time) or 2 (EEG channels)
+normalize: !name:speechbrain.processing.signal_processing.mean_std_norm
+    dims: !ref <dims_to_normalize>
 model: !new:models.reegnet.reegnet
     n_chans: !ref <C>
     n_times: !ref <T>
