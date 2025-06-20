@@ -49,7 +49,7 @@ def run_baseline(subject_list, model, model_name):
     )
 
     results = evaluation.process({f"{model_name}+MotorImagery": model})
-    out_path = f"results/{model_name}_baseline_subjects{subject_list[0]}-{subject_list[-1]}-seed{RAND_SEED}.csv"
+    out_path = f"results/{model_name}_baseline_subjects{subject_list[0]}-{subject_list[-1]}-seed{seed}.csv"
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     results.to_csv(out_path, index=False)
     print(f"Saved subject sweep results to {out_path}")
@@ -61,11 +61,17 @@ def run_baseline_reegnet(subject_list):
         n_times=1001,
         n_outputs=2
     )
+    reegnet.train_split=None
+    reegnet.callbacks = []
+    reegnet.max_epochs=100
     run_baseline(subject_list, reegnet, "reegnet")
 
 def run_baseline_eegnet(subject_list):
     eegnet = create_eegnet_classifier(
         n_chans=22,n_times=1001,n_outputs=2)
+    eegnet.train_split = None
+    eegnet.max_epochs = 100
+    eegnet.callbacks = []
     run_baseline(subject_list, eegnet, "eegnet")
 
 def run_baseline_cnn_ncp(subject_list):
@@ -86,10 +92,10 @@ if __name__ == "__main__":
     set_seeds(seed)
     subject_list = range(1,10)
     if args.model == "eegnet":
-        run_baseline_eegnet(subject_list)
+        run_baseline_eegnet(subject_list=subject_list)
     elif args.model == "reegnet":
         run_baseline_reegnet(subject_list=subject_list)
-    elif args.model == "cnnncp":
+    elif args.model == "cnn_ncp":
         run_baseline_cnn_ncp(subject_list=subject_list)
     # Record end time
     end_time = time.time()

@@ -282,7 +282,7 @@ def create_cnnncp_classifier(
           EarlyStopping(patience=40, monitor='valid_loss'),
           LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=30)
       ],
-      # verbose=0  # Suppress epoch-level output
+      verbose=0  # Suppress epoch-level output
   )
   if torch.cuda.is_available():
       cnn_ncp_net.initialize()

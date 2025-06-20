@@ -170,6 +170,7 @@ def run_model_sweep_cnn_ncp():
     cnn_ncp_pipeline.train_split = None
     cnn_ncp_pipeline.max_epochs = 100
     cnn_ncp_pipeline.callbacks = []
+    cnn_ncp_pipeline.verbose = 0
 
     cnn_ncp_param_grid = {
         "module__ncp_hidden_dim": [19, 24],
