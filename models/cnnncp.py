@@ -43,6 +43,7 @@ class CNNNCPv2(EEGModuleMixin, nn.Module):
           input_window_seconds=None,
           sfreq=None,
       )
+      seed = get_seed()
       # Ensure input dimensions [batch_size, 1, n_chans, n_times]
       self.ensure4d = Ensure4d()
       kernel_length = 128
@@ -87,7 +88,7 @@ class CNNNCPv2(EEGModuleMixin, nn.Module):
           ncp_hidden_dim,
           ncp_out_size,
           sparsity_level=sparsity,
-          seed=SEED
+          seed=seed
       )  # Wiring configuration for NCP
 
       self.ncp = CfC(

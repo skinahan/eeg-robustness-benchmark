@@ -37,7 +37,7 @@ from globals import set_seeds, get_seed
 
 def run_baseline(subject_list, model, model_name):
     dataset = BNCI2014_001()
-    dataset.subject_list = subject_list
+    # dataset.subject_list = subject_list
     seed = get_seed()
     paradigm = DEFAULT_PARADIGM
 
