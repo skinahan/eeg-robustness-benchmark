@@ -195,7 +195,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     seed = args.seed
     set_seeds(seed)
-    subject_list = range(1, 10)
+    subject_list = range(0, 10)
     if args.model == "eegnet":
         run_model_sweep_eegnet()
     elif args.model == "reegnet":

@@ -164,7 +164,7 @@ if __name__ == "__main__":
     set_seeds(args.seed)
     param_grid = get_param_grid(args.model)
     print("Using param grid: {}".format(param_grid))
-    subjects = list(range(1,10))
+    subjects = list(range(0,10))
     model_fn = MODEL_REGISTRY[args.model]
     run_evaluation(
         model_fn=model_fn,

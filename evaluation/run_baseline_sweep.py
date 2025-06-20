@@ -90,7 +90,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     seed = args.seed
     set_seeds(seed)
-    subject_list = range(1,10)
+    subject_list = range(0,10)
     if args.model == "eegnet":
         run_baseline_eegnet(subject_list=subject_list)
     elif args.model == "reegnet":
