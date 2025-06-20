@@ -1,1 +1,9 @@
+ # EEGNet
+baseline
+sbatch ./run_experiments.sh --hparams hparams/MotorImagery/BNCI2014001/EEGNet.yaml --data_folder /home/skinahan/mne_data --output_folder /home/skinahan/eeg_research/eeg-noise-robustness/results/SB_MOABB/MotorImagery/BNCI2014001/EEGNet/ --cached_data_folder /home/skinahan/eeg_research/eeg-noise-robustness/SpeechBrain_MOABB_Migration/eeg_cache/ --nsbj 9 --nsess 2 --nruns 5 --train_mode leave-one-session-out --device cuda
+hp_opt
 sbatch ./run_hparam_optimization.sh --exp_name 'EEGNet_BNCI2014001_hopt' --hparams hparams/MotorImagery/BNCI2014001/EEGNet.yaml --data_folder /home/skinahan/mne_data --output_folder /home/skinahan/eeg_research/eeg-noise-robustness/results/SB_MOABB/MotorImagery/BNCI2014001/EEGNet/hopt --cached_data_folder /home/skinahan/eeg_research/eeg-noise-robustness/SpeechBrain_MOABB_Migration/eeg_cache/ --nsbj 9 --nsess 2 --nsbj_hpsearch 3 --nsess_hpsearch 2 --nruns 1 --nruns_eval 10 --eval_metric acc --train_mode leave-one-session-out --exp_max_trials 50 --device cuda
+
+# REEGNet 
+baseline
+sbatch ./run_experiments.sh --hparams hparams/MotorImagery/BNCI2014001/REEGNet.yaml --data_folder /home/skinahan/mne_data --output_folder /home/skinahan/eeg_research/eeg-noise-robustness/results/SB_MOABB/MotorImagery/BNCI2014001/REEGNet/ --cached_data_folder /home/skinahan/eeg_research/eeg-noise-robustness/SpeechBrain_MOABB_Migration/eeg_cache/ --nsbj 9 --nsess 2 --nruns 5 --train_mode leave-one-session-out --device cuda
