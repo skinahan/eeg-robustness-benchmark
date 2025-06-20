@@ -18,7 +18,7 @@ DEFAULT_PARADIGM = MotorImagery(
         resample=None,
         n_classes=2
     )
-
+DEFAULT_SEED = 42
 # Registered models
 def get_model_registry():
     return {

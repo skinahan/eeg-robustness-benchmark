@@ -31,10 +31,13 @@ from models.cnnncp import create_cnnncp_classifier
 from config import DEFAULT_PARADIGM
 import torch.cuda
 
+from globals import set_seeds, get_seed
+
+
 def run_baseline(subject_list, model, model_name):
     dataset = BNCI2014_001()
     dataset.subject_list = subject_list
-
+    seed = get_seed()
     paradigm = DEFAULT_PARADIGM
 
     evaluation = WithinSessionEvaluation(
@@ -45,7 +48,7 @@ def run_baseline(subject_list, model, model_name):
     )
 
     results = evaluation.process({f"{model_name}+MotorImagery": model})
-    out_path = f"results/{model_name}_baseline_subjects{subject_list[0]}-{subject_list[-1]}.csv"
+    out_path = f"results/{model_name}_baseline_subjects{subject_list[0]}-{subject_list[-1]}-seed{RAND_SEED}.csv"
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     results.to_csv(out_path, index=False)
     print(f"Saved subject sweep results to {out_path}")

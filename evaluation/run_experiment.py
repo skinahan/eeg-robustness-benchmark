@@ -27,6 +27,7 @@ from moabb.evaluations import WithinSessionEvaluation
 from config import MODEL_REGISTRY
 from augmentation.noise import EEGNoiseAugmentor, TrainOnlyNoiseClassifier
 
+from globals import set_seeds
 
 def run_evaluation(
     model_fn,
@@ -110,7 +111,7 @@ def run_evaluation(
             })
 
     # Output file naming
-    label = f"{model_name}"
+    label = f"{model_name}_seed{RAND_SEED}"
     if noise_type:
         label += f"_{noise_type}_{intensity}"
     out_path = f"results/{label}.csv"
@@ -157,12 +158,15 @@ if __name__ == "__main__":
     parser.add_argument("--model", type=str, choices=list(MODEL_REGISTRY.keys()), required=True)
     parser.add_argument("--noise_type", type=str, default=None, choices=['dropout', 'gaussian', 'eog'])
     parser.add_argument("--intensity", type=float, default=None)
+    parser.add_argument("--seed", type=int, default=42, required=True)
     # parser.add_argument("--subjects", type=int, nargs="*", default=None)
 
     args = parser.parse_args()
 
     # Example param_grid for EEGNet/REEGNet (can be adapted per model)
     # Use the selected param grid
+    set_seeds(args.seed)
+
     param_grid = get_param_grid(args.model)
     print("Using param grid: {}".format(param_grid))
     subjects = list(range(1,10))

@@ -1,6 +1,6 @@
 from skorch.dataset import ValidSplit
-from globals import RAND_SEED
-from utils import set_seeds
+from globals import set_seeds
+from globals import get_seed
 from skorch.callbacks import EarlyStopping, LRScheduler
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from braindecode import EEGClassifier
@@ -11,8 +11,6 @@ from torch import nn
 from ncps.torch import LTC, CfC
 from ncps.wirings import AutoNCP
 from einops.layers.torch import Rearrange
-
-SEED = RAND_SEED
 
 
 class Conv2dWithConstraint(nn.Conv2d):
@@ -258,14 +256,13 @@ def create_cnnncp_classifier(
         batch_size=32,
         weight_decay=0.0#1e-3
 ):
-  set_seeds(SEED)
-
   if net_size <= n_outs + 2:
       new_net_size = n_outs + 3
       print("WARNING: CNN-NCP: TOO FEW UNITS.")
       print(f"Changing net_size to {new_net_size}")
       net_size = new_net_size
 
+  seed = get_seed()
   cnn_ncp_net = EEGClassifier(
       CNNNCPv2,
       criterion=torch.nn.CrossEntropyLoss,
@@ -279,7 +276,7 @@ def create_cnnncp_classifier(
       module__n_outputs=n_outs,
       module__ncp_hidden_dim=net_size,
       module__sparsity=net_sparsity,
-      train_split=ValidSplit(0.2, stratified=True, random_state=42),
+      train_split=ValidSplit(0.2, stratified=True, random_state=seed),
       device='cuda' if torch.cuda.is_available() else 'cpu',
       callbacks=[
           EarlyStopping(patience=40, monitor='valid_loss'),

@@ -184,6 +184,7 @@ def run_model_sweep_cnn_ncp():
 
 
 if __name__ == "__main__":
+    set_seeds(RAND_SEED)
     warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
     # run_model_sweep_eegnet()
     # run_model_sweep_reegnet()
