@@ -6,7 +6,8 @@ from braindecode.util import set_random_seeds
 RAND_SEED = 42
 
 def set_seeds(seed_num):
-    globals.RAND_SEED = seed_num
+    global RAND_SEED
+    RAND_SEED = seed_num
     """Ensure full reproducibility for PyTorch, NumPy, and random operations."""
     cuda = torch.cuda.is_available()
     set_random_seeds(seed_num, cuda)
