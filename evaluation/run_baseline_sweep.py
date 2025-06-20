@@ -1,3 +1,4 @@
+import argparse
 import sys
 import os
 import time
@@ -28,7 +29,7 @@ from models.eegnet import create_eegnet_classifier
 from models.reegnet import create_reegnet_classifier
 from models.cnnncp import create_cnnncp_classifier
 
-from config import DEFAULT_PARADIGM
+from config import DEFAULT_PARADIGM, MODEL_REGISTRY
 import torch.cuda
 
 from globals import set_seeds, get_seed
@@ -76,11 +77,20 @@ def run_baseline_cnn_ncp(subject_list):
     run_baseline(subject_list, cnn_ncp_net, "cnn_ncp")
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Run MOABB experiment with no hyp tuning.")
+    parser.add_argument("--model", type=str, choices=list(MODEL_REGISTRY.keys()), required=True)
+    parser.add_argument("--seed", type=int, default=42, required=True)
     warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
+    args = parser.parse_args()
+    seed = args.seed
+    set_seeds(seed)
     subject_list = range(1,10)
-    #run_baseline_eegnet(subject_list)
-    # run_baseline_reegnet(subject_list=subject_list)
-    run_baseline_cnn_ncp([1])
+    if args.model == "eegnet":
+        run_baseline_eegnet(subject_list)
+    elif args.model == "reegnet":
+        run_baseline_reegnet(subject_list=subject_list)
+    elif args.model == "cnnncp":
+        run_baseline_cnn_ncp(subject_list=subject_list)
     # Record end time
     end_time = time.time()
     print(f"Script ended at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")

@@ -1,8 +1,12 @@
 # evaluation/run_full_dataset_sweep.py
+import argparse
 import sys
 import os
 import time
 from datetime import datetime
+
+from config import MODEL_REGISTRY
+from globals import set_seeds
 
 # dynamically set the project root as the module search path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -184,11 +188,20 @@ def run_model_sweep_cnn_ncp():
 
 
 if __name__ == "__main__":
-    set_seeds(RAND_SEED)
+    parser = argparse.ArgumentParser(description="Run MOABB experiment with no hyp tuning.")
+    parser.add_argument("--model", type=str, choices=list(MODEL_REGISTRY.keys()), required=True)
+    parser.add_argument("--seed", type=int, default=42, required=True)
+    args = parser.parse_args()
+    seed = args.seed
+    set_seeds(seed)
+    subject_list = range(1, 10)
+    if args.model == "eegnet":
+        run_model_sweep_eegnet()
+    elif args.model == "reegnet":
+        run_model_sweep_reegnet()
+    elif args.model == "cnnncp":
+        run_model_sweep_cnn_ncp()
     warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
-    # run_model_sweep_eegnet()
-    # run_model_sweep_reegnet()
-    run_model_sweep_cnn_ncp()
 
     # Record end time
     end_time = time.time()

@@ -160,13 +160,8 @@ if __name__ == "__main__":
     parser.add_argument("--intensity", type=float, default=None)
     parser.add_argument("--seed", type=int, default=42, required=True)
     # parser.add_argument("--subjects", type=int, nargs="*", default=None)
-
     args = parser.parse_args()
-
-    # Example param_grid for EEGNet/REEGNet (can be adapted per model)
-    # Use the selected param grid
     set_seeds(args.seed)
-
     param_grid = get_param_grid(args.model)
     print("Using param grid: {}".format(param_grid))
     subjects = list(range(1,10))
