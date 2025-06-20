@@ -32,7 +32,12 @@ tmax: 4.0 # @orion_step1: --tmax~"uniform(1.0, 4.0, precision=2)"
 # number of steps used when selecting adjacent channels from a seed channel (default at Cz)
 n_steps_channel_selection: 2 # @orion_step1: --n_steps_channel_selection~"uniform(1, 3,discrete=True)"
 T: !apply:math.ceil
-    - !ref <sample_rate> * (<tmax> - <tmin>)
+  - !apply:operator.mul
+    - !ref <sample_rate>
+    - !apply:operator.sub
+      - !ref <tmax>
+      - !ref <tmin>
+
 C: 22
 # We here specify how to perfom test:
 # - If test_with: 'last' we perform test with the latest model.
@@ -62,7 +67,9 @@ max_lr: !ref <lr> # Upper bound of the cycle (max value of the lr)
 base_lr: 0.00000001 # Lower bound in the cycle (min value of the lr)
 step_size_multiplier: 5 #from 2 to 8
 batch_size_exponent: 4 # @orion_step1: --batch_size_exponent~"uniform(4, 6,discrete=True)"
-batch_size: !ref 2 ** <batch_size_exponent>
+batch_size: !apply:operator.pow
+  - 2
+  - !ref <batch_size_exponent>
 step_size: !apply:round
   - !apply:operator.truediv
     - !apply:operator.mul
