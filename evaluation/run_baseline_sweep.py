@@ -62,8 +62,8 @@ def run_baseline_reegnet(subject_list):
         n_outputs=2
     )
     reegnet.train_split=None
+    reegnet.max_epochs = 100
     reegnet.callbacks = []
-    reegnet.max_epochs=100
     run_baseline(subject_list, reegnet, "reegnet")
 
 def run_baseline_eegnet(subject_list):

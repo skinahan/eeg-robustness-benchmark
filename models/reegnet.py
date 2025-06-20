@@ -11,6 +11,9 @@ from typing import Optional
 from sklearn.base import TransformerMixin, BaseEstimator
 import numpy as np
 
+from globals import get_seed
+
+
 class To4DArray(TransformerMixin, BaseEstimator):
     """
     Turn X of shape (n_samples, n_chans, n_times)
@@ -127,6 +130,7 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
 
 
 def create_reegnet_classifier(n_chans=22, n_times=1001, n_outputs=2):
+    seed = get_seed()
     return EEGClassifier(
         REEGNet,
         criterion=torch.nn.CrossEntropyLoss,
@@ -138,12 +142,12 @@ def create_reegnet_classifier(n_chans=22, n_times=1001, n_outputs=2):
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
-        train_split=ValidSplit(0.2, stratified=True, random_state=42),
+        train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device= 'cuda' if torch.cuda.is_available() else 'cpu',
         callbacks=[
             EarlyStopping(patience=40, monitor='valid_loss'),
             LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=30)
         ],
-        verbose=0  # Suppress epoch-level output
+        # verbose=0  # Suppress epoch-level output
     )
 
