@@ -2,9 +2,8 @@ import os
 import torch
 import numpy as np
 from braindecode.util import set_random_seeds
-from config import DEFAULT_SEED
 
-RAND_SEED = DEFAULT_SEED
+RAND_SEED = 42
 
 def set_seeds(seed_num):
     globals.RAND_SEED = seed_num

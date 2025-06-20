@@ -5,10 +5,10 @@ from skorch.dataset import ValidSplit
 from skorch.callbacks import EarlyStopping, LRScheduler
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
-from config import DEFAULT_SEED
+from globals import get_seed
 
 
-def create_eegnet_classifier(n_chans, n_times, n_outputs, seed=DEFAULT_SEED):
+def create_eegnet_classifier(n_chans, n_times, n_outputs, seed=get_seed()):
     """
     Return a configured EEGClassifier using EEGNetv4.
 
