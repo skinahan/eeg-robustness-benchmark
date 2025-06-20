@@ -1,0 +1,54 @@
+# --------------------
+# Model Configuration
+# --------------------
+model: !new:models.cnnp.CNNNCPv2
+# Ensure CNNNCPv2 is defined in: speechbrain/benchmarks/MOABB/models/cnnp.py
+
+# Model hyperparameters
+ncp_hidden_dim: 16        # Matches REEGNet and previous experiments
+sparsity: 0.80            # Adjust based on tuning
+sfreq: 250                # Sampling frequency
+n_outputs: 4              # Motor imagery has 4 classes
+
+# --------------------
+# Training Parameters
+# --------------------
+output_folder: !ref <output_folder>
+seed: !ref <seed>
+device: !ref <device>
+
+# Optimization
+lr: 0.001
+weight_decay: 0.0001
+optimizer: !name:torch.optim.AdamW
+    lr: !ref <lr>
+    weight_decay: !ref <weight_decay>
+
+# Loss function
+loss: !name:torch.nn.CrossEntropyLoss
+
+# Epochs and callbacks
+number_of_epochs: 200
+patience: 40
+scheduler: !name:torch.optim.lr_scheduler.ReduceLROnPlateau
+    patience: 30
+    verbose: False
+
+# --------------------
+# Data Parameters
+# --------------------
+train_mode: leave-one-session-out
+data_iterator_name: leave-one-session-out
+eval_metric: acc
+eval_set: test
+preprocessing:
+  - !new:speechbrain.dataio.preprocess.Normalize
+
+# --------------------
+# Saving and Logging
+# --------------------
+save_folder: !ref <output_folder>/<seed>
+checkpoints_dir: !ref <save_folder>/save
+train_log: !ref <save_folder>/train_log.txt
+valid_metrics: !ref <save_folder>/valid_metrics.pkl
+test_metrics: !ref <save_folder>/test_metrics.pkl
