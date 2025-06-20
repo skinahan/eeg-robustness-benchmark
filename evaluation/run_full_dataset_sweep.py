@@ -5,9 +5,6 @@ import os
 import time
 from datetime import datetime
 
-from config import MODEL_REGISTRY
-from globals import set_seeds, get_seed
-
 # dynamically set the project root as the module search path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
@@ -30,6 +27,9 @@ from sklearn.model_selection import GridSearchCV
 from moabb.datasets import BNCI2014_001
 from moabb.paradigms import MotorImagery
 from moabb.evaluations import WithinSessionEvaluation
+
+from config import MODEL_REGISTRY
+from globals import set_seeds, get_seed
 
 from models.eegnet import create_eegnet_classifier
 from models.reegnet import create_reegnet_classifier
