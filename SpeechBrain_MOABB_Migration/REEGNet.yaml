@@ -106,9 +106,16 @@ scheduler: !name:torch.optim.lr_scheduler.ReduceLROnPlateau
 dims_to_normalize: 1 # 1 (time) or 2 (EEG channels)
 normalize: !name:speechbrain.processing.signal_processing.mean_std_norm
     dims: !ref <dims_to_normalize>
-model: !new:models.reegnet.REEGNet
+
+# MODEL
+input_shape: [null, !ref <T>, !ref <C>, null]
+
+braindecode_model: !new:models.reegnet.REEGNet
+    n_outputs: !ref <n_classes>
     n_chans: !ref <C>
     n_times: !ref <T>
-    n_outputs: !ref <n_outputs>
     drop_prob: !ref <drop_prob>
     lstm_hidden_size: !ref <lstm_hidden_size>
+
+model: !new:models.BraindecodeNN.BraindecodeNN
+    model: !ref <braindecode_model>
