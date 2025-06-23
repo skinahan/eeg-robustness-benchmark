@@ -80,11 +80,17 @@ def aggregate_results(input_dir):
                 noise_type = None
                 noise_level = None
 
+            seed = None
+            if 'seed' in file.lower():
+                seed = int(file.split('seed')[-1].replace('.csv', ''))
+
             # Add metadata columns
             df['model'] = model
             df['noise_type'] = noise_type
             df['noise_level'] = noise_level
             df['tuned'] = tuned
+            if seed is not None:
+                df['seed'] = seed
 
             if not tuned:
                 # Add default hyperparameters
