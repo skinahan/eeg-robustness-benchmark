@@ -46,8 +46,9 @@ def aggregate_results(input_dir):
     }
 
     aggregated_dfs = []
-
+    listDir = os.listdir(input_dir)
     for file in os.listdir(input_dir):
+
         if file.endswith(".csv"):
             file_path = os.path.join(input_dir, file)
             df = pd.read_csv(file_path)
@@ -82,7 +83,11 @@ def aggregate_results(input_dir):
 
             seed = None
             if 'seed' in file.lower():
-                seed = int(file.split('seed')[-1].replace('.csv', ''))
+                seed_str = file.split('seed')[-1].replace('.csv', '')
+                if '_' in seed_str:
+                    seed_str = seed_str.split('_')[0]
+                seed = int(seed_str)
+
 
             # Add metadata columns
             df['model'] = model

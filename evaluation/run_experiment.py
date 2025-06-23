@@ -111,9 +111,9 @@ def run_evaluation(
             })
 
     # Output file naming
-    label = f"{model_name}_seed{seed}"
+    label = f"{model_name}"
     if noise_type:
-        label += f"_{noise_type}_{intensity}"
+        label += f"_{noise_type}_{intensity}_seed{seed}"
     out_path = f"results/{label}.csv"
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
 
