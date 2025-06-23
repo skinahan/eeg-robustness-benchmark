@@ -33,7 +33,7 @@ class CNNNCPv2(EEGModuleMixin, nn.Module):
           n_outputs,
           ncp_hidden_dim=32,
           cnn_output_dim=16,  # Matches EEGNet feature extractor's output
-          sparsity=0.8,
+          sparsity=0.75,
           drop_prob=float(0.15),
   ):
       super().__init__(
@@ -75,8 +75,8 @@ class CNNNCPv2(EEGModuleMixin, nn.Module):
           nn.ELU(),
 
           # 3. Average Pooling:
-          nn.AvgPool2d((1, pool1_kernel_size), stride=(1, pool1_stride_size)),
-          # nn.AvgPool2d((1, 16), stride=(1, 8)),
+          # nn.AvgPool2d((1, pool1_kernel_size), stride=(1, pool1_stride_size)),
+          nn.AvgPool2d((1, 16), stride=(1, 8)),
           # 4. Dropout:
           nn.Dropout(p=drop_prob),
       )
@@ -252,7 +252,7 @@ def create_cnnncp_classifier(
         n_times,
         n_outs,
         net_size=19,
-        net_sparsity=0.8,
+        net_sparsity=0.75,
         lr=1e-3,
         batch_size=32,
         weight_decay=0.0#1e-3
@@ -288,5 +288,6 @@ def create_cnnncp_classifier(
   if torch.cuda.is_available():
       cnn_ncp_net.initialize()
       cnn_ncp_net.module_.cuda()
+      cnn_ncp_net.module_ = torch.compile(cnn_ncp_net.module_)
 
   return cnn_ncp_net
