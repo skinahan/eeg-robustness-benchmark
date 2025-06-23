@@ -32,11 +32,7 @@ tmax: 4.0 # @orion_step1: --tmax~"uniform(1.0, 4.0, precision=2)"
 # number of steps used when selecting adjacent channels from a seed channel (default at Cz)
 n_steps_channel_selection: 2 # @orion_step1: --n_steps_channel_selection~"uniform(1, 3,discrete=True)"
 T: !apply:math.ceil
-  - !apply:operator.mul
-    - !ref <sample_rate>
-    - !apply:operator.sub
-      - !ref <tmax>
-      - !ref <tmin>
+  - 125 * (4.0 - 1.0)
 
 C: 22
 # We here specify how to perfom test:
