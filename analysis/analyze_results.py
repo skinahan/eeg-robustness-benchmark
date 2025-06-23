@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-
+import itertools
 
 def aggregate_results(input_dir):
     """
@@ -70,16 +70,17 @@ def aggregate_results(input_dir):
             noise_type, noise_level = None, None
             if '_dropout_' in file.lower():
                 noise_type = 'dropout'
-                noise_level = float(file.split('_dropout_')[-1].replace('.csv', ''))
             elif '_gaussian_' in file.lower():
                 noise_type = 'gaussian'
-                noise_level = float(file.split('_gaussian_')[-1].replace('.csv', ''))
             elif '_eog_' in file.lower():
                 noise_type = 'eog'
-                noise_level = float(file.split('_eog_')[-1].replace('.csv', ''))
             else:
                 noise_type = None
                 noise_level = None
+
+            if noise_type is not None:
+                noise_level_str = file.split(f'_{noise_type}_')[-1].split('_')[0]
+                noise_level = float(noise_level_str.replace('.csv', ''))
 
             seed = None
             if 'seed' in file.lower():
@@ -313,10 +314,54 @@ def reegnet_plots(aggregated_df):
 def cnn_ncp_plots(aggregated_df):
     model_plots(aggregated_df, 'CNN_NCP')
 
+def run_completion_report(output_dir, aggregated_df):
+    # Define the combinations we want to check for
+    models = ["eegnet", "reegnet", "cnnncp"]
+    seeds = [100, 200, 300, 400, 500]
+    noise_types = ["dropout", "gaussian", "eog"]
+    noise_levels = list(range(10, 100, 10))
+
+    # Create all possible combinations
+    expected_configs = list(itertools.product(models, seeds, noise_types, noise_levels))
+
+    # Normalize columns in existing results
+    aggregated_df['noise_level'] = aggregated_df['noise_level'].astype('Int64')
+    aggregated_df['seed'] = aggregated_df['seed'].astype('Int64')
+    aggregated_df['model'] = aggregated_df['model'].str.lower()
+
+    # Deduplicate based on combinations
+    completed = aggregated_df.dropna(subset=['noise_type', 'noise_level', 'seed'])
+    completed = completed[['model', 'seed', 'noise_type', 'noise_level']].drop_duplicates()
+
+    # Check which expected configs are completed
+    summary = []
+    for model, seed, noise, level in expected_configs:
+        match = (
+                (completed['model'] == model)
+                & (completed['seed'] == seed)
+                & (completed['noise_type'] == noise)
+                & (completed['noise_level'] == level)
+        )
+        is_complete = match.any()
+        summary.append({
+            "model": model,
+            "seed": seed,
+            "noise_type": noise,
+            "noise_level": level,
+            "complete": "TRUE" if is_complete else "FALSE"
+        })
+
+    summary_df = pd.DataFrame(summary)
+
+    # Also save to disk
+    summary_df.to_csv(os.path.join(output_dir, "experiment_completion_report.csv"), index=False)
+
+
 if __name__ == '__main__':
     input_dir = '../sol_results/results'
     aggregated_df = aggregate_results(input_dir)
     aggregated_df.to_csv(os.path.join(input_dir, 'aggregated_results.csv'))
+    run_completion_report(input_dir, aggregated_df)
     # aggregated_df = pd.read_csv(os.path.join(input_dir, 'aggregated_results.csv'))
 
     eegnet_plots(aggregated_df)
