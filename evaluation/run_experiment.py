@@ -27,7 +27,7 @@ from moabb.evaluations import WithinSessionEvaluation
 from config import MODEL_REGISTRY
 from augmentation.noise import EEGNoiseAugmentor, TrainOnlyNoiseClassifier
 
-from globals import set_seeds
+from globals import set_seeds, get_seed
 
 def run_evaluation(
     model_fn,
@@ -41,7 +41,7 @@ def run_evaluation(
     dataset = BNCI2014_001()
     if subject_list is not None:
         dataset.subject_list = subject_list
-
+    seed = get_seed()
     paradigm = MotorImagery(
         events=["left_hand", "right_hand"],
         fmin=8,
@@ -62,7 +62,7 @@ def run_evaluation(
         base_pipeline=full_pipeline,
         noise_type=noise_type,
         intensity=intensity,
-        seed=42
+        seed=seed
     )
 
     # Evaluation setup
@@ -111,7 +111,7 @@ def run_evaluation(
             })
 
     # Output file naming
-    label = f"{model_name}_seed{RAND_SEED}"
+    label = f"{model_name}_seed{seed}"
     if noise_type:
         label += f"_{noise_type}_{intensity}"
     out_path = f"results/{label}.csv"
