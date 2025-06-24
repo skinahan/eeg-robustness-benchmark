@@ -73,8 +73,7 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
         self.dropout = nn.Dropout(p=drop_prob)
 
         # 5. LSTM expects input shape (B, seq_len, features).
-        # self.lstm = nn.LSTM(input_size=4, hidden_size=hidden_size, num_layers=2, batch_first=True)
-        self.lstm = nn.LSTM(input_size=-1, hidden_size=hidden_size, num_layers=2, batch_first=True)
+        self.lstm = nn.LSTM(input_size=4, hidden_size=hidden_size, num_layers=2, batch_first=True)
 
         # 6. Reshape LSTM output for the separable convolution.
 
@@ -107,9 +106,8 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
         x = self.dropout(x)
 
         # 4. Permutation and Reshaping for LSTM:
-        x = x.permute(0, 3, 2, 1)  # shape: (B, T, Channels, Filters)
-        B, T, C, F = x.shape
-        x = x.contiguous().view(B, T, C * F)  # Flatten all but time
+        x = x.permute(0, 3, 2, 1)
+        x = x.contiguous().view(x.shape[0], self.n_times-1, 4)
 
         # 5. LSTM:
         x, _ = self.lstm(x)
