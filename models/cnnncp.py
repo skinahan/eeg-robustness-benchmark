@@ -257,8 +257,8 @@ def create_cnnncp_classifier(
         batch_size=32,
         weight_decay=0.0#1e-3
 ):
-  if net_size <= n_outs + 2:
-      new_net_size = n_outs + 3
+  if net_size <= n_outputs + 2:
+      new_net_size = n_outputs + 3
       print("WARNING: CNN-NCP: TOO FEW UNITS.")
       print(f"Changing net_size to {new_net_size}")
       net_size = new_net_size
@@ -274,7 +274,7 @@ def create_cnnncp_classifier(
       max_epochs=200,
       module__n_chans=n_chans,
       module__n_times=n_times,
-      module__n_outputs=n_outs,
+      module__n_outputs=n_outputs,
       module__ncp_hidden_dim=net_size,
       module__sparsity=net_sparsity,
       train_split=ValidSplit(0.2, stratified=True, random_state=seed),

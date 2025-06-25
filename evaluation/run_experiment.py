@@ -151,9 +151,22 @@ def get_param_grid(model_name: str) -> Dict[str, Any]:
     })
 
 
+def manual_run(model, noise_type, intensity, seed):
+    subjects = list(range(1,10))
+    model_fn = MODEL_REGISTRY[model]
+    set_seeds(seed)
+    run_evaluation(
+        model_fn= model_fn,
+        model_name= model,
+        param_grid= get_param_grid(model),
+        noise_type= noise_type,
+        intensity= intensity,
+        subject_list= subjects
+    )
 
 if __name__ == "__main__":
-    warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
+    # warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
+    # manual_run("cnn_ncp", "gaussian", 10, 100)
     parser = argparse.ArgumentParser(description="Run MOABB experiment with optional noise augmentation.")
     parser.add_argument("--model", type=str, choices=list(MODEL_REGISTRY.keys()), required=True)
     parser.add_argument("--noise_type", type=str, default=None, choices=['dropout', 'gaussian', 'eog'])
@@ -172,5 +185,5 @@ if __name__ == "__main__":
         param_grid=param_grid,
         noise_type=args.noise_type,
         intensity=args.intensity,
-        subject_list=subjects#args.subjects,
+        subject_list=subjects
     )
