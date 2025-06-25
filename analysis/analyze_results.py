@@ -150,16 +150,16 @@ def plot_noise_performance(aggregated_df, model_name, noise_type, session_type, 
         return
 
     # Group by noise level and compute mean score
-    df_grouped = df_filtered.groupby('noise_level')['score'].mean().reset_index()
+    df_grouped = df_filtered#.groupby('noise_level')['score'].mean().reset_index()
 
     # Determine human-readable labels
     noise_label = noise_type.capitalize()
     session_label = "Test" if session_type == '1test' else "Train"
 
     # Create plot
-    sns.set(style="whitegrid")
+    sns.set_theme(style="whitegrid")
     plt.figure(figsize=(8, 6), dpi=300)
-    ax = sns.lineplot(x='noise_level', y='score', marker='o', data=df_grouped, color='b')
+    ax = sns.lineplot(x='noise_level', y='score', marker='o', data=df_grouped, color='b', errorbar=('ci', 95))
 
     # Labeling and styling
     ax.set_title(f"{model_name}: Mean {session_label} Score vs {noise_label} Intensity", fontsize=14)
@@ -170,6 +170,7 @@ def plot_noise_performance(aggregated_df, model_name, noise_type, session_type, 
     # Save the plot
     os.makedirs(output_dir, exist_ok=True)
     output_file = os.path.join(output_dir, f"{model_name}_{noise_type}_{session_type}_performance.png")
+    print(f"Saving plot to: {output_file}")
     plt.tight_layout()
     plt.savefig(output_file, dpi=300)
     plt.close()
@@ -261,7 +262,7 @@ def plot_per_subject_roc_auc(
     - output_dir: directory to save the plot PNG.
     """
     # Filter for model
-    df_model = df[df['model'] == model_name]
+    df_model = df[df['model'] == model_name.lower()]
 
     if tuned:
         # Only tuned results, but no noise augmentation
@@ -273,7 +274,7 @@ def plot_per_subject_roc_auc(
         label = 'Baseline'
 
     # Compute mean ROC-AUC for each subject/session
-    df_plot = df_filtered.groupby(['subject', 'session'])['score'].mean().reset_index()
+    df_plot = df_filtered#.groupby(['subject', 'session'])['score'].mean().reset_index()
 
     # Plot
     plt.figure(figsize=(10, 6))
@@ -306,13 +307,13 @@ def model_plots(aggregated_df, model_name):
     plot_per_subject_roc_auc(aggregated_df, model_name=model_name, tuned=True)
 
 def eegnet_plots(aggregated_df):
-    model_plots(aggregated_df, 'EEGNet')
+    model_plots(aggregated_df, 'eegnet')
 
 def reegnet_plots(aggregated_df):
-    model_plots(aggregated_df, 'REEGNet')
+    model_plots(aggregated_df, 'reegnet')
 
 def cnn_ncp_plots(aggregated_df):
-    model_plots(aggregated_df, 'CNN_NCP')
+    model_plots(aggregated_df, 'cnn_ncp')
 
 def run_completion_report(output_dir, aggregated_df):
     # Define the combinations we want to check for
@@ -359,10 +360,10 @@ def run_completion_report(output_dir, aggregated_df):
 
 if __name__ == '__main__':
     input_dir = '../sol_results/results'
-    aggregated_df = aggregate_results(input_dir)
-    aggregated_df.to_csv(os.path.join(input_dir, 'aggregated_results.csv'))
+    # aggregated_df = aggregate_results(input_dir)
+    # aggregated_df.to_csv(os.path.join(input_dir, 'aggregated_results.csv'))
+    aggregated_df = pd.read_csv(os.path.join(input_dir, 'aggregated_results.csv'))
     run_completion_report(input_dir, aggregated_df)
-    # aggregated_df = pd.read_csv(os.path.join(input_dir, 'aggregated_results.csv'))
 
     eegnet_plots(aggregated_df)
     reegnet_plots(aggregated_df)
