@@ -250,7 +250,7 @@ class CNNNCP(EEGModuleMixin, nn.Module):
 def create_cnnncp_classifier(
         n_chans,
         n_times,
-        n_outs,
+        n_outputs,
         net_size=19,
         net_sparsity=0.75,
         lr=1e-3,
