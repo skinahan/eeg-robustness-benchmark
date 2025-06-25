@@ -29,6 +29,12 @@ from augmentation.noise import EEGNoiseAugmentor, TrainOnlyNoiseClassifier
 
 from globals import set_seeds, get_seed
 
+
+# Record start time
+start_time = time.time()
+print(f"Script started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+
 def run_evaluation(
     model_fn,
     model_name: str,
@@ -55,6 +61,9 @@ def run_evaluation(
 
     # Model pipeline
     base_model = model_fn(n_chans=22, n_times=1001, n_outputs=2)
+    base_model.train_split = None
+    base_model.max_epochs = 100
+    base_model.callbacks = []
 
     full_pipeline = base_model
 
@@ -87,7 +96,7 @@ def run_evaluation(
                 param_grid=param_grid,
                 cv=3,
                 scoring='roc_auc',
-                n_jobs=4,
+                n_jobs=1,
                 return_train_score=True
             )
             grid.fit(X, y_encoded)
@@ -165,25 +174,29 @@ def manual_run(model, noise_type, intensity, seed):
     )
 
 if __name__ == "__main__":
-    # warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
-    # manual_run("cnn_ncp", "gaussian", 10, 100)
-    parser = argparse.ArgumentParser(description="Run MOABB experiment with optional noise augmentation.")
-    parser.add_argument("--model", type=str, choices=list(MODEL_REGISTRY.keys()), required=True)
-    parser.add_argument("--noise_type", type=str, default=None, choices=['dropout', 'gaussian', 'eog'])
-    parser.add_argument("--intensity", type=float, default=None)
-    parser.add_argument("--seed", type=int, default=42, required=True)
-    # parser.add_argument("--subjects", type=int, nargs="*", default=None)
-    args = parser.parse_args()
-    set_seeds(args.seed)
-    param_grid = get_param_grid(args.model)
-    print("Using param grid: {}".format(param_grid))
-    subjects = list(range(1,10))
-    model_fn = MODEL_REGISTRY[args.model]
-    run_evaluation(
-        model_fn=model_fn,
-        model_name=args.model,
-        param_grid=param_grid,
-        noise_type=args.noise_type,
-        intensity=args.intensity,
-        subject_list=subjects
-    )
+    warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
+    manual_run("cnn_ncp", "gaussian", 10, 200)
+    # Record end time
+    end_time = time.time()
+    print(f"Script ended at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Total runtime: {(end_time - start_time) / 60:.2f} minutes")
+    # parser = argparse.ArgumentParser(description="Run MOABB experiment with optional noise augmentation.")
+    # parser.add_argument("--model", type=str, choices=list(MODEL_REGISTRY.keys()), required=True)
+    # parser.add_argument("--noise_type", type=str, default=None, choices=['dropout', 'gaussian', 'eog'])
+    # parser.add_argument("--intensity", type=float, default=None)
+    # parser.add_argument("--seed", type=int, default=42, required=True)
+    # # parser.add_argument("--subjects", type=int, nargs="*", default=None)
+    # args = parser.parse_args()
+    # set_seeds(args.seed)
+    # param_grid = get_param_grid(args.model)
+    # print("Using param grid: {}".format(param_grid))
+    # subjects = list(range(1,10))
+    # model_fn = MODEL_REGISTRY[args.model]
+    # run_evaluation(
+    #     model_fn=model_fn,
+    #     model_name=args.model,
+    #     param_grid=param_grid,
+    #     noise_type=args.noise_type,
+    #     intensity=args.intensity,
+    #     subject_list=subjects
+    # )
