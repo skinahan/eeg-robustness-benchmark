@@ -175,11 +175,6 @@ def manual_run(model, noise_type, intensity, seed):
 
 if __name__ == "__main__":
     warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
-    #manual_run("cnn_ncp", "gaussian", 10, 200)
-    # Record end time
-    end_time = time.time()
-    print(f"Script ended at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"Total runtime: {(end_time - start_time) / 60:.2f} minutes")
     parser = argparse.ArgumentParser(description="Run MOABB experiment with optional noise augmentation.")
     parser.add_argument("--model", type=str, choices=list(MODEL_REGISTRY.keys()), required=True)
     parser.add_argument("--noise_type", type=str, default=None, choices=['dropout', 'gaussian', 'eog'])
