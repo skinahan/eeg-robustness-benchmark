@@ -175,28 +175,31 @@ def manual_run(model, noise_type, intensity, seed):
 
 if __name__ == "__main__":
     warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
-    manual_run("cnn_ncp", "gaussian", 10, 200)
+    #manual_run("cnn_ncp", "gaussian", 10, 200)
     # Record end time
     end_time = time.time()
     print(f"Script ended at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"Total runtime: {(end_time - start_time) / 60:.2f} minutes")
-    # parser = argparse.ArgumentParser(description="Run MOABB experiment with optional noise augmentation.")
-    # parser.add_argument("--model", type=str, choices=list(MODEL_REGISTRY.keys()), required=True)
-    # parser.add_argument("--noise_type", type=str, default=None, choices=['dropout', 'gaussian', 'eog'])
-    # parser.add_argument("--intensity", type=float, default=None)
-    # parser.add_argument("--seed", type=int, default=42, required=True)
-    # # parser.add_argument("--subjects", type=int, nargs="*", default=None)
-    # args = parser.parse_args()
-    # set_seeds(args.seed)
-    # param_grid = get_param_grid(args.model)
-    # print("Using param grid: {}".format(param_grid))
-    # subjects = list(range(1,10))
-    # model_fn = MODEL_REGISTRY[args.model]
-    # run_evaluation(
-    #     model_fn=model_fn,
-    #     model_name=args.model,
-    #     param_grid=param_grid,
-    #     noise_type=args.noise_type,
-    #     intensity=args.intensity,
-    #     subject_list=subjects
-    # )
+    parser = argparse.ArgumentParser(description="Run MOABB experiment with optional noise augmentation.")
+    parser.add_argument("--model", type=str, choices=list(MODEL_REGISTRY.keys()), required=True)
+    parser.add_argument("--noise_type", type=str, default=None, choices=['dropout', 'gaussian', 'eog'])
+    parser.add_argument("--intensity", type=float, default=None)
+    parser.add_argument("--seed", type=int, default=42, required=True)
+    # parser.add_argument("--subjects", type=int, nargs="*", default=None)
+    args = parser.parse_args()
+    set_seeds(args.seed)
+    param_grid = get_param_grid(args.model)
+    print("Using param grid: {}".format(param_grid))
+    subjects = list(range(1,10))
+    model_fn = MODEL_REGISTRY[args.model]
+    run_evaluation(
+        model_fn=model_fn,
+        model_name=args.model,
+        param_grid=param_grid,
+        noise_type=args.noise_type,
+        intensity=args.intensity,
+        subject_list=subjects
+    )
+    end_time = time.time()
+    print(f"Script ended at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Total runtime: {(end_time - start_time) / 60:.2f} minutes")
