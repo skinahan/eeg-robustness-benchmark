@@ -49,6 +49,10 @@ def get_param_grid(model_name: str, noise_augmented: bool = False) -> Dict[str, 
         "cnn_ncp": {
             f"{base_prefix}module__ncp_hidden_dim": [11, 16],
             f"{base_prefix}module__sparsity": [0.6, 0.8],
+        },
+        "spp_ncp": {
+            f"{base_prefix}module__ncp_hidden_dim": [11, 16],
+            f"{base_prefix}module__sparsity": [0.6, 0.8],
         }
     }.get(model_name, {
         f"{base_prefix}module__drop_prob": [0.1, 0.2],
@@ -138,8 +142,17 @@ def run_experiment(
         df['model'] = model_name
         df['paradigm'] = 'MotorImagery'
         df['resample'] = resample or 250.0
-        for k, v in config.items():
-            df[k] = v
+        df['optimizer__lr'] = config['optimizer__lr']
+        df['batch_size'] = config['batch_size']
+        df['max_epochs'] = config['max_epochs']
+
+        if model_name == 'cnn_ncp':
+            df['module__ncp_hidden_dim'] = config['module__ncp_hidden_dim']
+            df['module__sparsity'] = config['module__sparsity']
+            df['optimizer__weight_decay'] = config['optimizer__weight_decay']
+        if model_name == 'reegnet':
+            df['module__lstm_hidden_size'] = config['module__lstm_hidden_size']
+            df['module__drop_prob'] = config['module__drop_prob']
 
         for subj in subject_list:
             for session in df['session'].unique():
@@ -147,7 +160,7 @@ def run_experiment(
                 os.makedirs(out_dir, exist_ok=True)
                 filename_suffix = f"_{noise_type}" if is_augmented and noise_type else ""
                 out_file = os.path.join(out_dir, f"{model_name}_{mode}{filename_suffix}_subject_{subj:03d}_seed{seed}.csv")
-                df[df['subject'] == subj][df['session'] == session].to_csv(out_file, index=False)
+                df[df['session'] == session].to_csv(out_file, index=False)
                 print(f"Saved: {out_file}")
 
     else:
@@ -171,6 +184,7 @@ def run_experiment(
             df['model'] = model_name
             df['paradigm'] = 'MotorImagery'
             df['resample'] = resample or 250.0
+
             for k, v in best_params.items():
                 df[k] = v
 
@@ -183,6 +197,10 @@ def run_experiment(
                 print(f"Saved: {out_file}")
 
 if __name__ == "__main__":
+    # Record start time
+    start_time = time.time()
+    print(f"Script started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
     warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
 
     parser = argparse.ArgumentParser(description="Unified EEG Experiment Runner")
@@ -209,3 +227,8 @@ if __name__ == "__main__":
 
     if args.aggregate:
         collect_all_results(paradigm='MotorImagery')
+
+    # Record end time
+    end_time = time.time()
+    print(f"Script ended at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Total runtime: {(end_time - start_time) / 60:.2f} minutes")

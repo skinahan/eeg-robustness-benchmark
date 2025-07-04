@@ -82,7 +82,7 @@ class CNNNCPv2(EEGModuleMixin, nn.Module):
       )
 
       # Sequential Model (NCP)
-      ncp_out_size = 16
+      ncp_out_size = 8
 
       wiring = AutoNCP(
           ncp_hidden_dim,
@@ -95,40 +95,34 @@ class CNNNCPv2(EEGModuleMixin, nn.Module):
           cnn_output_dim,
           wiring,
           return_sequences=True,
-          # mode="pure",
+          mode="pure",
           # mixed_memory=False
       ).cuda()
 
-      # conv_separable_depth
-      self.sep_depthwise = nn.Conv2d(ncp_out_size, ncp_out_size, (1, depthwise_kernel_length), bias=False, groups=ncp_out_size,
-                padding=(0, depthwise_kernel_length // 2))
-      # conv_separable_point
-      self.sep_pointwise = nn.Conv2d(ncp_out_size, ncp_out_size, (1, 1), bias=False)
-      # bnorm_2
-      self.bn3 = nn.BatchNorm2d(ncp_out_size, momentum=batch_norm_momentum, affine=True, eps=batch_norm_eps)
-      self.elu = nn.ELU()
-      self.dropout2 = nn.Dropout(drop_prob)
-      self.global_pool = nn.AdaptiveAvgPool2d((1, 1))
+      self.classifier_block = nn.Sequential(
+          # conv_separable_depth
+          nn.Conv2d(ncp_out_size, ncp_out_size, (1, depthwise_kernel_length), bias=False,
+                                         groups=ncp_out_size,
+                                         padding=(0, depthwise_kernel_length // 2)),
+            # conv_separable_point
+          nn.Conv2d(ncp_out_size, ncp_out_size, (1, 1), bias=False),
+          # bnorm_2
+          nn.BatchNorm2d(ncp_out_size, momentum=batch_norm_momentum, affine=True, eps=batch_norm_eps),
+          nn.ELU(),
+          nn.Dropout(drop_prob),
+          nn.AdaptiveAvgPool2d((1, 1)),
+      )
       self.fc = nn.Linear(ncp_out_size, n_outputs)
-
       self._glorot_weight_zero_bias()
 
   def forward(self, x):
       x = self.feature_extractor(x)  # Output: [batch_size, cnn_output_dim, reduced_n_times, 1]
       x = x.squeeze(2).permute(0, 2, 1)
-      # x, _ = self.ncp(x)  # Output: [batch_size, reduced_n_times, ncp_hidden_dim]
       x, _ = self.ncp(x)
       x = x.permute(0, 2, 1).unsqueeze(3)
-
-      x = self.sep_depthwise(x)
-      x = self.sep_pointwise(x)
-      x = self.bn3(x)
-      x = self.elu(x)
-      x = self.dropout2(x)
-      x = self.global_pool(x)
+      x = self.classifier_block(x)
       x = x.view(x.shape[0], -1)
-      x = self.fc(x)
-      return x
+      return self.fc(x)
 
   def _glorot_weight_zero_bias(self):
       """Initialize parameters of all modules by initializing weights with
@@ -251,11 +245,11 @@ def create_cnnncp_classifier(
         n_chans,
         n_times,
         n_outputs,
-        net_size=19,
-        net_sparsity=0.75,
+        net_size=11,
+        net_sparsity=0.6,
         lr=1e-3,
-        batch_size=32,
-        weight_decay=0.0#1e-3
+        batch_size=64,
+        weight_decay=1e-3
 ):
   if net_size <= n_outputs + 2:
       new_net_size = n_outputs + 3

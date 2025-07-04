@@ -35,10 +35,24 @@ import torch.cuda
 from globals import set_seeds, get_seed
 
 
-def run_baseline(subject_list, model, model_name):
+def run_baseline(subject_list, model, model_name, resample=None):
     dataset = BNCI2014_001()
     # dataset.subject_list = subject_list
     seed = get_seed()
+
+    if resample is not None:
+        paradigm = MotorImagery(
+            events=["left_hand", "right_hand"],
+            fmin=8,
+            fmax=35,
+            tmin=0.0,
+            tmax=None,
+            baseline=None,
+            resample=resample,
+            n_classes=2
+        )
+    else:
+        paradigm = DEFAULT_PARADIGM
     paradigm = DEFAULT_PARADIGM
 
     evaluation = WithinSessionEvaluation(

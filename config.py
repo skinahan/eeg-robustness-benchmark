@@ -3,6 +3,8 @@ from moabb.paradigms import MotorImagery
 from models.eegnet import create_eegnet_classifier
 from models.reegnet import create_reegnet_classifier
 from models.cnnncp import create_cnnncp_classifier
+from models.sppncp import create_sppncp_classifier
+
 # Centralized experiment configuration
 
 # Dataset and paradigm defaults
@@ -24,7 +26,8 @@ def get_model_registry():
     return {
         "eegnet": create_eegnet_classifier,
         "reegnet": create_reegnet_classifier,
-        "cnn_ncp": create_cnnncp_classifier
+        "cnn_ncp": create_cnnncp_classifier,
+        "sppncp": create_sppncp_classifier
     }
 
 MODEL_REGISTRY = get_model_registry()
