@@ -41,13 +41,15 @@ def run_evaluation(
     param_grid: Dict[str, Any],
     noise_type: str = None,
     intensity: float = None,
-    subject_list: list[int] = None
+    subject_list: list[int] = None,
+    resample: float = None
 ):
     # Dataset & paradigm
     dataset = BNCI2014_001()
     if subject_list is not None:
         dataset.subject_list = subject_list
     seed = get_seed()
+
     paradigm = MotorImagery(
         events=["left_hand", "right_hand"],
         fmin=8,
@@ -55,24 +57,43 @@ def run_evaluation(
         tmin=0.0,
         tmax=None,
         baseline=None,
-        resample=None,
+        resample=resample,
         n_classes=2
     )
 
+    # Output file naming
+    label = f"{model_name}"
+
     # Model pipeline
-    base_model = model_fn(n_chans=22, n_times=1001, n_outputs=2)
+    if resample is not None:
+        label += f"_resampled"
+        if resample == 125.0:
+            base_model = model_fn(n_chans=22, n_times=500, n_outputs=2)
+        else:
+            base_model = model_fn(n_chans=22, n_times=1001, n_outputs=2)
+    else:
+        base_model = model_fn(n_chans=22, n_times=1001, n_outputs=2)
+
+    if noise_type is not None:
+        label += f"_{noise_type}_{intensity}_seed{seed}"
+    else:
+        label += f"_tuned_subjects_all_seed{seed}"
+    out_path = f"results/{label}.csv"
+
     base_model.train_split = None
     base_model.max_epochs = 100
     base_model.callbacks = []
 
     full_pipeline = base_model
 
-    train_only_aug_clf = TrainOnlyNoiseClassifier(
-        base_pipeline=full_pipeline,
-        noise_type=noise_type,
-        intensity=intensity,
-        seed=seed
-    )
+    if noise_type is not None:
+        full_pipeline = TrainOnlyNoiseClassifier(
+            base_pipeline=base_model,
+            noise_type=noise_type,
+            intensity=intensity,
+            seed=seed
+        )
+
 
     # Evaluation setup
     evaluation = WithinSessionEvaluation(
@@ -89,10 +110,9 @@ def run_evaluation(
             X, y, metadata = paradigm.get_data(dataset, subjects=[subject])
             label_encoder = LabelEncoder()
             y_encoded = label_encoder.fit_transform(y)
-
             # Grid search for hyperparameter tuning
             grid = GridSearchCV(
-                train_only_aug_clf,
+                full_pipeline,
                 param_grid=param_grid,
                 cv=3,
                 scoring='roc_auc',
@@ -106,24 +126,26 @@ def run_evaluation(
             test_score_mean = grid.best_score_
             best_params = grid.best_params_
 
+            if resample is None:
+                sample_rate = 250.0
+            else:
+                sample_rate = resample
+
             results_df.append({
                 'subject': subject,
                 'session': '0train',
                 'score': train_score_mean,
+                'resample': sample_rate,
                 **best_params
             })
             results_df.append({
                 'subject': subject,
                 'session': '1test',
                 'score': test_score_mean,
+                'resample': sample_rate,
                 **best_params
             })
 
-    # Output file naming
-    label = f"{model_name}"
-    if noise_type:
-        label += f"_{noise_type}_{intensity}_seed{seed}"
-    out_path = f"results/{label}.csv"
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
 
     # Save results
@@ -145,11 +167,11 @@ def get_param_grid(model_name: str) -> Dict[str, Any]:
             "base_pipeline__optimizer__lr": [1e-3, 1e-4],
             "base_pipeline__batch_size": [16, 32]
         },
-        "cnnncp": {
-            "base_pipeline__module__ncp_hidden_dim": [19, 24],
+        "cnn_ncp": {
+            "base_pipeline__module__ncp_hidden_dim": [11, 16],
             "base_pipeline__module__sparsity": [0.6, 0.8],
-            "base_pipeline__optimizer__lr": [1e-3, 1e-4],
-            "base_pipeline__batch_size": [16, 32]
+            # "base_pipeline__optimizer__lr": [1e-3, 1e-4],
+            # "base_pipeline__batch_size": [16, 32]
         }
     }
     # If not found, fallback to a reasonable default
@@ -160,7 +182,7 @@ def get_param_grid(model_name: str) -> Dict[str, Any]:
     })
 
 
-def manual_run(model, noise_type, intensity, seed):
+def manual_run(model, noise_type, intensity, seed, resample):
     subjects = list(range(1,10))
     model_fn = MODEL_REGISTRY[model]
     set_seeds(seed)
@@ -170,12 +192,17 @@ def manual_run(model, noise_type, intensity, seed):
         param_grid= get_param_grid(model),
         noise_type= noise_type,
         intensity= intensity,
-        subject_list= subjects
+        subject_list=subjects,
+        resample=resample
     )
 
 if __name__ == "__main__":
     warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
-    manual_run("cnn_ncp", "gaussian", 10, 200)
+    warnings.filterwarnings("ignore", message="This Pipeline instance is not fitted yet.", category=FutureWarning)
+
+    manual_run("eegnet", "gaussian", 10, 100, resample=None)
+    # manual_run("cnn_ncp", "gaussian", 10, 100, resample=125.0)
+    manual_run("cnn_ncp", "gaussian", 10, 100, resample=125.0)
     # Record end time
     end_time = time.time()
     print(f"Script ended at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
