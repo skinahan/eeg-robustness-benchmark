@@ -131,7 +131,13 @@ def run_experiment(
     dataset = BNCI2014_001()
     dataset.subject_list = subject_list
     paradigm = get_paradigm(resample=resample)
-    evaluation = WithinSessionEvaluation(paradigm=paradigm, datasets=[dataset], overwrite=True)
+    evaluation = (WithinSessionEvaluation
+        (
+        paradigm=paradigm,
+        datasets=[dataset],
+        overwrite=True,
+        hdf5_path=f"checkpoints/{model_name}_{mode}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}.h5"
+        ))
 
     if mode == "baseline":
         results = evaluation.process({f"{model_name}+MotorImagery": model})
