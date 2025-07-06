@@ -108,7 +108,7 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
         # 4. Permutation and Reshaping for LSTM:
         x = x.permute(0, 3, 2, 1)
         x = x.contiguous().view(x.shape[0], self.n_times-1, 4)
-
+        # print(x.shape)
         # 5. LSTM:
         x, _ = self.lstm(x)
 

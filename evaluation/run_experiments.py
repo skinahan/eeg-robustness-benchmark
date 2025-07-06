@@ -22,6 +22,7 @@ from config import MODEL_REGISTRY
 from globals import set_seeds, get_seed
 from augmentation.noise import TrainOnlyNoiseClassifier
 
+
 def get_paradigm(resample=None):
     return MotorImagery(
         events=["left_hand", "right_hand"],
@@ -31,6 +32,7 @@ def get_paradigm(resample=None):
         resample=resample,
         n_classes=2
     )
+
 
 def get_param_grid(model_name: str, noise_augmented: bool = False) -> Dict[str, Any]:
     base_prefix = "base_pipeline__" if noise_augmented else ""
@@ -60,10 +62,12 @@ def get_param_grid(model_name: str, noise_augmented: bool = False) -> Dict[str, 
         f"{base_prefix}batch_size": [32]
     })
 
+
 def extract_model_params(model) -> Dict[str, Any]:
     if hasattr(model, 'get_params'):
         return model.get_params()
     return {}
+
 
 def create_output_path(model, seed, subject, session, mode, paradigm='MotorImagery'):
     return os.path.join(
@@ -73,10 +77,11 @@ def create_output_path(model, seed, subject, session, mode, paradigm='MotorImage
         model,
         "WithinSessionEvaluation",
         str(seed),
-        f"sub-{subject:03d}",
+        f"sub-{int(subject):03d}",
         session,
         mode
     )
+
 
 def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
     root = os.path.join("results", paradigm, dataset)
@@ -98,18 +103,99 @@ def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
     else:
         print("No CSV files found to aggregate.")
 
+
+from moabb.evaluations import WithinSessionSplitter
+from sklearn.model_selection import cross_val_score
+import optuna
+
+
+def run_optuna_tuning_within_session(model_fn, model_name, X, y, metadata, resample=250.0, n_trials=25, seed=42,
+                                     augmented=False):
+    # Restrict to session 0 trials (typically '0train')
+    train_mask = metadata["session"] == "0train"
+    X_train = X[train_mask]
+    y_train = y[train_mask]
+    meta_train = metadata[train_mask].reset_index(drop=True)
+
+    if len(X_train) < 10:
+        raise ValueError("Too few training samples for subject/session.")
+
+    # Create a session-aware splitter for training session only
+    splitter = WithinSessionSplitter(n_folds=3, shuffle=True, random_state=seed)
+    print(f"Splitter: {splitter.n_folds} folds, shuffle={splitter.shuffle}")
+    param_prefix = "base_pipeline__" if augmented else ""
+
+    def objective(trial):
+        # Define search space based on model type
+        if model_name.startswith("cnn_ncp"):
+            params = {
+                f"{param_prefix}module__ncp_hidden_dim": trial.suggest_int("module__ncp_hidden_dim", 11, 32),
+                f"{param_prefix}module__sparsity": trial.suggest_float("module__sparsity", 0.4, 0.9),
+                f"{param_prefix}optimizer__lr": trial.suggest_loguniform("optimizer__lr", 1e-4, 1e-2),
+                f"{param_prefix}optimizer__weight_decay": trial.suggest_categorical("optimizer__weight_decay",
+                                                                                    [0, 1e-3]),
+
+                # f"{param_prefix}batch_size": trial.suggest_categorical("batch_size", [16, 32, 64])
+            }
+        elif model_name.startswith("eegnet"):
+            params = {
+                f"{param_prefix}module__drop_prob": trial.suggest_float("module__drop_prob", 0.1, 0.15),
+                f"{param_prefix}optimizer__lr": trial.suggest_loguniform("optimizer__lr", 1e-4, 5e-4),
+                f"{param_prefix}batch_size": trial.suggest_categorical("batch_size", [16, 32])
+            }
+        elif model_name.startswith("reegnet"):
+            params = {
+                f"{param_prefix}module__drop_prob": trial.suggest_float("module__drop_prob", 0.1, 0.15),
+                f"{param_prefix}module__lstm_hidden_size": trial.suggest_categorical("module__lstm_hidden_size",
+                                                                                     [16, 32]),
+                f"{param_prefix}optimizer__lr": trial.suggest_loguniform(1e-3, 1e-4),
+                f"{param_prefix}batch_size": trial.suggest_categorical("batch_size", [16, 32])
+            }
+        else:
+            raise ValueError(f"Unsupported model for tuning: {model_name}")
+
+        # Build model with suggested params
+        model = model_fn(n_chans=22, n_times=1001, n_outputs=2)
+        model.set_params(**params)
+        model.max_epochs = 100
+        model.train_split = None
+        model.callbacks = []
+
+        # Use session-aware fold splits for training session only
+        fold_scores = []
+        for train_idx, test_idx in splitter.split(y_train, meta_train):
+            X_tr, X_val = X_train[train_idx], X_train[test_idx]
+            y_tr, y_val = y_train[train_idx], y_train[test_idx]
+
+            model.fit(X_tr, y_tr)
+            score = model.score(X_val, y_val)
+            fold_scores.append(score)
+
+        return np.mean(fold_scores)
+
+    study = optuna.create_study(direction='maximize')
+    study.optimize(objective, n_trials=n_trials)
+
+    best_params = study.best_trial.params
+    best_score = study.best_value
+    return best_params, best_score
+
+
+from two_stage_hp_opt import run_two_stage_optuna
+
+
 def run_experiment(
-    model_name: str,
-    mode: str,
-    subject_list: List[int],
-    seed: int,
-    resample: float,
-    noise_type: str = None,
-    intensity: float = None
+        model_name: str,
+        mode: str,
+        subject_list: List[int],
+        seed: int,
+        resample: float,
+        noise_type: str = None,
+        intensity: float = None
 ):
     set_seeds(seed)
     is_augmented = (mode == "augment")
-    param_grid = get_param_grid(model_name, noise_augmented=is_augmented)
+    # param_grid = get_param_grid(model_name, noise_augmented=is_augmented)
     model_fn = MODEL_REGISTRY[model_name]
     n_times = int(1001 * (resample / 250.0)) if resample else 1001
 
@@ -131,15 +217,15 @@ def run_experiment(
     dataset = BNCI2014_001()
     dataset.subject_list = subject_list
     paradigm = get_paradigm(resample=resample)
-    evaluation = (WithinSessionEvaluation
-        (
-        paradigm=paradigm,
-        datasets=[dataset],
-        overwrite=True,
-        hdf5_path=f"checkpoints/{model_name}_{mode}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}.h5"
-        ))
 
     if mode == "baseline":
+        evaluation = \
+            (WithinSessionEvaluation(
+                paradigm=paradigm,
+                datasets=[dataset],
+                overwrite=True,
+                hdf5_path=f"checkpoints/{model_name}_{mode}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}.h5"
+            ))
         results = evaluation.process({f"{model_name}+MotorImagery": model})
         df = results.copy()
         config = extract_model_params(model)
@@ -160,13 +246,14 @@ def run_experiment(
             df['module__lstm_hidden_size'] = config['module__lstm_hidden_size']
             df['module__drop_prob'] = config['module__drop_prob']
 
-        for subj in subject_list:
+        for subj in df['subject'].unique():
             for session in df['session'].unique():
-                out_dir = create_output_path(model_name, seed, subj, session, mode)
+                out_dir = create_output_path(model_name, seed, int(subj), session, mode)
                 os.makedirs(out_dir, exist_ok=True)
                 filename_suffix = f"_{noise_type}" if is_augmented and noise_type else ""
-                out_file = os.path.join(out_dir, f"{model_name}_{mode}{filename_suffix}_subject_{subj:03d}_seed{seed}.csv")
-                df[df['session'] == session].to_csv(out_file, index=False)
+                out_file = os.path.join(out_dir,
+                                        f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
+                df[(df['subject'] == subj) & (df['session'] == session)].to_csv(out_file, index=False)
                 print(f"Saved: {out_file}")
 
     else:
@@ -175,32 +262,85 @@ def run_experiment(
             label_encoder = LabelEncoder()
             y_encoded = label_encoder.fit_transform(y)
 
-            grid = GridSearchCV(model, param_grid, cv=3, scoring='roc_auc', n_jobs=1)
-            grid.fit(X, y_encoded)
-            train_score = np.mean(grid.cv_results_['mean_train_score'][grid.best_index_])
-            test_score = grid.best_score_
-            best_params = grid.cv_results_['params'][grid.best_index_]
+            out_dir = create_output_path(model_name, seed, subj, '0train', mode)
+            best_params, best_score = run_two_stage_optuna(
+                model_fn=model_fn,
+                model_name=model_name,
+                X=X,
+                y=y_encoded,
+                metadata=metadata,
+                resample=resample,
+                seed=seed,
+                output_root=os.path.join(out_dir, "optuna_results"),
+                arch_trials=10,
+                train_trials=10,
+                augmented=is_augmented
+            )
+            final_params = {}
 
-            df = pd.DataFrame([
-                {"subject": subj, "session": "0train", "score": train_score},
-                {"subject": subj, "session": "1test", "score": test_score},
-            ])
+            module_params = ['ncp_hidden_dim', 'sparsity', 'temporal_kernel_size', 'temporal_stride', 'drop_prob']
+            optimizer_params = ['lr', 'weight_decay']
+            prefix = "base_pipeline__" if is_augmented else ""
+            module_prefix = f"{prefix}module__"
+            optim_prefix = f"{prefix}optimizer__"
+            for k, v in best_params.items():
+                if k in module_params:
+                    final_params[f"{module_prefix}{k}"] = v
+                elif k in optimizer_params:
+                    final_params[f"{optim_prefix}{k}"] = v
+                else:
+                    final_params[k] = v
+
+            model.set_params(**final_params)
+            dataset.subject_list = [subj]
+            hdf5_path = os.path.join(out_dir,
+                                     f"{model_name}_{mode}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}.h5")
+            evaluation = WithinSessionEvaluation(
+                paradigm=paradigm,
+                datasets=[dataset],
+                overwrite=True,
+                hdf5_path=hdf5_path
+            )
+            results = evaluation.process({f"{model_name}+Optuna": model})
+            df = results.copy()
+            config = extract_model_params(model)
             df['seed'] = seed
             df['mode'] = mode
             df['model'] = model_name
             df['paradigm'] = 'MotorImagery'
             df['resample'] = resample or 250.0
+            df['optimizer__lr'] = config['optimizer__lr']
+            df['batch_size'] = config['batch_size']
+            df['max_epochs'] = config['max_epochs']
+            #
+            # grid = GridSearchCV(model, param_grid, cv=3, scoring='roc_auc', n_jobs=1, return_train_score=True)
+            # grid.fit(X, y_encoded)
+            # train_score = np.mean(grid.cv_results_['mean_train_score'][grid.best_index_])
+            # test_score = grid.best_score_
+            # best_params = grid.cv_results_['params'][grid.best_index_]
+            #
+            # df = pd.DataFrame([
+            #     {"subject": subj, "session": "0train", "score": train_score},
+            #     {"subject": subj, "session": "1test", "score": test_score},
+            # ])
+            # df['seed'] = seed
+            # df['mode'] = mode
+            # df['model'] = model_name
+            # df['paradigm'] = 'MotorImagery'
+            # df['resample'] = resample or 250.0
 
-            for k, v in best_params.items():
+            for k, v in final_params.items():
                 df[k] = v
 
             for session in df['session'].unique():
                 out_dir = create_output_path(model_name, seed, subj, session, mode)
                 os.makedirs(out_dir, exist_ok=True)
                 filename_suffix = f"_{noise_type}" if is_augmented and noise_type else ""
-                out_file = os.path.join(out_dir, f"{model_name}_{mode}{filename_suffix}_subject_{subj:03d}_seed{seed}.csv")
+                out_file = os.path.join(out_dir,
+                                        f"{model_name}_{mode}{filename_suffix}_subject_{subj:03d}_seed{seed}.csv")
                 df[df['session'] == session].to_csv(out_file, index=False)
                 print(f"Saved: {out_file}")
+
 
 if __name__ == "__main__":
     # Record start time
