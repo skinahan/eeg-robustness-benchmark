@@ -35,11 +35,13 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
         n_times: int = 161,
         n_outputs: int = 2,
         drop_prob: float = 0.15,
-        sfreq: Optional[float] = None,
-        chs_info=None,      # <— dummy catch‐all
         lstm_hidden_size: int = 32,
+        F1 = 8,
+        D = 2,
+        kernel_length: int = 128,
+        sfreq: Optional[float] = None,
+        chs_info=None,  # <— dummy catch‐all
     ):
-        # this calls EEGModuleMixin.__init__ under the hood
         super().__init__(
             n_outputs=n_outputs,
             n_chans=n_chans,
@@ -47,13 +49,11 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
             sfreq=sfreq,
         )
         hidden_size = lstm_hidden_size
-        # ignore chs_info completely
-        # … then define all your conv1, depthwise, lstm, etc. as before …
 
         # 1. Input Conv2D:
         self.conv1 = nn.Conv2d(
-            in_channels=1, out_channels=8,
-            kernel_size=(1, 15),  # Changed from 16 to 15
+            in_channels=1, out_channels=F1,
+            kernel_size=(1, kernel_length),  # Changed from 16 to 15
             stride=(1, 1),
             padding=(0, 7),       # Changed from 8 to 7
             bias=False

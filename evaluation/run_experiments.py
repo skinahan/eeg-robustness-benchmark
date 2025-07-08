@@ -197,7 +197,7 @@ def run_experiment(
     is_augmented = (mode == "augment")
     # param_grid = get_param_grid(model_name, noise_augmented=is_augmented)
     model_fn = MODEL_REGISTRY[model_name]
-    n_times = int(1001 * (resample / 250.0)) if resample else 1001
+    n_times = int(1000 * (resample / 250.0)) if resample else 1000
 
     base_model = model_fn(n_chans=22, n_times=n_times, n_outputs=2)
     base_model.train_split = None
@@ -224,7 +224,8 @@ def run_experiment(
                 paradigm=paradigm,
                 datasets=[dataset],
                 overwrite=True,
-                hdf5_path=f"checkpoints/{model_name}_{mode}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}.h5"
+                hdf5_path=f"checkpoints/{model_name}_{mode}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}.h5",
+                random_state=seed
             ))
         results = evaluation.process({f"{model_name}+MotorImagery": model})
         df = results.copy()
@@ -258,6 +259,10 @@ def run_experiment(
 
     else:
         for subj in subject_list:
+            dataset = BNCI2014_001()
+            dataset.subject_list = subject_list
+            paradigm = get_paradigm(resample=resample)
+
             X, y, metadata = paradigm.get_data(dataset, subjects=[subj])
             label_encoder = LabelEncoder()
             y_encoded = label_encoder.fit_transform(y)
@@ -299,7 +304,8 @@ def run_experiment(
                 paradigm=paradigm,
                 datasets=[dataset],
                 overwrite=True,
-                hdf5_path=hdf5_path
+                hdf5_path=hdf5_path,
+                random_state=seed
             )
             results = evaluation.process({f"{model_name}+Optuna": model})
             df = results.copy()

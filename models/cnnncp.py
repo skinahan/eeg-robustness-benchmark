@@ -35,6 +35,9 @@ class CNNNCPv3(EEGModuleMixin, nn.Module):
             cnn_output_dim=16,
             sparsity=0.75,
             drop_prob=0.15,
+            F1=8,
+            D=2,
+            kernel_length=128,
             temporal_kernel_size=None,
             temporal_stride=None
     ):
@@ -49,19 +52,23 @@ class CNNNCPv3(EEGModuleMixin, nn.Module):
         batch_norm_momentum = 0.01
         batch_norm_eps = 1e-3
 
-        F1 = 8
-        D = 2
+        # F1 = 8
+        # D = 2
+        # F2 = F1 * D
+        self.F1 = F1
         F2 = F1 * D
+        cnn_output_dim = F2
 
+        self.kernel_length = kernel_length
         self.feature_extractor = nn.Sequential(
             Ensure4d(),
             Rearrange("batch ch t 1 -> batch 1 ch t"),
-            nn.Conv2d(1, F1, (1, 128), bias=False, padding=(0, 64)),
-            nn.BatchNorm2d(F1, momentum=batch_norm_momentum, affine=True, eps=batch_norm_eps),
-            nn.Conv2d(F1, F1 * D, (n_chans, 1), bias=False, groups=F1),
-            nn.BatchNorm2d(F1 * D, momentum=batch_norm_momentum, eps=batch_norm_eps),
+            nn.Conv2d(1, self.F1, (1, self.kernel_length), bias=False, padding=(0, 64)),
+            nn.BatchNorm2d(self.F1, momentum=batch_norm_momentum, affine=True, eps=batch_norm_eps),
+            nn.Conv2d(self.F1, F2, (n_chans, 1), bias=False, groups=self.F1),
+            nn.BatchNorm2d(F2, momentum=batch_norm_momentum, eps=batch_norm_eps),
             nn.ELU(),
-            nn.AvgPool2d((1, 16), stride=(1, 8)),
+            nn.AvgPool2d((1, F2), stride=(1, self.F1)),
             nn.Dropout(p=drop_prob),
         )
 
