@@ -36,9 +36,6 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
         n_outputs: int = 2,
         drop_prob: float = 0.15,
         lstm_hidden_size: int = 32,
-        F1 = 8,
-        D = 2,
-        kernel_length: int = 128,
         sfreq: Optional[float] = None,
         chs_info=None,  # <— dummy catch‐all
     ):
@@ -52,8 +49,8 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
 
         # 1. Input Conv2D:
         self.conv1 = nn.Conv2d(
-            in_channels=1, out_channels=F1,
-            kernel_size=(1, kernel_length),  # Changed from 16 to 15
+            in_channels=1, out_channels=8,
+            kernel_size=(1, 15),  # Changed from 16 to 15
             stride=(1, 1),
             padding=(0, 7),       # Changed from 8 to 7
             bias=False
@@ -110,8 +107,9 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
         x = x.contiguous().view(x.shape[0], self.n_times-1, 4)
         # print(x.shape)
         # 5. LSTM:
+        # x.shape: (64, 1000, 4)
         x, _ = self.lstm(x)
-
+        # x.shape: (64, 1000, 32)
         # 6. Reshape for Separable Conv2D:
         x = x.permute(0, 2, 1).unsqueeze(3)
 

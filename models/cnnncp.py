@@ -88,7 +88,7 @@ class CNNNCPv3(EEGModuleMixin, nn.Module):
 
         wiring = AutoNCP(
             ncp_hidden_dim, 8, sparsity_level=sparsity, seed=seed)
-        self.ncp = CfC(cnn_output_dim, wiring, return_sequences=True, mode="pure")
+        self.ncp = CfC(cnn_output_dim, wiring, return_sequences=True)#, mode="pure")
 
         self.classifier_block = nn.Sequential(
             nn.Conv2d(8, 8, (1, 16), bias=False, groups=8, padding=(0, 8)),
@@ -105,7 +105,10 @@ class CNNNCPv3(EEGModuleMixin, nn.Module):
         x = self.feature_extractor(x)  # [B, C, T, 1]
         x = x.squeeze(2).permute(0, 2, 1)  # [B, T, C]
         x = self.temporal_downsampler(x.permute(0, 2, 1)).permute(0, 2, 1)
+        # x.shape: 64, 55, 32
+        # 64, 62, 16
         x, _ = self.ncp(x)  # [B, T', H]
+        # x.shape: 64, 62, 8
         x = x.permute(0, 2, 1).unsqueeze(-1)  # [B, H, T', 1]
         x = self.classifier_block(x)
         x = x.view(x.shape[0], -1)

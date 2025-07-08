@@ -1,9 +1,11 @@
+import math
 import os
 import json
 import optuna
 import numpy as np
 import pandas as pd
 import sklearn
+import torch
 from moabb.evaluations import WithinSessionSplitter
 from optuna.visualization import plot_optimization_history, plot_param_importances
 from sklearn.model_selection import StratifiedKFold
@@ -31,7 +33,7 @@ def run_optuna_stage(
     if len(X_train) < 10:
         raise ValueError("Too few training samples for session 0.")
 
-    splitter = StratifiedKFold(3, shuffle=True, random_state=seed)
+
     param_prefix = "base_pipeline__" if augmented else ""
     if resample is None:
         resample = 250.0
@@ -39,18 +41,41 @@ def run_optuna_stage(
     # TODO:
     #  - optuna multi-objective study?
     #  - partial fit / intermediate results for optuna pruning?
-    def objective(trial):
-        params = param_space_fn(trial, param_prefix)
+    from optuna.integration import SkorchPruningCallback
+    from skorch.dataset import ValidSplit, StratifiedShuffleSplit
+    from sklearn.metrics import roc_auc_score
 
+    def objective(trial):
+        # Sample hyperparameters
+        params = param_space_fn(trial, param_prefix)
+        # Define model
         model = model_fn(n_chans=22, n_times=int(resample * 4), n_outputs=2)
         model.set_params(**params)
         model.max_epochs = 100
+        model.verbose = 1
         model.train_split = None
         model.callbacks = []
-        model.verbose = 0
-        results = sklearn.model_selection.cross_validate(model, X_train, y_train, scoring="roc_auc", cv=splitter, n_jobs=3, verbose=0, return_train_score=True,error_score='raise')
-        return results["test_score"].mean()
 
+        splitter = StratifiedKFold(3, shuffle=True, random_state=seed)
+        fold_scores = []
+        for i, (train_idx, valid_idx) in enumerate(splitter.split(X_train, y_train)):
+            print(f"Fold {i}:")
+            X_train_part, y_train_part = X_train[train_idx], y_train[train_idx]
+            X_valid_part, y_valid_part = X_train[valid_idx], y_train[valid_idx]
+            # Fit on training fold
+            torch.use_deterministic_algorithms(False)
+            model.fit(X_train_part, y_train_part)
+
+            # Evaluate on held-out validation set
+            y_pred = model.predict_proba(X_valid_part)[:, 1]
+            auc = roc_auc_score(y_valid_part, y_pred)
+            fold_scores.append(auc)
+            trial.report(auc, i)
+
+            # Handle pruning based on the intermediate value.
+            if trial.should_prune():
+                raise optuna.TrialPruned()
+        return np.mean(fold_scores)
     output_dir = os.path.join(output_root, model_name, stage_name)
     os.makedirs(output_dir, exist_ok=True)
 
@@ -86,7 +111,8 @@ def get_model_architecture_space(model_name):
     architecture_registry = {
         "eegnet": eegnet_architecture_space,
         "reegnet": reegnet_architecture_space,
-        "cnn_ncp": cnn_ncp_architecture_space
+        "cnn_ncp": cnn_ncp_architecture_space,
+        "spp_ncp": spp_ncp_architecture_space
     }
     return architecture_registry[model_name]
 
@@ -94,16 +120,17 @@ def get_model_training_space(model_name):
     training_registry = {
         "eegnet": eegnet_training_space,
         "reegnet": reegnet_training_space,
-        "cnn_ncp": cnn_ncp_training_space
+        "cnn_ncp": cnn_ncp_training_space,
+        "spp_ncp": spp_ncp_training_space
     }
     return training_registry[model_name]
 
 def cnn_ncp_architecture_space(trial, prefix):
     return {
-        f"{prefix}module__F1": trial.suggest_categorical(f"{prefix}module__F1", [4, 8, 16]),
-        f"{prefix}module__D": trial.suggest_categorical(f"{prefix}module__D", [1, 2, 4]),
-        f"{prefix}module__kernel_length": trial.suggest_int(f"{prefix}module__kernel_length", 64, 256, step=32),
-        f"{prefix}module__ncp_hidden_dim": trial.suggest_int(f"{prefix}module__ncp_hidden_dim", 11, 24),
+        # f"{prefix}module__F1": trial.suggest_categorical(f"{prefix}module__F1", [4, 8, 16]),
+        # f"{prefix}module__D": trial.suggest_categorical(f"{prefix}module__D", [1, 2, 4]),
+        # f"{prefix}module__kernel_length": trial.suggest_int(f"{prefix}module__kernel_length", 64, 256, step=32),
+        f"{prefix}module__ncp_hidden_dim": trial.suggest_int(f"{prefix}module__ncp_hidden_dim", 11, 16),
         f"{prefix}module__sparsity": trial.suggest_float(f"{prefix}module__sparsity", 0.4, 0.9),
         # f"{prefix}module__temporal_kernel_size": trial.suggest_int(f"{prefix}module__temporal_kernel_size", 3, 9,
         #                                                            step=2),
@@ -111,6 +138,26 @@ def cnn_ncp_architecture_space(trial, prefix):
     }
 
 def cnn_ncp_training_space(trial, prefix):
+    return {
+        f"{prefix}optimizer__lr": trial.suggest_loguniform("lr", 1e-4, 1e-2),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform("weight_decay", 1e-6, 1e-2),
+        f"{prefix}batch_size": trial.suggest_categorical("batch_size", [8, 16, 32, 64]),
+        f"{prefix}module__drop_prob": trial.suggest_float(f"{prefix}module__drop_prob", 0.1, 0.5)
+    }
+
+def spp_ncp_architecture_space(trial, prefix):
+    return {
+        # f"{prefix}module__F1": trial.suggest_categorical(f"{prefix}module__F1", [4, 8, 16]),
+        # f"{prefix}module__D": trial.suggest_categorical(f"{prefix}module__D", [1, 2, 4]),
+        # f"{prefix}module__kernel_length": trial.suggest_int(f"{prefix}module__kernel_length", 64, 256, step=32),
+        f"{prefix}module__ncp_hidden_dim": trial.suggest_int(f"{prefix}module__ncp_hidden_dim", 11, 16),
+        f"{prefix}module__sparsity": trial.suggest_float(f"{prefix}module__sparsity", 0.4, 0.9),
+        # f"{prefix}module__temporal_kernel_size": trial.suggest_int(f"{prefix}module__temporal_kernel_size", 3, 9,
+        #                                                            step=2),
+        # f"{prefix}module__temporal_stride": trial.suggest_int(f"{prefix}module__temporal_stride", 1, 4)
+    }
+
+def spp_ncp_training_space(trial, prefix):
     return {
         f"{prefix}optimizer__lr": trial.suggest_loguniform("lr", 1e-4, 1e-2),
         f"{prefix}optimizer__weight_decay": trial.suggest_loguniform("weight_decay", 1e-6, 1e-2),
