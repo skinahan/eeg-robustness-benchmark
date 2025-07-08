@@ -25,6 +25,108 @@ class Conv2dWithConstraint(nn.Conv2d):
         return super(Conv2dWithConstraint, self).forward(x)
 
 
+from fastcfc import FastCfC
+
+
+class CNNNCPv4(EEGModuleMixin, nn.Module):
+    def __init__(
+            self,
+            n_chans,
+            n_times,
+            n_outputs,
+            ncp_hidden_dim=32,
+            cnn_output_dim=16,
+            sparsity=0.75,
+            drop_prob=0.15,
+            F1=8,
+            D=2,
+            kernel_length=128,
+            temporal_kernel_size=None,
+            temporal_stride=None
+    ):
+        super().__init__(
+            n_outputs=n_outputs,
+            n_chans=n_chans,
+            n_times=n_times,
+            input_window_seconds=None,
+            sfreq=None,
+        )
+        seed = get_seed()
+        batch_norm_momentum = 0.01
+        batch_norm_eps = 1e-3
+
+        # F1 = 8
+        # D = 2
+        # F2 = F1 * D
+        self.F1 = F1
+        F2 = F1 * D
+        cnn_output_dim = F2
+
+        self.kernel_length = kernel_length
+        self.feature_extractor = nn.Sequential(
+            Ensure4d(),
+            Rearrange("batch ch t 1 -> batch 1 ch t"),
+            nn.Conv2d(1, self.F1, (1, self.kernel_length), bias=False, padding=(0, 64)),
+            nn.BatchNorm2d(self.F1, momentum=batch_norm_momentum, affine=True, eps=batch_norm_eps),
+            nn.Conv2d(self.F1, F2, (n_chans, 1), bias=False, groups=self.F1),
+            nn.BatchNorm2d(F2, momentum=batch_norm_momentum, eps=batch_norm_eps),
+            nn.ELU(),
+            nn.AvgPool2d((1, F2), stride=(1, self.F1)),
+            nn.Dropout(p=drop_prob),
+        )
+
+        # Determine temporal Conv1d params
+        if temporal_kernel_size is None:
+            temporal_kernel_size = 3
+        if temporal_stride is None:
+            temporal_stride = 2  # Downsample by ~1/2
+
+        self.temporal_downsampler = nn.Conv1d(
+            in_channels=cnn_output_dim,
+            out_channels=cnn_output_dim,
+            kernel_size=temporal_kernel_size,
+            stride=temporal_stride,
+            padding=temporal_kernel_size // 2
+        )
+
+        wiring = AutoNCP(
+            ncp_hidden_dim, 8, sparsity_level=sparsity, seed=seed)
+        self.ncp = torch.jit.script(FastCfC(cnn_output_dim, wiring, return_sequences=False))
+
+        self.classifier_block = nn.Sequential(
+            nn.Conv2d(8, 8, (1, 16), bias=False, groups=8, padding=(0, 8)),
+            nn.Conv2d(8, 8, (1, 1), bias=False),
+            nn.BatchNorm2d(8, momentum=batch_norm_momentum, affine=True, eps=batch_norm_eps),
+            nn.ELU(),
+            nn.Dropout(drop_prob),
+            nn.AdaptiveAvgPool2d((1, 1)),
+        )
+        self.fc = nn.Linear(8, n_outputs)
+        self._glorot_weight_zero_bias()
+
+    def forward(self, x):
+        x = self.feature_extractor(x)  # [B, C, T, 1]
+        x = x.squeeze(2).permute(0, 2, 1)  # [B, T, C]
+        x = self.temporal_downsampler(x.permute(0, 2, 1)).permute(0, 2, 1)
+        # x.shape: 64, 55, 32
+        # 64, 62, 16
+        x, _ = self.ncp(x)  # [B, T', H]
+        x = x.unsqueeze(-1).unsqueeze(-1)
+        x = self.classifier_block(x)
+        x = x.view(x.shape[0], -1)
+        return self.fc(x)
+
+    def _glorot_weight_zero_bias(self):
+        for module in self.modules():
+            if hasattr(module, "weight"):
+                if "BatchNorm" not in module.__class__.__name__:
+                    nn.init.xavier_uniform_(module.weight, gain=1)
+                else:
+                    nn.init.constant_(module.weight, 1)
+            if hasattr(module, "bias") and module.bias is not None:
+                nn.init.constant_(module.bias, 0)
+
+
 class CNNNCPv3(EEGModuleMixin, nn.Module):
     def __init__(
             self,
@@ -88,7 +190,7 @@ class CNNNCPv3(EEGModuleMixin, nn.Module):
 
         wiring = AutoNCP(
             ncp_hidden_dim, 8, sparsity_level=sparsity, seed=seed)
-        self.ncp = CfC(cnn_output_dim, wiring, return_sequences=True)#, mode="pure")
+        self.ncp = CfC(cnn_output_dim, wiring, return_sequences=True)  # , mode="pure")
 
         self.classifier_block = nn.Sequential(
             nn.Conv2d(8, 8, (1, 16), bias=False, groups=8, padding=(0, 8)),
@@ -357,7 +459,9 @@ def create_cnnncp_classifier(
         print("WARNING: CNN-NCP: TOO FEW UNITS.")
         print(f"Changing net_size to {new_net_size}")
         net_size = new_net_size
-    if classifier_type == 3:
+    if classifier_type == 4:
+        classifier = CNNNCPv4
+    elif classifier_type == 3:
         classifier = CNNNCPv3
     else:
         classifier = CNNNCPv2

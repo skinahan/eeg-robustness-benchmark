@@ -33,7 +33,6 @@ def run_optuna_stage(
     if len(X_train) < 10:
         raise ValueError("Too few training samples for session 0.")
 
-
     param_prefix = "base_pipeline__" if augmented else ""
     if resample is None:
         resample = 250.0
@@ -76,6 +75,7 @@ def run_optuna_stage(
             if trial.should_prune():
                 raise optuna.TrialPruned()
         return np.mean(fold_scores)
+
     output_dir = os.path.join(output_root, model_name, stage_name)
     os.makedirs(output_dir, exist_ok=True)
 
@@ -106,7 +106,6 @@ def run_optuna_stage(
     return study.best_params, study.best_value
 
 
-
 def get_model_architecture_space(model_name):
     architecture_registry = {
         "eegnet": eegnet_architecture_space,
@@ -116,6 +115,7 @@ def get_model_architecture_space(model_name):
     }
     return architecture_registry[model_name]
 
+
 def get_model_training_space(model_name):
     training_registry = {
         "eegnet": eegnet_training_space,
@@ -124,6 +124,7 @@ def get_model_training_space(model_name):
         "spp_ncp": spp_ncp_training_space
     }
     return training_registry[model_name]
+
 
 def cnn_ncp_architecture_space(trial, prefix):
     return {
@@ -137,6 +138,7 @@ def cnn_ncp_architecture_space(trial, prefix):
         # f"{prefix}module__temporal_stride": trial.suggest_int(f"{prefix}module__temporal_stride", 1, 4)
     }
 
+
 def cnn_ncp_training_space(trial, prefix):
     return {
         f"{prefix}optimizer__lr": trial.suggest_loguniform("lr", 1e-4, 1e-2),
@@ -144,6 +146,7 @@ def cnn_ncp_training_space(trial, prefix):
         f"{prefix}batch_size": trial.suggest_categorical("batch_size", [8, 16, 32, 64]),
         f"{prefix}module__drop_prob": trial.suggest_float(f"{prefix}module__drop_prob", 0.1, 0.5)
     }
+
 
 def spp_ncp_architecture_space(trial, prefix):
     return {
@@ -157,6 +160,7 @@ def spp_ncp_architecture_space(trial, prefix):
         # f"{prefix}module__temporal_stride": trial.suggest_int(f"{prefix}module__temporal_stride", 1, 4)
     }
 
+
 def spp_ncp_training_space(trial, prefix):
     return {
         f"{prefix}optimizer__lr": trial.suggest_loguniform("lr", 1e-4, 1e-2),
@@ -165,10 +169,13 @@ def spp_ncp_training_space(trial, prefix):
         f"{prefix}module__drop_prob": trial.suggest_float(f"{prefix}module__drop_prob", 0.1, 0.5)
     }
 
+
 def reegnet_architecture_space(trial, prefix):
     return {
-        f"{prefix}module__lstm_hidden_size": trial.suggest_categorical(f"{prefix}module__lstm_hidden_size", [8, 16, 32, 64]),
+        f"{prefix}module__lstm_hidden_size": trial.suggest_categorical(f"{prefix}module__lstm_hidden_size",
+                                                                       [8, 16, 32, 64]),
     }
+
 
 def reegnet_training_space(trial, prefix):
     return {
@@ -178,12 +185,14 @@ def reegnet_training_space(trial, prefix):
         f"{prefix}module__drop_prob": trial.suggest_float(f"{prefix}module__drop_prob", 0.1, 0.5),
     }
 
+
 def eegnet_architecture_space(trial, prefix):
     return {
         f"{prefix}module__F1": trial.suggest_categorical(f"{prefix}module__F1", [4, 8, 16]),
         f"{prefix}module__D": trial.suggest_categorical(f"{prefix}module__D", [1, 2, 4]),
         f"{prefix}module__kernel_length": trial.suggest_int(f"{prefix}module__kernel_length", 64, 256, step=32),
     }
+
 
 def eegnet_training_space(trial, prefix):
     return {
@@ -192,6 +201,7 @@ def eegnet_training_space(trial, prefix):
         f"{prefix}optimizer__weight_decay": trial.suggest_loguniform("weight_decay", 1e-6, 1e-2),
         f"{prefix}batch_size": trial.suggest_categorical("batch_size", [8, 16, 32, 64]),
     }
+
 
 def run_two_stage_optuna(
         model_fn,
@@ -225,6 +235,7 @@ def run_two_stage_optuna(
 
     print("\n[Stage 2] Training Optimization")
     training_param_space_fn = get_model_training_space(model_name)
+
     def training_space_with_arch(trial, prefix):
         # Freeze architecture params
         arch_prefixed = {k: v for k, v in arch_params.items()}

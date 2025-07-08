@@ -29,6 +29,7 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
     seed : int
         Random seed for reproducibility.
     """
+
     def __init__(self, noise_type='dropout', intensity=10.0, seed=42):
         self.noise_type = noise_type
         self.intensity = intensity
@@ -78,7 +79,7 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
             'P1', 'Pz', 'P2', 'POz'
         ]
 
-        #ch_names = [f"EEG {i}" for i in range(n_channels)]
+        # ch_names = [f"EEG {i}" for i in range(n_channels)]
         info = mne.create_info(ch_names=ch_names, sfreq=250, ch_types=['eeg'] * n_channels)
 
         noisy_epochs = []
@@ -114,6 +115,7 @@ def inject_scaled_eog_signal(data, info, scale_factor=4.0, seed=42):
 
 
 from sklearn.base import BaseEstimator, ClassifierMixin
+
 
 class TrainOnlyNoiseClassifier(ClassifierMixin, BaseEstimator):
     def __init__(self, base_pipeline, noise_type='dropout', intensity=25.0, seed=42):
@@ -155,6 +157,7 @@ class TrainOnlyNoiseClassifier(ClassifierMixin, BaseEstimator):
             return self.base_pipeline[-1].predict_proba(X)
         else:
             raise NotImplementedError("Underlying model does not support predict_proba()")
+
     #
     # def decision_function(self, X):
     #     return self.base_pipeline.decision_function(X)
@@ -184,3 +187,62 @@ class TrainOnlyNoiseClassifier(ClassifierMixin, BaseEstimator):
             super().set_params(**own_params)
 
         return self
+
+class ConcatenatedNoiseAugmenter(ClassifierMixin, BaseEstimator):
+    def __init__(self, base_pipeline, noise_type='dropout', intensity=25.0, seed=42, return_groups=False):
+        self.base_pipeline = base_pipeline
+        self.noise_type = noise_type
+        self.intensity = intensity
+        self.seed = seed
+        self.return_groups = return_groups  # If True, returns group labels for splitting
+
+    def fit(self, X, y, groups=None):
+        augmenter = EEGNoiseAugmentor(
+            noise_type=self.noise_type,
+            intensity=self.intensity,
+            seed=self.seed
+        )
+
+        X_aug = augmenter.transform(X)
+        X_combined = np.concatenate([X, X_aug], axis=0)
+        y_combined = np.concatenate([y, y], axis=0)
+
+        if groups is not None:
+            groups_combined = np.concatenate([groups, groups], axis=0)
+        else:
+            groups_combined = np.repeat(np.arange(len(X)), 2)
+
+        self._X_train_ = X_combined
+        self._y_train_ = y_combined
+        self._groups_ = groups_combined
+
+        self.base_pipeline.fit(X_combined, y_combined)
+        self.classes_ = getattr(self.base_pipeline, 'classes_', None)
+        return self
+
+    def get_augmented_data(self):
+        return self._X_train_, self._y_train_, self._groups_
+
+    def predict(self, X):
+        return self.base_pipeline.predict(X)
+
+    def score(self, X, y, sample_weight=None):
+        return self.base_pipeline.score(X, y, sample_weight)
+
+    def predict_proba(self, X):
+        if hasattr(self.base_pipeline, 'predict_proba'):
+            return self.base_pipeline.predict_proba(X)
+        elif hasattr(self.base_pipeline[-1], 'predict_proba'):
+            return self.base_pipeline[-1].predict_proba(X)
+        else:
+            raise NotImplementedError("Underlying model does not support predict_proba()")
+
+
+
+"""
+I've attached the latest version of our experiment harness, and I've placed ConcatenatedNoiseAugmenter in augmentation/noise.py.
+
+Please help me make the following alterations to run_experiments.py:
+1. The current --mode augment workflow in run_experiments.py should be preserved as a new --mode perturb.
+2. We will replace the old --mode augment workflow with follow the example of the old version closely, except for the use of ConcatenatedNoiseAugmenter class in place of the TrainOnlyNoiseClassifier.
+"""
