@@ -243,18 +243,24 @@ def run_experiment(
             df['module__ncp_hidden_dim'] = config['module__ncp_hidden_dim']
             df['module__sparsity'] = config['module__sparsity']
             df['optimizer__weight_decay'] = config['optimizer__weight_decay']
+        # TODO: This line fails on REEGNet baseline
         if model_name == 'reegnet':
+            print(config)
+            for k, v in config.items():
+                print(f"{k}: {v}")
             df['module__lstm_hidden_size'] = config['module__lstm_hidden_size']
             df['module__drop_prob'] = config['module__drop_prob']
 
         for subj in df['subject'].unique():
+            subject_df = df[df['subject'] == subj]
             for session in df['session'].unique():
+                session_df = subject_df[subject_df['session'] == session]
                 out_dir = create_output_path(model_name, seed, int(subj), session, mode)
                 os.makedirs(out_dir, exist_ok=True)
                 filename_suffix = f"_{noise_type}" if is_augmented and noise_type else ""
                 out_file = os.path.join(out_dir,
                                         f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
-                df[(df['subject'] == subj) & (df['session'] == session)].to_csv(out_file, index=False)
+                session_df.to_csv(out_file, index=False)
                 print(f"Saved: {out_file}")
 
     else:
