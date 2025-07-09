@@ -7,11 +7,15 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 from typing import List, Dict, Any
-from sklearn.model_selection import GridSearchCV
+
+from sklearn import clone
+from sklearn.model_selection import GridSearchCV, GroupKFold
 from sklearn.preprocessing import LabelEncoder
 from moabb.datasets import BNCI2014_001
 from moabb.paradigms import MotorImagery
 from moabb.evaluations import WithinSessionEvaluation
+
+# from augmentation.data_augment_experiment import run_grouped_augmented_experiment
 
 # --- Setup ---
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -20,7 +24,7 @@ sys.path.insert(0, project_root)
 
 from config import MODEL_REGISTRY
 from globals import set_seeds, get_seed
-from augmentation.noise import TrainOnlyNoiseClassifier
+from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
 
 
 def get_paradigm(resample=None):
@@ -184,6 +188,42 @@ def run_optuna_tuning_within_session(model_fn, model_name, X, y, metadata, resam
 from two_stage_hp_opt import run_two_stage_optuna
 
 
+def two_stage_opt(dataset, subj, paradigm, model_name, model_fn, seed, mode, resample, ):
+    X, y, metadata = paradigm.get_data(dataset, subjects=[subj])
+    label_encoder = LabelEncoder()
+    y_encoded = label_encoder.fit_transform(y)
+    out_dir = create_output_path(model_name, seed, subj, '0train', mode)
+    best_params, best_score = run_two_stage_optuna(
+        model_fn=model_fn,
+        model_name=model_name,
+        X=X,
+        y=y_encoded,
+        metadata=metadata,
+        resample=resample,
+        seed=seed,
+        output_root=os.path.join(out_dir, "optuna_results"),
+        arch_trials=10,
+        train_trials=10,
+        perturbed=False
+    )
+    final_params = {}
+    module_params = ['ncp_hidden_dim', 'sparsity', 'temporal_kernel_size', 'temporal_stride', 'drop_prob']
+    optimizer_params = ['lr', 'weight_decay']
+    # prefix = "base_pipeline__" if is_perturbed else ""
+    prefix = ""
+    module_prefix = f"{prefix}module__"
+    optim_prefix = f"{prefix}optimizer__"
+    for k, v in best_params.items():
+        if k in module_params:
+            final_params[f"{module_prefix}{k}"] = v
+        elif k in optimizer_params:
+            final_params[f"{optim_prefix}{k}"] = v
+        else:
+            final_params[k] = v
+
+    return final_params
+
+
 def run_experiment(
         model_name: str,
         mode: str,
@@ -194,8 +234,7 @@ def run_experiment(
         intensity: float = None
 ):
     set_seeds(seed)
-    is_augmented = (mode == "augment")
-    # param_grid = get_param_grid(model_name, noise_augmented=is_augmented)
+    is_perturbed = (mode == "perturb")
     model_fn = MODEL_REGISTRY[model_name]
     n_times = int(1000 * (resample / 250.0)) if resample else 1000
 
@@ -204,7 +243,7 @@ def run_experiment(
     base_model.max_epochs = 100
     base_model.callbacks = []
 
-    if is_augmented:
+    if is_perturbed:
         model = TrainOnlyNoiseClassifier(
             base_pipeline=base_model,
             noise_type=noise_type,
@@ -243,11 +282,7 @@ def run_experiment(
             df['module__ncp_hidden_dim'] = config['module__ncp_hidden_dim']
             df['module__sparsity'] = config['module__sparsity']
             df['optimizer__weight_decay'] = config['optimizer__weight_decay']
-        # TODO: This line fails on REEGNet baseline
         if model_name == 'reegnet':
-            print(config)
-            for k, v in config.items():
-                print(f"{k}: {v}")
             df['module__lstm_hidden_size'] = config['module__lstm_hidden_size']
             df['module__drop_prob'] = config['module__drop_prob']
 
@@ -257,51 +292,18 @@ def run_experiment(
                 session_df = subject_df[subject_df['session'] == session]
                 out_dir = create_output_path(model_name, seed, int(subj), session, mode)
                 os.makedirs(out_dir, exist_ok=True)
-                filename_suffix = f"_{noise_type}" if is_augmented and noise_type else ""
+                filename_suffix = f"_{noise_type}" if is_perturbed and noise_type else ""
                 out_file = os.path.join(out_dir,
                                         f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
                 session_df.to_csv(out_file, index=False)
                 print(f"Saved: {out_file}")
 
-    else:
+    elif mode == "tune":
         for subj in subject_list:
             dataset = BNCI2014_001()
             dataset.subject_list = subject_list
             paradigm = get_paradigm(resample=resample)
-
-            X, y, metadata = paradigm.get_data(dataset, subjects=[subj])
-            label_encoder = LabelEncoder()
-            y_encoded = label_encoder.fit_transform(y)
-
-            out_dir = create_output_path(model_name, seed, subj, '0train', mode)
-            best_params, best_score = run_two_stage_optuna(
-                model_fn=model_fn,
-                model_name=model_name,
-                X=X,
-                y=y_encoded,
-                metadata=metadata,
-                resample=resample,
-                seed=seed,
-                output_root=os.path.join(out_dir, "optuna_results"),
-                arch_trials=10,
-                train_trials=10,
-                augmented=is_augmented
-            )
-            final_params = {}
-
-            module_params = ['ncp_hidden_dim', 'sparsity', 'temporal_kernel_size', 'temporal_stride', 'drop_prob']
-            optimizer_params = ['lr', 'weight_decay']
-            prefix = "base_pipeline__" if is_augmented else ""
-            module_prefix = f"{prefix}module__"
-            optim_prefix = f"{prefix}optimizer__"
-            for k, v in best_params.items():
-                if k in module_params:
-                    final_params[f"{module_prefix}{k}"] = v
-                elif k in optimizer_params:
-                    final_params[f"{optim_prefix}{k}"] = v
-                else:
-                    final_params[k] = v
-
+            final_params = two_stage_opt(dataset, subj, paradigm, model_name, model_fn, seed, mode, resample)
             model.set_params(**final_params)
             dataset.subject_list = [subj]
             hdf5_path = os.path.join(out_dir,
@@ -324,22 +326,6 @@ def run_experiment(
             df['optimizer__lr'] = config['optimizer__lr']
             df['batch_size'] = config['batch_size']
             df['max_epochs'] = config['max_epochs']
-            #
-            # grid = GridSearchCV(model, param_grid, cv=3, scoring='roc_auc', n_jobs=1, return_train_score=True)
-            # grid.fit(X, y_encoded)
-            # train_score = np.mean(grid.cv_results_['mean_train_score'][grid.best_index_])
-            # test_score = grid.best_score_
-            # best_params = grid.cv_results_['params'][grid.best_index_]
-            #
-            # df = pd.DataFrame([
-            #     {"subject": subj, "session": "0train", "score": train_score},
-            #     {"subject": subj, "session": "1test", "score": test_score},
-            # ])
-            # df['seed'] = seed
-            # df['mode'] = mode
-            # df['model'] = model_name
-            # df['paradigm'] = 'MotorImagery'
-            # df['resample'] = resample or 250.0
 
             for k, v in final_params.items():
                 df[k] = v
@@ -347,11 +333,62 @@ def run_experiment(
             for session in df['session'].unique():
                 out_dir = create_output_path(model_name, seed, subj, session, mode)
                 os.makedirs(out_dir, exist_ok=True)
-                filename_suffix = f"_{noise_type}" if is_augmented and noise_type else ""
+                filename_suffix = f"_{noise_type}" if is_perturbed and noise_type else ""
                 out_file = os.path.join(out_dir,
                                         f"{model_name}_{mode}{filename_suffix}_subject_{subj:03d}_seed{seed}.csv")
                 df[df['session'] == session].to_csv(out_file, index=False)
                 print(f"Saved: {out_file}")
+
+    # TODO: Fix support for "perturb" mode
+    #   - will need to update two_stage_hp_opt.py
+
+
+# Unused GridSearchCV from past implementation
+def grid_search_hp_opt(model, param_grid, X, y_encoded, subj, seed, mode, model_name, resample):
+    grid = GridSearchCV(model, param_grid, cv=3, scoring='roc_auc', n_jobs=1, return_train_score=True)
+    grid.fit(X, y_encoded)
+    train_score = np.mean(grid.cv_results_['mean_train_score'][grid.best_index_])
+    test_score = grid.best_score_
+    best_params = grid.cv_results_['params'][grid.best_index_]
+
+    df = pd.DataFrame([
+        {"subject": subj, "session": "0train", "score": train_score},
+        {"subject": subj, "session": "1test", "score": test_score},
+    ])
+    df['seed'] = seed
+    df['mode'] = mode
+    df['model'] = model_name
+    df['paradigm'] = 'MotorImagery'
+    df['resample'] = resample or 250.0
+
+
+def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, noise_type, intensity):
+    model_fn = MODEL_REGISTRY[model_name]
+    base_model = model_fn(n_chans=22, n_times=1000, n_outputs=2)
+    augmenter = EEGNoiseAugmentor(noise_type=noise_type, intensity=intensity, seed=seed)
+    concat_aug = ConcatenatedNoiseAugmenter(augmenter)
+
+    for subj in subject_list:
+        dataset = BNCI2014_001()
+        dataset.subject_list = [subj]
+        paradigm = get_paradigm(resample=resample)
+
+        X, y, metadata = paradigm.get_data(dataset, subjects=[subj])
+        y_encoded = LabelEncoder().fit_transform(y)
+
+        X_aug, y_aug, groups = concat_aug.transform_with_groups(X, y_encoded)
+
+        cv = GroupKFold(n_splits=5)
+        fold_scores = []
+        for train_idx, val_idx in cv.split(X_aug, y_aug, groups):
+            model = clone(base_model)
+            model.max_epochs = 100
+            model.train_split = None
+            model.callbacks = []
+            model.fit(X_aug[train_idx], y_aug[train_idx])
+            fold_scores.append(model.score(X_aug[val_idx], y_aug[val_idx]))
+
+        print(f"Subject {subj}, grouped CV accuracy: {np.mean(fold_scores):.4f}")
 
 
 if __name__ == "__main__":
@@ -363,7 +400,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Unified EEG Experiment Runner")
     parser.add_argument("--model", type=str, required=True, choices=list(MODEL_REGISTRY.keys()))
-    parser.add_argument("--mode", type=str, required=True, choices=["baseline", "tune", "augment"])
+    parser.add_argument("--mode", type=str, required=True, choices=["baseline", "tune", "perturb", "augment"])
     parser.add_argument("--subjects", type=int, nargs="+", required=True)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--resample", type=float, default=None)
@@ -373,15 +410,25 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    run_experiment(
-        model_name=args.model,
-        mode=args.mode,
-        subject_list=args.subjects,
-        seed=args.seed,
-        resample=args.resample,
-        noise_type=args.noise_type,
-        intensity=args.intensity
-    )
+    if args.mode == "augment":
+        run_grouped_augmented_experiment(
+            model_name=args.model,
+            subject_list=args.subjects,
+            seed=args.seed,
+            resample=args.resample,
+            noise_type=args.noise_type,
+            intensity=args.intensity
+        )
+    else:
+        run_experiment(
+            model_name=args.model,
+            mode=args.mode,
+            subject_list=args.subjects,
+            seed=args.seed,
+            resample=args.resample,
+            noise_type=args.noise_type,
+            intensity=args.intensity
+        )
 
     if args.aggregate:
         collect_all_results(paradigm='MotorImagery')
