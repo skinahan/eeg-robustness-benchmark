@@ -15,6 +15,9 @@ from moabb.datasets import BNCI2014_001
 from moabb.paradigms import MotorImagery
 from moabb.evaluations import WithinSessionEvaluation
 
+from evaluation.session_evaluator import NoiseWithinSessionEvaluation
+from utils import create_output_path
+
 # from augmentation.data_augment_experiment import run_grouped_augmented_experiment
 
 # --- Setup ---
@@ -73,18 +76,6 @@ def extract_model_params(model) -> Dict[str, Any]:
     return {}
 
 
-def create_output_path(model, seed, subject, session, mode, paradigm='MotorImagery'):
-    return os.path.join(
-        "results",
-        paradigm,
-        "BNCI2014_001",
-        model,
-        "WithinSessionEvaluation",
-        str(seed),
-        f"sub-{int(subject):03d}",
-        session,
-        mode
-    )
 
 
 def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
@@ -188,7 +179,7 @@ def run_optuna_tuning_within_session(model_fn, model_name, X, y, metadata, resam
 from two_stage_hp_opt import run_two_stage_optuna
 
 
-def two_stage_opt(dataset, subj, paradigm, model_name, model_fn, seed, mode, resample, ):
+def two_stage_opt(dataset, subj, paradigm, model_name, model_fn, seed, mode, resample):
     X, y, metadata = paradigm.get_data(dataset, subjects=[subj])
     label_encoder = LabelEncoder()
     y_encoded = label_encoder.fit_transform(y)
@@ -202,8 +193,8 @@ def two_stage_opt(dataset, subj, paradigm, model_name, model_fn, seed, mode, res
         resample=resample,
         seed=seed,
         output_root=os.path.join(out_dir, "optuna_results"),
-        arch_trials=10,
-        train_trials=10,
+        arch_trials=5,
+        train_trials=5,
         perturbed=False
     )
     final_params = {}
@@ -339,7 +330,6 @@ def run_experiment(
                 df[df['session'] == session].to_csv(out_file, index=False)
                 print(f"Saved: {out_file}")
 
-    # TODO: Fix support for "perturb" mode
     #   - will need to update two_stage_hp_opt.py
 
 
@@ -362,34 +352,43 @@ def grid_search_hp_opt(model, param_grid, X, y_encoded, subj, seed, mode, model_
     df['resample'] = resample or 250.0
 
 
+
+
 def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, noise_type, intensity):
-    model_fn = MODEL_REGISTRY[model_name]
-    base_model = model_fn(n_chans=22, n_times=1000, n_outputs=2)
-    augmenter = EEGNoiseAugmentor(noise_type=noise_type, intensity=intensity, seed=seed)
-    concat_aug = ConcatenatedNoiseAugmenter(augmenter)
+    dataset = BNCI2014_001()
+    dataset.subject_list = subject_list
+    paradigm = get_paradigm(resample=resample)
+    noise_dict = {
+        "noise_type": noise_type,
+        "intensity": intensity
+    }
+    mode='augment'
+
+    evaluation = \
+        (NoiseWithinSessionEvaluation(
+            paradigm=paradigm,
+            datasets=[dataset],
+            mode=mode,
+            noise_dict=noise_dict,
+            resample=resample,
+            overwrite=True,
+            hdf5_path=f"checkpoints/{model_name}_{mode}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}.h5",
+            random_state=seed,
+            model_name=model_name
+        ))
+    results = evaluation.process({f"{model_name}+MotorImagery+Augment": None})
 
     for subj in subject_list:
-        dataset = BNCI2014_001()
-        dataset.subject_list = [subj]
-        paradigm = get_paradigm(resample=resample)
-
-        X, y, metadata = paradigm.get_data(dataset, subjects=[subj])
-        y_encoded = LabelEncoder().fit_transform(y)
-
-        X_aug, y_aug, groups = concat_aug.transform_with_groups(X, y_encoded)
-
-        cv = GroupKFold(n_splits=5)
-        fold_scores = []
-        for train_idx, val_idx in cv.split(X_aug, y_aug, groups):
-            model = clone(base_model)
-            model.max_epochs = 100
-            model.train_split = None
-            model.callbacks = []
-            model.fit(X_aug[train_idx], y_aug[train_idx])
-            fold_scores.append(model.score(X_aug[val_idx], y_aug[val_idx]))
-
-        print(f"Subject {subj}, grouped CV accuracy: {np.mean(fold_scores):.4f}")
-
+        subject_df = results[results['subject'] == str(subj)]
+        for session in subject_df['session'].unique():
+            session_df = subject_df[subject_df['session'] == session]
+            out_dir = create_output_path(model_name, seed, int(subj), session, mode)
+            os.makedirs(out_dir, exist_ok=True)
+            filename_suffix = f"_{noise_type}_{intensity}"
+            out_file = os.path.join(out_dir,
+                                    f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
+            session_df.to_csv(out_file, index=False)
+            print(f"Saved: {out_file}")
 
 if __name__ == "__main__":
     # Record start time

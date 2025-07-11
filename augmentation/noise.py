@@ -195,29 +195,38 @@ class ConcatenatedNoiseAugmenter(ClassifierMixin, BaseEstimator):
         self.intensity = intensity
         self.seed = seed
         self.return_groups = return_groups  # If True, returns group labels for splitting
-
-    def fit(self, X, y, groups=None):
-        augmenter = EEGNoiseAugmentor(
+        self.augmenter = EEGNoiseAugmentor(
             noise_type=self.noise_type,
             intensity=self.intensity,
             seed=self.seed
         )
 
-        X_aug = augmenter.transform(X)
+    def concat_and_augment(self, X, y, groups=None):
+        X_aug = self.augmenter.transform(X)
         X_combined = np.concatenate([X, X_aug], axis=0)
         y_combined = np.concatenate([y, y], axis=0)
 
         if groups is not None:
             groups_combined = np.concatenate([groups, groups], axis=0)
         else:
-            groups_combined = np.repeat(np.arange(len(X)), 2)
+            groups_combined = np.concatenate([np.arange(len(X)), np.arange(len(X))], axis=0)
 
         self._X_train_ = X_combined
         self._y_train_ = y_combined
         self._groups_ = groups_combined
+        return self.get_augmented_data()
 
-        self.base_pipeline.fit(X_combined, y_combined)
-        self.classes_ = getattr(self.base_pipeline, 'classes_', None)
+    def fit(self, X, y, groups=None):
+        self.base_pipeline.fit(X, y)
+        self.is_fitted_ = True
+        self.base_pipeline.is_fitted_ = True
+        # ✅ Expose fitted classes_ attribute from the wrapped classifier
+        if hasattr(self.base_pipeline, "classes_"):
+            self.classes_ = self.base_pipeline.classes_
+        elif hasattr(self.base_pipeline[-1], "classes_"):
+            self.classes_ = self.base_pipeline[-1].classes_
+        else:
+            raise AttributeError("Base pipeline does not expose `classes_` after fit")
         return self
 
     def get_augmented_data(self):
@@ -228,6 +237,32 @@ class ConcatenatedNoiseAugmenter(ClassifierMixin, BaseEstimator):
 
     def score(self, X, y, sample_weight=None):
         return self.base_pipeline.score(X, y, sample_weight)
+
+    def get_params(self, deep=True):
+        params = super().get_params(deep=deep)
+        if deep and hasattr(self.base_pipeline, 'get_params'):
+            base_params = self.base_pipeline.get_params().copy()
+            for key in list(base_params.keys()):
+                base_params[f'base_pipeline__{key}'] = base_params.pop(key)
+            params.update(base_params)
+        return params
+
+    def set_params(self, **params):
+        base_params = {}
+        own_params = {}
+
+        for key, value in params.items():
+            if key.startswith('base_pipeline__'):
+                base_params[key[len('base_pipeline__'):]] = value
+            else:
+                own_params[key] = value
+
+        if base_params:
+            self.base_pipeline.set_params(**base_params)
+        if own_params:
+            super().set_params(**own_params)
+
+        return self
 
     def predict_proba(self, X):
         if hasattr(self.base_pipeline, 'predict_proba'):
