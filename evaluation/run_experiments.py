@@ -354,7 +354,7 @@ def grid_search_hp_opt(model, param_grid, X, y_encoded, subj, seed, mode, model_
 
 
 
-def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, noise_type, intensity):
+def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, noise_type, intensity, mode):
     dataset = BNCI2014_001()
     dataset.subject_list = subject_list
     paradigm = get_paradigm(resample=resample)
@@ -362,7 +362,9 @@ def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, n
         "noise_type": noise_type,
         "intensity": intensity
     }
-    mode='augment'
+    capStr = 'Perturb'
+    if mode == "augment":
+        capStr = 'Augment'
 
     evaluation = \
         (NoiseWithinSessionEvaluation(
@@ -376,7 +378,7 @@ def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, n
             random_state=seed,
             model_name=model_name
         ))
-    results = evaluation.process({f"{model_name}+MotorImagery+Augment": None})
+    results = evaluation.process({f"{model_name}+MotorImagery+{capStr}": None})
 
     for subj in subject_list:
         subject_df = results[results['subject'] == str(subj)]
@@ -409,14 +411,15 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.mode == "augment":
+    if args.mode == "augment" or args.mode == "perturb" :
         run_grouped_augmented_experiment(
             model_name=args.model,
             subject_list=args.subjects,
             seed=args.seed,
             resample=args.resample,
             noise_type=args.noise_type,
-            intensity=args.intensity
+            intensity=args.intensity,
+            mode=args.mode
         )
     else:
         run_experiment(
