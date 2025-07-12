@@ -15,11 +15,6 @@ from moabb.datasets import BNCI2014_001
 from moabb.paradigms import MotorImagery
 from moabb.evaluations import WithinSessionEvaluation
 
-from evaluation.session_evaluator import NoiseWithinSessionEvaluation
-from utils import create_output_path
-
-# from augmentation.data_augment_experiment import run_grouped_augmented_experiment
-
 # --- Setup ---
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
@@ -28,7 +23,8 @@ sys.path.insert(0, project_root)
 from config import MODEL_REGISTRY
 from globals import set_seeds, get_seed
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
-
+from evaluation.session_evaluator import NoiseWithinSessionEvaluation
+from utils import create_output_path
 
 def get_paradigm(resample=None):
     return MotorImagery(
