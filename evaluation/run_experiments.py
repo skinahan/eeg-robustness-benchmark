@@ -24,7 +24,8 @@ from config import MODEL_REGISTRY
 from globals import set_seeds, get_seed
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
 from evaluation.session_evaluator import NoiseWithinSessionEvaluation
-from utils import create_output_path
+from utils import create_output_path, create_hdf5_model_path
+
 
 def get_paradigm(resample=None):
     return MotorImagery(
@@ -362,6 +363,10 @@ def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, n
     if mode == "augment":
         capStr = 'Augment'
 
+    checkpoint_dir = create_hdf5_model_path(model_name, seed, '0train', mode)
+    file_name = f"{noise_type}/_{intensity}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}.h5"
+    full_hdf5_path = os.path.join(checkpoint_dir, file_name)
+
     evaluation = \
         (NoiseWithinSessionEvaluation(
             paradigm=paradigm,
@@ -370,7 +375,7 @@ def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, n
             noise_dict=noise_dict,
             resample=resample,
             overwrite=True,
-            hdf5_path=f"checkpoints/{model_name}_{mode}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}.h5",
+            hdf5_path=full_hdf5_path,
             random_state=seed,
             model_name=model_name
         ))
