@@ -1,4 +1,5 @@
 import os
+import shutil
 import sys
 import argparse
 import warnings
@@ -349,7 +350,7 @@ def grid_search_hp_opt(model, param_grid, X, y_encoded, subj, seed, mode, model_
     df['resample'] = resample or 250.0
 
 
-
+import uuid
 
 def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, noise_type, intensity, mode):
     dataset = BNCI2014_001()
@@ -363,9 +364,10 @@ def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, n
     if mode == "augment":
         capStr = 'Augment'
 
-    # checkpoint_dir = create_hdf5_model_path(model_name, seed, '0train', mode)
-    # file_name = f"{noise_type}/_{intensity}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}.h5"
-    # full_hdf5_path = os.path.join(checkpoint_dir, file_name)
+    unique_id = uuid.uuid4().hex[:8]
+    checkpoint_dir = create_hdf5_model_path(model_name, seed, '0train', mode)
+    file_name = f"{noise_type}/{intensity}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}_{unique_id}.h5"
+    full_hdf5_path = os.path.join(checkpoint_dir, file_name)
 
     existing_output_paths = []
     expected_output_paths = []
@@ -393,12 +395,15 @@ def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, n
             noise_dict=noise_dict,
             resample=resample,
             overwrite=True,
-            hdf5_path=None,#full_hdf5_path,
+            hdf5_path=full_hdf5_path,
             random_state=seed,
             model_name=model_name
         ))
     results = evaluation.process({f"{model_name}+MotorImagery+{capStr}": None})
 
+    if os.path.isdir(full_hdf5_path):
+        shutil.rmtree(full_hdf5_path)
+    
     for subj in subject_list:
         subject_df = results[results['subject'] == str(subj)]
         for session in subject_df['session'].unique():
