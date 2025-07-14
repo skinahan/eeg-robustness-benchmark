@@ -363,9 +363,27 @@ def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, n
     if mode == "augment":
         capStr = 'Augment'
 
-    checkpoint_dir = create_hdf5_model_path(model_name, seed, '0train', mode)
-    file_name = f"{noise_type}/_{intensity}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}.h5"
-    full_hdf5_path = os.path.join(checkpoint_dir, file_name)
+    # checkpoint_dir = create_hdf5_model_path(model_name, seed, '0train', mode)
+    # file_name = f"{noise_type}/_{intensity}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}.h5"
+    # full_hdf5_path = os.path.join(checkpoint_dir, file_name)
+
+    existing_output_paths = []
+    expected_output_paths = []
+    for subj in subject_list:
+        for session in ['0train', '1test']:
+            out_dir = create_output_path(model_name, seed, int(subj), session, mode)
+            filename_suffix = f"_{noise_type}_{intensity}"
+            out_file = os.path.join(out_dir, f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
+            if os.path.exists(out_file):
+                existing_output_paths.append(out_file)
+            else:
+                expected_output_paths.append(out_file)
+
+    if len(expected_output_paths) == 0:
+        print(f"Skipping analysis, file(s) exist:")
+        for out_file in existing_output_paths:
+            print(out_file)
+        sys.exit(0)
 
     evaluation = \
         (NoiseWithinSessionEvaluation(
@@ -375,7 +393,7 @@ def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, n
             noise_dict=noise_dict,
             resample=resample,
             overwrite=True,
-            hdf5_path=full_hdf5_path,
+            hdf5_path=None,#full_hdf5_path,
             random_state=seed,
             model_name=model_name
         ))
