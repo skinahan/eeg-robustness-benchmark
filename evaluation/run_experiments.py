@@ -79,12 +79,29 @@ def extract_model_params(model) -> Dict[str, Any]:
 def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
     root = os.path.join("results", paradigm, dataset)
     all_dfs = []
+    noise_types = ['gaussian', 'eog', 'dropout']
+    intensities = [str(x*10.0) for x in range(1, 10)]
     for dirpath, _, filenames in os.walk(root):
         for file in filenames:
             if file.endswith(".csv") and not file.startswith("all_results"):
                 full_path = os.path.join(dirpath, file)
                 try:
                     df = pd.read_csv(full_path)
+                    selected_type = None
+                    intensity = None
+                    for type in noise_types:
+                        if type in file:
+                            selected_type = type
+                            for strength in intensities:
+                                if strength in file:
+                                    intensity = strength
+                                    break
+                            break
+                    if selected_type is not None and intensity is not None:
+                        df['noise_type'] = selected_type
+                        df['intensity'] = intensity
+
+
                     all_dfs.append(df)
                 except Exception as e:
                     print(f"Failed to read {full_path}: {e}")

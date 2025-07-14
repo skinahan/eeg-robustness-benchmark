@@ -53,15 +53,20 @@ def aggregate_results(input_dir):
             file_path = os.path.join(input_dir, file)
             df = pd.read_csv(file_path)
 
+            file_lower = file.lower()
+
             # Determine model type
-            if 'reegnet' in file.lower():
+            if 'reegnet' in file_lower:
                 model = 'REEGNet'
-            elif 'eegnet' in file.lower():
+            elif 'eegnet' in file_lower:
                 model = 'EEGNet'
-            elif 'cnn_ncp' in file.lower():
+            elif 'cnn_ncp' in file_lower:
                 model = 'CNN_NCP'
             else:
                 model = 'Unknown'
+
+            if '_resampled' in file.lower():
+                model = model + '_RESAMPLE'
 
             # Determine if tuned or baseline
             tuned = not ('_baseline_subjects' in file.lower())
@@ -88,7 +93,6 @@ def aggregate_results(input_dir):
                 if '_' in seed_str:
                     seed_str = seed_str.split('_')[0]
                 seed = int(seed_str)
-
 
             # Add metadata columns
             df['model'] = model
@@ -127,6 +131,15 @@ def aggregate_results(input_dir):
         print("No .csv files found in the provided directory.")
         return None
 
+# Return a dataframe for the results
+def load_results(input_dir, file):
+    if file.endswith(".csv"):
+        file_path = os.path.join(input_dir, file)
+        df = pd.read_csv(file_path)
+        return df
+    else:
+        print("No .csv files found in the provided directory.")
+
 def plot_noise_performance(aggregated_df, model_name, noise_type, session_type, output_dir='plots'):
     """
     Generic method to create a seaborn plot of noise intensity vs. mean score for a given model.
@@ -159,7 +172,7 @@ def plot_noise_performance(aggregated_df, model_name, noise_type, session_type, 
     # Create plot
     sns.set_theme(style="whitegrid")
     plt.figure(figsize=(8, 6), dpi=300)
-    ax = sns.lineplot(x='noise_level', y='score', marker='o', data=df_grouped, color='b', errorbar=('ci', 95))
+    ax = sns.lineplot(x='intensity', y='score', marker='o', data=df_grouped, color='b', errorbar=('ci', 95))
 
     # Labeling and styling
     ax.set_title(f"{model_name}: Mean {session_label} Score vs {noise_label} Intensity", fontsize=14)
@@ -232,7 +245,6 @@ def plot_eog_test_performance(aggregated_df, model_name):
         session_type='1test'
     )
 
-
 def plot_eog_train_performance(aggregated_df, model_name):
     """
     Wrapper for plotting eog noise performance on the train set for a given model.
@@ -243,7 +255,6 @@ def plot_eog_train_performance(aggregated_df, model_name):
         noise_type='eog',
         session_type='0train'
     )
-
 
 def plot_per_subject_roc_auc(
         df,
@@ -262,15 +273,15 @@ def plot_per_subject_roc_auc(
     - output_dir: directory to save the plot PNG.
     """
     # Filter for model
-    df_model = df[df['model'] == model_name.lower()]
+    df_model = df[df['model'] == model_name]
 
     if tuned:
         # Only tuned results, but no noise augmentation
-        df_filtered = df_model[(df_model['tuned'] == True) & (df_model['noise_type'].isnull())]
+        df_filtered = df_model[(df_model['mode'] == 'tune') & (df_model['noise_type'].isnull())]
         label = 'Tuned (no noise)'
     else:
         # Baseline, no noise augmentation
-        df_filtered = df_model[(df_model['tuned'] == False) & (df_model['noise_type'].isnull())]
+        df_filtered = df_model[(df_model['mode'] == 'baseline') & (df_model['noise_type'].isnull())]
         label = 'Baseline'
 
     # Compute mean ROC-AUC for each subject/session
@@ -313,6 +324,7 @@ def reegnet_plots(aggregated_df):
     model_plots(aggregated_df, 'reegnet')
 
 def cnn_ncp_plots(aggregated_df):
+    # model_plots(aggregated_df, 'cnn_ncp')
     model_plots(aggregated_df, 'cnn_ncp')
 
 def run_completion_report(output_dir, aggregated_df):
@@ -357,15 +369,20 @@ def run_completion_report(output_dir, aggregated_df):
     # Also save to disk
     summary_df.to_csv(os.path.join(output_dir, "experiment_completion_report.csv"), index=False)
 
-
 if __name__ == '__main__':
-    input_dir = '../sol_results/results'
+    input_dir = '../sol_results/results/MotorImagery/BNCI2014_001/'
+    df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
+
+    eegnet_plots(df)
+    reegnet_plots(df)
+    cnn_ncp_plots(df)
+
     # aggregated_df = aggregate_results(input_dir)
     # aggregated_df.to_csv(os.path.join(input_dir, 'aggregated_results.csv'))
-    aggregated_df = pd.read_csv(os.path.join(input_dir, 'aggregated_results.csv'))
-    run_completion_report(input_dir, aggregated_df)
+    # aggregated_df = pd.read_csv(os.path.join(input_dir, 'aggregated_results.csv'))
+    # run_completion_report(input_dir, aggregated_df)
 
-    eegnet_plots(aggregated_df)
-    reegnet_plots(aggregated_df)
-    cnn_ncp_plots(aggregated_df)
+    # eegnet_plots(aggregated_df)
+    # reegnet_plots(aggregated_df)
+    # cnn_ncp_plots(aggregated_df)
 
