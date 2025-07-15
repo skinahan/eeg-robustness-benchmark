@@ -34,7 +34,7 @@ class CNNNCPv4(EEGModuleMixin, nn.Module):
             n_chans,
             n_times,
             n_outputs,
-            ncp_hidden_dim=32,
+            ncp_hidden_dim=36,
             cnn_output_dim=16,
             sparsity=0.75,
             drop_prob=0.15,
@@ -63,61 +63,121 @@ class CNNNCPv4(EEGModuleMixin, nn.Module):
         cnn_output_dim = F2
         conv_spatial_max_norm = float(1.0)
         self.kernel_length = kernel_length
-        self.feature_extractor = nn.Sequential(
-            Ensure4d(),
-            Rearrange("batch ch t 1 -> batch 1 ch t"),
-            nn.Conv2d(1, self.F1, (1, self.kernel_length), bias=False, padding=(0, 64)),
-            nn.BatchNorm2d(self.F1, momentum=batch_norm_momentum, affine=True, eps=batch_norm_eps),
-            Conv2dWithConstraint(F1, F1 * D, (n_chans, 1), max_norm=conv_spatial_max_norm, groups=self.F1, bias=False),
-            nn.BatchNorm2d(F2, momentum=batch_norm_momentum, eps=batch_norm_eps),
-            nn.ELU(),
-            nn.AvgPool2d((1, F2), stride=(1, self.F1)),
-            nn.Dropout(p=drop_prob),
-        )
+        # self.feature_extractor = nn.Sequential(
+        #     Ensure4d(),
+        #     Rearrange("batch ch t 1 -> batch 1 ch t"),
+        #     nn.Conv2d(1, self.F1, (1, self.kernel_length), bias=False, padding=(0, 64)),
+        #     nn.BatchNorm2d(self.F1, momentum=batch_norm_momentum, affine=True, eps=batch_norm_eps),
+        #     Conv2dWithConstraint(F1, F1 * D, (n_chans, 1), max_norm=conv_spatial_max_norm, groups=self.F1, bias=False),
+        #     nn.BatchNorm2d(F2, momentum=batch_norm_momentum, eps=batch_norm_eps),
+        #     nn.ELU(),
+        #     nn.AvgPool2d((1, F2), stride=(1, self.F1)),
+        #     nn.Dropout(p=drop_prob),
+        # )
 
-        # Determine temporal Conv1d params
-        if temporal_kernel_size is None:
-            temporal_kernel_size = 3
-        if temporal_stride is None:
-            temporal_stride = 2  # Downsample by ~1/2
-
-        ncp_input_size = 8
-        self.temporal_downsampler = nn.Conv1d(
-            in_channels=cnn_output_dim,
-            out_channels=ncp_input_size,
-            kernel_size=temporal_kernel_size,
-            stride=temporal_stride,
-            padding=temporal_kernel_size // 2
+        # 1. Input Conv2D:
+        self.conv1 = nn.Conv2d(
+            in_channels=1, out_channels=8,
+            kernel_size=(1, 15),  # Changed from 16 to 15
+            stride=(1, 1),
+            padding=(0, 7),       # Changed from 8 to 7
+            bias=False
         )
-        ncp_output_size = 8
+        self.bn1 = nn.BatchNorm2d(8)
+        self.elu = nn.ELU()
+
+        # 2. Depthwise Conv2D:
+        self.depthwise_conv = nn.Conv2d(in_channels=8, out_channels=16, kernel_size=(n_chans, 1),
+                                        groups=8, stride=(1, 1), padding=(0, 0), bias=False)
+        self.bn2 = nn.BatchNorm2d(16)
+
+        # 3. Average Pooling:
+        self.avgpool = nn.AvgPool2d(kernel_size=(1, 4), stride=(1, 4))
+
+        # 4. Dropout:
+        self.dropout = nn.Dropout(p=drop_prob)
+        #
+        # # Determine temporal Conv1d params
+        # if temporal_kernel_size is None:
+        #     temporal_kernel_size = 3
+        # if temporal_stride is None:
+        #     temporal_stride = 2  # Downsample by ~1/2
+
+        ncp_input_size = 4
+        # self.temporal_downsampler = nn.Conv1d(
+        #     in_channels=cnn_output_dim,
+        #     out_channels=ncp_input_size,
+        #     kernel_size=temporal_kernel_size,
+        #     stride=temporal_stride,
+        #     padding=temporal_kernel_size // 2
+        # )
+        ncp_output_size = 32
         # ncp_output_size = 4
 
         wiring = AutoNCP(
             ncp_hidden_dim, ncp_output_size, sparsity_level=sparsity, seed=seed)
-        self.ncp = CfC(ncp_input_size, wiring, return_sequences=False, mode="pure")
+        self.ncp = CfC(ncp_input_size, wiring, return_sequences=True)
+        self.sep_depthwise = nn.Conv2d(in_channels=hidden_size, out_channels=hidden_size, kernel_size=(3, 1),
+                                       stride=(1, 1), padding=(1, 0), groups=hidden_size, bias=False)
+        self.sep_pointwise = nn.Conv2d(in_channels=hidden_size, out_channels=16, kernel_size=(1, 1), bias=False)
+        self.bn3 = nn.BatchNorm2d(16)
 
-        self.classifier_block = nn.Sequential(
-            nn.Conv2d(ncp_output_size, ncp_output_size, (1, ncp_output_size*D), bias=False, groups=ncp_output_size, padding=(0, ncp_output_size)),
-            nn.Conv2d(ncp_output_size, ncp_output_size, (1, 1), bias=False),
-            nn.BatchNorm2d(ncp_output_size, momentum=batch_norm_momentum, affine=True, eps=batch_norm_eps),
-            nn.ELU(),
-            nn.Dropout(drop_prob),
-            nn.AdaptiveAvgPool2d((1, 1)),
-        )
-        self.fc = nn.Linear(ncp_output_size, n_outputs)
-        self._glorot_weight_zero_bias()
+        # 8. Final dropout before the dense layer.
+        self.dropout2 = nn.Dropout(p=drop_prob)
+        self.global_pool = nn.AdaptiveAvgPool2d((1, 1))
+        # 9. Dense (fully connected) layer:
+        self.fc = nn.Linear(16, n_outputs)
+        #
+        # self.classifier_block = nn.Sequential(
+        #     nn.Conv2d(ncp_output_size, ncp_output_size, (1, ncp_output_size * D), bias=False, groups=ncp_output_size,
+        #               padding=(0, ncp_output_size)),
+        #     nn.Conv2d(ncp_output_size, ncp_output_size, (1, 1), bias=False),
+        #     nn.BatchNorm2d(ncp_output_size, momentum=batch_norm_momentum, affine=True, eps=batch_norm_eps),
+        #     nn.ELU(),
+        #     nn.Dropout(drop_prob),
+        #     nn.AdaptiveAvgPool2d((1, 1)),
+        # )
+        # self.fc = nn.Linear(ncp_output_size, n_outputs)
+        # self._glorot_weight_zero_bias()
 
     def forward(self, x):
-        x = self.feature_extractor(x)  # [B, C, T, 1]
-        x = x.squeeze(2).permute(0, 2, 1)  # [B, T, C]
-        x = self.temporal_downsampler(x.permute(0, 2, 1)).permute(0, 2, 1)
+        # x = self.feature_extractor(x)  # [B, C, T, 1]
+        # x = x.squeeze(2).permute(0, 2, 1)  # [B, T, C]
+        # x = self.temporal_downsampler(x.permute(0, 2, 1)).permute(0, 2, 1)
         # x.shape: 64, 55, 32
         # 64, 62, 16
+        x = x.unsqueeze(1)
+        x = self.conv1(x)
+        x = self.bn1(x)
+        x = self.elu(x)
+
+        # 2. Depthwise Conv2D:
+        x = self.depthwise_conv(x)
+        x = self.bn2(x)
+        x = self.elu(x)
+
+        # 3. Average Pooling:
+        x = self.avgpool(x)
+        x = self.dropout(x)
+
+        # 4. Permutation and Reshaping for LSTM:
+        x = x.permute(0, 3, 2, 1)
+        x = x.contiguous().view(x.shape[0], self.n_times - 1, 4)
         x, _ = self.ncp(x)  # [B, T', H]
-        x = x.unsqueeze(-1).unsqueeze(-1)
-        x = self.classifier_block(x)
-        x = x.view(x.shape[0], -1)
-        return self.fc(x)
+        x = x.permute(0, 2, 1).unsqueeze(3)
+
+        # 7. Separable Conv2D:
+        x = self.sep_depthwise(x)
+        x = self.sep_pointwise(x)
+        x = self.bn3(x)
+        x = self.elu(x)
+        x = self.dropout2(x)
+
+        # After separable conv, x shape: (B, 16, T, 1)
+        x = self.global_pool(x)  # → (B, 16, 1, 1)
+        x = x.view(x.shape[0], -1)  # → (B, 16)
+        x = self.fc(x)  # → (B, n_outputs)
+        return x  # no softmax
 
     def _glorot_weight_zero_bias(self):
         for module in self.modules():
@@ -445,8 +505,10 @@ class CNNNCP(EEGModuleMixin, nn.Module):
                 if module.bias is not None:
                     nn.init.constant_(module.bias, 0)
 
+
 def create_cnnncpv4_classifier(n_chans, n_times, n_outputs):
     return create_cnnncp_classifier(n_chans, n_times, n_outputs, net_size=11, classifier_type=4)
+
 
 def create_cnnncp_classifier(
         n_chans,
@@ -466,7 +528,8 @@ def create_cnnncp_classifier(
         net_size = new_net_size
     if classifier_type == 4:
         classifier = CNNNCPv4
-        weight_decay=1e-2
+        # weight_decay = 1e-2
+        net_size = max(net_size, 36)
     elif classifier_type == 3:
         classifier = CNNNCPv3
     else:

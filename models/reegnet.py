@@ -19,6 +19,7 @@ class To4DArray(TransformerMixin, BaseEstimator):
     Turn X of shape (n_samples, n_chans, n_times)
     into   (n_samples, 1,       n_chans, n_times) as float32.
     """
+
     def fit(self, X, y=None):
         return self
 
@@ -28,16 +29,17 @@ class To4DArray(TransformerMixin, BaseEstimator):
         # add the “channel” axis
         return X[:, np.newaxis, :, :]
 
+
 class REEGNet(EEGModuleMixin, nn.Sequential):
     def __init__(
-        self,
-        n_chans: int = 64,
-        n_times: int = 161,
-        n_outputs: int = 2,
-        drop_prob: float = 0.15,
-        lstm_hidden_size: int = 32,
-        sfreq: Optional[float] = None,
-        chs_info=None,  # <— dummy catch‐all
+            self,
+            n_chans: int = 64,
+            n_times: int = 161,
+            n_outputs: int = 2,
+            drop_prob: float = 0.15,
+            lstm_hidden_size: int = 32,
+            sfreq: Optional[float] = None,
+            chs_info=None,  # <— dummy catch‐all
     ):
         super().__init__(
             n_outputs=n_outputs,
@@ -52,7 +54,7 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
             in_channels=1, out_channels=8,
             kernel_size=(1, 15),  # Changed from 16 to 15
             stride=(1, 1),
-            padding=(0, 7),       # Changed from 8 to 7
+            padding=(0, 7),  # Changed from 8 to 7
             bias=False
         )
         self.bn1 = nn.BatchNorm2d(8)
@@ -75,9 +77,9 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
         # 6. Reshape LSTM output for the separable convolution.
 
         # 7. Separable Conv2D:
-        self.sep_depthwise = nn.Conv2d(in_channels=hidden_size, out_channels=hidden_size, kernel_size=(3,1),
-                                       stride=(1,1), padding=(1,0), groups=hidden_size, bias=False)
-        self.sep_pointwise = nn.Conv2d(in_channels=hidden_size, out_channels=16, kernel_size=(1,1), bias=False)
+        self.sep_depthwise = nn.Conv2d(in_channels=hidden_size, out_channels=hidden_size, kernel_size=(3, 1),
+                                       stride=(1, 1), padding=(1, 0), groups=hidden_size, bias=False)
+        self.sep_pointwise = nn.Conv2d(in_channels=hidden_size, out_channels=16, kernel_size=(1, 1), bias=False)
         self.bn3 = nn.BatchNorm2d(16)
 
         # 8. Final dropout before the dense layer.
@@ -104,7 +106,7 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
 
         # 4. Permutation and Reshaping for LSTM:
         x = x.permute(0, 3, 2, 1)
-        x = x.contiguous().view(x.shape[0], self.n_times-1, 4)
+        x = x.contiguous().view(x.shape[0], self.n_times - 1, 4)
         # print(x.shape)
         # 5. LSTM:
         # x.shape: (64, 1000, 4)
@@ -120,11 +122,11 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
         x = self.elu(x)
         x = self.dropout2(x)
 
-       # After separable conv, x shape: (B, 16, T, 1)
-        x = self.global_pool(x)           # → (B, 16, 1, 1)
-        x = x.view(x.shape[0], -1)        # → (B, 16)
-        x = self.fc(x)                    # → (B, n_outputs)
-        return x                          # no softmax
+        # After separable conv, x shape: (B, 16, T, 1)
+        x = self.global_pool(x)  # → (B, 16, 1, 1)
+        x = x.view(x.shape[0], -1)  # → (B, 16)
+        x = self.fc(x)  # → (B, n_outputs)
+        return x  # no softmax
 
 
 def create_reegnet_classifier(n_chans=22, n_times=1001, n_outputs=2):
@@ -143,11 +145,10 @@ def create_reegnet_classifier(n_chans=22, n_times=1001, n_outputs=2):
         module__drop_prob=0.15,
         module__lstm_hidden_size=32,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
-        device= 'cuda' if torch.cuda.is_available() else 'cpu',
+        device='cuda' if torch.cuda.is_available() else 'cpu',
         callbacks=[
             EarlyStopping(patience=40, monitor='valid_loss'),
             LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=30)
         ],
         # verbose=0  # Suppress epoch-level output
     )
-
