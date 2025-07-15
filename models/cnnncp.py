@@ -63,17 +63,6 @@ class CNNNCPv4(EEGModuleMixin, nn.Module):
         cnn_output_dim = F2
         conv_spatial_max_norm = float(1.0)
         self.kernel_length = kernel_length
-        # self.feature_extractor = nn.Sequential(
-        #     Ensure4d(),
-        #     Rearrange("batch ch t 1 -> batch 1 ch t"),
-        #     nn.Conv2d(1, self.F1, (1, self.kernel_length), bias=False, padding=(0, 64)),
-        #     nn.BatchNorm2d(self.F1, momentum=batch_norm_momentum, affine=True, eps=batch_norm_eps),
-        #     Conv2dWithConstraint(F1, F1 * D, (n_chans, 1), max_norm=conv_spatial_max_norm, groups=self.F1, bias=False),
-        #     nn.BatchNorm2d(F2, momentum=batch_norm_momentum, eps=batch_norm_eps),
-        #     nn.ELU(),
-        #     nn.AvgPool2d((1, F2), stride=(1, self.F1)),
-        #     nn.Dropout(p=drop_prob),
-        # )
 
         # 1. Input Conv2D:
         self.conv1 = nn.Conv2d(
@@ -117,9 +106,9 @@ class CNNNCPv4(EEGModuleMixin, nn.Module):
         wiring = AutoNCP(
             ncp_hidden_dim, ncp_output_size, sparsity_level=sparsity, seed=seed)
         self.ncp = CfC(ncp_input_size, wiring, return_sequences=True)
-        self.sep_depthwise = nn.Conv2d(in_channels=hidden_size, out_channels=hidden_size, kernel_size=(3, 1),
-                                       stride=(1, 1), padding=(1, 0), groups=hidden_size, bias=False)
-        self.sep_pointwise = nn.Conv2d(in_channels=hidden_size, out_channels=16, kernel_size=(1, 1), bias=False)
+        self.sep_depthwise = nn.Conv2d(in_channels=ncp_output_size, out_channels=ncp_output_size, kernel_size=(3, 1),
+                                       stride=(1, 1), padding=(1, 0), groups=ncp_output_size, bias=False)
+        self.sep_pointwise = nn.Conv2d(in_channels=ncp_output_size, out_channels=16, kernel_size=(1, 1), bias=False)
         self.bn3 = nn.BatchNorm2d(16)
 
         # 8. Final dropout before the dense layer.
