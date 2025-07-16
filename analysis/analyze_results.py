@@ -156,9 +156,12 @@ def plot_comparative_noise_performance(aggregated_df, noise_type, session_type, 
         (aggregated_df['mode'] == run_mode)
     ]
 
+
     if df_filtered.empty:
         print(f"No data to plot for models {models} with noise '{noise_type}' and session '{session_type}'.")
         return
+
+    df_filtered['noise_level'] = df_filtered['intensity'].astype(float)
 
     # Set up labels
     noise_label = noise_type.capitalize()
@@ -434,8 +437,8 @@ def run_completion_report(output_dir, aggregated_df):
     summary_df.to_csv(os.path.join(output_dir, "experiment_completion_report.csv"), index=False)
 
 if __name__ == '__main__':
-    input_dir = '../sol_results/results'
-    aggregated_df = pd.read_csv(os.path.join(input_dir, 'aggregated_results.csv'))
+    input_dir = '../sol_results/results/MotorImagery'
+    aggregated_df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
     # run_completion_report(input_dir, aggregated_df)
 
     run_comparative_plots(aggregated_df)
