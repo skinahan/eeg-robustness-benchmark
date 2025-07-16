@@ -1,6 +1,8 @@
 import os
+import shutil
 import sys
 import argparse
+import uuid
 import warnings
 import time
 from datetime import datetime
@@ -236,19 +238,14 @@ def run_experiment(
     base_model.max_epochs = 100
     base_model.callbacks = []
 
-    if is_perturbed:
-        model = TrainOnlyNoiseClassifier(
-            base_pipeline=base_model,
-            noise_type=noise_type,
-            intensity=intensity,
-            seed=seed
-        )
-    else:
-        model = base_model
-
     dataset = BNCI2014_001()
     dataset.subject_list = subject_list
     paradigm = get_paradigm(resample=resample)
+
+    unique_id = uuid.uuid4().hex[:8]
+    checkpoint_dir = create_hdf5_model_path(model_name, seed, '0train', mode)
+    file_name = f"{noise_type}/{intensity}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}_{unique_id}.h5"
+    full_hdf5_path = os.path.join(checkpoint_dir, file_name)
 
     if mode == "baseline":
         evaluation = \
@@ -256,12 +253,13 @@ def run_experiment(
                 paradigm=paradigm,
                 datasets=[dataset],
                 overwrite=True,
-                hdf5_path=f"checkpoints/{model_name}_{mode}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}.h5",
+                hdf5_path=full_hdf5_path,
                 random_state=seed
             ))
-        results = evaluation.process({f"{model_name}+MotorImagery": model})
+        results = evaluation.process({f"{model_name}+MotorImagery": base_model})
+
         df = results.copy()
-        config = extract_model_params(model)
+        config = extract_model_params(base_model)
         df['seed'] = seed
         df['mode'] = mode
         df['model'] = model_name
@@ -297,20 +295,18 @@ def run_experiment(
             dataset.subject_list = subject_list
             paradigm = get_paradigm(resample=resample)
             final_params = two_stage_opt(dataset, subj, paradigm, model_name, model_fn, seed, mode, resample)
-            model.set_params(**final_params)
+            base_model.set_params(**final_params)
             dataset.subject_list = [subj]
-            hdf5_path = os.path.join(out_dir,
-                                     f"{model_name}_{mode}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}.h5")
             evaluation = WithinSessionEvaluation(
                 paradigm=paradigm,
                 datasets=[dataset],
                 overwrite=True,
-                hdf5_path=hdf5_path,
+                hdf5_path=full_hdf5_path,
                 random_state=seed
             )
-            results = evaluation.process({f"{model_name}+Optuna": model})
+            results = evaluation.process({f"{model_name}+Optuna": base_model})
             df = results.copy()
-            config = extract_model_params(model)
+            config = extract_model_params(base_model)
             df['seed'] = seed
             df['mode'] = mode
             df['model'] = model_name
@@ -332,8 +328,8 @@ def run_experiment(
                 df[df['session'] == session].to_csv(out_file, index=False)
                 print(f"Saved: {out_file}")
 
-    #   - will need to update two_stage_hp_opt.py
-
+    if os.path.isdir(full_hdf5_path):
+        shutil.rmtree(full_hdf5_path)
 
 # Unused GridSearchCV from past implementation
 def grid_search_hp_opt(model, param_grid, X, y_encoded, subj, seed, mode, model_name, resample):
@@ -353,10 +349,44 @@ def grid_search_hp_opt(model, param_grid, X, y_encoded, subj, seed, mode, model_
     df['paradigm'] = 'MotorImagery'
     df['resample'] = resample or 250.0
 
+def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity):
+    existing_output_paths = []
+    expected_output_paths = []
+    for subj in subject_list:
+        for session in ['0train', '1test']:
+            out_dir = create_output_path(model_name, seed, int(subj), session, mode)
+            if noise_type is not None and intensity is not None:
+                filename_suffix = f"_{noise_type}_{intensity}"
+            else:
+                filename_suffix = ""
+            out_file = os.path.join(out_dir,
+                                    f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
+            if os.path.exists(out_file):
+                existing_output_paths.append(out_file)
+            else:
+                expected_output_paths.append(out_file)
 
+    if len(expected_output_paths) == 0:
+        print(f"Skipping analysis, file(s) exist:")
+        for out_file in existing_output_paths:
+            print(out_file)
+        sys.exit(0)
 
+def log_all_subjects(results, subject_list, model_name, mode, noise_type, intensity, seed):
+    for subj in subject_list:
+        subject_df = results[results['subject'] == str(subj)]
+        for session in subject_df['session'].unique():
+            session_df = subject_df[subject_df['session'] == session]
+            out_dir = create_output_path(model_name, seed, int(subj), session, mode)
+            os.makedirs(out_dir, exist_ok=True)
+            filename_suffix = f"_{noise_type}_{intensity}"
+            out_file = os.path.join(out_dir,
+                                    f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
+            session_df.to_csv(out_file, index=False)
+            print(f"Saved: {out_file}")
 
 def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, noise_type, intensity, mode):
+    set_seeds(seed)
     dataset = BNCI2014_001()
     dataset.subject_list = subject_list
     paradigm = get_paradigm(resample=resample)
@@ -364,12 +394,11 @@ def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, n
         "noise_type": noise_type,
         "intensity": intensity
     }
-    capStr = 'Perturb'
-    if mode == "augment":
-        capStr = 'Augment'
-
+    # Perturb or Augment
+    cap_Mode = mode.capitalize()
+    unique_id = uuid.uuid4().hex[:8]
     checkpoint_dir = create_hdf5_model_path(model_name, seed, '0train', mode)
-    file_name = f"{noise_type}/_{intensity}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}.h5"
+    file_name = f"{noise_type}/{intensity}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}_{unique_id}.h5"
     full_hdf5_path = os.path.join(checkpoint_dir, file_name)
 
     evaluation = \
@@ -384,19 +413,11 @@ def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, n
             random_state=seed,
             model_name=model_name
         ))
-    results = evaluation.process({f"{model_name}+MotorImagery+{capStr}": None})
+    results = evaluation.process({f"{model_name}+MotorImagery+{cap_Mode}": None})
+    log_all_subjects(results, subject_list, model_name, mode, noise_type, intensity, seed)
 
-    for subj in subject_list:
-        subject_df = results[results['subject'] == str(subj)]
-        for session in subject_df['session'].unique():
-            session_df = subject_df[subject_df['session'] == session]
-            out_dir = create_output_path(model_name, seed, int(subj), session, mode)
-            os.makedirs(out_dir, exist_ok=True)
-            filename_suffix = f"_{noise_type}_{intensity}"
-            out_file = os.path.join(out_dir,
-                                    f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
-            session_df.to_csv(out_file, index=False)
-            print(f"Saved: {out_file}")
+    if os.path.isdir(full_hdf5_path):
+        shutil.rmtree(full_hdf5_path)
 
 if __name__ == "__main__":
     # Record start time
@@ -418,6 +439,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.mode == "augment" or args.mode == "perturb" :
+        check_skip_eval(args.model, args.seed, args.subjects, args.mode, args.noise_type, args.intensity)
         run_grouped_augmented_experiment(
             model_name=args.model,
             subject_list=args.subjects,
@@ -428,6 +450,7 @@ if __name__ == "__main__":
             mode=args.mode
         )
     elif args.mode == "baseline" or args.mode == "tune":
+        check_skip_eval(args.model, args.seed, args.subjects, args.mode, args.noise_type, args.intensity)
         run_experiment(
             model_name=args.model,
             mode=args.mode,

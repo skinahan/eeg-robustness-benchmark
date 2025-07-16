@@ -97,7 +97,10 @@ def run_optuna_stage(
     def objective(trial):
         # Sample hyperparameters
         params = param_space_fn(trial, param_prefix)
-        params["max_epochs"] = 50
+        params[f"{param_prefix}train_split"] = None
+        params[f"{param_prefix}max_epochs"] = 100
+        params[f"{param_prefix}verbose"] = 1
+        params[f"{param_prefix}callbacks"] = []
         # Define model
         model.set_params(**params)
         # model.max_epochs = 50
@@ -140,11 +143,11 @@ def run_optuna_stage(
     with open(os.path.join(output_dir, "best_params.json"), "w") as f:
         json.dump({"best_score": study.best_value, "best_params": study.best_params}, f, indent=2)
 
-    try:
-        plot_optimization_history(study).write_html(os.path.join(output_dir, f"optuna_{stage_name}_history.html"))
-        plot_param_importances(study).write_html(os.path.join(output_dir, f"optuna_{stage_name}_importances.html"))
-    except Exception as e:
-        print(f"Plotting failed: {e}")
+    # try:
+    #     plot_optimization_history(study).write_html(os.path.join(output_dir, f"optuna_{stage_name}_history.html"))
+    #     plot_param_importances(study).write_html(os.path.join(output_dir, f"optuna_{stage_name}_importances.html"))
+    # except Exception as e:
+    #     print(f"Plotting failed: {e}")
 
     return study.best_params, study.best_value
 
@@ -211,11 +214,11 @@ def alternate_optuna_stage(
     with open(os.path.join(output_dir, "best_params.json"), "w") as f:
         json.dump({"best_score": study.best_value, "best_params": study.best_params}, f, indent=2)
 
-    try:
-        plot_optimization_history(study).write_html(os.path.join(output_dir, f"optuna_{stage_name}_history.html"))
-        plot_param_importances(study).write_html(os.path.join(output_dir, f"optuna_{stage_name}_importances.html"))
-    except Exception as e:
-        print(f"Plotting failed: {e}")
+    # try:
+    #     plot_optimization_history(study).write_html(os.path.join(output_dir, f"optuna_{stage_name}_history.html"))
+    #     plot_param_importances(study).write_html(os.path.join(output_dir, f"optuna_{stage_name}_importances.html"))
+    # except Exception as e:
+    #     print(f"Plotting failed: {e}")
 
     best_params = study.best_params
     best_params[f"{param_prefix}train_split"] = None
