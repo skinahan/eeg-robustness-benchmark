@@ -94,6 +94,7 @@ def aggregate_results(input_dir):
                     seed_str = seed_str.split('_')[0]
                 seed = int(seed_str)
 
+
             # Add metadata columns
             df['model'] = model
             df['noise_type'] = noise_type
@@ -131,16 +132,68 @@ def aggregate_results(input_dir):
         print("No .csv files found in the provided directory.")
         return None
 
-# Return a dataframe for the results
-def load_results(input_dir, file):
-    if file.endswith(".csv"):
-        file_path = os.path.join(input_dir, file)
-        df = pd.read_csv(file_path)
-        return df
-    else:
-        print("No .csv files found in the provided directory.")
+import seaborn as sns
+import matplotlib.pyplot as plt
+import os
 
-def plot_noise_performance(aggregated_df, model_name, noise_type, session_type, output_dir='plots'):
+def plot_comparative_noise_performance(aggregated_df, noise_type, session_type, run_mode='augment', output_dir='plots'):
+    """
+    Plots performance of multiple models (cnn_ncp, eegnet, reegnet) across noise intensities
+    for a specific noise type and session type.
+
+    Parameters:
+    - aggregated_df: DataFrame containing aggregated results with 'model', 'noise_level', 'score', etc.
+    - noise_type: str, e.g., 'dropout', 'gaussian', 'eog'.
+    - session_type: str, e.g., '0train' or '1test'.
+    - output_dir: str, directory to save the plot (default: 'plots').
+    """
+    models = ['cnn_ncp', 'eegnet', 'reegnet']
+    df_filtered = aggregated_df[
+        (aggregated_df['noise_type'] == noise_type) &
+        (aggregated_df['session'] == session_type) &
+        (aggregated_df['model'].isin(models)) &
+        (aggregated_df['seed'] != '42') &
+        (aggregated_df['mode'] == run_mode)
+    ]
+
+    if df_filtered.empty:
+        print(f"No data to plot for models {models} with noise '{noise_type}' and session '{session_type}'.")
+        return
+
+    # Set up labels
+    noise_label = noise_type.capitalize()
+    session_label = "Test" if session_type == '1test' else "Train"
+
+    # Create plot
+    sns.set_theme(style="whitegrid")
+    plt.figure(figsize=(10, 6), dpi=300)
+    ax = sns.lineplot(
+        data=df_filtered,
+        x='noise_level',
+        y='score',
+        hue='model',
+        marker='o',
+        errorbar=('ci', 95)
+    )
+
+    # Labeling
+    ax.set_title(f"Model Comparison: {session_label} {run_mode.capitalize()} Performance vs {noise_label} Intensity", fontsize=14)
+    ax.set_xlabel(f"{noise_label} Intensity (%)", fontsize=12)
+    ax.set_ylabel("Mean Score (ROC AUC)", fontsize=12)
+    ax.tick_params(axis='both', which='major', labelsize=10)
+    ax.legend(title='Model', fontsize=10, title_fontsize=11)
+
+    # Save
+    os.makedirs(output_dir, exist_ok=True)
+    output_file = os.path.join(output_dir, f"model_comparison_{noise_type}_{run_mode}_{session_type}.png")
+    plt.tight_layout()
+    plt.savefig(output_file, dpi=300)
+    plt.close()
+
+    print(f"Comparative plot saved to {output_file}")
+
+
+def plot_noise_performance(aggregated_df, model_name, noise_type, session_type, run_mode='augment', output_dir='plots'):
     """
     Generic method to create a seaborn plot of noise intensity vs. mean score for a given model.
 
@@ -155,7 +208,8 @@ def plot_noise_performance(aggregated_df, model_name, noise_type, session_type, 
     df_filtered = aggregated_df[
         (aggregated_df['noise_type'] == noise_type) &
         (aggregated_df['session'] == session_type) &
-        (aggregated_df['model'] == model_name)
+        (aggregated_df['model'] == model_name) &
+        (aggregated_df['mode'] == run_mode)
         ]
 
     if df_filtered.empty:
@@ -172,7 +226,7 @@ def plot_noise_performance(aggregated_df, model_name, noise_type, session_type, 
     # Create plot
     sns.set_theme(style="whitegrid")
     plt.figure(figsize=(8, 6), dpi=300)
-    ax = sns.lineplot(x='intensity', y='score', marker='o', data=df_grouped, color='b', errorbar=('ci', 95))
+    ax = sns.lineplot(x='noise_level', y='score', marker='o', data=df_grouped, color='b', errorbar=('ci', 95))
 
     # Labeling and styling
     ax.set_title(f"{model_name}: Mean {session_label} Score vs {noise_label} Intensity", fontsize=14)
@@ -277,11 +331,11 @@ def plot_per_subject_roc_auc(
 
     if tuned:
         # Only tuned results, but no noise augmentation
-        df_filtered = df_model[(df_model['mode'] == 'tune') & (df_model['noise_type'].isnull())]
+        df_filtered = df_model[(df_model['tuned'] == True) & (df_model['noise_type'].isnull())]
         label = 'Tuned (no noise)'
     else:
         # Baseline, no noise augmentation
-        df_filtered = df_model[(df_model['mode'] == 'baseline') & (df_model['noise_type'].isnull())]
+        df_filtered = df_model[(df_model['tuned'] == False) & (df_model['noise_type'].isnull())]
         label = 'Baseline'
 
     # Compute mean ROC-AUC for each subject/session
@@ -325,7 +379,17 @@ def reegnet_plots(aggregated_df):
 
 def cnn_ncp_plots(aggregated_df):
     # model_plots(aggregated_df, 'cnn_ncp')
-    model_plots(aggregated_df, 'cnn_ncp')
+    model_plots(aggregated_df, 'CNN_NCP_RESAMPLE')
+
+def run_comparative_plots(aggregated_df):
+    modes = ['augment', 'perturb']
+    sessions = ['0train', '1test']
+    noise_types = ['gaussian', 'dropout', 'eog']
+    for mode in modes:
+        for session in sessions:
+            for noise in noise_types:
+                plot_comparative_noise_performance(aggregated_df, noise_type=noise, session_type=session, run_mode=mode,
+                                                   output_dir='./plots/')
 
 def run_completion_report(output_dir, aggregated_df):
     # Define the combinations we want to check for
@@ -370,18 +434,11 @@ def run_completion_report(output_dir, aggregated_df):
     summary_df.to_csv(os.path.join(output_dir, "experiment_completion_report.csv"), index=False)
 
 if __name__ == '__main__':
-    input_dir = '../sol_results/results/MotorImagery/BNCI2014_001/'
-    df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
-
-    eegnet_plots(df)
-    reegnet_plots(df)
-    cnn_ncp_plots(df)
-
-    # aggregated_df = aggregate_results(input_dir)
-    # aggregated_df.to_csv(os.path.join(input_dir, 'aggregated_results.csv'))
-    # aggregated_df = pd.read_csv(os.path.join(input_dir, 'aggregated_results.csv'))
+    input_dir = '../sol_results/results'
+    aggregated_df = pd.read_csv(os.path.join(input_dir, 'aggregated_results.csv'))
     # run_completion_report(input_dir, aggregated_df)
 
+    run_comparative_plots(aggregated_df)
     # eegnet_plots(aggregated_df)
     # reegnet_plots(aggregated_df)
     # cnn_ncp_plots(aggregated_df)

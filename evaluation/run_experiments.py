@@ -1,5 +1,4 @@
 import os
-import shutil
 import sys
 import argparse
 import warnings
@@ -21,22 +20,12 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.insert(0, project_root)
 
-from config import MODEL_REGISTRY
+from config import MODEL_REGISTRY, get_paradigm
 from globals import set_seeds, get_seed
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
 from evaluation.session_evaluator import NoiseWithinSessionEvaluation
 from utils import create_output_path, create_hdf5_model_path
 
-
-def get_paradigm(resample=None):
-    return MotorImagery(
-        events=["left_hand", "right_hand"],
-        fmin=8, fmax=35,
-        tmin=0.0, tmax=None,
-        baseline=None,
-        resample=resample,
-        n_classes=2
-    )
 
 
 def get_param_grid(model_name: str, noise_augmented: bool = False) -> Dict[str, Any]:
@@ -72,8 +61,6 @@ def extract_model_params(model) -> Dict[str, Any]:
     if hasattr(model, 'get_params'):
         return model.get_params()
     return {}
-
-
 
 
 def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
@@ -367,7 +354,7 @@ def grid_search_hp_opt(model, param_grid, X, y_encoded, subj, seed, mode, model_
     df['resample'] = resample or 250.0
 
 
-import uuid
+
 
 def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, noise_type, intensity, mode):
     dataset = BNCI2014_001()
@@ -381,28 +368,9 @@ def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, n
     if mode == "augment":
         capStr = 'Augment'
 
-    unique_id = uuid.uuid4().hex[:8]
     checkpoint_dir = create_hdf5_model_path(model_name, seed, '0train', mode)
-    file_name = f"{noise_type}/{intensity}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}_{unique_id}.h5"
+    file_name = f"{noise_type}/_{intensity}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}.h5"
     full_hdf5_path = os.path.join(checkpoint_dir, file_name)
-
-    existing_output_paths = []
-    expected_output_paths = []
-    for subj in subject_list:
-        for session in ['0train', '1test']:
-            out_dir = create_output_path(model_name, seed, int(subj), session, mode)
-            filename_suffix = f"_{noise_type}_{intensity}"
-            out_file = os.path.join(out_dir, f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
-            if os.path.exists(out_file):
-                existing_output_paths.append(out_file)
-            else:
-                expected_output_paths.append(out_file)
-
-    if len(expected_output_paths) == 0:
-        print(f"Skipping analysis, file(s) exist:")
-        for out_file in existing_output_paths:
-            print(out_file)
-        sys.exit(0)
 
     evaluation = \
         (NoiseWithinSessionEvaluation(
@@ -418,9 +386,6 @@ def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, n
         ))
     results = evaluation.process({f"{model_name}+MotorImagery+{capStr}": None})
 
-    if os.path.isdir(full_hdf5_path):
-        shutil.rmtree(full_hdf5_path)
-    
     for subj in subject_list:
         subject_df = results[results['subject'] == str(subj)]
         for session in subject_df['session'].unique():
@@ -433,7 +398,6 @@ def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, n
             session_df.to_csv(out_file, index=False)
             print(f"Saved: {out_file}")
 
-
 if __name__ == "__main__":
     # Record start time
     start_time = time.time()
@@ -443,7 +407,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Unified EEG Experiment Runner")
     parser.add_argument("--model", type=str, required=True, choices=list(MODEL_REGISTRY.keys()))
-    parser.add_argument("--mode", type=str, required=True, choices=["baseline", "tune", "perturb", "augment", "aggregate_only"])
+    parser.add_argument("--mode", type=str, required=True, choices=["baseline", "tune", "perturb", "augment"])
     parser.add_argument("--subjects", type=int, nargs="+", required=True)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--resample", type=float, default=None)
@@ -463,7 +427,7 @@ if __name__ == "__main__":
             intensity=args.intensity,
             mode=args.mode
         )
-    elif args.mode == "baseline" or args.mode == "tune":
+    else:
         run_experiment(
             model_name=args.model,
             mode=args.mode,
@@ -474,7 +438,7 @@ if __name__ == "__main__":
             intensity=args.intensity
         )
 
-    if args.mode == "aggregate_only" or args.aggregate:
+    if args.aggregate:
         collect_all_results(paradigm='MotorImagery')
 
     # Record end time
