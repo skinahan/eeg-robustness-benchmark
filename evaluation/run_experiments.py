@@ -407,7 +407,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Unified EEG Experiment Runner")
     parser.add_argument("--model", type=str, required=True, choices=list(MODEL_REGISTRY.keys()))
-    parser.add_argument("--mode", type=str, required=True, choices=["baseline", "tune", "perturb", "augment"])
+    parser.add_argument("--mode", type=str, required=True, choices=["baseline", "tune", "perturb", "augment", "aggregate_only"])
     parser.add_argument("--subjects", type=int, nargs="+", required=True)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--resample", type=float, default=None)
@@ -427,7 +427,7 @@ if __name__ == "__main__":
             intensity=args.intensity,
             mode=args.mode
         )
-    else:
+    elif args.mode == "baseline" or args.mode == "tune":
         run_experiment(
             model_name=args.model,
             mode=args.mode,
@@ -438,7 +438,7 @@ if __name__ == "__main__":
             intensity=args.intensity
         )
 
-    if args.aggregate:
+    if args.aggregate or args.mode == "aggregate_only":
         collect_all_results(paradigm='MotorImagery')
 
     # Record end time
