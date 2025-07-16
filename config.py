@@ -30,4 +30,16 @@ def get_model_registry():
         "spp_ncp": create_sppncp_classifier
     }
 
+
+def get_paradigm(resample=None):
+    return MotorImagery(
+        events=["left_hand", "right_hand"],
+        fmin=8, fmax=35,
+        tmin=0.0, tmax=None,
+        baseline=None,
+        resample=resample,
+        n_classes=2
+    )
+
+
 MODEL_REGISTRY = get_model_registry()

@@ -28,6 +28,8 @@ class Conv2dWithConstraint(nn.Conv2d):
 from models.fastcfc import FastCfC
 
 
+
+
 class CNNNCPv4(EEGModuleMixin, nn.Module):
     def __init__(
             self,
