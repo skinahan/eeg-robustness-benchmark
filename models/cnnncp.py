@@ -87,13 +87,13 @@ class CNNCfC(EEGModuleMixin, nn.Module):
             temporal_stride = 2  # Downsample by ~1/2
 
         ncp_input_size = 4
-        self.temporal_downsampler = nn.Conv1d(
-            in_channels=4,
-            out_channels=4,
-            kernel_size=temporal_kernel_size,
-            stride=temporal_stride,
-            padding=temporal_kernel_size // 2
-        )
+        # self.temporal_downsampler = nn.Conv1d(
+        #     in_channels=4,
+        #     out_channels=4,
+        #     kernel_size=temporal_kernel_size,
+        #     stride=temporal_stride,
+        #     padding=temporal_kernel_size // 2
+        # )
         ncp_output_size = 32
         # wiring = AutoNCP(
         #     ncp_hidden_dim, ncp_output_size, sparsity_level=sparsity, seed=seed)
@@ -136,8 +136,9 @@ class CNNCfC(EEGModuleMixin, nn.Module):
         # [B, 16, 1, 250]
         # 4. Permutation and Reshaping for LSTM:
         x = x.permute(0, 3, 2, 1)
-        x = x.contiguous().view(x.shape[0], 4, max(1000, self.n_times - 1))
-        # x should now have shape: B, 4, seq_len
+        x = x.contiguous().view(x.shape[0], max(1000, self.n_times - 1), 4)
+        # should x have shape: B, 4, seq_len (temporal downsample)?
+        # or B, seq_len, 4 (no downsample)
 
         # Downsample
         # x has shape: B, seq_len, 4
@@ -145,8 +146,8 @@ class CNNCfC(EEGModuleMixin, nn.Module):
         # .permute(0, 2 1) == B, 4, seq_len
         # What does the temporal downsampler expect?
         # Batch, channels_in, t.
-        x = self.temporal_downsampler(x)
-        x = x.permute(0, 2, 1)
+        # x = self.temporal_downsampler(x)
+        # x = x.permute(0, 2, 1)
 
         x, _ = self.ncp(x)  # [B, T', H]
         x = x.permute(0, 2, 1).unsqueeze(3)
@@ -492,7 +493,7 @@ class CNNNCP(EEGModuleMixin, nn.Module):
 
 
 def create_cnnncfc_classifier(n_chans, n_times, n_outputs):
-    return create_cnnncp_classifier(n_chans, n_times, n_outputs, net_size=8, classifier_type=4)
+    return create_cnnncp_classifier(n_chans, n_times, n_outputs, net_size=64, classifier_type=4)
 
 
 def create_cnnncp_classifier(
@@ -513,13 +514,13 @@ def create_cnnncp_classifier(
         net_size = new_net_size
     if classifier_type == 4:
         classifier = CNNCfC
+        weight_decay=1e-2
     elif classifier_type == 3:
         classifier = CNNNCPv3
     else:
         classifier = CNNNCPv2
     seed = get_seed()
     cnn_ncp_net = EEGClassifier(
-        # CNNNCPv2,
         classifier,
         criterion=torch.nn.CrossEntropyLoss,
         optimizer=torch.optim.AdamW,

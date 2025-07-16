@@ -268,7 +268,6 @@ def run_experiment(
         df['optimizer__lr'] = config['optimizer__lr']
         df['batch_size'] = config['batch_size']
         df['max_epochs'] = config['max_epochs']
-
         if model_name == 'cnn_ncp':
             df['module__ncp_hidden_dim'] = config['module__ncp_hidden_dim']
             df['module__sparsity'] = config['module__sparsity']
