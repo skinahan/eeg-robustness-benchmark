@@ -62,6 +62,8 @@ def aggregate_results(input_dir):
                 model = 'EEGNet'
             elif 'cnn_ncp' in file_lower:
                 model = 'CNN_NCP'
+            elif 'cnn_cfc' in file_lower:
+                model = 'CNN_CfC'
             else:
                 model = 'Unknown'
 
@@ -147,7 +149,7 @@ def plot_comparative_noise_performance(aggregated_df, noise_type, session_type, 
     - session_type: str, e.g., '0train' or '1test'.
     - output_dir: str, directory to save the plot (default: 'plots').
     """
-    models = ['cnn_ncp', 'eegnet', 'reegnet']
+    models = ['cnn_cfc', 'cnn_ncp', 'eegnet', 'reegnet']
     df_filtered = aggregated_df[
         (aggregated_df['noise_type'] == noise_type) &
         (aggregated_df['session'] == session_type) &

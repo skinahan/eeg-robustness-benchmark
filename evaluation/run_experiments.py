@@ -28,6 +28,11 @@ from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, Conc
 from evaluation.session_evaluator import NoiseWithinSessionEvaluation
 from utils import create_output_path, create_hdf5_model_path
 
+from moabb.evaluations import WithinSessionSplitter
+from sklearn.model_selection import cross_val_score
+import optuna
+
+from two_stage_hp_opt import run_two_stage_optuna
 
 
 def get_param_grid(model_name: str, noise_augmented: bool = False) -> Dict[str, Any]:
@@ -103,11 +108,6 @@ def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
         print("No CSV files found to aggregate.")
 
 
-from moabb.evaluations import WithinSessionSplitter
-from sklearn.model_selection import cross_val_score
-import optuna
-
-
 def run_optuna_tuning_within_session(model_fn, model_name, X, y, metadata, resample=250.0, n_trials=25, seed=42,
                                      augmented=False):
     # Restrict to session 0 trials (typically '0train')
@@ -178,9 +178,6 @@ def run_optuna_tuning_within_session(model_fn, model_name, X, y, metadata, resam
     best_params = study.best_trial.params
     best_score = study.best_value
     return best_params, best_score
-
-
-from two_stage_hp_opt import run_two_stage_optuna
 
 
 def two_stage_opt(dataset, subj, paradigm, model_name, model_fn, seed, mode, resample):
@@ -268,7 +265,7 @@ def run_experiment(
         df['optimizer__lr'] = config['optimizer__lr']
         df['batch_size'] = config['batch_size']
         df['max_epochs'] = config['max_epochs']
-        if model_name == 'cnn_ncp':
+        if model_name == 'cnn_ncp' or model_name == 'cnn_cfc':
             df['module__ncp_hidden_dim'] = config['module__ncp_hidden_dim']
             df['module__sparsity'] = config['module__sparsity']
             df['optimizer__weight_decay'] = config['optimizer__weight_decay']

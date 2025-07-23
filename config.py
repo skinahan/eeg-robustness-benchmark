@@ -26,8 +26,8 @@ def get_model_registry():
     return {
         "eegnet": create_eegnet_classifier,
         "reegnet": create_reegnet_classifier,
-        # "cnn_ncp": create_cnnncp_classifier,
-        "cnn_ncp": create_cnnncfc_classifier,
+        "cnn_ncp": create_cnnncp_classifier,
+        "cnn_cfc": create_cnnncfc_classifier,
         "spp_ncp": create_sppncp_classifier
     }
 
