@@ -116,7 +116,7 @@ def inject_scaled_eog_signal(data, info, scale_factor=4.0, seed=42):
 
 from sklearn.base import BaseEstimator, ClassifierMixin
 
-
+# Replaces input with noise-augmented version
 class TrainOnlyNoiseClassifier(ClassifierMixin, BaseEstimator):
     def __init__(self, base_pipeline, noise_type='dropout', intensity=25.0, seed=42):
         self.base_pipeline = base_pipeline
@@ -188,6 +188,7 @@ class TrainOnlyNoiseClassifier(ClassifierMixin, BaseEstimator):
 
         return self
 
+# Creates an augmented sample for every sample in the set X
 class ConcatenatedNoiseAugmenter(ClassifierMixin, BaseEstimator):
     def __init__(self, base_pipeline, noise_type='dropout', intensity=25.0, seed=42, return_groups=False):
         self.base_pipeline = base_pipeline

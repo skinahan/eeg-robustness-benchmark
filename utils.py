@@ -20,7 +20,7 @@ def create_hdf5_model_path(model, seed, session, mode, paradigm='MotorImagery', 
         "//".join(full_list)
     )
 
-def create_output_path(model, seed, subject, session, mode, paradigm='MotorImagery', others=[]):
+def  create_output_path(model, seed, subject, session, mode, paradigm='MotorImagery', others=[]):
     full_list = [
         "results",
         paradigm,

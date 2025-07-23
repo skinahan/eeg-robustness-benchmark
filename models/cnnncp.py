@@ -24,7 +24,7 @@ class Conv2dWithConstraint(nn.Conv2d):
         )
         return super(Conv2dWithConstraint, self).forward(x)
 
-
+# REEGNet variant with CfC-based recurrence
 class CNNCfC(EEGModuleMixin, nn.Module):
     def __init__(
             self,
@@ -527,7 +527,7 @@ def create_cnnncp_classifier(
         optimizer__lr=lr,
         optimizer__weight_decay=weight_decay,
         batch_size=batch_size,
-        max_epochs=200,
+        max_epochs=50,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,

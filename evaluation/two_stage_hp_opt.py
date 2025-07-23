@@ -98,7 +98,7 @@ def run_optuna_stage(
         # Sample hyperparameters
         params = param_space_fn(trial, param_prefix)
         params[f"{param_prefix}train_split"] = None
-        params[f"{param_prefix}max_epochs"] = 100
+        # params[f"{param_prefix}max_epochs"] = 100
         params[f"{param_prefix}verbose"] = 1
         params[f"{param_prefix}callbacks"] = []
         # Define model
@@ -183,7 +183,7 @@ def alternate_optuna_stage(
         # Sample hyperparameters
         params = param_space_fn(trial, param_prefix)
         params[f"{param_prefix}train_split"] = None
-        params[f"{param_prefix}max_epochs"] = 100
+        # params[f"{param_prefix}max_epochs"] = 100
         params[f"{param_prefix}verbose"] = 1
         params[f"{param_prefix}callbacks"] = []
 
@@ -222,7 +222,7 @@ def alternate_optuna_stage(
 
     best_params = study.best_params
     best_params[f"{param_prefix}train_split"] = None
-    best_params[f"{param_prefix}max_epochs"] = 100
+    # best_params[f"{param_prefix}max_epochs"] = 100
     best_params[f"{param_prefix}verbose"] = 1
     best_params[f"{param_prefix}callbacks"] = []
 
@@ -251,12 +251,17 @@ def get_model_training_space(model_name):
 
 def cnn_ncp_architecture_space(trial, prefix):
     return {
+        # CfC parameters
+        f"{prefix}module__ncp_hidden_dim": trial.suggest_categorical(f"{prefix}module__ncp_hidden_dim", [8, 16, 32, 64, 96]),
+        # trial.suggest_int(f"{prefix}module__ncp_hidden_dim", 32, 128),
+        f"{prefix}module__drop_prob": trial.suggest_float(f"{prefix}module__drop_prob", 0.1, 0.5)
+
+        # V4 parameters:
         # f"{prefix}module__F1": trial.suggest_categorical(f"{prefix}module__F1", [4, 8, 16]),
         # f"{prefix}module__D": trial.suggest_categorical(f"{prefix}module__D", [1, 2, 4]),
         # f"{prefix}module__kernel_length": trial.suggest_int(f"{prefix}module__kernel_length", 64, 256, step=32),
         # f"{prefix}module__ncp_hidden_dim": trial.suggest_int(f"{prefix}module__ncp_hidden_dim", 11, 16),
-        f"{prefix}module__ncp_hidden_dim": trial.suggest_int(f"{prefix}module__ncp_hidden_dim", 36, 48),
-        f"{prefix}module__sparsity": trial.suggest_float(f"{prefix}module__sparsity", 0.4, 0.9),
+        # f"{prefix}module__sparsity": trial.suggest_float(f"{prefix}module__sparsity", 0.4, 0.9),
         # f"{prefix}module__temporal_kernel_size": trial.suggest_int(f"{prefix}module__temporal_kernel_size", 3, 9,
         #                                                            step=2),
         # f"{prefix}module__temporal_stride": trial.suggest_int(f"{prefix}module__temporal_stride", 1, 4)
@@ -266,9 +271,10 @@ def cnn_ncp_architecture_space(trial, prefix):
 def cnn_ncp_training_space(trial, prefix):
     return {
         f"{prefix}optimizer__lr": trial.suggest_loguniform("lr", 1e-4, 1e-2),
-        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform("weight_decay", 1e-6, 1e-2),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform("weight_decay", 1e-4, 1e-1),
+        f"{prefix}max_epochs": trial.suggest_int("max_epochs", 10, 50),
         # f"{prefix}batch_size": trial.suggest_categorical("batch_size", [8, 16, 32, 64]),
-        f"{prefix}module__drop_prob": trial.suggest_float(f"{prefix}module__drop_prob", 0.1, 0.5)
+        # f"{prefix}module__drop_prob": trial.suggest_float(f"{prefix}module__drop_prob", 0.1, 0.5)
     }
 
 
