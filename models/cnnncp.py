@@ -24,7 +24,8 @@ class Conv2dWithConstraint(nn.Conv2d):
         )
         return super(Conv2dWithConstraint, self).forward(x)
 
-# REEGNet variant with CfC-based recurrence
+
+# REEGNet variant with CfC-based recurrence - ORIGINAL VERSION (for backward compatibility)
 class CNNCfC(EEGModuleMixin, nn.Module):
     def __init__(
             self,
@@ -63,7 +64,7 @@ class CNNCfC(EEGModuleMixin, nn.Module):
             in_channels=1, out_channels=8,
             kernel_size=(1, 15),  # Changed from 16 to 15
             stride=(1, 1),
-            padding=(0, 7),       # Changed from 8 to 7
+            padding=(0, 7),  # Changed from 8 to 7
             bias=False
         )
         self.bn1 = nn.BatchNorm2d(8)
@@ -111,7 +112,6 @@ class CNNCfC(EEGModuleMixin, nn.Module):
         self.global_pool = nn.AdaptiveAvgPool2d((1, 1))
         # 9. Dense (fully connected) layer:
         self.fc = nn.Linear(16, n_outputs)
-
 
     def forward(self, x):
         # x = self.feature_extractor(x)  # [B, C, T, 1]
@@ -174,6 +174,161 @@ class CNNCfC(EEGModuleMixin, nn.Module):
                     nn.init.constant_(module.weight, 1)
             if hasattr(module, "bias") and module.bias is not None:
                 nn.init.constant_(module.bias, 0)
+
+
+# REEGNet variant with CfC-based recurrence - IMPROVED VERSION
+class CNNCfCImproved(EEGModuleMixin, nn.Module):
+    def __init__(
+            self,
+            n_chans,
+            n_times,
+            n_outputs,
+            ncp_hidden_dim=16,  # Reduced from 32 to 16 for speed
+            cnn_output_dim=16,
+            sparsity=0.75,
+            drop_prob=0.15,
+            F1=8,
+            D=2,
+            kernel_length=128,
+            temporal_kernel_size=3,
+            temporal_stride=4,  # More aggressive downsampling
+            max_seq_length=250  # Limit sequence length for CfC
+    ):
+        super().__init__(
+            n_outputs=n_outputs,
+            n_chans=n_chans,
+            n_times=n_times,
+            input_window_seconds=None,
+            sfreq=None,
+        )
+        seed = get_seed()
+        batch_norm_momentum = 0.01
+        batch_norm_eps = 1e-3
+
+        self.F1 = F1
+        F2 = F1 * D
+        cnn_output_dim = F2
+        self.max_seq_length = max_seq_length
+        self.temporal_stride = temporal_stride
+
+        # 1. Input Conv2D (same as REEGNet):
+        self.conv1 = nn.Conv2d(
+            in_channels=1, out_channels=8,
+            kernel_size=(1, 15),
+            stride=(1, 1),
+            padding=(0, 7),
+            bias=False
+        )
+        self.bn1 = nn.BatchNorm2d(8)
+        self.elu = nn.ELU()
+
+        # 2. Depthwise Conv2D (same as REEGNet):
+        self.depthwise_conv = nn.Conv2d(in_channels=8, out_channels=16, kernel_size=(n_chans, 1),
+                                        groups=8, stride=(1, 1), padding=(0, 0), bias=False)
+        self.bn2 = nn.BatchNorm2d(16)
+
+        # 3. More aggressive pooling for temporal reduction:
+        self.avgpool = nn.AvgPool2d(kernel_size=(1, 8), stride=(1, 8))  # 8x temporal reduction
+
+        # 4. Dropout:
+        self.dropout = nn.Dropout(p=drop_prob)
+
+        # 5. Temporal downsampler for further reduction:
+        self.temporal_downsampler = nn.Conv1d(
+            in_channels=16,  # After depthwise conv, we have 16 channels
+            out_channels=16,
+            kernel_size=temporal_kernel_size,
+            stride=temporal_stride,
+            padding=temporal_kernel_size // 2
+        )
+
+        # 6. CfC with reduced complexity:
+        ncp_input_size = 16  # After temporal downsampling, we have 16 features
+        ncp_output_size = 16  # Reduced from 32 to 16
+        
+        self.ncp = CfC(
+            input_size=ncp_input_size, 
+            units=ncp_hidden_dim, 
+            proj_size=ncp_output_size,
+            return_sequences=True, 
+            batch_first=True, 
+            mixed_memory=True,
+            mode='default'
+        )
+
+        # 7. Separable Conv2D (same as REEGNet):
+        self.sep_depthwise = nn.Conv2d(in_channels=ncp_output_size, out_channels=ncp_output_size, kernel_size=(3, 1),
+                                       stride=(1, 1), padding=(1, 0), groups=ncp_output_size, bias=False)
+        self.sep_pointwise = nn.Conv2d(in_channels=ncp_output_size, out_channels=16, kernel_size=(1, 1), bias=False)
+        self.bn3 = nn.BatchNorm2d(16)
+
+        # 8. Final dropout and pooling:
+        self.dropout2 = nn.Dropout(p=drop_prob)
+        self.global_pool = nn.AdaptiveAvgPool2d((1, 1))
+        
+        # 9. Dense layer:
+        self.fc = nn.Linear(16, n_outputs)
+
+    def forward(self, x):
+        # 1. Input Conv2D:
+        x = x.unsqueeze(1)
+        x = self.conv1(x)
+        x = self.bn1(x)
+        x = self.elu(x)
+
+        # 2. Depthwise Conv2D:
+        x = self.depthwise_conv(x)
+        x = self.bn2(x)
+        x = self.elu(x)
+
+        # 3. Aggressive pooling for temporal reduction:
+        x = self.avgpool(x)
+        x = self.dropout(x)
+        
+        # 4. Reshape for temporal processing:
+        x = x.permute(0, 3, 2, 1)  # [B, T, 1, C]
+        # Calculate the actual number of features after pooling
+        num_features = x.shape[3]  # This should be 16 after depthwise conv
+        x = x.contiguous().view(x.shape[0], x.shape[1], num_features)  # [B, T, num_features]
+        
+        # 5. Apply temporal downsampling:
+        x = self.temporal_downsampler(x.permute(0, 2, 1)).permute(0, 2, 1)  # [B, T', 4]
+        
+        # 6. Limit sequence length for CfC:
+        if x.shape[1] > self.max_seq_length:
+            # Take the middle portion to maintain temporal context
+            start_idx = (x.shape[1] - self.max_seq_length) // 2
+            x = x[:, start_idx:start_idx + self.max_seq_length, :]
+        
+        # 7. CfC processing:
+        x, _ = self.ncp(x)  # [B, T', H]
+        
+        # 8. Reshape for separable conv:
+        x = x.permute(0, 2, 1).unsqueeze(3)  # [B, H, T', 1]
+
+        # 9. Separable Conv2D:
+        x = self.sep_depthwise(x)
+        x = self.sep_pointwise(x)
+        x = self.bn3(x)
+        x = self.elu(x)
+        x = self.dropout2(x)
+
+        # 10. Global pooling and classification:
+        x = self.global_pool(x)  # → (B, 16, 1, 1)
+        x = x.view(x.shape[0], -1)  # → (B, 16)
+        x = self.fc(x)  # → (B, n_outputs)
+        return x
+
+    def _glorot_weight_zero_bias(self):
+        for module in self.modules():
+            if hasattr(module, "weight"):
+                if "BatchNorm" not in module.__class__.__name__:
+                    nn.init.xavier_uniform_(module.weight, gain=1)
+                else:
+                    nn.init.constant_(module.weight, 1)
+            if hasattr(module, "bias") and module.bias is not None:
+                nn.init.constant_(module.bias, 0)
+
 
 # Current best model architecture.
 class CNNNCPv3(EEGModuleMixin, nn.Module):
@@ -391,9 +546,8 @@ class CNNNCPv2(EEGModuleMixin, nn.Module):
                     nn.init.xavier_uniform_(module.weight, gain=1)
                 else:
                     nn.init.constant_(module.weight, 1)
-            if hasattr(module, "bias"):
-                if module.bias is not None:
-                    nn.init.constant_(module.bias, 0)
+            if hasattr(module, "bias") and module.bias is not None:
+                nn.init.constant_(module.bias, 0)
 
 
 class CNNNCP(EEGModuleMixin, nn.Module):
@@ -496,6 +650,11 @@ def create_cnnncfc_classifier(n_chans, n_times, n_outputs):
     return create_cnnncp_classifier(n_chans, n_times, n_outputs, net_size=64, classifier_type=4)
 
 
+def create_cnnncfc_improved_classifier(n_chans, n_times, n_outputs):
+    """Create the improved CNNCfC classifier with better inference speed."""
+    return create_cnnncp_classifier(n_chans, n_times, n_outputs, net_size=16, classifier_type=5)
+
+
 def create_cnnncp_classifier(
         n_chans,
         n_times,
@@ -512,9 +671,13 @@ def create_cnnncp_classifier(
         print("WARNING: CNN-NCP: TOO FEW UNITS.")
         print(f"Changing net_size to {new_net_size}")
         net_size = new_net_size
-    if classifier_type == 4:
+    if classifier_type == 5:
+        classifier = CNNCfCImproved
+        weight_decay = 1e-2
+        lr = 5e-4  # Slightly lower learning rate for improved stability
+    elif classifier_type == 4:
         classifier = CNNCfC
-        weight_decay=1e-2
+        weight_decay = 1e-2
     elif classifier_type == 3:
         classifier = CNNNCPv3
     else:
@@ -541,9 +704,16 @@ def create_cnnncp_classifier(
         ],
         # verbose=0  # Suppress epoch-level output
     )
+    
     if torch.cuda.is_available():
         cnn_ncp_net.initialize()
         cnn_ncp_net.module_.cuda()
-        cnn_ncp_net.module_ = torch.compile(cnn_ncp_net.module_)
+        # Only use torch.compile if it's available and compatible
+        try:
+            cnn_ncp_net.module_ = torch.compile(cnn_ncp_net.module_)
+        except Exception as e:
+            print(f"Warning: torch.compile failed, using standard model: {e}")
+    else:
+        cnn_ncp_net.initialize()
 
     return cnn_ncp_net

@@ -235,6 +235,7 @@ def get_model_architecture_space(model_name):
         "reegnet": reegnet_architecture_space,
         "cnn_ncp": cnn_ncp_architecture_space,
         "cnn_cfc": cnn_cfc_architecture_space,
+        "improved_cnncfc": improved_cnncfc_architecture_space,
         "spp_ncp": spp_ncp_architecture_space
     }
     return architecture_registry[model_name]
@@ -246,6 +247,7 @@ def get_model_training_space(model_name):
         "reegnet": reegnet_training_space,
         "cnn_ncp": cnn_ncp_training_space,
         "cnn_cfc": cnn_cfc_training_space,
+        "improved_cnncfc": improved_cnncfc_training_space,
         "spp_ncp": spp_ncp_training_space
     }
     return training_registry[model_name]
@@ -264,6 +266,69 @@ def cnn_cfc_training_space(trial, prefix):
         f"{prefix}optimizer__lr": trial.suggest_loguniform("lr", 1e-4, 1e-2),
         f"{prefix}optimizer__weight_decay": trial.suggest_loguniform("weight_decay", 1e-4, 1e-1),
         f"{prefix}max_epochs": trial.suggest_int("max_epochs", 10, 50),
+    }
+
+
+def improved_cnncfc_architecture_space(trial, prefix):
+    """Enhanced architecture parameter space for improved CNNCfC."""
+    return {
+        # CfC core parameters
+        f"{prefix}module__ncp_hidden_dim": trial.suggest_categorical(
+            f"{prefix}module__ncp_hidden_dim", [8, 16, 32, 48, 64]
+        ),
+        f"{prefix}module__drop_prob": trial.suggest_float(
+            f"{prefix}module__drop_prob", 0.1, 0.5
+        ),
+        
+        # CNN feature extraction parameters
+        f"{prefix}module__F1": trial.suggest_categorical(
+            f"{prefix}module__F1", [4, 8, 12, 16]
+        ),
+        f"{prefix}module__D": trial.suggest_categorical(
+            f"{prefix}module__D", [1, 2, 4]
+        ),
+        f"{prefix}module__kernel_length": trial.suggest_int(
+            f"{prefix}module__kernel_length", 64, 256, step=32
+        ),
+        
+        # Temporal processing parameters
+        f"{prefix}module__temporal_kernel_size": trial.suggest_categorical(
+            f"{prefix}module__temporal_kernel_size", [3, 5, 7]
+        ),
+        f"{prefix}module__temporal_stride": trial.suggest_categorical(
+            f"{prefix}module__temporal_stride", [2, 4, 6, 8]
+        ),
+        
+        # Sequence length control
+        f"{prefix}module__max_seq_length": trial.suggest_categorical(
+            f"{prefix}module__max_seq_length", [150, 200, 250, 300]
+        ),
+        
+        # Sparsity for CfC
+        f"{prefix}module__sparsity": trial.suggest_float(
+            f"{prefix}module__sparsity", 0.5, 0.9
+        ),
+    }
+
+
+def improved_cnncfc_training_space(trial, prefix):
+    """Enhanced training parameter space for improved CNNCfC."""
+    return {
+        # Optimizer parameters
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(
+            f"{prefix}optimizer__lr", 1e-5, 1e-2
+        ),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
+            f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
+        ),
+        
+        # Training parameters
+        f"{prefix}max_epochs": trial.suggest_int(
+            f"{prefix}max_epochs", 20, 100
+        ),
+        f"{prefix}batch_size": trial.suggest_categorical(
+            f"{prefix}batch_size", [16, 32, 64, 128]
+        ),
     }
 
 

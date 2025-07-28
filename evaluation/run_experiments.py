@@ -32,7 +32,7 @@ from moabb.evaluations import WithinSessionSplitter
 from sklearn.model_selection import cross_val_score
 import optuna
 
-from two_stage_hp_opt import run_two_stage_optuna
+from evaluation.two_stage_hp_opt import run_two_stage_optuna
 
 
 def get_param_grid(model_name: str, noise_augmented: bool = False) -> Dict[str, Any]:
@@ -52,6 +52,24 @@ def get_param_grid(model_name: str, noise_augmented: bool = False) -> Dict[str, 
         "cnn_ncp": {
             f"{base_prefix}module__ncp_hidden_dim": [11, 16],
             f"{base_prefix}module__sparsity": [0.6, 0.8],
+        },
+        "cnn_cfc": {
+            f"{base_prefix}module__ncp_hidden_dim": [8, 16, 32],
+            f"{base_prefix}module__drop_prob": [0.1, 0.2, 0.3],
+        },
+        "improved_cnncfc": {
+            f"{base_prefix}module__ncp_hidden_dim": [16, 32, 64],
+            f"{base_prefix}module__drop_prob": [0.1, 0.2, 0.3],
+            f"{base_prefix}module__F1": [4, 8, 12],
+            f"{base_prefix}module__D": [1, 2],
+            f"{base_prefix}module__temporal_kernel_size": [3, 5],
+            f"{base_prefix}module__temporal_stride": [2, 4],
+            f"{base_prefix}module__max_seq_length": [200, 250],
+            f"{base_prefix}module__sparsity": [0.7, 0.8],
+            f"{base_prefix}optimizer__lr": [1e-4, 5e-4, 1e-3],
+            f"{base_prefix}optimizer__weight_decay": [1e-4, 1e-3],
+            f"{base_prefix}batch_size": [16, 32],
+            f"{base_prefix}max_epochs": [50, 100],
         },
         "spp_ncp": {
             f"{base_prefix}module__ncp_hidden_dim": [11, 16],
