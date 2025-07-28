@@ -49,10 +49,9 @@ def run_cfcncp_neuroevolution():
     
     # Create real data evaluator
     real_evaluator = FastRealDataEvaluator(
-        subject_list=list(range(1, 3)),  # Use 2 subjects for quick testing
-        max_epochs=20,  # Fewer epochs for quick evaluation
+        max_epochs=15,
         cv_folds=2,
-        noise_type=None  # No noise for baseline evaluation
+        noise_type=None
     )
     
     for i, genome in enumerate(known_architectures):
@@ -117,6 +116,7 @@ def run_cfcncp_neuroevolution():
             self.generator = CfCNCPGenomeGenerator()
             # Use real data evaluator instead of fast evaluator
             self.real_evaluator = FastRealDataEvaluator(
+                available_subjects=[1],
                 max_epochs=15,  # Even fewer epochs for evolution
                 cv_folds=2,
                 noise_type=None  # No noise for initial evolution
@@ -278,7 +278,6 @@ def test_cfcncp_architectures_real_data():
     
     cfcncp_generator = CfCNCPGenomeGenerator()
     real_evaluator = FastRealDataEvaluator(
-        subject_list=list(range(1, 3)),
         max_epochs=15,
         cv_folds=2,
         noise_type=None

@@ -267,30 +267,28 @@ class RealDataFitnessEvaluator:
 
 
 class FastRealDataEvaluator(RealDataFitnessEvaluator):
-    """Fast version that uses random sampling from random subjects to prevent overfitting"""
+    """Fast version that uses random sampling from Subject 1 for debugging"""
     
     def __init__(self, 
                  sample_size: int = 48,
-                 available_subjects: List[int] = None,
                  **kwargs):
         """
-        Initialize fast evaluator with random sampling
+        Initialize fast evaluator with hard-coded Subject 1
         
         Args:
             sample_size: Number of EEG samples to use for evaluation (default: 48)
-            available_subjects: List of subjects to randomly select from (default: subjects 1-10)
             **kwargs: Other parameters passed to parent
         """
         # Extract specific parameters for fast evaluation
-        max_epochs = kwargs.pop('max_epochs', 15)  # Even fewer epochs for speed
+        max_epochs = kwargs.pop('max_epochs', 10)  # Very few epochs for debugging
         cv_folds = kwargs.pop('cv_folds', 2)  # Fewer folds
         
-        # Use all available subjects for random selection
-        self.available_subjects = available_subjects or list(range(1, 10))  # Subjects 1-9
+        # Hard-code to use Subject 1 only
         self.sample_size = sample_size
         
         # Call parent constructor with remaining kwargs
         super().__init__(
+            subject_list=[1],  # Hard-code to Subject 1
             max_epochs=max_epochs,
             cv_folds=cv_folds,
             **kwargs
@@ -298,7 +296,7 @@ class FastRealDataEvaluator(RealDataFitnessEvaluator):
     
     def evaluate_genome(self, genome: ArchitectureGenome) -> Dict[str, float]:
         """
-        Evaluate a genome using random sampling from a random subject
+        Evaluate a genome using Subject 1 data with debugging
         
         Args:
             genome: The architecture genome to evaluate
@@ -308,22 +306,19 @@ class FastRealDataEvaluator(RealDataFitnessEvaluator):
         """
         import random
         
-        # Randomly select a subject for this evaluation
-        selected_subject = random.choice(self.available_subjects)
-        
-        # Temporarily update the dataset to use only this subject
-        original_subject_list = self.dataset.subject_list
-        self.dataset.subject_list = [selected_subject]
-        
         try:
-            # Get data for the selected subject
+            # Get data for Subject 1
+            print(f"Getting data for Subject 1...")
             X, y, metadata = self.paradigm.get_data(self.dataset)
+            print(f"Raw data shape: {X.shape}, labels: {np.unique(y)}")
             
             # Filter to only use '0train' set
             train_mask = metadata['session'] == '0train'
             X = X[train_mask]
             y = y[train_mask]
+            
             metadata = metadata[train_mask]
+            print(f"After train filter: {X.shape}, labels: {np.unique(y)}")
             
             # Randomly sample a subset of the data
             if len(X) > self.sample_size:
@@ -332,15 +327,32 @@ class FastRealDataEvaluator(RealDataFitnessEvaluator):
                 X = X[indices]
                 y = y[indices]
                 metadata = metadata.iloc[indices]
+                print(f"After sampling: {X.shape}, labels: {np.unique(y)}")
             
-            # Create model from genome
-            model = RobustNeuroevolutionModelBuilder.create_model(genome)
+            # Encode labels as categorical values
+            label_encoder = LabelEncoder()
+            y_encoded = label_encoder.fit_transform(y)
+            print(f"After label encoding: {np.unique(y_encoded)}")
+            
+            # Create a simple train/test split for speed
+            from sklearn.model_selection import train_test_split
+            X_train, X_test, y_train, y_test = train_test_split(
+                X, y_encoded, test_size=0.3, random_state=get_seed(), stratify=y_encoded
+            )
+            print(f"Train shape: {X_train.shape}, Test shape: {X_test.shape}")
+            print(f"Train labels: {np.unique(y_train)}, Test labels: {np.unique(y_test)}")
+            
+            # Create model from genome with fixed parameters for speed
             classifier = RobustNeuroevolutionModelBuilder.create_classifier(genome)
             
-            # Set training parameters from genome
+            # Set simple training parameters
             classifier.max_epochs = self.max_epochs
+            classifier.batch_size = 16  # Smaller batch size for debugging
+            classifier.optimizer__lr = 1e-3
+            classifier.optimizer__weight_decay = 1e-4
             classifier.train_split = None
             classifier.callbacks = []
+            classifier.verbose = 1  # Enable verbose for debugging
             
             # Apply noise if specified
             if self.noise_type is not None and self.noise_intensity is not None:
@@ -351,29 +363,24 @@ class FastRealDataEvaluator(RealDataFitnessEvaluator):
                     seed=get_seed()
                 )
             
-            # Use GridSearchCV for evaluation with the sampled data
-            param_grid = {
-                'batch_size': [32, 64],
-                'optimizer__lr': [1e-3, 1e-4],
-                'optimizer__weight_decay': [1e-4, 1e-5]
-            }
-            
-            # Create a simple train/test split for speed
-            from sklearn.model_selection import train_test_split
-            X_train, X_test, y_train, y_test = train_test_split(
-                X, y, test_size=0.3, random_state=get_seed(), stratify=y
-            )
-            
+            print(f"Training classifier with {self.max_epochs} epochs...")
             # Train the classifier
             classifier.fit(X_train, y_train)
             
+            print(f"Evaluating classifier...")
             # Evaluate
             y_pred = classifier.predict(X_test)
             y_pred_proba = classifier.predict_proba(X_test)
             
+            print(f"Predictions: {y_pred[:10]}")
+            print(f"True labels: {y_test[:10]}")
+            print(f"Prediction probabilities shape: {y_pred_proba.shape}")
+            
             # Calculate metrics
             accuracy = accuracy_score(y_test, y_pred)
             test_score = roc_auc_score(y_test, y_pred_proba[:, 1]) if len(np.unique(y_test)) > 1 else 0.5
+            
+            print(f"Accuracy: {accuracy}, Test Score: {test_score}")
             
             # Calculate fitness components
             complexity_score = genome.get_complexity_score()
@@ -390,12 +397,14 @@ class FastRealDataEvaluator(RealDataFitnessEvaluator):
                 'noise_resilience': noise_resilience,
                 'overfitting_score': overfitting_score,
                 'overall_fitness': overall_fitness,
-                'subject_used': selected_subject,
+                'subject_used': 1,
                 'samples_used': len(X)
             }
             
         except Exception as e:
             print(f"Error evaluating genome: {e}")
+            import traceback
+            traceback.print_exc()
             return {
                 'accuracy': 0.0,
                 'test_score': 0.0,
@@ -403,9 +412,6 @@ class FastRealDataEvaluator(RealDataFitnessEvaluator):
                 'noise_resilience': 0.0,
                 'overfitting_score': 0.0,
                 'overall_fitness': 0.0,
-                'subject_used': selected_subject,
+                'subject_used': 1,
                 'samples_used': 0
-            }
-        finally:
-            # Restore original subject list
-            self.dataset.subject_list = original_subject_list 
+            } 
