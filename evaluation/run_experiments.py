@@ -442,7 +442,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Unified EEG Experiment Runner")
     parser.add_argument("--model", type=str, required=True, choices=list(MODEL_REGISTRY.keys()))
-    parser.add_argument("--mode", type=str, required=True, choices=["baseline", "tune", "perturb", "augment", "aggregate_only"])
+    parser.add_argument("--mode", type=str, required=True, choices=["baseline", "tune", "perturb", "augment", "perturb_notune", "augment_notune", "aggregate_only"])
     parser.add_argument("--subjects", type=int, nargs="+", required=True)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--resample", type=float, default=None)
@@ -452,7 +452,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.mode == "augment" or args.mode == "perturb" :
+    if args.mode in ["augment", "perturb", "augment_notune", "perturb_notune"]:
         check_skip_eval(args.model, args.seed, args.subjects, args.mode, args.noise_type, args.intensity)
         run_grouped_augmented_experiment(
             model_name=args.model,
