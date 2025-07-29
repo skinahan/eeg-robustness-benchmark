@@ -162,15 +162,19 @@ def run_optuna_stage(
         # Sample hyperparameters
         params = param_space_fn(trial, param_prefix)
         params[f"{param_prefix}train_split"] = None
-        # params[f"{param_prefix}max_epochs"] = 100
+        # params[f"{param_prefix}max_epochs"] = 50  # Fixed reasonable value
         params[f"{param_prefix}verbose"] = 1
         params[f"{param_prefix}callbacks"] = []
+        
         # Define model
         model.set_params(**params)
-        # model.max_epochs = 50
-        #
-        # model.train_split = None
-        # model.callbacks = []
+
+        if model.max_epochs > 100:
+            print("ERROR: Max epochs is greater than 100")
+            raise ValueError("Max epochs is greater than 100")
+            sys.exit(1)
+        
+
         cv = StratifiedKFold(n_splits=3, shuffle=True, random_state=seed)
         if check_time:
             start_time = time.time()
@@ -247,7 +251,7 @@ def alternate_optuna_stage(
         # Sample hyperparameters
         params = param_space_fn(trial, param_prefix)
         params[f"{param_prefix}train_split"] = None
-        # params[f"{param_prefix}max_epochs"] = 100
+        params[f"{param_prefix}max_epochs"] = 50  # Fixed reasonable value
         params[f"{param_prefix}verbose"] = 1
         params[f"{param_prefix}callbacks"] = []
 
@@ -323,9 +327,6 @@ def cnncfc_compact_training_space(trial, prefix):
         ),
         
         # Training parameters
-        f"{prefix}max_epochs": trial.suggest_int(
-            f"{prefix}max_epochs", 20, 100
-        ),
         f"{prefix}batch_size": trial.suggest_categorical(
             f"{prefix}batch_size", [16, 32, 64, 128]
         ),
@@ -337,8 +338,7 @@ def get_model_architecture_space(model_name):
         "eegnet": eegnet_architecture_space,
         "reegnet": reegnet_architecture_space,
         "cnn_ncp": cnn_ncp_architecture_space,
-        "cnn_cfc": cnn_cfc_architecture_space,
-        "improved_cnncfc": improved_cnncfc_architecture_space,
+        "cnncfc_v2": improved_cnncfc_architecture_space,  # CNNCfCv2 uses the same space as improved_cnncfc
         "cnncfc_compact": cnncfc_compact_architecture_space,
         "spp_ncp": spp_ncp_architecture_space
     }
@@ -350,8 +350,7 @@ def get_model_training_space(model_name):
         "eegnet": eegnet_training_space,
         "reegnet": reegnet_training_space,
         "cnn_ncp": cnn_ncp_training_space,
-        "cnn_cfc": cnn_cfc_training_space,
-        "improved_cnncfc": improved_cnncfc_training_space,
+        "cnncfc_v2": improved_cnncfc_training_space,  # CNNCfCv2 uses the same space as improved_cnncfc
         "cnncfc_compact": cnncfc_compact_training_space,
         "spp_ncp": spp_ncp_training_space
     }
@@ -369,7 +368,6 @@ def cnn_cfc_training_space(trial, prefix):
     return {
         f"{prefix}optimizer__lr": trial.suggest_loguniform("lr", 1e-4, 1e-2),
         f"{prefix}optimizer__weight_decay": trial.suggest_loguniform("weight_decay", 1e-4, 1e-1),
-        f"{prefix}max_epochs": trial.suggest_int("max_epochs", 10, 50),
     }
 
 
@@ -384,12 +382,15 @@ def improved_cnncfc_architecture_space(trial, prefix):
             f"{prefix}module__drop_prob", 0.1, 0.5
         ),
         
-        # CNN feature extraction parameters
+        # CNN feature extraction parameters - PROPERLY UTILIZED
         f"{prefix}module__F1": trial.suggest_categorical(
             f"{prefix}module__F1", [4, 8, 12, 16]
         ),
         f"{prefix}module__D": trial.suggest_categorical(
             f"{prefix}module__D", [1, 2, 4]
+        ),
+        f"{prefix}module__kernel_length": trial.suggest_int(
+            f"{prefix}module__kernel_length", 64, 256, step=32
         ),
         
         # Temporal processing parameters
@@ -490,6 +491,7 @@ def eegnet_architecture_space(trial, prefix):
         f"{prefix}module__F1": trial.suggest_categorical(f"{prefix}module__F1", [4, 8, 16]),
         f"{prefix}module__D": trial.suggest_categorical(f"{prefix}module__D", [1, 2, 4]),
         f"{prefix}module__kernel_length": trial.suggest_int(f"{prefix}module__kernel_length", 64, 256, step=32),
+        f"{prefix}max_epochs": 100
     }
 
 
@@ -499,6 +501,7 @@ def eegnet_training_space(trial, prefix):
         f"{prefix}optimizer__lr": trial.suggest_loguniform("lr", 1e-4, 1e-2),
         f"{prefix}optimizer__weight_decay": trial.suggest_loguniform("weight_decay", 1e-6, 1e-2),
         f"{prefix}batch_size": trial.suggest_categorical("batch_size", [8, 16, 32, 64]),
+        f"{prefix}max_epochs": 100
     }
 
 
