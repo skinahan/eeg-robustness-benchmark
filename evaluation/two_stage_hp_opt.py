@@ -293,6 +293,45 @@ def alternate_optuna_stage(
     return best_params, study.best_value
 
 
+def cnncfc_compact_architecture_space(trial, prefix):
+    return {
+        # CfC core parameters
+        f"{prefix}module__ncp_hidden_dim": trial.suggest_categorical(
+            f"{prefix}module__ncp_hidden_dim", [8, 16, 32, 48, 64]
+        ),
+        f"{prefix}module__drop_prob": trial.suggest_float(
+            f"{prefix}module__drop_prob", 0.1, 0.5
+        ),
+        f"{prefix}module__use_stochastic_depth": trial.suggest_categorical(
+            f"{prefix}module__use_stochastic_depth", [True, False]
+        ),
+        # Sequence length control
+        f"{prefix}module__max_seq_length": trial.suggest_categorical(
+            f"{prefix}module__max_seq_length", [150, 200, 250, 300]
+        )
+    }
+
+
+def cnncfc_compact_training_space(trial, prefix):
+    return {
+        # Optimizer parameters
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(
+            f"{prefix}optimizer__lr", 1e-5, 1e-2
+        ),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
+            f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
+        ),
+        
+        # Training parameters
+        f"{prefix}max_epochs": trial.suggest_int(
+            f"{prefix}max_epochs", 20, 100
+        ),
+        f"{prefix}batch_size": trial.suggest_categorical(
+            f"{prefix}batch_size", [16, 32, 64, 128]
+        ),
+    }
+
+
 def get_model_architecture_space(model_name):
     architecture_registry = {
         "eegnet": eegnet_architecture_space,
@@ -300,6 +339,7 @@ def get_model_architecture_space(model_name):
         "cnn_ncp": cnn_ncp_architecture_space,
         "cnn_cfc": cnn_cfc_architecture_space,
         "improved_cnncfc": improved_cnncfc_architecture_space,
+        "cnncfc_compact": cnncfc_compact_architecture_space,
         "spp_ncp": spp_ncp_architecture_space
     }
     return architecture_registry[model_name]
@@ -312,10 +352,10 @@ def get_model_training_space(model_name):
         "cnn_ncp": cnn_ncp_training_space,
         "cnn_cfc": cnn_cfc_training_space,
         "improved_cnncfc": improved_cnncfc_training_space,
+        "cnncfc_compact": cnncfc_compact_training_space,
         "spp_ncp": spp_ncp_training_space
     }
     return training_registry[model_name]
-
 
 def cnn_cfc_architecture_space(trial, prefix):
     return {
@@ -351,9 +391,6 @@ def improved_cnncfc_architecture_space(trial, prefix):
         f"{prefix}module__D": trial.suggest_categorical(
             f"{prefix}module__D", [1, 2, 4]
         ),
-        f"{prefix}module__kernel_length": trial.suggest_int(
-            f"{prefix}module__kernel_length", 64, 256, step=32
-        ),
         
         # Temporal processing parameters
         f"{prefix}module__temporal_kernel_size": trial.suggest_categorical(
@@ -366,12 +403,7 @@ def improved_cnncfc_architecture_space(trial, prefix):
         # Sequence length control
         f"{prefix}module__max_seq_length": trial.suggest_categorical(
             f"{prefix}module__max_seq_length", [150, 200, 250, 300]
-        ),
-        
-        # Sparsity for CfC
-        f"{prefix}module__sparsity": trial.suggest_float(
-            f"{prefix}module__sparsity", 0.5, 0.9
-        ),
+        )
     }
 
 

@@ -33,8 +33,6 @@ class CNNCfC(EEGModuleMixin, nn.Module):
             n_times,
             n_outputs,
             ncp_hidden_dim=8,
-            cnn_output_dim=16,
-            sparsity=0.75,
             drop_prob=0.15,
             F1=8,
             D=2,
@@ -184,12 +182,9 @@ class CNNCfCImproved(EEGModuleMixin, nn.Module):
             n_times,
             n_outputs,
             ncp_hidden_dim=16,  # Reduced from 32 to 16 for speed
-            cnn_output_dim=16,
-            sparsity=0.75,
             drop_prob=0.15,
             F1=8,
             D=2,
-            kernel_length=128,
             temporal_kernel_size=3,
             temporal_stride=4,  # More aggressive downsampling
             max_seq_length=250  # Limit sequence length for CfC
@@ -331,6 +326,8 @@ class CNNCfCImproved(EEGModuleMixin, nn.Module):
 
 
 # REEGNet variant with CfC-based recurrence - V3 with residual connection
+# This model gets a high non-contaminated score. 
+# However, it is vulnerable to noise perturbations.
 class CNNCfCv3(EEGModuleMixin, nn.Module):
     def __init__(
             self,
@@ -339,7 +336,6 @@ class CNNCfCv3(EEGModuleMixin, nn.Module):
             n_outputs,
             ncp_hidden_dim=16,  # Reduced from 32 to 16 for speed
             cnn_output_dim=16,
-            sparsity=0.75,
             drop_prob=0.15,
             F1=8,
             D=2,
