@@ -406,9 +406,6 @@ class CNNCfCv2(EEGModuleMixin, nn.Module):
             if hasattr(module, "bias") and module.bias is not None:
                 nn.init.constant_(module.bias, 0)
 
-from braindecode import EEGClassifier
-from skorch.dataset import ValidSplit
-from globals import get_seed
 
 def create_cnnncfc_v2_classifier(n_chans, n_times, n_outputs):
     """Create the official CNNCfCv2 classifier."""
