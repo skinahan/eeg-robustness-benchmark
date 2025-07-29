@@ -1415,10 +1415,6 @@ def create_cnnncfc_classifier(n_chans, n_times, n_outputs):
     return create_cnnncp_classifier(n_chans, n_times, n_outputs, net_size=64, classifier_type=4)
 
 
-def create_cnnncfc_improved_classifier(n_chans, n_times, n_outputs):
-    """Create the improved CNNCfC classifier with better inference speed."""
-    return create_cnnncp_classifier(n_chans, n_times, n_outputs, net_size=16, classifier_type=5)
-
 
 def create_cnnncfc_improved_v2_classifier(n_chans, n_times, n_outputs):
     """Create the improved CNNCfC classifier with label smoothing and layer normalization."""
@@ -1439,6 +1435,42 @@ def create_cnnncfc_improved_v4_classifier(n_chans, n_times, n_outputs):
     """Create the simplified and regularized CNNCfCImprovedV4 classifier."""
     return create_cnnncp_classifier(n_chans, n_times, n_outputs, net_size=8, classifier_type=9)
 
+from braindecode import EEGClassifier
+from skorch.dataset import ValidSplit
+from globals import get_seed
+
+def create_cnnncfc_improved_classifier(n_chans, n_times, n_outputs):
+    """Create the compact CNNCfC_Compact classifier."""
+    # Create a custom classifier for the ultra-simplified model
+    seed = get_seed()
+
+    classifier = EEGClassifier(
+        CNNCfCImproved,
+        criterion=torch.nn.CrossEntropyLoss,
+        optimizer=torch.optim.AdamW,
+        optimizer__lr=1e-3,
+        optimizer__weight_decay=1e-3,
+        batch_size=64,
+        max_epochs=50,
+        module__n_chans=n_chans,
+        module__n_times=n_times,
+        module__n_outputs=n_outputs,
+        module__ncp_hidden_dim=8,
+        module__drop_prob=0.2,
+        module__max_seq_length=150,
+        train_split=ValidSplit(0.2, stratified=True, random_state=seed),
+        device='cuda' if torch.cuda.is_available() else 'cpu',
+        callbacks=[],
+    )
+
+    if torch.cuda.is_available():
+        classifier.initialize()
+        classifier.module_.cuda()
+    else:
+        classifier.initialize()
+
+    return classifier
+
 
 def create_cnnncfc_compact_classifier(n_chans, n_times, n_outputs):
     """Create the compact CNNCfC_Compact classifier."""
@@ -1453,10 +1485,10 @@ def create_cnnncfc_compact_classifier(n_chans, n_times, n_outputs):
         CNNCfC_Compact,
         criterion=torch.nn.CrossEntropyLoss,
         optimizer=torch.optim.AdamW,
-        optimizer__lr=1e-3,
-        optimizer__weight_decay=1e-3,
+        optimizer__lr=5e-4,
+        optimizer__weight_decay=1e-2,
         batch_size=64,
-        max_epochs=50,
+        max_epochs=100,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
