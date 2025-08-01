@@ -546,3 +546,4 @@ def create_cnnncp_classifier(
         cnn_ncp_net.initialize()
 
     return cnn_ncp_net
+    

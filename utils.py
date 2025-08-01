@@ -1,13 +1,13 @@
 import os
 
 
-def create_hdf5_model_path(model, seed, session, mode, paradigm='MotorImagery', others=[]):
+def create_hdf5_model_path(model, seed, session, mode, session_type='WithinSessionEvaluation', paradigm='MotorImagery', others=[]):
     full_list = [
         "results",
         paradigm,
         "BNCI2014_001",
         model,
-        "WithinSessionEvaluation",
+        session_type,
         str(seed),
         f"checkpoints",
         session,
@@ -20,13 +20,13 @@ def create_hdf5_model_path(model, seed, session, mode, paradigm='MotorImagery', 
         "//".join(full_list)
     )
 
-def  create_output_path(model, seed, subject, session, mode, paradigm='MotorImagery', others=[]):
+def  create_output_path(model, seed, subject, session, mode, session_type='WithinSessionEvaluation', paradigm='MotorImagery', others=[]):
     full_list = [
         "results",
         paradigm,
         "BNCI2014_001",
         model,
-        "WithinSessionEvaluation",
+        session_type,
         str(seed),
         f"sub-{int(subject):03d}",
         session,
