@@ -269,7 +269,7 @@ class CrossSessionNoiseEvaluation(CrossSessionEvaluation):
                     elif k in row_headers:
                         result_row[k] = v
                 
-                results.append(result_row)
+                results.append(pd.DataFrame([result_row]))
         
         return pd.concat(results) if results else pd.DataFrame()
 
@@ -316,20 +316,51 @@ def run_cross_session_experiment(
 
     if mode == "baseline":
         # Use custom cross-session evaluation instead of MOABB's CrossSessionEvaluation
-        evaluation = CrossSessionNoiseEvaluation(
+        evaluation = CrossSessionEvaluation(
             paradigm=paradigm,
             datasets=[dataset],
-            mode=mode,
-            noise_dict=None,
-            resample=resample,
             overwrite=True,
             hdf5_path=full_hdf5_path,
             random_state=seed,
-            model_name=model_name
         )
-        results = evaluation.process({f"{model_name}+MotorImagery": None})
+        results = evaluation.process({f"{model_name}+MotorImagery": base_model})
+        
+        df = results.copy()
+        config = extract_model_params(base_model)
+        df['seed'] = seed
+        df['mode'] = mode
+        df['model'] = model_name
+        df['paradigm'] = 'MotorImagery'
+        df['resample'] = resample or 250.0
+        df['optimizer__lr'] = config['optimizer__lr']
+        df['batch_size'] = config['batch_size']
+        df['max_epochs'] = config['max_epochs']
+        if model_name == 'cnncfc_v2':
+            df['module__ncp_hidden_dim'] = config['module__ncp_hidden_dim']
+            df['module__drop_prob'] = config['module__drop_prob']
+            df['module__F1'] = config['module__F1']
+            df['module__D'] = config['module__D']
+            df['module__kernel_length'] = config['module__kernel_length']
 
-        # Results are already saved by the custom evaluation class
+        if model_name == 'cnn_ncp':
+            df['module__ncp_hidden_dim'] = config['module__ncp_hidden_dim']
+            df['module__sparsity'] = config['module__sparsity']
+            df['optimizer__weight_decay'] = config['optimizer__weight_decay']
+        if model_name == 'reegnet':
+            df['module__lstm_hidden_size'] = config['module__lstm_hidden_size']
+            df['module__drop_prob'] = config['module__drop_prob']
+
+        for subj in df['subject'].unique():
+            subject_df = df[df['subject'] == subj]
+            for session in df['session'].unique():
+                session_df = subject_df[subject_df['session'] == session]
+                out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type='CrossSessionEvaluation')
+                os.makedirs(out_dir, exist_ok=True)
+                filename_suffix = f"_{noise_type}" if is_perturbed and noise_type else ""
+                out_file = os.path.join(out_dir,
+                                        f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
+                session_df.to_csv(out_file, index=False)
+                print(f"Saved: {out_file}")
         print(f"Cross-session baseline evaluation completed for {model_name}")
 
     elif mode == "tune":
