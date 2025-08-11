@@ -264,7 +264,7 @@ def alternate_optuna_stage(
         y_obj = y_train
         # If doing concatenated data augmentation, we need to track what set (training/validation) each sample belonged to originally
         if mode == 'augment':
-            cv = GroupKFold(n_splits=3, shuffle=True, random_state=seed)
+            cv = GroupKFold(n_splits=3)
             X_obj, y_obj, groups = model.concat_and_augment(X_train, y_train)
         return unified_cv_training_loop_method(model, cv, X_obj, y_obj, trial=trial, groups=groups)
 

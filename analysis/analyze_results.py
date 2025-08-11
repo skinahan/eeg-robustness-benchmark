@@ -439,12 +439,13 @@ def run_completion_report(output_dir, aggregated_df):
     summary_df.to_csv(os.path.join(output_dir, "experiment_completion_report.csv"), index=False)
 
 if __name__ == '__main__':
-    input_dir = '../sol_results/results/MotorImagery'
+    input_dir = '../results/MotorImagery/BNCI2014_001/'
     aggregated_df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
     # run_completion_report(input_dir, aggregated_df)
 
-    run_comparative_plots(aggregated_df)
+    # run_comparative_plots(aggregated_df)
     # eegnet_plots(aggregated_df)
     # reegnet_plots(aggregated_df)
     # cnn_ncp_plots(aggregated_df)
+    model_plots(aggregated_df, 'cnncfc_v2')
 

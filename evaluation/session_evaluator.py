@@ -83,7 +83,7 @@ class NoiseWithinSessionEvaluation(WithinSessionEvaluation):
             
             # Augmentation mode: Supplement clean input data with contaminated samples
             if self.mode in ['augment', 'augment_notune']:
-                cv = GroupKFold(n_splits=3, shuffle=True, random_state=self.seed)
+                cv = GroupKFold(n_splits=3)
                 # If doing concatenated data augmentation, we need to track what set (training/validation) each sample belonged to originally
                 X_obj, y_obj, groups = self.model.concat_and_augment(X_mask, y_mask)
             
@@ -163,7 +163,7 @@ class NoiseWithinSessionEvaluation(WithinSessionEvaluation):
                     y_obj = y_mask
                     # Augmentation mode: Supplement clean input data with contaminated samples
                     if self.mode == 'augment':
-                        cv = GroupKFold(n_splits=3, shuffle=True, random_state=self.seed)
+                        cv = GroupKFold(n_splits=3)
                         # If doing concatenated data augmentation, we need to track what set (training/validation) each sample belonged to originally
                         X_obj, y_obj, groups = self.model.concat_and_augment(X_mask, y_mask)
                     start_time = time.time()
@@ -193,6 +193,7 @@ class NoiseWithinSessionEvaluation(WithinSessionEvaluation):
                                 result_row[no_prefix] = v
                         elif k in row_headers:
                             result_row[k] = v
+                    result_row = pd.DataFrame.from_records([result_row])
                     results.append(result_row)
         
         return pd.concat(results) if results else pd.DataFrame()

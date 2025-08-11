@@ -92,6 +92,7 @@ def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
         for file in filenames:
             if file.endswith(".csv") and not file.startswith("all_results"):
                 full_path = os.path.join(dirpath, file)
+                print(full_path)
                 try:
                     df = pd.read_csv(full_path)
                     selected_type = None

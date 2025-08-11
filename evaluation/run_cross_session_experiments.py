@@ -117,11 +117,11 @@ class CrossSessionNoiseEvaluation(CrossSessionEvaluation):
             'time': training_time + evaluation_time,
             'samples': len(X_train) + len(X_test),
             'subject': str(metadata_train["subject"].iloc[0]) if len(metadata_train["subject"].unique()) == 1 else "multiple",
-            'session': 'cross_session',
+            'session': '1test',
             'channels': X_train.shape[1],
             'n_sessions': 2,  # 0train and 1test
             'dataset': metadata_train["dataset"].iloc[0] if "dataset" in metadata_train.columns else "unknown",
-            'pipeline': f"{self.model_name}+MotorImagery",
+            'pipeline': f"{self.model_name}+MotorImagery+CrossSessionEvaluation",
             'seed': self.seed,
             'mode': self.mode,
             'model': self.model_name,
@@ -180,7 +180,7 @@ class CrossSessionNoiseEvaluation(CrossSessionEvaluation):
                 results.append(result_df)
             else:
                 # Hyperparameter tuning on 0train session
-                out_dir = create_output_path(self.model_name, self.seed, subj, 'cross_session', self.mode)
+                out_dir = create_output_path(self.model_name, self.seed, subj, '1test', self.mode, session_type='CrossSessionEvaluation')
                 output_root = os.path.join(out_dir, f"optuna_results_{self.noise_type}_{self.intensity}" if self.noise_dict else "optuna_results")
                 
                 if self.noise_dict:
@@ -234,7 +234,7 @@ class CrossSessionNoiseEvaluation(CrossSessionEvaluation):
                     'time': training_time + evaluation_time,
                     'samples': len(X_train) + len(X_test),
                     'subject': str(subj),
-                    'session': 'cross_session',
+                    'session': '1test',
                     'channels': X_train.shape[1],
                     'n_sessions': 2,
                     'dataset': dataset.code,
@@ -268,8 +268,8 @@ class CrossSessionNoiseEvaluation(CrossSessionEvaluation):
                             result_row[no_prefix] = v
                     elif k in row_headers:
                         result_row[k] = v
-                
-                results.append(pd.DataFrame([result_row]))
+                result_row = pd.DataFrame.from_records([result_row])
+                results.append(result_row)
         
         return pd.concat(results) if results else pd.DataFrame()
 
@@ -310,7 +310,7 @@ def run_cross_session_experiment(
     paradigm = get_paradigm(resample=resample)
 
     unique_id = uuid.uuid4().hex[:8]
-    checkpoint_dir = create_hdf5_model_path(model_name, seed, 'cross_session', mode)
+    checkpoint_dir = create_hdf5_model_path(model_name, seed, '1test', mode, session_type='CrossSessionEvaluation')
     file_name = f"{noise_type}/{intensity}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}_{unique_id}.h5" if is_perturbed else f"subject{subject_list[0]}-{subject_list[-1]}_seed{seed}_{unique_id}.h5"
     full_hdf5_path = os.path.join(checkpoint_dir, file_name)
 
@@ -377,7 +377,7 @@ def run_cross_session_experiment(
             model_name=model_name
         )
         results = evaluation.process({f"{model_name}+Optuna": None})
-
+        log_all_subjects(results, subject_list, model_name, mode, None, None, seed, eval_mode='CrossSessionEvaluation')
         # Results are already saved by the custom evaluation class
         print(f"Cross-session tuning evaluation completed for {model_name}")
 
@@ -389,7 +389,7 @@ def run_cross_session_experiment(
         
         cap_Mode = mode.capitalize()
         unique_id = uuid.uuid4().hex[:8]
-        checkpoint_dir = create_hdf5_model_path(model_name, seed, 'cross_session', mode)
+        checkpoint_dir = create_hdf5_model_path(model_name, seed, '1test', mode, session_type='CrossSessionEvaluation')
         file_name = f"{noise_type}/{intensity}_subject{subject_list[0]}-{subject_list[-1]}_seed{seed}_{unique_id}.h5"
         full_hdf5_path = os.path.join(checkpoint_dir, file_name)
 
@@ -405,7 +405,7 @@ def run_cross_session_experiment(
             model_name=model_name
         )
         results = evaluation.process({f"{model_name}+MotorImagery+{cap_Mode}": None})
-        log_all_subjects(results, subject_list, model_name, mode, noise_type, intensity, seed)
+        log_all_subjects(results, subject_list, model_name, mode, noise_type, intensity, seed, eval_mode='CrossSessionEvaluation')
 
     if os.path.isdir(full_hdf5_path):
         import shutil
