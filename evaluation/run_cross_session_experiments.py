@@ -34,6 +34,7 @@ from evaluation.experiment_utils import (
     two_stage_opt, collect_all_results, add_experiment_metadata
 )
 from evaluation.two_stage_hp_opt import alternate_two_stage_optuna, format_params, unified_cv_training_loop_method
+import shutil
 
 
 class CrossSessionNoiseEvaluation(CrossSessionEvaluation):
@@ -408,7 +409,6 @@ def run_cross_session_experiment(
         log_all_subjects(results, subject_list, model_name, mode, noise_type, intensity, seed, eval_mode='CrossSessionEvaluation')
 
     if os.path.isdir(full_hdf5_path):
-        import shutil
         shutil.rmtree(full_hdf5_path)
 
 

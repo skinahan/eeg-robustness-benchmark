@@ -27,6 +27,7 @@ from globals import set_seeds, get_seed
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
 from evaluation.session_evaluator import NoiseWithinSessionEvaluation
 from utils import create_output_path, create_hdf5_model_path
+from experiment_utils import check_skip_eval
 
 from moabb.evaluations import WithinSessionSplitter
 from sklearn.model_selection import cross_val_score
@@ -298,6 +299,9 @@ def run_experiment(
                                         f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
                 session_df.to_csv(out_file, index=False)
                 print(f"Saved: {out_file}")
+        
+        if os.path.isdir(full_hdf5_path):
+            shutil.rmtree(full_hdf5_path)
 
     elif mode == "tune":
         for subj in subject_list:
@@ -338,8 +342,8 @@ def run_experiment(
                 df[df['session'] == session].to_csv(out_file, index=False)
                 print(f"Saved: {out_file}")
 
-    if os.path.isdir(full_hdf5_path):
-        shutil.rmtree(full_hdf5_path)
+            if os.path.isdir(full_hdf5_path):
+                shutil.rmtree(full_hdf5_path)
 
 # Unused GridSearchCV from past implementation
 def grid_search_hp_opt(model, param_grid, X, y_encoded, subj, seed, mode, model_name, resample):
@@ -359,28 +363,28 @@ def grid_search_hp_opt(model, param_grid, X, y_encoded, subj, seed, mode, model_
     df['paradigm'] = 'MotorImagery'
     df['resample'] = resample or 250.0
 
-def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity):
-    existing_output_paths = []
-    expected_output_paths = []
-    for subj in subject_list:
-        for session in ['0train', '1test']:
-            out_dir = create_output_path(model_name, seed, int(subj), session, mode)
-            if noise_type is not None and intensity is not None:
-                filename_suffix = f"_{noise_type}_{intensity}"
-            else:
-                filename_suffix = ""
-            out_file = os.path.join(out_dir,
-                                    f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
-            if os.path.exists(out_file):
-                existing_output_paths.append(out_file)
-            else:
-                expected_output_paths.append(out_file)
+# def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity):
+#     existing_output_paths = []
+#     expected_output_paths = []
+#     for subj in subject_list:
+#         for session in ['0train', '1test']:
+#             out_dir = create_output_path(model_name, seed, int(subj), session, mode)
+#             if noise_type is not None and intensity is not None:
+#                 filename_suffix = f"_{noise_type}_{intensity}"
+#             else:
+#                 filename_suffix = ""
+#             out_file = os.path.join(out_dir,
+#                                     f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
+#             if os.path.exists(out_file):
+#                 existing_output_paths.append(out_file)
+#             else:
+#                 expected_output_paths.append(out_file)
 
-    if len(expected_output_paths) == 0:
-        print(f"Skipping analysis, file(s) exist:")
-        for out_file in existing_output_paths:
-            print(out_file)
-        sys.exit(0)
+#     if len(expected_output_paths) == 0:
+#         print(f"Skipping analysis, file(s) exist:")
+#         for out_file in existing_output_paths:
+#             print(out_file)
+#         sys.exit(0)
 
 def log_all_subjects(results, subject_list, model_name, mode, noise_type, intensity, seed):
     for subj in subject_list:

@@ -300,8 +300,8 @@ def alternate_optuna_stage(
 def cnncfc_compact_architecture_space(trial, prefix):
     return {
         # CfC core parameters
-        f"{prefix}module__ncp_hidden_dim": trial.suggest_categorical(
-            f"{prefix}module__ncp_hidden_dim", [8, 16, 32, 48, 64]
+        f"{prefix}module__ncp_hidden_dim": trial.suggest_int(
+            f"{prefix}module__ncp_hidden_dim", 8, 64
         ),
         f"{prefix}module__drop_prob": trial.suggest_float(
             f"{prefix}module__drop_prob", 0.1, 0.5
@@ -310,8 +310,27 @@ def cnncfc_compact_architecture_space(trial, prefix):
             f"{prefix}module__use_stochastic_depth", [True, False]
         ),
         # Sequence length control
-        f"{prefix}module__max_seq_length": trial.suggest_categorical(
-            f"{prefix}module__max_seq_length", [150, 200, 250, 300]
+        f"{prefix}module__max_seq_length": trial.suggest_int(
+            f"{prefix}module__max_seq_length", 150, 300
+        ),
+        # NEW: CfC-specific parameters that were previously hardcoded
+        f"{prefix}module__mixed_memory": trial.suggest_categorical(
+            f"{prefix}module__mixed_memory", [True, False]
+        ),
+        f"{prefix}module__mode": trial.suggest_categorical(
+            f"{prefix}module__mode", ["default", "pure", "no_gate"]
+        ),
+        f"{prefix}module__activation": trial.suggest_categorical(
+            f"{prefix}module__activation", ["lecun_tanh", "silu", "relu", "tanh", "gelu"]
+        ),
+        f"{prefix}module__backbone_units": trial.suggest_int(
+            f"{prefix}module__backbone_units", 16, 256
+        ),
+        f"{prefix}module__backbone_layers": trial.suggest_int(
+            f"{prefix}module__backbone_layers", 1, 3
+        ),
+        f"{prefix}module__backbone_dropout": trial.suggest_float(
+            f"{prefix}module__backbone_dropout", 0.0, 0.5
         )
     }
 
@@ -374,10 +393,10 @@ def cnn_cfc_training_space(trial, prefix):
 def improved_cnncfc_architecture_space(trial, prefix):
     """Enhanced architecture parameter space for improved CNNCfC."""
     return {
-        # CfC core parameters
-        f"{prefix}module__ncp_hidden_dim": trial.suggest_categorical(
-            f"{prefix}module__ncp_hidden_dim", [8, 16, 32, 48, 64]
+        f"{prefix}module__ncp_hidden_dim": trial.suggest_int(
+            f"{prefix}module__ncp_hidden_dim", 8, 64
         ),
+        
         f"{prefix}module__drop_prob": trial.suggest_float(
             f"{prefix}module__drop_prob", 0.1, 0.5
         ),
@@ -390,7 +409,7 @@ def improved_cnncfc_architecture_space(trial, prefix):
             f"{prefix}module__D", [1, 2, 4]
         ),
         f"{prefix}module__kernel_length": trial.suggest_int(
-            f"{prefix}module__kernel_length", 64, 256, step=32
+            f"{prefix}module__kernel_length", 64, 256, step=16
         ),
         
         # Temporal processing parameters
@@ -400,10 +419,28 @@ def improved_cnncfc_architecture_space(trial, prefix):
         f"{prefix}module__temporal_stride": trial.suggest_categorical(
             f"{prefix}module__temporal_stride", [2, 4, 6, 8]
         ),
-        
         # Sequence length control
-        f"{prefix}module__max_seq_length": trial.suggest_categorical(
-            f"{prefix}module__max_seq_length", [150, 200, 250, 300]
+        f"{prefix}module__max_seq_length": trial.suggest_int(
+            f"{prefix}module__max_seq_length", 150, 300
+        ),
+        # NEW: CfC-specific parameters that were previously hardcoded
+        f"{prefix}module__mixed_memory": trial.suggest_categorical(
+            f"{prefix}module__mixed_memory", [True, False]
+        ),
+        f"{prefix}module__mode": trial.suggest_categorical(
+            f"{prefix}module__mode", ["default", "pure", "no_gate"]
+        ),
+        f"{prefix}module__activation": trial.suggest_categorical(
+            f"{prefix}module__activation", ["lecun_tanh", "silu", "relu", "tanh", "gelu"]
+        ),
+        f"{prefix}module__backbone_units": trial.suggest_int(
+            f"{prefix}module__backbone_units", 16, 256
+        ),
+        f"{prefix}module__backbone_layers": trial.suggest_int(
+            f"{prefix}module__backbone_layers", 1, 3
+        ),
+        f"{prefix}module__backbone_dropout": trial.suggest_float(
+            f"{prefix}module__backbone_dropout", 0.0, 0.5
         )
     }
 
@@ -892,6 +929,26 @@ def adaptive_improved_cnncfc_architecture_space(trial, prefix, previous_best=Non
         f"{prefix}module__sparsity": trial.suggest_float(
             f"{prefix}module__sparsity", 0.3, 0.95
         ),
+        
+        # NEW: CfC-specific parameters that were previously hardcoded
+        f"{prefix}module__mixed_memory": trial.suggest_categorical(
+            f"{prefix}module__mixed_memory", [True, False]
+        ),
+        f"{prefix}module__mode": trial.suggest_categorical(
+            f"{prefix}module__mode", ["default", "pure", "no_gate"]
+        ),
+        f"{prefix}module__activation": trial.suggest_categorical(
+            f"{prefix}module__activation", ["lecun_tanh", "tanh", "relu", "sigmoid", "gelu"]
+        ),
+        f"{prefix}module__backbone_units": trial.suggest_categorical(
+            f"{prefix}module__backbone_units", [64, 128, 256, 512, 1024]
+        ),
+        f"{prefix}module__backbone_layers": trial.suggest_categorical(
+            f"{prefix}module__backbone_layers", [1, 2, 3, 4, 5]
+        ),
+        f"{prefix}module__backbone_dropout": trial.suggest_float(
+            f"{prefix}module__backbone_dropout", 0.0, 0.7
+        )
     }
     
     # Add conditional parameters based on previous best

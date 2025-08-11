@@ -149,7 +149,14 @@ class CNNCfC_Compact(EEGModuleMixin, nn.Module):
             ncp_hidden_dim=8,  # Minimal size
             drop_prob=0.2,  # Higher dropout for regularization
             max_seq_length=150,  # Very short sequences
-            use_stochastic_depth=True
+            use_stochastic_depth=True,
+            # CfC-specific parameters
+            mixed_memory=True,
+            mode='default',
+            activation='lecun_tanh',
+            backbone_units=128,
+            backbone_layers=1,
+            backbone_dropout=0.0
     ):
         super().__init__(
             n_outputs=n_outputs,
@@ -161,6 +168,14 @@ class CNNCfC_Compact(EEGModuleMixin, nn.Module):
         
         self.max_seq_length = max_seq_length
         self.use_stochastic_depth = use_stochastic_depth
+
+        # Store CfC parameters
+        self.mixed_memory = mixed_memory
+        self.mode = mode
+        self.activation = activation
+        self.backbone_units = backbone_units
+        self.backbone_layers = backbone_layers
+        self.backbone_dropout = backbone_dropout
 
         # 1. Single feature extraction layer:
         self.feature_extractor = nn.Sequential(
@@ -174,15 +189,19 @@ class CNNCfC_Compact(EEGModuleMixin, nn.Module):
             nn.Dropout(p=drop_prob)
         )
 
-        # 2. CfC with minimal complexity:
+        # 2. CfC with minimal complexity and configurable parameters:
         self.ncp = CfC(
             input_size=8, 
             units=ncp_hidden_dim, 
             proj_size=8,
             return_sequences=True, 
             batch_first=True, 
-            mixed_memory=True,
-            mode='default'
+            mixed_memory=self.mixed_memory,
+            mode=self.mode,
+            activation=self.activation,
+            backbone_units=self.backbone_units,
+            backbone_layers=self.backbone_layers,
+            backbone_dropout=self.backbone_dropout
         )
 
         # 3. Stochastic depth for regularization:
@@ -251,7 +270,14 @@ class CNNCfCv2(EEGModuleMixin, nn.Module):
             kernel_length=128,
             temporal_kernel_size=3,
             temporal_stride=4,
-            max_seq_length=250
+            max_seq_length=250,
+            # CfC-specific parameters
+            mixed_memory=True,
+            mode='default',
+            activation='lecun_tanh',
+            backbone_units=128,
+            backbone_layers=1,
+            backbone_dropout=0.0
     ):
         super().__init__(
             n_outputs=n_outputs,
@@ -270,6 +296,14 @@ class CNNCfCv2(EEGModuleMixin, nn.Module):
         self.kernel_length = kernel_length
         self.max_seq_length = max_seq_length
         self.temporal_stride = temporal_stride
+
+        # Store CfC parameters
+        self.mixed_memory = mixed_memory
+        self.mode = mode
+        self.activation = activation
+        self.backbone_units = backbone_units
+        self.backbone_layers = backbone_layers
+        self.backbone_dropout = backbone_dropout
 
         # 1. Input Conv2D - PROPERLY PARAMETERIZED:
         self.conv1 = nn.Conv2d(
@@ -308,7 +342,7 @@ class CNNCfCv2(EEGModuleMixin, nn.Module):
             padding=temporal_kernel_size // 2
         )
 
-        # 6. CfC with proper input size:
+        # 6. CfC with proper input size and configurable parameters:
         ncp_input_size = F2  # Use F2 instead of hardcoded 16
         ncp_output_size = F2  # Use F2 for consistency
         
@@ -318,8 +352,12 @@ class CNNCfCv2(EEGModuleMixin, nn.Module):
             proj_size=ncp_output_size,
             return_sequences=True, 
             batch_first=True, 
-            mixed_memory=True,
-            mode='default'
+            mixed_memory=self.mixed_memory,
+            mode=self.mode,
+            activation=self.activation,
+            backbone_units=self.backbone_units,
+            backbone_layers=self.backbone_layers,
+            backbone_dropout=self.backbone_dropout
         )
 
         # 7. Separable Conv2D - PROPERLY PARAMETERIZED:
