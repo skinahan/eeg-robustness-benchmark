@@ -86,13 +86,13 @@ def enhanced_cv_training_loop(
         fold_scores.append(auc)
         fold_times.append(time.time() - start_time)
         
-        if trial is not None:
-            # Report intermediate value for pruning
-            trial.report(auc, i)
+        # if trial is not None:
+        #     # Report intermediate value for pruning
+        #     trial.report(auc, i)
             
-            # Enhanced pruning logic
-            if trial.should_prune():
-                raise optuna.TrialPruned()
+        #     # Enhanced pruning logic
+        #     if trial.should_prune():
+        #         raise optuna.TrialPruned()
     
     mean_score = np.mean(fold_scores)
     std_score = np.std(fold_scores)
@@ -115,12 +115,12 @@ def unified_cv_training_loop_method(model, cv, X_train, y_train, trial=None, gro
         auc = roc_auc_score(y_valid_part, y_pred)
         # print(f"Fold {i} auc: {auc}")
         fold_scores.append(auc)
-        if trial is not None:
-            trial.report(auc, i)
+        # if trial is not None:
+        #     trial.report(auc, i)
 
-            # Handle pruning based on the intermediate value.
-            if trial.should_prune():
-                raise optuna.TrialPruned()
+        #     # Handle pruning based on the intermediate value.
+        #     if trial.should_prune():
+        #         raise optuna.TrialPruned()
     return np.mean(fold_scores)
 
 
@@ -418,7 +418,66 @@ def cnn_smallworld_training_space(trial, prefix):
     }
 
 
+def cnn_wiredcfc_architecture_space(trial, prefix):
+    """Architecture parameter space for CNNWiredCfC models."""
+    return {
+        # CNN feature extraction parameters
+        f"{prefix}module__F1": trial.suggest_categorical(
+            f"{prefix}module__F1", [4, 8, 12, 16, 20]
+        ),
+        f"{prefix}module__D": trial.suggest_categorical(
+            f"{prefix}module__D", [1, 2, 4, 8]
+        ),
+        f"{prefix}module__kernel_length": trial.suggest_int(
+            f"{prefix}module__kernel_length", 64, 512, step=32
+        ),
+        
+        # Temporal processing parameters
+        f"{prefix}module__temporal_kernel_size": trial.suggest_categorical(
+            f"{prefix}module__temporal_kernel_size", [3, 5, 7, 9]
+        ),
+        f"{prefix}module__temporal_stride": trial.suggest_categorical(
+            f"{prefix}module__temporal_stride", [2, 4, 6, 8]
+        ),
+        
+        # Sequence length control
+        f"{prefix}module__max_seq_length": trial.suggest_int(
+            f"{prefix}module__max_seq_length", 150, 500
+        ),
+        
+        # Dropout for regularization
+        f"{prefix}module__drop_prob": trial.suggest_float(
+            f"{prefix}module__drop_prob", 0.1, 0.5
+        ),
+    }
+
+
+def cnn_wiredcfc_training_space(trial, prefix):
+    """Training parameter space for CNNWiredCfC models."""
+    return {
+        # Optimizer parameters
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(
+            f"{prefix}optimizer__lr", 1e-5, 1e-2
+        ),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
+            f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
+        ),
+        
+        # Training parameters
+        f"{prefix}max_epochs": trial.suggest_int(
+            f"{prefix}max_epochs", 20, 100
+        ),
+        f"{prefix}batch_size": trial.suggest_categorical(
+            f"{prefix}batch_size", [16, 32, 64, 128]
+        ),
+    }
+
+
 def get_model_architecture_space(model_name):
+    # Check if this is a wiredcfc architecture model
+    if model_name.startswith("wiredcfc_arch"):
+        return cnn_wiredcfc_architecture_space
+    
     architecture_registry = {
         "eegnet": eegnet_architecture_space,
         "reegnet": reegnet_architecture_space,
@@ -432,6 +491,10 @@ def get_model_architecture_space(model_name):
 
 
 def get_model_training_space(model_name):
+    # Check if this is a wiredcfc architecture model
+    if model_name.startswith("wiredcfc_arch"):
+        return cnn_wiredcfc_training_space
+    
     training_registry = {
         "eegnet": eegnet_training_space,
         "reegnet": reegnet_training_space,
@@ -1077,16 +1140,121 @@ def adaptive_improved_cnncfc_training_space(trial, prefix, previous_best=None):
     
     return params
 
+
+def adaptive_cnn_wiredcfc_architecture_space(trial, prefix, previous_best=None):
+    """
+    Adaptive architecture parameter space for CNNWiredCfC models.
+    """
+    params = {
+        # CNN feature extraction parameters with wider ranges
+        f"{prefix}module__F1": trial.suggest_categorical(
+            f"{prefix}module__F1", [4, 8, 12, 16, 20, 24, 32]
+        ),
+        f"{prefix}module__D": trial.suggest_categorical(
+            f"{prefix}module__D", [1, 2, 4, 8, 16]
+        ),
+        f"{prefix}module__kernel_length": trial.suggest_int(
+            f"{prefix}module__kernel_length", 32, 1024, step=32
+        ),
+        
+        # Temporal processing parameters
+        f"{prefix}module__temporal_kernel_size": trial.suggest_categorical(
+            f"{prefix}module__temporal_kernel_size", [3, 5, 7, 9, 11]
+        ),
+        f"{prefix}module__temporal_stride": trial.suggest_categorical(
+            f"{prefix}module__temporal_stride", [1, 2, 4, 6, 8, 10]
+        ),
+        
+        # Sequence length control with wider range
+        f"{prefix}module__max_seq_length": trial.suggest_categorical(
+            f"{prefix}module__max_seq_length", [100, 150, 200, 250, 300, 400, 500, 750]
+        ),
+        
+        # Dropout for regularization
+        f"{prefix}module__drop_prob": trial.suggest_float(
+            f"{prefix}module__drop_prob", 0.05, 0.7
+        ),
+    }
+    
+    # Add conditional parameters based on previous best
+    if previous_best and trial.number > 10:
+        # Focus search around previous best values
+        best_f1 = previous_best.get(f"{prefix}module__F1", 8)
+        best_kernel = previous_best.get(f"{prefix}module__kernel_length", 128)
+        
+        # Adjust search space based on previous performance
+        if best_f1 > 16:
+            params[f"{prefix}module__F1"] = trial.suggest_categorical(
+                f"{prefix}module__F1", [12, 16, 20, 24, 32]
+            )
+        if best_kernel > 256:
+            params[f"{prefix}module__kernel_length"] = trial.suggest_int(
+                f"{prefix}module__kernel_length", 128, 1024, step=64
+            )
+    
+    return params
+
+
+def adaptive_cnn_wiredcfc_training_space(trial, prefix, previous_best=None):
+    """
+    Adaptive training parameter space for CNNWiredCfC models.
+    """
+    params = {
+        # Optimizer parameters with wider ranges
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(
+            f"{prefix}optimizer__lr", 1e-6, 1e-2
+        ),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
+            f"{prefix}optimizer__weight_decay", 1e-8, 1e-1
+        ),
+        
+        # Training parameters
+        f"{prefix}max_epochs": trial.suggest_int(
+            f"{prefix}max_epochs", 15, 200
+        ),
+        f"{prefix}batch_size": trial.suggest_categorical(
+            f"{prefix}batch_size", [8, 16, 32, 64, 128]
+        ),
+        
+        # Learning rate scheduling
+        f"{prefix}lr_scheduler": trial.suggest_categorical(
+            f"{prefix}lr_scheduler", ["none", "step", "cosine", "plateau"]
+        ),
+        f"{prefix}lr_step_size": trial.suggest_int(
+            f"{prefix}lr_step_size", 10, 100
+        ),
+        f"{prefix}lr_gamma": trial.suggest_float(
+            f"{prefix}lr_gamma", 0.1, 0.9
+        ),
+    }
+    
+    # Conditional parameters
+    if params[f"{prefix}lr_scheduler"] == "none":
+        params.pop(f"{prefix}lr_step_size")
+        params.pop(f"{prefix}lr_gamma")
+    
+    return params
+
+
 def get_adaptive_model_architecture_space(model_name):
     """Get adaptive architecture parameter spaces."""
+    # Check if this is a wiredcfc architecture model
+    if model_name.startswith("wiredcfc_arch"):
+        return adaptive_cnn_wiredcfc_architecture_space
+    
     adaptive_registry = {
         "improved_cnncfc": adaptive_improved_cnncfc_architecture_space,
         # Add other models as needed
     }
     return adaptive_registry.get(model_name, get_model_architecture_space(model_name))
 
+
 def get_adaptive_model_training_space(model_name):
     """Get adaptive training parameter spaces."""
+    # Check if this is a wiredcfc architecture model
+    if model_name.startswith("wiredcfc_arch"):
+        return adaptive_cnn_wiredcfc_training_space
+    
     adaptive_registry = {
         "improved_cnncfc": adaptive_improved_cnncfc_training_space,
         # Add other models as needed
