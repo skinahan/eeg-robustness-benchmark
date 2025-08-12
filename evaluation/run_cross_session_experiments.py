@@ -196,8 +196,8 @@ class CrossSessionNoiseEvaluation(CrossSessionEvaluation):
                         mode=self.mode, 
                         noise_dict=self.noise_dict,
                         output_root=output_root, 
-                        arch_trials=50, 
-                        train_trials=50
+                        arch_trials=20, 
+                        train_trials=20
                     )
                 else:
                     # Use regular two-stage optimization for non-noise modes

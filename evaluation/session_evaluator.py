@@ -143,7 +143,7 @@ class NoiseWithinSessionEvaluation(WithinSessionEvaluation):
                 best_params, best_score = alternate_two_stage_optuna(model_fn=wrapped_model_fn, model_name=self.model_name, X=X, y=y_encoded,
                                                     metadata=metadata, resample=self.resample, seed=self.seed,
                                                     mode=self.mode, noise_dict=self.noise_dict,
-                                                    output_root=output_root, arch_trials=10, train_trials=10)
+                                                    output_root=output_root, arch_trials=20, train_trials=20)
                 final_params = format_params(best_params, self.prefix)
                 # Evaluate on 0train and 1test with tuned params.
                 row_headers = {'score', 'time', 'samples', 'subject', 'session', 'channels', 'n_sessions', 'dataset',
