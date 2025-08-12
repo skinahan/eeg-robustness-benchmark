@@ -19,7 +19,7 @@ from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, Conc
 
 
 def format_params(param_block, prefix):
-    module_params = ['F1', 'D', 'kernel_length', 'lstm_hidden_size','ncp_hidden_dim', 'sparsity', 'temporal_kernel_size', 'temporal_stride', 'drop_prob']
+    module_params = ['F1', 'D', 'kernel_length', 'lstm_hidden_size','ncp_hidden_dim', 'sparsity', 'temporal_kernel_size', 'temporal_stride', 'drop_prob', 'n_modules', 'rewiring_prob', 'max_seq_length']
     optimizer_params = ['lr', 'weight_decay']
     module_prefix = f"{prefix}module__"
     optim_prefix = f"{prefix}optimizer__"
@@ -352,6 +352,72 @@ def cnncfc_compact_training_space(trial, prefix):
     }
 
 
+def cnn_smallworld_architecture_space(trial, prefix):
+    """Architecture parameter space for CNNSmallWorld model."""
+    return {
+        # CfC core parameters
+        f"{prefix}module__ncp_hidden_dim": trial.suggest_int(
+            f"{prefix}module__ncp_hidden_dim", 16, 128
+        ),
+        f"{prefix}module__drop_prob": trial.suggest_float(
+            f"{prefix}module__drop_prob", 0.1, 0.5
+        ),
+        
+        # CNN feature extraction parameters
+        f"{prefix}module__F1": trial.suggest_categorical(
+            f"{prefix}module__F1", [4, 8, 12, 16, 20]
+        ),
+        f"{prefix}module__D": trial.suggest_categorical(
+            f"{prefix}module__D", [1, 2, 4, 8]
+        ),
+        f"{prefix}module__kernel_length": trial.suggest_int(
+            f"{prefix}module__kernel_length", 64, 512, step=32
+        ),
+        
+        # Temporal processing parameters
+        f"{prefix}module__temporal_kernel_size": trial.suggest_categorical(
+            f"{prefix}module__temporal_kernel_size", [3, 5, 7, 9]
+        ),
+        f"{prefix}module__temporal_stride": trial.suggest_categorical(
+            f"{prefix}module__temporal_stride", [2, 4, 6, 8]
+        ),
+        
+        # Sequence length control
+        f"{prefix}module__max_seq_length": trial.suggest_int(
+            f"{prefix}module__max_seq_length", 150, 500
+        ),
+        
+        # Small World wiring parameters
+        f"{prefix}module__n_modules": trial.suggest_categorical(
+            f"{prefix}module__n_modules", [1, 2, 4, 6, 8]
+        ),
+        f"{prefix}module__rewiring_prob": trial.suggest_float(
+            f"{prefix}module__rewiring_prob", 0.1, 0.5
+        )
+    }
+
+
+def cnn_smallworld_training_space(trial, prefix):
+    """Training parameter space for CNNSmallWorld model."""
+    return {
+        # Optimizer parameters
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(
+            f"{prefix}optimizer__lr", 1e-5, 1e-2
+        ),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
+            f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
+        ),
+        
+        # Training parameters
+        f"{prefix}max_epochs": trial.suggest_int(
+            f"{prefix}max_epochs", 20, 100
+        ),
+        f"{prefix}batch_size": trial.suggest_categorical(
+            f"{prefix}batch_size", [16, 32, 64, 128]
+        ),
+    }
+
+
 def get_model_architecture_space(model_name):
     architecture_registry = {
         "eegnet": eegnet_architecture_space,
@@ -359,7 +425,8 @@ def get_model_architecture_space(model_name):
         "cnn_ncp": cnn_ncp_architecture_space,
         "cnncfc_v2": improved_cnncfc_architecture_space,  # CNNCfCv2 uses the same space as improved_cnncfc
         "cnncfc_compact": cnncfc_compact_architecture_space,
-        "spp_ncp": spp_ncp_architecture_space
+        "spp_ncp": spp_ncp_architecture_space,
+        "cnn_smallworld": cnn_smallworld_architecture_space
     }
     return architecture_registry[model_name]
 
@@ -371,7 +438,8 @@ def get_model_training_space(model_name):
         "cnn_ncp": cnn_ncp_training_space,
         "cnncfc_v2": improved_cnncfc_training_space,  # CNNCfCv2 uses the same space as improved_cnncfc
         "cnncfc_compact": cnncfc_compact_training_space,
-        "spp_ncp": spp_ncp_training_space
+        "spp_ncp": spp_ncp_training_space,
+        "cnn_smallworld": cnn_smallworld_training_space
     }
     return training_registry[model_name]
 
@@ -421,7 +489,7 @@ def improved_cnncfc_architecture_space(trial, prefix):
         ),
         # Sequence length control
         f"{prefix}module__max_seq_length": trial.suggest_int(
-            f"{prefix}module__max_seq_length", 150, 300
+            f"{prefix}module__max_seq_length", 150, 1000
         ),
         # NEW: CfC-specific parameters that were previously hardcoded
         f"{prefix}module__mixed_memory": trial.suggest_categorical(

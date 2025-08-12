@@ -83,8 +83,8 @@ def two_stage_opt(dataset, subj, paradigm, model_name, model_fn, seed, mode, res
         resample=resample,
         seed=seed,
         output_root=os.path.join(out_dir, "optuna_results"),
-        arch_trials=5,
-        train_trials=5,
+        arch_trials=20,
+        train_trials=20,
         perturbed=False
     )
     

@@ -2,7 +2,7 @@ from moabb.datasets import BNCI2014_001
 from moabb.paradigms import MotorImagery
 from models.eegnet import create_eegnet_classifier
 from models.reegnet import create_reegnet_classifier
-from models.cnnncp import create_cnnncp_classifier, create_cnnncfc_v2_classifier, create_cnnncfc_compact_classifier
+from models.cnnncp import create_cnnncp_classifier, create_cnnncfc_v2_classifier, create_cnnncfc_compact_classifier, create_cnnsmallworld_classifier
 from models.sppncp import create_sppncp_classifier
 
 # Centralized experiment configuration
@@ -29,6 +29,7 @@ def get_model_registry():
         "cnn_ncp": create_cnnncp_classifier,
         "cnncfc_v2": create_cnnncfc_v2_classifier,
         "cnncfc_compact": create_cnnncfc_compact_classifier,
+        "cnn_smallworld": create_cnnsmallworld_classifier,
         "spp_ncp": create_sppncp_classifier
     }
 
