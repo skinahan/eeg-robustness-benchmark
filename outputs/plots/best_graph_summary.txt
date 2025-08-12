@@ -1,0 +1,18 @@
+Best Graph Summary (Trial 218)
+==================================================
+
+Robustness Score: 0.3605
+Entropy Objective: 0.3334
+Curvature Objective: 0.3876
+
+Parameters:
+  units: 18
+  output_size: 4
+  n_modules: None
+  rewiring_prob: 0.4328080490062333
+  connection_density: None
+  target_clustering: 0.041466296754701655
+  target_path_length: 1.7153173130853987
+  k_degree: 6
+  p_rewiring: 0.1876115203302643
+  seed: 218

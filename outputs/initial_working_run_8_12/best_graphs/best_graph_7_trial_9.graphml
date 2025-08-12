@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d1" for="edge" attr.name="type" attr.type="string" />
+  <key id="d0" for="edge" attr.name="weight" attr.type="double" />
+  <graph edgedefault="undirected">
+    <node id="0" />
+    <node id="1" />
+    <node id="2" />
+    <node id="3" />
+    <node id="4" />
+    <node id="5" />
+    <node id="6" />
+    <node id="7" />
+    <node id="8" />
+    <node id="9" />
+    <node id="10" />
+    <node id="11" />
+    <node id="12" />
+    <node id="13" />
+    <node id="14" />
+    <node id="15" />
+    <node id="16" />
+    <node id="17" />
+    <node id="18" />
+    <node id="19" />
+    <node id="20" />
+    <node id="21" />
+    <node id="22" />
+    <node id="23" />
+    <node id="24" />
+    <node id="25" />
+    <node id="26" />
+    <node id="27" />
+    <node id="28" />
+    <node id="29" />
+    <node id="30" />
+    <node id="31" />
+    <node id="32" />
+    <edge source="0" target="23">
+      <data key="d0">0.973563300951113</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="0" target="2">
+      <data key="d0">1.0609267721060367</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="0" target="19">
+      <data key="d0">1.6019870605924915</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="0" target="24">
+      <data key="d0">1.9518561217834134</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="1" target="11">
+      <data key="d0">1.5523226697678842</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="1" target="28">
+      <data key="d0">0.7031377244518002</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="1" target="22">
+      <data key="d0">0.7040104679789279</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="2" target="5">
+      <data key="d0">1.9262107373904933</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="3" target="29">
+      <data key="d0">1.3295835297826017</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="3" target="20">
+      <data key="d0">1.9149603551605026</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="4" target="21">
+      <data key="d0">1.4443265426282434</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="4" target="11">
+      <data key="d0">1.3473045620121484</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="5" target="27">
+      <data key="d0">1.459352353204062</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="5" target="32">
+      <data key="d0">1.6475275934546187</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="6" target="10">
+      <data key="d0">1.0628140174270393</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="6" target="13">
+      <data key="d0">1.751443758420936</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="7" target="28">
+      <data key="d0">0.6566869300190685</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="7" target="23">
+      <data key="d0">0.6189740023138155</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="8" target="27">
+      <data key="d0">0.6015043438842602</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="8" target="10">
+      <data key="d0">1.2364695033007167</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="9" target="15">
+      <data key="d0">0.8142002432886353</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="12" target="24">
+      <data key="d0">1.8878351819237247</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="12" target="18">
+      <data key="d0">1.9709158262484707</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="12" target="25">
+      <data key="d0">1.504445916896116</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="12" target="26">
+      <data key="d0">1.3726270855225717</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="12" target="30">
+      <data key="d0">1.6914761689261786</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="13" target="14">
+      <data key="d0">0.5700500543223096</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="13" target="16">
+      <data key="d0">1.3703903184857438</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="15" target="26">
+      <data key="d0">0.6117669283993696</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="15" target="22">
+      <data key="d0">0.7401050546452895</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="17" target="21">
+      <data key="d0">1.1523330974908363</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="21" target="31">
+      <data key="d0">1.3906462730240898</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="22" target="28">
+      <data key="d0">0.7102372471491485</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="25" target="31">
+      <data key="d0">1.8483844906509848</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="27" target="29">
+      <data key="d0">1.968079278476819</data>
+      <data key="d1">flex</data>
+    </edge>
+    <edge source="29" target="31">
+      <data key="d0">1.8946068401002223</data>
+      <data key="d1">flex</data>
+    </edge>
+  </graph>
+</graphml>

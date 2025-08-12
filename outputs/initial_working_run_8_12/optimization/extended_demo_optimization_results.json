@@ -1,0 +1,369 @@
+{
+  "config": {
+    "n_trials": 10,
+    "optimization_params": {
+      "min_units": 16,
+      "max_units": 64,
+      "rewiring_prob_range": [
+        0.05,
+        0.8
+      ],
+      "connection_density_range": [
+        0.15,
+        0.95
+      ],
+      "target_clustering_range": [
+        0.1,
+        0.9
+      ],
+      "target_path_length_range": [
+        2.0,
+        8.0
+      ],
+      "k_degree_range": [
+        2,
+        6
+      ],
+      "p_rewiring_range": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+  "statistics": {
+    "entropy_stats": {
+      "mean": 0.26424460716494963,
+      "std": 0.06288889563728833,
+      "min": 0.0982323607252787,
+      "max": 0.34650019581073443,
+      "median": 0.2755896727170447
+    },
+    "curvature_stats": {
+      "mean": 0.07246426015028956,
+      "std": 0.07506111300190765,
+      "min": 0.0,
+      "max": 0.26215947940947937,
+      "median": 0.04015984015984016
+    },
+    "robustness_stats": {
+      "mean": 0.16835443365761962,
+      "std": 0.057448834486766534,
+      "min": 0.06443149567795467,
+      "max": 0.2775519428508087,
+      "median": 0.15254979917454403
+    },
+    "units_stats": {
+      "mean": 33.3,
+      "std": 13.943098651304163,
+      "min": 17.0,
+      "max": 58.0,
+      "median": 29.0
+    },
+    "output_size_stats": {
+      "mean": 6.4,
+      "std": 3.746998799039039,
+      "min": 2.0,
+      "max": 14.0,
+      "median": 5.0
+    },
+    "rewiring_prob_stats": {
+      "mean": 0.3828292811598816,
+      "std": 0.18938653180120565,
+      "min": 0.08392046668290355,
+      "max": 0.631349617520836,
+      "median": 0.39089672241947754
+    },
+    "target_clustering_stats": {
+      "mean": 0.45778713029357815,
+      "std": 0.26947032410252997,
+      "min": 0.03037864935284442,
+      "max": 0.9401039521485473,
+      "median": 0.4955090758453905
+    },
+    "target_path_length_stats": {
+      "mean": 2.8359831897137573,
+      "std": 1.0540051234778804,
+      "min": 1.2276805754484783,
+      "max": 4.39468448256698,
+      "median": 2.526170646668005
+    },
+    "k_degree_stats": {
+      "mean": 3.4,
+      "std": 1.4966629547095767,
+      "min": 2.0,
+      "max": 6.0,
+      "median": 3.0
+    },
+    "p_rewiring_stats": {
+      "mean": 0.614152795928714,
+      "std": 0.30042759093340815,
+      "min": 0.05808361216819946,
+      "max": 0.9868869366005173,
+      "median": 0.5792815870328296
+    }
+  },
+  "pareto_solutions": [
+    {
+      "trial_number": 1,
+      "objectives": {
+        "entropy": 0.292944406292138,
+        "curvature": 0.26215947940947937
+      },
+      "robustness_score": 0.2775519428508087,
+      "parameters": {
+        "units": 58,
+        "output_size": 14,
+        "n_modules": null,
+        "rewiring_prob": 0.5810544333470342,
+        "connection_density": null,
+        "target_clustering": 0.03037864935284442,
+        "target_path_length": 4.39468448256698,
+        "k_degree": 6,
+        "p_rewiring": 0.21233911067827616,
+        "seed": 1
+      }
+    },
+    {
+      "trial_number": 6,
+      "objectives": {
+        "entropy": 0.3035349058935899,
+        "curvature": 0.14751931075460487
+      },
+      "robustness_score": 0.2255271083240974,
+      "parameters": {
+        "units": 17,
+        "output_size": 5,
+        "n_modules": null,
+        "rewiring_prob": 0.24408498620001268,
+        "connection_density": null,
+        "target_clustering": 0.6658970615104421,
+        "target_path_length": 2.0909887663129383,
+        "k_degree": 4,
+        "p_rewiring": 0.5467102793432796,
+        "seed": 6
+      }
+    },
+    {
+      "trial_number": 7,
+      "objectives": {
+        "entropy": 0.34650019581073443,
+        "curvature": 0.0942172410922411
+      },
+      "robustness_score": 0.22035871845148777,
+      "parameters": {
+        "units": 25,
+        "output_size": 8,
+        "n_modules": null,
+        "rewiring_prob": 0.631349617520836,
+        "connection_density": null,
+        "target_clustering": 0.9401039521485473,
+        "target_path_length": 4.13189572649677,
+        "k_degree": 4,
+        "p_rewiring": 0.9218742350231168,
+        "seed": 7
+      }
+    }
+  ],
+  "all_results": [
+    {
+      "trial_number": 0,
+      "parameters": {
+        "units": 34,
+        "output_size": 11,
+        "n_modules": null,
+        "rewiring_prob": 0.5989954563585539,
+        "connection_density": null,
+        "target_clustering": 0.6026718993550663,
+        "target_path_length": 1.5460652415485279,
+        "k_degree": 2,
+        "p_rewiring": 0.05808361216819946,
+        "seed": 0
+      },
+      "objectives": {
+        "entropy": 0.0982323607252787,
+        "curvature": 0.03063063063063063
+      },
+      "robustness_score": 0.06443149567795467
+    },
+    {
+      "trial_number": 1,
+      "parameters": {
+        "units": 58,
+        "output_size": 14,
+        "n_modules": null,
+        "rewiring_prob": 0.5810544333470342,
+        "connection_density": null,
+        "target_clustering": 0.03037864935284442,
+        "target_path_length": 4.39468448256698,
+        "k_degree": 6,
+        "p_rewiring": 0.21233911067827616,
+        "seed": 1
+      },
+      "objectives": {
+        "entropy": 0.292944406292138,
+        "curvature": 0.26215947940947937
+      },
+      "robustness_score": 0.2775519428508087
+    },
+    {
+      "trial_number": 2,
+      "parameters": {
+        "units": 24,
+        "output_size": 3,
+        "n_modules": null,
+        "rewiring_prob": 0.2781816822196533,
+        "connection_density": null,
+        "target_clustering": 0.5295088673159155,
+        "target_path_length": 2.5118075652474054,
+        "k_degree": 3,
+        "p_rewiring": 0.6118528947223795,
+        "seed": 2
+      },
+      "objectives": {
+        "entropy": 0.2836323781555898,
+        "curvature": 0.039194139194139194
+      },
+      "robustness_score": 0.1614132586748645
+    },
+    {
+      "trial_number": 3,
+      "parameters": {
+        "units": 22,
+        "output_size": 3,
+        "n_modules": null,
+        "rewiring_prob": 0.32477138247026877,
+        "connection_density": null,
+        "target_clustering": 0.46150928437486555,
+        "target_path_length": 3.7481158648755475,
+        "k_degree": 2,
+        "p_rewiring": 0.5142344384136116,
+        "seed": 3
+      },
+      "objectives": {
+        "entropy": 0.26754696727849964,
+        "curvature": 0.0
+      },
+      "robustness_score": 0.13377348363924982
+    },
+    {
+      "trial_number": 4,
+      "parameters": {
+        "units": 45,
+        "output_size": 4,
+        "n_modules": null,
+        "rewiring_prob": 0.5056586389260788,
+        "connection_density": null,
+        "target_clustering": 0.17881888245041863,
+        "target_path_length": 1.2276805754484783,
+        "k_degree": 6,
+        "p_rewiring": 0.9656320330745594,
+        "seed": 4
+      },
+      "objectives": {
+        "entropy": 0.3038577623763611,
+        "curvature": 0.06535181485181484
+      },
+      "robustness_score": 0.18460478861408797
+    },
+    {
+      "trial_number": 5,
+      "parameters": {
+        "units": 55,
+        "output_size": 9,
+        "n_modules": null,
+        "rewiring_prob": 0.1232540855047879,
+        "connection_density": null,
+        "target_clustering": 0.6873906962470353,
+        "target_path_length": 2.5405337280886044,
+        "k_degree": 2,
+        "p_rewiring": 0.4951769101112702,
+        "seed": 5
+      },
+      "objectives": {
+        "entropy": 0.2407681532254704,
+        "curvature": 0.016666666666666666
+      },
+      "robustness_score": 0.12871740994606853
+    },
+    {
+      "trial_number": 6,
+      "parameters": {
+        "units": 17,
+        "output_size": 5,
+        "n_modules": null,
+        "rewiring_prob": 0.24408498620001268,
+        "connection_density": null,
+        "target_clustering": 0.6658970615104421,
+        "target_path_length": 2.0909887663129383,
+        "k_degree": 4,
+        "p_rewiring": 0.5467102793432796,
+        "seed": 6
+      },
+      "objectives": {
+        "entropy": 0.3035349058935899,
+        "curvature": 0.14751931075460487
+      },
+      "robustness_score": 0.2255271083240974
+    },
+    {
+      "trial_number": 7,
+      "parameters": {
+        "units": 25,
+        "output_size": 8,
+        "n_modules": null,
+        "rewiring_prob": 0.631349617520836,
+        "connection_density": null,
+        "target_clustering": 0.9401039521485473,
+        "target_path_length": 4.13189572649677,
+        "k_degree": 4,
+        "p_rewiring": 0.9218742350231168,
+        "seed": 7
+      },
+      "objectives": {
+        "entropy": 0.34650019581073443,
+        "curvature": 0.0942172410922411
+      },
+      "robustness_score": 0.22035871845148777
+    },
+    {
+      "trial_number": 8,
+      "parameters": {
+        "units": 20,
+        "output_size": 2,
+        "n_modules": null,
+        "rewiring_prob": 0.08392046668290355,
+        "connection_density": null,
+        "target_clustering": 0.3320770274556317,
+        "target_path_length": 2.360370513913187,
+        "k_degree": 3,
+        "p_rewiring": 0.8287375091519293,
+        "seed": 8
+      },
+      "objectives": {
+        "entropy": 0.24624713822290603,
+        "curvature": 0.04112554112554113
+      },
+      "robustness_score": 0.1436863396742236
+    },
+    {
+      "trial_number": 9,
+      "parameters": {
+        "units": 33,
+        "output_size": 5,
+        "n_modules": null,
+        "rewiring_prob": 0.4570220623686863,
+        "connection_density": null,
+        "target_clustering": 0.14951498272501504,
+        "target_path_length": 3.8076894326391386,
+        "k_degree": 2,
+        "p_rewiring": 0.9868869366005173,
+        "seed": 9
+      },
+      "objectives": {
+        "entropy": 0.25918180366892873,
+        "curvature": 0.027777777777777776
+      },
+      "robustness_score": 0.14347979072335326
+    }
+  ]
+}
