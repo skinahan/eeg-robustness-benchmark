@@ -12,7 +12,7 @@ from ncps.torch import LTC, CfC
 from ncps.wirings import AutoNCP
 from einops.layers.torch import Rearrange
 from models.small_world_wiring import ModularSmallWorldWiring
-from architecture_refinement.arbitrary_wiring import ArbitraryWiring
+from architecture_refinement.arbitrary_wiring import ArbitraryWiring, WsFlexHiddenWiring
 
 
 class Conv2dWithConstraint(nn.Conv2d):
@@ -1134,7 +1134,8 @@ class CNNWiredCfC(EEGModuleMixin, nn.Module):
             kernel_length=128,
             temporal_kernel_size=3,
             temporal_stride=4,
-            max_seq_length=250
+            max_seq_length=250,
+            mixed_memory=False  # Add mixed_memory parameter
     ):
         super().__init__(
             n_outputs=n_outputs,
@@ -1156,7 +1157,10 @@ class CNNWiredCfC(EEGModuleMixin, nn.Module):
         
         # Store the wiring
         self.wiring = wiring
-        self.ncp_hidden_dim = wiring.hidden_size
+        self.ncp_hidden_dim = wiring._hidden_size
+        
+        # Store CfC parameters
+        self.mixed_memory = mixed_memory
 
         # 1. Input Conv2D
         self.conv1 = nn.Conv2d(
@@ -1199,8 +1203,13 @@ class CNNWiredCfC(EEGModuleMixin, nn.Module):
         ncp_input_size = F2
         ncp_output_size = F1
 
+        # last minute reconfiguration - make sure the wiring is compatible with expected input and output sizes
+        wiring.input_size = ncp_input_size
+        wiring.output_size = ncp_output_size
+        wiring = wiring.build(ncp_input_size)
+
         # Use the provided arbitrary wiring
-        self.ncp = CfC(ncp_input_size, wiring, return_sequences=True, proj_size=ncp_output_size)
+        self.ncp = CfC(input_size=ncp_input_size, units=wiring, return_sequences=True, proj_size=ncp_output_size, mixed_memory=self.mixed_memory)
 
         # 7. Separable Conv2D
         self.sep_depthwise = nn.Conv2d(
@@ -1630,182 +1639,7 @@ def create_cnnsmallworld_learnable_classifier(
     return cnn_smallworld_learnable_net
 
 
-# CNNWiredCfC model that uses arbitrary wiring from architecture search
-class CNNWiredCfC(EEGModuleMixin, nn.Module):
-    """
-    CNN model with CfC using arbitrary wiring from architecture search.
-    
-    This model is similar to CNNSmallWorld but uses ArbitraryWiring instead
-    of ModularSmallWorldWiring, allowing it to use optimized architectures
-    from the architecture search process.
-    """
-    
-    def __init__(
-            self,
-            n_chans,
-            n_times,
-            n_outputs,
-            wiring,  # ArbitraryWiring instance
-            drop_prob=0.15,
-            F1=8,
-            D=2,
-            kernel_length=128,
-            temporal_kernel_size=3,
-            temporal_stride=4,
-            max_seq_length=250
-    ):
-        super().__init__(
-            n_outputs=n_outputs,
-            n_chans=n_chans,
-            n_times=n_times,
-            input_window_seconds=None,
-            sfreq=None,
-        )
-        seed = get_seed()
-        batch_norm_momentum = 0.01
-        batch_norm_eps = 1e-3
 
-        # Store parameters
-        self.F1 = F1
-        F2 = F1 * D
-        self.kernel_length = kernel_length
-        self.max_seq_length = max_seq_length
-        self.temporal_stride = temporal_stride
-        
-        # Store the wiring
-        self.wiring = wiring
-        self.ncp_hidden_dim = wiring.hidden_size
-
-        # 1. Input Conv2D
-        self.conv1 = nn.Conv2d(
-            in_channels=1, out_channels=self.F1,
-            kernel_size=(1, self.kernel_length),
-            stride=(1, 1),
-            padding=(0, self.kernel_length // 2),
-            bias=False
-        )
-        self.bn1 = nn.BatchNorm2d(self.F1)
-        self.elu = nn.ELU()
-
-        # 2. Depthwise Conv2D
-        self.depthwise_conv = nn.Conv2d(
-            in_channels=self.F1, out_channels=F2,
-            kernel_size=(n_chans, 1),
-            groups=self.F1,
-            stride=(1, 1), 
-            padding=(0, 0), 
-            bias=False
-        )
-        self.bn2 = nn.BatchNorm2d(F2)
-
-        # 3. Average Pooling
-        self.avgpool = nn.AvgPool2d(kernel_size=(1, F2), stride=(1, self.F1))
-
-        # 4. Dropout
-        self.dropout = nn.Dropout(p=drop_prob)
-
-        # 5. Temporal downsampler
-        self.temporal_downsampler = nn.Conv1d(
-            in_channels=F2,
-            out_channels=F2,
-            kernel_size=temporal_kernel_size,
-            stride=temporal_stride,
-            padding=temporal_kernel_size // 2
-        )
-
-        # 6. CfC with arbitrary wiring
-        ncp_input_size = F2
-        ncp_output_size = F1
-
-        # Use the provided arbitrary wiring
-        self.ncp = CfC(ncp_input_size, wiring, return_sequences=True, proj_size=ncp_output_size)
-
-        # 7. Separable Conv2D
-        self.sep_depthwise = nn.Conv2d(
-            in_channels=ncp_output_size,
-            out_channels=ncp_output_size, 
-            kernel_size=(3, 1),
-            stride=(1, 1), 
-            padding=(1, 0), 
-            groups=ncp_output_size, 
-            bias=False
-        )
-        self.sep_pointwise = nn.Conv2d(
-            in_channels=ncp_output_size, 
-            out_channels=F2,
-            kernel_size=(1, 1), 
-            bias=False
-        )
-        self.bn3 = nn.BatchNorm2d(F2)
-
-        # 8. Final dropout and pooling
-        self.dropout2 = nn.Dropout(p=drop_prob)
-        self.global_pool = nn.AdaptiveAvgPool2d((1, 1))
-        
-        # 9. Dense layer
-        self.fc = nn.Linear(F2, n_outputs)
-
-    def forward(self, x):
-        # 1. Input Conv2D
-        x = x.unsqueeze(1)
-        x = self.conv1(x)
-        x = self.bn1(x)
-        x = self.elu(x)
-
-        # 2. Depthwise Conv2D
-        x = self.depthwise_conv(x)
-        x = self.bn2(x)
-        x = self.elu(x)
-
-        # 3. Average pooling for temporal reduction
-        x = self.avgpool(x)
-        x = self.dropout(x)
-        
-        # 4. Reshape for temporal processing
-        x = x.permute(0, 3, 2, 1)  # [B, T, 1, C]
-        num_features = x.shape[3]  # This will be F2
-        x = x.contiguous().view(x.shape[0], x.shape[1], num_features)  # [B, T, F2]
-        
-        # 5. Apply temporal downsampling
-        x = self.temporal_downsampler(x.permute(0, 2, 1)).permute(0, 2, 1)  # [B, T', F2]
-        
-        # 6. Limit sequence length for CfC
-        if x.shape[1] > self.max_seq_length:
-            # Take the middle portion to maintain temporal context
-            start_idx = (x.shape[1] - self.max_seq_length) // 2
-            x = x[:, start_idx:start_idx + self.max_seq_length, :]
-        
-        # 7. CfC processing with arbitrary wiring
-        x, _ = self.ncp(x)  # [B, T', H]
-        # 8. Reshape for separable conv
-        x = x.permute(0, 2, 1).unsqueeze(3)  # [B, 8, T', 1]
-
-        # 9. Separable Conv2D
-        x = self.sep_depthwise(x)
-        x = self.sep_pointwise(x)
-        x = self.bn3(x)
-        x = self.elu(x)
-        x = self.dropout2(x)
-
-        # 10. Global pooling and classification
-        x = self.global_pool(x)  # → (B, F2, 1, 1)
-        x = x.view(x.shape[0], -1)  # → (B, F2)
-        x = self.fc(x)  # → (B, n_outputs)
-        return x
-
-    def _glorot_weight_zero_bias(self):
-        for module in self.modules():
-            if hasattr(module, "weight"):
-                if "BatchNorm" not in module.__class__.__name__:
-                    nn.init.xavier_uniform_(module.weight, gain=1)
-                else:
-                    nn.init.constant_(module.weight, 1)
-            if hasattr(module, "bias") and module.bias is not None:
-                nn.init.constant_(module.bias, 0)
-    
-    def get_wiring_info(self):
-        """Get information about the wiring structure."""
-        return self.wiring.get_wiring_summary()
 
 
 def create_cnnwiredcfc_classifier(
@@ -1822,7 +1656,8 @@ def create_cnnwiredcfc_classifier(
         kernel_length=128,
         temporal_kernel_size=3,
         temporal_stride=4,
-        max_seq_length=250
+        max_seq_length=250,
+        mixed_memory=False  # Add mixed_memory parameter
 ):
     """Create a CNNWiredCfC classifier with arbitrary wiring."""
     seed = get_seed()
@@ -1847,6 +1682,7 @@ def create_cnnwiredcfc_classifier(
         module__temporal_kernel_size=temporal_kernel_size,
         module__temporal_stride=temporal_stride,
         module__max_seq_length=max_seq_length,
+        module__mixed_memory=mixed_memory,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
         callbacks=[],

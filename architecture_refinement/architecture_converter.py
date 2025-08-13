@@ -796,10 +796,7 @@ class WiredCfCConverter:
             'output_connections': int(output_connections),
             'layer_sizes': architecture.layer_sizes,
             'neuron_types': architecture.neuron_types,
-            'metadata': architecture.metadata,
-            'connectivity_enforcement': architecture.metadata.get('architecture_stats', {}).get('connectivity_enforcement_added', {}),
-            'original_graph_stats': architecture.metadata.get('original_graph_stats', {}),
-            'architecture_stats': architecture.metadata.get('architecture_stats', {})
+            'metadata': architecture.metadata
         }
 
 

@@ -421,33 +421,31 @@ def cnn_smallworld_training_space(trial, prefix):
 def cnn_wiredcfc_architecture_space(trial, prefix):
     """Architecture parameter space for CNNWiredCfC models."""
     return {
-        # CNN feature extraction parameters
+         # CNN feature extraction parameters - PROPERLY UTILIZED
         f"{prefix}module__F1": trial.suggest_categorical(
-            f"{prefix}module__F1", [4, 8, 12, 16, 20]
+            f"{prefix}module__F1", [4, 8, 12, 16]
         ),
         f"{prefix}module__D": trial.suggest_categorical(
-            f"{prefix}module__D", [1, 2, 4, 8]
+            f"{prefix}module__D", [1, 2, 4]
         ),
         f"{prefix}module__kernel_length": trial.suggest_int(
-            f"{prefix}module__kernel_length", 64, 512, step=32
+            f"{prefix}module__kernel_length", 64, 256, step=16
         ),
         
         # Temporal processing parameters
         f"{prefix}module__temporal_kernel_size": trial.suggest_categorical(
-            f"{prefix}module__temporal_kernel_size", [3, 5, 7, 9]
+            f"{prefix}module__temporal_kernel_size", [3, 5, 7]
         ),
         f"{prefix}module__temporal_stride": trial.suggest_categorical(
             f"{prefix}module__temporal_stride", [2, 4, 6, 8]
         ),
-        
         # Sequence length control
         f"{prefix}module__max_seq_length": trial.suggest_int(
-            f"{prefix}module__max_seq_length", 150, 500
+            f"{prefix}module__max_seq_length", 150, 1000
         ),
-        
-        # Dropout for regularization
-        f"{prefix}module__drop_prob": trial.suggest_float(
-            f"{prefix}module__drop_prob", 0.1, 0.5
+        # NEW: CfC-specific parameters that were previously hardcoded
+        f"{prefix}module__mixed_memory": trial.suggest_categorical(
+            f"{prefix}module__mixed_memory", [True, False]
         ),
     }
 

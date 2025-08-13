@@ -53,6 +53,7 @@ def create_wiredcfc_model_from_architecture(architecture_file: str,
         logger.info(f"Loading architecture from {architecture_file}")
         wiring = load_architecture_from_file(architecture_file, logger)
         
+        
         # Create the model
         logger.info("Creating CNNWiredCfC model")
         model = create_cnnwiredcfc_classifier(

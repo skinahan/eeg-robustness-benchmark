@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Arbitrary wiring module for NCP compatibility with WS-flex graphs.
 
@@ -12,6 +13,328 @@ from typing import Dict, List, Optional, Any, Union
 import json
 from pathlib import Path
 import logging
+
+
+from dataclasses import dataclass
+from typing import Optional, Union, Literal, Dict, Any
+import numpy as np
+
+
+
+InputStrategy = Literal["dense", "degree_proportional"]
+OutputStrategy = Literal["dense", "uniform"]
+EdgeOrientation = Literal["symmetric", "random_oriented", "as_is"]
+
+
+class WsFlexHiddenWiring(Wiring):
+    """
+    Build a full (I+H+O) x (I+H+O) wiring from a WS-flex hidden graph.
+
+    The WS-flex graph defines *only* the Hidden <-> Hidden mixing (message exchange).
+    Inputs/Outputs live outside the graph and are wired by policy:
+
+      - Inputs  -> Hidden : chosen by `input_strategy`
+      - Hidden <-> Hidden : exactly the WS-flex graph (with optional orientation)
+      - Hidden -> Outputs : chosen by `output_strategy`
+
+    The resulting full wiring matrix is then handed to your existing ArbitraryWiring.
+
+    Conventions:
+      - Adjacency/Wiring matrix W has shape (T, T) where T = I + H + O.
+      - W[src, dst] = weight (1.0 by default), i.e., rows are sources, columns are targets.
+
+    Parameters
+    ----------
+    input_size : int
+        Number of input (sensory) units, I.
+    hidden_graph : Union[np.ndarray, "nx.Graph", "nx.DiGraph"]
+        Hidden-only adjacency (H x H) or a NetworkX (Di)Graph with H nodes (0..H-1).
+        If ndarray, non-zeros are treated as edges; values become weights.
+    output_size : int
+        Number of output (motor) units, O.
+    input_strategy : {"dense", "degree_proportional"}
+        - "dense": connect every input to every hidden unit.
+        - "degree_proportional": each hidden picks a small fan-in of inputs, biased by its graph degree.
+    output_strategy : {"dense", "uniform"}
+        - "dense": connect every hidden to every output.
+        - "uniform": each output receives ~uniform fan-in from hidden units.
+    hidden_edge_orientation : {"symmetric","random_oriented","as_is"}
+        - "symmetric": for undirected graphs/upper-triangular matrices, add both directions.
+        - "random_oriented": pick one direction per undirected edge (deterministic via seed).
+        - "as_is": use given directions/weights verbatim.
+    add_hidden_self_loops : bool
+        If True, add tiny self loops on hidden units when hidden block is empty to ensure minimal recurrence.
+    fan_in_inputs : Optional[int]
+        For "degree_proportional", number of inputs per hidden (default: max(1, round(log2(I+H)))).
+    fan_in_hidden_per_output : Optional[int]
+        For "uniform" output strategy, number of hidden per output (default: max(1, round(log2(H)))).
+    allow_signed_hidden_edges : bool
+        If True and hidden weights lack sign, sample +/- signs using `inhibitory_ratio`.
+    inhibitory_ratio : float
+        Fraction of inhibitory (negative) hidden edges if `allow_signed_hidden_edges=True`.
+    seed : int
+        RNG seed for deterministic structured sampling/orientation.
+
+    Notes
+    -----
+    - Disallowed routes are forcibly zeroed: input->output, output->input, input->input, output->output.
+    - If you want sparse I/O, prefer "degree_proportional" + "uniform".
+    - This class returns an ArbitraryWiring instance via `.build()`, but you can also
+      retrieve the full matrix via `.full_wiring_matrix()`.
+    """
+    def __init__(self, 
+                 input_size: int,
+                 hidden_graph: Union[np.ndarray, Any],
+                 output_size: int,
+
+                 input_strategy: InputStrategy = "dense",
+                 output_strategy: OutputStrategy = "dense",
+                 hidden_edge_orientation: EdgeOrientation = "symmetric",
+                 add_hidden_self_loops: bool = True,
+
+                 fan_in_inputs: Optional[int] = None,
+                 fan_in_hidden_per_output: Optional[int] = None,
+
+                 allow_signed_hidden_edges: bool = False,
+                 inhibitory_ratio: float = 0.2,
+
+                 seed: int = 17,
+                 dtype: Any = np.float32):
+        super().__init__(units=input_size + hidden_graph.shape[0] + output_size)
+        self.input_size = input_size
+        self.hidden_graph = hidden_graph
+        self.output_size = output_size
+        self.input_strategy = input_strategy
+        self.output_strategy = output_strategy
+        self.hidden_edge_orientation = hidden_edge_orientation
+        self.add_hidden_self_loops = add_hidden_self_loops
+        self.fan_in_inputs = fan_in_inputs
+        self.fan_in_hidden_per_output = fan_in_hidden_per_output
+        self.allow_signed_hidden_edges = allow_signed_hidden_edges
+        self.inhibitory_ratio = inhibitory_ratio
+        self.seed = seed
+        self.dtype = dtype
+
+    # --------------------------- Public API ---------------------------
+
+    def full_wiring_matrix(self) -> np.ndarray:
+        I, H, O = self.input_size, self._hidden_size(), self.output_size
+        T = I + H + O
+        W = np.zeros((T, T), dtype=self.dtype)
+
+        # 1) Inputs -> Hidden
+        if self.input_strategy == "dense":
+            W[0:I, I:I + H] = 1.0
+        elif self.input_strategy == "degree_proportional":
+            rng = np.random.default_rng(self.seed)
+            fan_in = self.fan_in_inputs or max(1, int(np.round(np.log2(max(2, I + H)))))
+            deg = self._hidden_degrees()
+            probs = (deg + 1e-8) / (deg.sum() + 1e-8)
+            # Each hidden picks `fan_in` inputs (sampled from inputs uniformly or weighted by hidden degree)
+            # We bias *which hidden* is more likely to pick more inputs by sampling hidden order by degree;
+            # within a hidden, we choose inputs uniformly without replacement.
+            hidden_order = np.argsort(-probs)  # high degree first (deterministic)
+            for h in hidden_order:
+                chosen_inputs = rng.choice(I, size=min(fan_in, I), replace=False)
+                W[chosen_inputs, I + h] = 1.0
+        else:
+            raise ValueError(f"Unknown input_strategy: {self.input_strategy}")
+
+        # 2) Hidden <-> Hidden (WS-flex fabric)
+        W[I:I + H, I:I + H] = self._hidden_block_oriented()
+
+        # Ensure minimal recurrence if needed
+        if self.add_hidden_self_loops and np.count_nonzero(W[I:I + H, I:I + H]) == 0:
+            np.fill_diagonal(W[I:I + H, I:I + H], 0.1)
+
+        # 3) Hidden -> Outputs
+        if self.output_strategy == "dense":
+            W[I:I + H, I + H:T] = 1.0
+        elif self.output_strategy == "uniform":
+            rng = np.random.default_rng(self.seed + 1)
+            fan_in = self.fan_in_hidden_per_output or max(1, int(np.round(np.log2(max(2, H)))))
+            for o in range(O):
+                chosen_hidden = rng.choice(H, size=min(fan_in, H), replace=False)
+                W[I + chosen_hidden, I + H + o] = 1.0
+        else:
+            raise ValueError(f"Unknown output_strategy: {self.output_strategy}")
+
+        # 4) Zero-out disallowed routes explicitly (safety)
+        # No input->output or output->input or input->input or output->output
+        W[0:I, I + H:T] = 0.0
+        W[I + H:T, 0:I] = 0.0
+        W[0:I, 0:I] = 0.0
+        W[I + H:T, I + H:T] = 0.0
+
+        return W
+
+    def build(self, input_size: int) -> ArbitraryWiring:
+        """
+        Return an ArbitraryWiring instance initialized with the full wiring matrix.
+        """
+        if input_size != self.input_size:
+            raise ValueError(f"Input size mismatch: expected {self.input_size}, got {input_size}")
+        W = self.full_wiring_matrix()
+        return ArbitraryWiring(
+            wiring_matrix=W,
+            input_size=self.input_size,
+            hidden_size=self._hidden_size(),
+            output_size=self.output_size,
+        )
+
+    # -------------------------- Internals ----------------------------
+
+    def _hidden_size(self) -> int:
+        if self._is_nx():
+            # Assume nodes are 0..H-1 or any set; we only need the count
+            return len(self.hidden_graph.nodes())
+        arr = np.asarray(self.hidden_graph)
+        if arr.ndim != 2 or arr.shape[0] != arr.shape[1]:
+            raise ValueError("hidden_graph ndarray must be square HxH.")
+        return int(arr.shape[0])
+
+    def _is_nx(self) -> bool:
+        if nx is None:
+            return False
+        return isinstance(self.hidden_graph, (nx.Graph, nx.DiGraph))
+
+    def _hidden_block_oriented(self) -> np.ndarray:
+        """Return an oriented HxH hidden adjacency block (float32)."""
+        if self._is_nx():
+            return self._hidden_block_from_nx()
+        # ndarray path
+        A = np.asarray(self.hidden_graph, dtype=self.dtype)
+        H = A.shape[0]
+        if self.hidden_edge_orientation == "symmetric":
+            # Add both directions for any nonzero (upper/lower) entries
+            A = ((A + A.T) > 0).astype(self.dtype)
+        elif self.hidden_edge_orientation == "random_oriented":
+            rng = np.random.default_rng(self.seed + 2)
+            # Symmetrize support, then pick one direction per undirected pair
+            S = ((A + A.T) > 0).astype(np.bool_)
+            upper = np.triu(S, k=1)
+            B = np.zeros_like(S, dtype=self.dtype)
+            # For each undirected pair (i,j) with upper[i,j]=True, choose direction randomly
+            us, vs = np.where(upper)
+            choices = rng.integers(0, 2, size=len(us))
+            for idx, (i, j) in enumerate(zip(us, vs)):
+                if choices[idx] == 0:
+                    B[i, j] = 1.0
+                else:
+                    B[j, i] = 1.0
+            # Keep self-loops if present
+            np.fill_diagonal(B, np.diag(S).astype(self.dtype))
+            A = B
+        elif self.hidden_edge_orientation == "as_is":
+            # Respect the given directions/weights
+            pass
+        else:
+            raise ValueError(f"Unknown hidden_edge_orientation: {self.hidden_edge_orientation}")
+
+        if self.allow_signed_hidden_edges and not np.any(A < 0):
+            A = self._apply_hidden_signs(A)
+
+        return A.astype(self.dtype, copy=False)
+
+    def _hidden_block_from_nx(self) -> np.ndarray:
+        """Build HxH from a NetworkX Graph/DiGraph with optional weights."""
+        G = self.hidden_graph
+        # Relabel nodes to 0..H-1 if needed
+        mapping = {n: i for i, n in enumerate(sorted(G.nodes()))}
+        H = len(mapping)
+        A = np.zeros((H, H), dtype=self.dtype)
+        # Fill by edges
+        if isinstance(G, nx.DiGraph):
+            edge_iter = G.edges(data=True)
+        else:
+            edge_iter = G.edges(data=True)
+        for u, v, data in edge_iter:
+            w = float(data.get("weight", 1.0))
+            ui, vi = mapping[u], mapping[v]
+            if isinstance(G, nx.DiGraph):
+                A[ui, vi] = w
+            else:
+                # Undirected: handle by orientation policy later
+                A[ui, vi] = max(A[ui, vi], w)
+                A[vi, ui] = max(A[vi, ui], w)
+
+        # Apply orientation policy for undirected graphs
+        if isinstance(G, nx.Graph):
+            if self.hidden_edge_orientation == "symmetric":
+                A = ((A + A.T) > 0).astype(self.dtype)
+            elif self.hidden_edge_orientation == "random_oriented":
+                rng = np.random.default_rng(self.seed + 3)
+                S = ((A + A.T) > 0).astype(np.bool_)
+                upper = np.triu(S, k=1)
+                B = np.zeros_like(S, dtype=self.dtype)
+                us, vs = np.where(upper)
+                choices = rng.integers(0, 2, size=len(us))
+                for idx, (i, j) in enumerate(zip(us, vs)):
+                    if choices[idx] == 0:
+                        B[i, j] = 1.0
+                    else:
+                        B[j, i] = 1.0
+                np.fill_diagonal(B, np.diag(S).astype(self.dtype))
+                A = B
+            elif self.hidden_edge_orientation == "as_is":
+                # For undirected "as_is", treat as symmetric
+                A = ((A + A.T) > 0).astype(self.dtype)
+
+        if self.allow_signed_hidden_edges and not np.any(A < 0):
+            A = self._apply_hidden_signs(A)
+
+        return A
+
+    def _apply_hidden_signs(self, A: np.ndarray) -> np.ndarray:
+        """Apply +/- signs to non-zero hidden edges with given inhibitory ratio."""
+        if self.inhibitory_ratio <= 0.0:
+            return A
+        rng = np.random.default_rng(self.seed + 4)
+        rows, cols = np.where(A != 0)
+        m = len(rows)
+        k = int(np.floor(self.inhibitory_ratio * m))
+        if k > 0:
+            idx = rng.choice(m, size=k, replace=False)
+            A[rows[idx], cols[idx]] *= -1.0
+        return A
+
+    def _hidden_degrees(self) -> np.ndarray:
+        """Return degree (undirected) or out-degree (directed) per hidden node as float array (H,)."""
+        H = self._hidden_size()
+        if self._is_nx():
+            G = self.hidden_graph
+            if isinstance(G, nx.DiGraph):
+                deg = np.array([G.out_degree(n) for n in sorted(G.nodes())], dtype=np.float32)
+            else:
+                deg = np.array([G.degree(n) for n in sorted(G.nodes())], dtype=np.float32)
+            return deg
+        A = np.asarray(self.hidden_graph)
+        if self.hidden_edge_orientation == "as_is":
+            # Count outgoing edges
+            return np.asarray((A != 0).sum(axis=1), dtype=np.float32)
+        # Otherwise use symmetrized support
+        S = ((A + A.T) > 0).astype(np.int32)
+        return np.asarray(S.sum(axis=1), dtype=np.float32)
+
+    # ---------------------- Convenience helpers ----------------------
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Metadata useful for logging/serialization."""
+        return {
+            "input_size": self.input_size,
+            "hidden_size": self._hidden_size(),
+            "output_size": self.output_size,
+            "input_strategy": self.input_strategy,
+            "output_strategy": self.output_strategy,
+            "hidden_edge_orientation": self.hidden_edge_orientation,
+            "add_hidden_self_loops": self.add_hidden_self_loops,
+            "fan_in_inputs": self.fan_in_inputs,
+            "fan_in_hidden_per_output": self.fan_in_hidden_per_output,
+            "allow_signed_hidden_edges": self.allow_signed_hidden_edges,
+            "inhibitory_ratio": self.inhibitory_ratio,
+            "seed": self.seed,
+        }
+
 
 
 class ArbitraryWiring(Wiring):
@@ -273,17 +596,23 @@ def load_architecture_from_file(filepath: str, logger: Optional[logging.Logger] 
         connection_weights = data.get('connection_weights')
         metadata = data.get('metadata', {})
         
-        # Create the wiring instance
-        wiring = ArbitraryWiring(
-            wiring_matrix=wiring_matrix,
+        wiring = WsFlexHiddenWiring(
             input_size=input_size,
-            hidden_size=hidden_size,
-            output_size=output_size,
-            neuron_types=neuron_types,
-            connection_weights=connection_weights,
-            metadata=metadata,
-            logger=logger
+            hidden_graph=wiring_matrix,
+            output_size=output_size
         )
+
+        # Create the wiring instance
+        # wiring = ArbitraryWiring(
+        #     wiring_matrix=wiring_matrix,
+        #     input_size=input_size,
+        #     hidden_size=hidden_size,
+        #     output_size=output_size,
+        #     neuron_types=neuron_types,
+        #     connection_weights=connection_weights,
+        #     metadata=metadata,
+        #     logger=logger
+        # )
         
         if logger:
             logger.info(f"Successfully loaded architecture from {filepath}")
@@ -297,6 +626,7 @@ def load_architecture_from_file(filepath: str, logger: Optional[logging.Logger] 
 
 
 def create_wiring_from_architecture_data(architecture_data: Dict[str, Any], 
+
                                        logger: Optional[logging.Logger] = None) -> ArbitraryWiring:
     """
     Create an ArbitraryWiring instance from architecture data dictionary.
@@ -320,15 +650,21 @@ def create_wiring_from_architecture_data(architecture_data: Dict[str, Any],
     metadata = architecture_data.get('metadata', {})
     
     # Create the wiring instance
-    wiring = ArbitraryWiring(
-        wiring_matrix=wiring_matrix,
-        input_size=input_size,
-        hidden_size=hidden_size,
-        output_size=output_size,
-        neuron_types=neuron_types,
-        connection_weights=connection_weights,
-        metadata=metadata,
-        logger=logger
-    )
+    wiring = WsFlexHiddenWiring(
+            input_size=input_size,
+            hidden_graph=wiring_matrix,
+            output_size=output_size
+        )
+    # wiring = ArbitraryWiring(
+    #     wiring_matrix=wiring_matrix,
+    #     input_size=input_size,
+    #     hidden_size=hidden_size,
+    #     output_size=output_size,
+    #     neuron_types=neuron_types,
+    #     connection_weights=connection_weights,
+    #     metadata=metadata,
+    #     logger=logger
+    # )
     
     return wiring
+
