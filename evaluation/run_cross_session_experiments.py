@@ -28,6 +28,7 @@ sys.path.insert(0, project_root)
 from config import MODEL_REGISTRY, get_paradigm
 from globals import set_seeds
 from evaluation.session_evaluator import NoiseWithinSessionEvaluation
+from augmentation.noise import TrainOnlyNoiseClassifier, ConcatenatedNoiseAugmenter
 from utils import create_output_path, create_hdf5_model_path
 from evaluation.experiment_utils import (
     extract_model_params, check_skip_eval, log_all_subjects, 
@@ -69,9 +70,10 @@ class CrossSessionNoiseEvaluation(CrossSessionEvaluation):
         wrapped_model_fn = None
 
         if self.mode in ['perturb', 'perturb_notune']:
-            from augmentation.noise import TrainOnlyNoiseClassifier
+            # Perturbation mode: Train on 0train session and evaluate on 1test session
             def wrapped_model_fn(n_chans, n_times, n_outputs):
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
+                base_model.max_epochs = 100
                 return TrainOnlyNoiseClassifier(
                     base_pipeline=base_model,
                     noise_type=self.noise_type,
@@ -79,9 +81,10 @@ class CrossSessionNoiseEvaluation(CrossSessionEvaluation):
                     seed=self.seed
                 )
         elif self.mode in ['augment', 'augment_notune']:
-            from augmentation.noise import ConcatenatedNoiseAugmenter
+            # Augmentation mode: Train on 0train session and evaluate on 1test session
             def wrapped_model_fn(n_chans, n_times, n_outputs):
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
+                base_model.max_epochs = 100
                 return ConcatenatedNoiseAugmenter(
                     base_pipeline=base_model,
                     noise_type=self.noise_type,
@@ -177,7 +180,12 @@ class CrossSessionNoiseEvaluation(CrossSessionEvaluation):
             # Check if we should use tuning or not
             if self.mode in ['augment_notune', 'perturb_notune']:
                 # Evaluate without tuning using default parameters
-                result_df = self.evaluate_without_tuning(X_train, y_train, X_test, y_test, metadata_train, metadata_test, wrapped_model_fn)
+                if self.mode == 'augment_notune':
+                    self.model = wrapped_model_fn(n_chans=22, n_times=int(self.resample * 4), n_outputs=2)
+                    X_obj, y_obj, groups = self.model.concat_and_augment(X_train, y_train)
+                    result_df = self.evaluate_without_tuning(X_obj, y_obj, X_test, y_test, metadata_train, metadata_test, wrapped_model_fn)
+                else:
+                    result_df = self.evaluate_without_tuning(X_train, y_train, X_test, y_test, metadata_train, metadata_test, wrapped_model_fn)
                 results.append(result_df)
             else:
                 # Hyperparameter tuning on 0train session
@@ -316,7 +324,6 @@ def run_cross_session_experiment(
     full_hdf5_path = os.path.join(checkpoint_dir, file_name)
 
     if mode == "baseline":
-        # Use custom cross-session evaluation instead of MOABB's CrossSessionEvaluation
         evaluation = CrossSessionEvaluation(
             paradigm=paradigm,
             datasets=[dataset],
