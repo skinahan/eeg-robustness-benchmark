@@ -550,12 +550,12 @@ class CNNCfCv2(EEGModuleMixin, nn.Module):
             temporal_stride=4,
             max_seq_length=250,
             # CfC-specific parameters
-            mixed_memory=True,
+            mixed_memory=False,
             mode='default',
             activation='lecun_tanh',
             backbone_units=128,
             backbone_layers=1,
-            backbone_dropout=0.0
+            backbone_dropout=0.05
     ):
         super().__init__(
             n_outputs=n_outputs,

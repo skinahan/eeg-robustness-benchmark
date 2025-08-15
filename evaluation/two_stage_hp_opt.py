@@ -504,20 +504,6 @@ def get_model_training_space(model_name):
     }
     return training_registry[model_name]
 
-def cnn_cfc_architecture_space(trial, prefix):
-    return {
-        # CfC parameters
-        f"{prefix}module__ncp_hidden_dim": trial.suggest_categorical(f"{prefix}module__ncp_hidden_dim", [8, 16, 32, 64, 96]),
-        f"{prefix}module__drop_prob": trial.suggest_float(f"{prefix}module__drop_prob", 0.1, 0.5)
-    }
-
-
-def cnn_cfc_training_space(trial, prefix):
-    return {
-        f"{prefix}optimizer__lr": trial.suggest_loguniform("lr", 1e-4, 1e-2),
-        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform("weight_decay", 1e-4, 1e-1),
-    }
-
 
 def improved_cnncfc_architecture_space(trial, prefix):
     """Enhanced architecture parameter space for improved CNNCfC."""
