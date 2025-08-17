@@ -364,7 +364,11 @@ def run_cross_session_experiment(
                 session_df = subject_df[subject_df['session'] == session]
                 out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type='CrossSessionEvaluation')
                 os.makedirs(out_dir, exist_ok=True)
-                filename_suffix = f"_{noise_type}" if is_perturbed and noise_type else ""
+                # Use consistent filename pattern with log_all_subjects
+                if is_perturbed and noise_type is not None and intensity is not None:
+                    filename_suffix = f"_{noise_type}_{intensity}"
+                else:
+                    filename_suffix = ""
                 out_file = os.path.join(out_dir,
                                         f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
                 session_df.to_csv(out_file, index=False)
