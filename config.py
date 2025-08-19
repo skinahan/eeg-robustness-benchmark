@@ -135,13 +135,13 @@ def load_architectures_from_directory(architectures_dir="outputs/architectures",
     
     arch_path = Path(architectures_dir)
     if not arch_path.exists():
-        print(f"⚠️ Architectures directory not found: {architectures_dir}")
+        print(f"Architectures directory not found: {architectures_dir}")
         return []
     
     # Find all JSON files
     json_files = list(arch_path.glob("*.json"))
     if not json_files:
-        print(f"⚠️ No JSON files found in {architectures_dir}")
+        print(f"No JSON files found in {architectures_dir}")
         return []
     
     print(f"Found {len(json_files)} architecture files in {architectures_dir}")
@@ -156,13 +156,13 @@ def load_architectures_from_directory(architectures_dir="outputs/architectures",
         if add_wiredcfc_architecture(architecture_name, str(json_file)):
             loaded_architectures.append(architecture_name)
     
-    print(f"✅ Successfully loaded {len(loaded_architectures)} architectures")
+    print(f"Successfully loaded {len(loaded_architectures)} architectures")
     return loaded_architectures
 
 def clear_wiredcfc_architectures():
     """Clear all registered CNNWiredCfC architectures."""
     _wiredcfc_architecture_registry.clear()
-    print("✅ Cleared all CNNWiredCfC architectures")
+    print("Cleared all CNNWiredCfC architectures")
 
 # Initialize with some default architectures if they exist
 def initialize_default_architectures():
