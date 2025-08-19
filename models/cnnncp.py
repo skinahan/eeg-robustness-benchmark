@@ -1007,15 +1007,16 @@ class CNNSmallWorld_Learnable(EEGModuleMixin, nn.Module):
         ncp_input_size = F2  # Use F2 instead of hardcoded 16
         ncp_output_size = F2  # Use F2 for consistency
         
-        # Create wiring for CfC
-        wiring = AutoNCP(
-            ncp_hidden_dim, ncp_output_size, sparsity_level=0.75, seed=seed)
-        
-        self.ncp = CfC(
-            input_size=ncp_input_size, 
-            wiring=wiring,
-            return_sequences=True
+        # Use ModularSmallWorldWiring instead of AutoNCP
+        wiring = ModularSmallWorldWiring(
+            units=ncp_hidden_dim, 
+            output_size=ncp_output_size,  # Match the expected output size
+            n_modules=n_modules, 
+            rewiring_prob=rewiring_prob, 
+            seed=seed
         )
+        # The wiring should handle the output size constraint
+        self.ncp = CfC(ncp_input_size, wiring, return_sequences=True, proj_size=ncp_output_size)
 
         # 8. Separable Conv2D - PROPERLY PARAMETERIZED:
         self.sep_depthwise = nn.Conv2d(
@@ -1420,10 +1421,9 @@ def create_cnnncp_classifier(
         module__n_outputs=n_outputs,
         module__ncp_hidden_dim=net_size,
         module__sparsity=net_sparsity,
-        train_split=ValidSplit(0.2, stratified=True, random_state=seed),
+        train_split=None,
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[
-        ],
+        callbacks=[],
         # verbose=0  # Suppress epoch-level output
     )
     
@@ -1470,7 +1470,7 @@ def create_cnnsmallworld_classifier(
     criterion = torch.nn.CrossEntropyLoss
     
     cnn_smallworld_net = EEGClassifier(
-        CNNSmallWorld,
+        CNNSmallWorld_Learnable,
         criterion=criterion,
         optimizer=torch.optim.AdamW,
         optimizer__lr=lr,
@@ -1490,7 +1490,7 @@ def create_cnnsmallworld_classifier(
         module__max_seq_length=max_seq_length,
         module__n_modules=n_modules,
         module__rewiring_prob=rewiring_prob,
-        train_split=ValidSplit(0.2, stratified=True, random_state=seed),
+        train_split=None,
         device='cuda' if torch.cuda.is_available() else 'cpu',
         callbacks=[],
     )
@@ -1620,7 +1620,7 @@ def create_cnnsmallworld_learnable_classifier(
         module__n_modules=n_modules,
         module__rewiring_prob=rewiring_prob,
         module__use_learnable_window=use_learnable_window,
-        train_split=ValidSplit(0.2, stratified=True, random_state=seed),
+        train_split=None,
         device='cuda' if torch.cuda.is_available() else 'cpu',
         callbacks=[],
     )
@@ -1639,9 +1639,6 @@ def create_cnnsmallworld_learnable_classifier(
     return cnn_smallworld_learnable_net
 
 
-
-
-
 def create_cnnwiredcfc_classifier(
         n_chans,
         n_times,
@@ -1657,7 +1654,7 @@ def create_cnnwiredcfc_classifier(
         temporal_kernel_size=3,
         temporal_stride=4,
         max_seq_length=250,
-        mixed_memory=False  # Add mixed_memory parameter
+        mixed_memory=True  # Add mixed_memory parameter
 ):
     """Create a CNNWiredCfC classifier with arbitrary wiring."""
     seed = get_seed()
@@ -1683,7 +1680,7 @@ def create_cnnwiredcfc_classifier(
         module__temporal_stride=temporal_stride,
         module__max_seq_length=max_seq_length,
         module__mixed_memory=mixed_memory,
-        train_split=ValidSplit(0.2, stratified=True, random_state=seed),
+        train_split=None,
         device='cuda' if torch.cuda.is_available() else 'cpu',
         callbacks=[],
     )

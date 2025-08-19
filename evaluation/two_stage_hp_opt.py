@@ -470,6 +470,22 @@ def cnn_wiredcfc_training_space(trial, prefix):
         ),
     }
 
+# Iterate over model parameters and return a list of all parameters that we may have tuned
+def get_all_model_params(model_name):    
+    architecture_space = get_model_architecture_space(model_name)
+    training_space = get_model_training_space(model_name)
+    # Architecture space expects an optuna trial object, so we need to create one.    
+    dummy_study = optuna.create_study(direction="maximize")    
+    study_trial = dummy_study.ask()
+    architecture_params = architecture_space(study_trial, "")
+    training_params = training_space(study_trial, "")
+    all_params = []
+    for k in architecture_params.keys():
+        all_params.append(k)
+    for k in training_params.keys():
+        all_params.append(k)
+    return all_params
+
 
 def get_model_architecture_space(model_name):
     # Check if this is a wiredcfc architecture model

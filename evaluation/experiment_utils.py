@@ -52,8 +52,8 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
 
 def log_all_subjects(results, subject_list, model_name, mode, noise_type, intensity, seed, eval_mode='WithinSessionEvaluation'):
     """Log results for all subjects to individual CSV files."""
-    for subj in subject_list:
-        subject_df = results[results['subject'] == str(subj)]
+    for subj in subject_list:        
+        subject_df = results[results['subject'] == int(subj)]
         for session in subject_df['session'].unique():
             session_df = subject_df[subject_df['session'] == session]
             out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode)
