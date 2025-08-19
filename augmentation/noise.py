@@ -272,3 +272,214 @@ class ConcatenatedNoiseAugmenter(ClassifierMixin, BaseEstimator):
             return self.base_pipeline[-1].predict_proba(X)
         else:
             raise NotImplementedError("Underlying model does not support predict_proba()")
+
+# Test-time corruption classifier for robustness evaluation
+class TestOnlyNoiseClassifier(ClassifierMixin, BaseEstimator):
+    """
+    Wrapper classifier that applies deterministic corruption only at evaluation time.
+    
+    This class is designed for robustness evaluation where:
+    - Training and validation use clean data only
+    - Test evaluation applies a grid of corruptions with deterministic seeding
+    - Model selection is based on clean validation performance
+    
+    Parameters
+    ----------
+    base_pipeline : estimator or callable
+        The underlying estimator or a factory function that returns it.
+    corruption_plan : dict
+        Dictionary defining corruption families and intensity grids.
+    seed_base : int
+        Base seed for deterministic corruption generation.
+    freeze_seeds : bool, default=True
+        Whether to use deterministic seeding for corruptions.
+    score_clean_first : bool, default=True
+        Whether to evaluate clean test set before applying corruptions.
+    """
+    
+    def __init__(self, base_pipeline, corruption_plan, seed_base=42, 
+                 freeze_seeds=True, score_clean_first=True):
+        self.base_pipeline = base_pipeline
+        self.corruption_plan = corruption_plan
+        self.seed_base = seed_base
+        self.freeze_seeds = freeze_seeds
+        self.score_clean_first = score_clean_first
+        self.is_fitted_ = False
+        
+    def fit(self, X, y):
+        """Fit the base pipeline on clean data."""
+        if callable(self.base_pipeline):
+            self.base_pipeline = self.base_pipeline()
+        
+        self.base_pipeline.fit(X, y)
+        self.is_fitted_ = True
+        
+        # Expose fitted classes_ attribute from the wrapped classifier
+        if hasattr(self.base_pipeline, "classes_"):
+            self.classes_ = self.base_pipeline.classes_
+        elif hasattr(self.base_pipeline[-1], "classes_"):
+            self.classes_ = self.base_pipeline[-1].classes_
+        else:
+            raise AttributeError("Base pipeline does not expose `classes_` after fit")
+        
+        return self
+    
+    def predict(self, X):
+        """Predict using the base pipeline."""
+        return self.base_pipeline.predict(X)
+    
+    def score(self, X, y, sample_weight=None):
+        """Score using the base pipeline."""
+        return self.base_pipeline.score(X, y, sample_weight)
+    
+    def predict_proba(self, X):
+        """Predict probabilities using the base pipeline."""
+        if hasattr(self.base_pipeline, 'predict_proba'):
+            return self.base_pipeline.predict_proba(X)
+        elif hasattr(self.base_pipeline[-1], 'predict_proba'):
+            return self.base_pipeline[-1].predict_proba(X)
+        else:
+            raise NotImplementedError("Underlying model does not support predict_proba()")
+    
+    def evaluate_on_corruptions(self, test_data, test_labels, metadata):
+        """
+        Evaluate the model on a grid of corruptions.
+        
+        Parameters
+        ----------
+        test_data : array-like
+            Test data to evaluate on.
+        test_labels : array-like
+            Test labels.
+        metadata : dict
+            Metadata containing subject_id, session, fold_id, etc.
+        
+        Returns
+        -------
+        dict
+            Dictionary containing evaluation results for each corruption family and intensity.
+        """
+        results = {
+            'per_example': [],
+            'per_family': [],
+            'clean_metrics': {}
+        }
+        
+        # Get test fold ID and subject ID for seed derivation
+        test_fold_id = metadata.get('fold_id', 0)
+        subject_id = metadata.get('subject_id', metadata.get('subject', 0))
+        
+        # Evaluate clean test set first if requested
+        if self.score_clean_first:
+            clean_score = self.score(test_data, test_labels)
+            results['clean_metrics']['clean_score'] = clean_score
+            
+            # Add clean result to per-example results
+            clean_result = {
+                'family': 'clean',
+                'intensity': 0.0,
+                'seed_used': self.seed_base,
+                'metric_name': 'score',
+                'metric_value': clean_score,
+                'clean_metric': clean_score,
+                'relative_drop': 0.0,
+                'test_fold_id': test_fold_id,
+                'subject_id': subject_id
+            }
+            results['per_example'].append(clean_result)
+        
+        # Build corruption grid from plan
+        from augmentation.corruption_utils import build_corruption_grid
+        corruption_grid = build_corruption_grid(self.corruption_plan)
+        
+        # Evaluate on each corruption
+        for family, intensity, params in corruption_grid:
+            if family == 'clean':  # Skip clean, already handled
+                continue
+                
+            # Derive deterministic seed
+            from augmentation.corruption_utils import derive_corruption_seed
+            corruption_seed = derive_corruption_seed(
+                self.seed_base, family, intensity, test_fold_id, subject_id
+            )
+            
+            # Apply corruption
+            from augmentation.corruption_utils import apply_corruption
+            corrupted_data = apply_corruption(
+                test_data, family, intensity, corruption_seed, params
+            )
+            
+            # Evaluate on corrupted data
+            corrupted_score = self.score(corrupted_data, test_labels)
+            
+            # Compute relative drop
+            from augmentation.corruption_utils import compute_relative_drop
+            relative_drop = compute_relative_drop(clean_score, corrupted_score)
+            
+            # Store result
+            result = {
+                'family': family,
+                'intensity': intensity,
+                'seed_used': corruption_seed,
+                'metric_name': 'score',
+                'metric_value': corrupted_score,
+                'clean_metric': clean_score,
+                'relative_drop': relative_drop,
+                'test_fold_id': test_fold_id,
+                'subject_id': subject_id
+            }
+            results['per_example'].append(result)
+        
+        # Compute per-family summaries
+        from augmentation.corruption_utils import compute_aurc
+        families = set(r['family'] for r in results['per_example'] if r['family'] != 'clean')
+        
+        for family in families:
+            family_results = [r for r in results['per_example'] if r['family'] == family]
+            intensities = [r['intensity'] for r in family_results]
+            metrics = [r['metric_value'] for r in family_results]
+            
+            # Sort by intensity for AURC computation
+            sorted_pairs = sorted(zip(intensities, metrics))
+            sorted_intensities, sorted_metrics = zip(*sorted_pairs)
+            
+            aurc = compute_aurc(sorted_intensities, sorted_metrics)
+            worst_case = min(sorted_metrics)
+            mean_relative_drop = np.mean([r['relative_drop'] for r in family_results])
+            
+            family_summary = {
+                'family': family,
+                'aurc': aurc,
+                'worst_case_metric': worst_case,
+                'mean_relative_drop': mean_relative_drop,
+                'n_points': len(family_results)
+            }
+            results['per_family'].append(family_summary)
+        
+        return results
+    
+    def get_params(self, deep=True):
+        params = super().get_params(deep=deep)
+        if deep and hasattr(self.base_pipeline, 'get_params'):
+            base_params = self.base_pipeline.get_params().copy()
+            for key in list(base_params.keys()):
+                base_params[f'base_pipeline__{key}'] = base_params.pop(key)
+            params.update(base_params)
+        return params
+    
+    def set_params(self, **params):
+        base_params = {}
+        own_params = {}
+        
+        for key, value in params.items():
+            if key.startswith('base_pipeline__'):
+                base_params[key[len('base_pipeline__'):]] = value
+            else:
+                own_params[key] = value
+        
+        if base_params:
+            self.base_pipeline.set_params(**base_params)
+        if own_params:
+            super().set_params(**own_params)
+        
+        return self

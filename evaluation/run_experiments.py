@@ -27,7 +27,7 @@ from globals import set_seeds, get_seed
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
 from evaluation.session_evaluator import NoiseWithinSessionEvaluation
 from utils import create_output_path, create_hdf5_model_path
-from experiment_utils import check_skip_eval
+from evaluation.experiment_utils import check_skip_eval, log_all_subjects
 
 from moabb.evaluations import WithinSessionSplitter
 from sklearn.model_selection import cross_val_score
@@ -398,7 +398,7 @@ def log_all_subjects(results, subject_list, model_name, mode, noise_type, intens
                                     f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
             session_df.to_csv(out_file, index=False)
             print(f"Saved: {out_file}")
-
+            
 def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, noise_type, intensity, mode):
     set_seeds(seed)
     dataset = BNCI2014_001()
@@ -442,12 +442,13 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Unified EEG Experiment Runner")
     parser.add_argument("--model", type=str, required=True, choices=list(MODEL_REGISTRY.keys()))
-    parser.add_argument("--mode", type=str, required=True, choices=["baseline", "tune", "perturb", "augment", "perturb_notune", "augment_notune", "aggregate_only"])
+    parser.add_argument("--mode", type=str, required=True, choices=["baseline", "tune", "perturb", "augment", "perturb_notune", "augment_notune", "test_perturb", "aggregate_only"])
     parser.add_argument("--subjects", type=int, nargs="+", required=True)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--resample", type=float, default=None)
     parser.add_argument("--noise_type", type=str, choices=["dropout", "gaussian", "eog"], default=None)
     parser.add_argument("--intensity", type=float, default=None)
+
     parser.add_argument("--aggregate", action="store_true")
 
     args = parser.parse_args()
@@ -463,6 +464,40 @@ if __name__ == "__main__":
             intensity=args.intensity,
             mode=args.mode
         )
+    elif args.mode == "test_perturb":
+        # Use the established execution path with NoiseWithinSessionEvaluation
+        # Setup dataset and paradigm
+        dataset = BNCI2014_001()
+        dataset.subject_list = args.subjects
+        paradigm = get_paradigm(resample=args.resample)
+        
+        noise_dict = {
+            "noise_type": args.noise_type,
+            "intensity": args.intensity
+        }
+        
+        unique_id = uuid.uuid4().hex[:8]
+        checkpoint_dir = create_hdf5_model_path(args.model, args.seed, '0train', args.mode)
+        file_name = f"{args.noise_type}/{args.intensity}_subject{args.subjects[0]}-{args.subjects[-1]}_seed{args.seed}_{unique_id}.h5"
+        full_hdf5_path = os.path.join(checkpoint_dir, file_name)
+
+        evaluation = NoiseWithinSessionEvaluation(
+            paradigm=paradigm,
+            datasets=[dataset],
+            mode=args.mode,
+            noise_dict=noise_dict,
+            resample=args.resample,
+            overwrite=True,
+            hdf5_path=full_hdf5_path,
+            random_state=args.seed,
+            model_name=args.model
+        )
+        results = evaluation.process({f"{args.model}+MotorImagery+TestPerturb": None})
+        log_all_subjects(results, args.subjects, args.model, args.mode, args.noise_type, args.intensity, args.seed)
+
+        if os.path.isdir(full_hdf5_path):
+            shutil.rmtree(full_hdf5_path)
+
     elif args.mode == "baseline" or args.mode == "tune":
         check_skip_eval(args.model, args.seed, args.subjects, args.mode, args.noise_type, args.intensity)
         run_experiment(

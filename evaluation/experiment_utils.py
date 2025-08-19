@@ -27,12 +27,8 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
     expected_output_paths = []
     
     for subj in subject_list:
-        # For cross-session evaluation, only check 1test session since that's where results are saved
-        if eval_mode == 'CrossSessionEvaluation':
-            sessions_to_check = ['1test']
-        else:
-            sessions_to_check = ['0train', '1test']
-            
+        sessions_to_check = ['0train', '1test']
+                        
         for session in sessions_to_check:
             out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode)
             if noise_type is not None and intensity is not None:

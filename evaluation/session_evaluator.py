@@ -3,14 +3,17 @@ import os
 import pandas as pd
 from moabb.evaluations import WithinSessionEvaluation
 from sklearn.model_selection import GroupKFold, StratifiedKFold
+from sklearn.model_selection._validation import _fit_and_score, _aggregate_score_dicts, _normalize_score_results
 from sklearn.preprocessing import LabelEncoder
 
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
 from config import MODEL_REGISTRY
 from evaluation.two_stage_hp_opt import alternate_two_stage_optuna, format_params, unified_cv_training_loop_method
 from utils import create_output_path
-
+from sklearn.metrics import roc_auc_score, get_scorer
 import time
+import numpy as np
+from config import get_paradigm
 
 # NoiseSessionEvaluator extends WithinSessionEvaluation for noise augmentation and perturbation experiments.
 #  - WithinSessionEvaluation does not allow dataset-level control.
@@ -59,6 +62,15 @@ class NoiseWithinSessionEvaluation(WithinSessionEvaluation):
                     intensity=self.intensity,
                     seed=self.seed
                 )
+        elif self.mode == 'test_perturb':
+            # For test_perturb mode, return the base model function directly
+            # since we'll handle noise application manually in the evaluation
+            def wrapped_model_fn(n_chans, n_times, n_outputs):
+                base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
+                base_model.train_split = None
+                base_model.max_epochs = 100
+                base_model.callbacks = []
+                return base_model
         return wrapped_model_fn
 
     def evaluate_without_tuning(self, X, y_encoded, metadata, wrapped_model_fn):
@@ -121,6 +133,91 @@ class NoiseWithinSessionEvaluation(WithinSessionEvaluation):
         
         return pd.DataFrame.from_records(results)
 
+    def evaluate_test_perturb(self, X, y_encoded, metadata, wrapped_model_fn):
+        """Evaluate model performance in test_perturb mode using 3-fold CV within each session."""
+        from augmentation.noise import EEGNoiseAugmentor
+        from sklearn.model_selection import StratifiedKFold
+        import uuid
+        from datetime import datetime
+        
+        results = []
+        row_headers = {'score', 'time', 'samples', 'subject', 'session', 'channels', 'n_sessions', 'dataset',
+                       'pipeline', 'seed', 'mode', 'model', 'paradigm', 'resample', 'optimizer__lr', 'batch_size',
+                       'max_epochs', 'module__ncp_hidden_dim', 'module__sparsity', 'optimizer__weight_decay',
+                       'module__drop_prob', 'module__F1', 'module__D', 'module__kernel_length',
+                       'module__lstm_hidden_size'}
+        
+        self.model = wrapped_model_fn(n_chans=22, n_times=int(self.resample * 4), n_outputs=2)
+        paradigm = get_paradigm(resample=self.resample)
+        scorer = get_scorer(paradigm.scoring)
+        for session in metadata["session"].unique():
+            session_mask = metadata["session"] == session
+            X_mask = X[session_mask]
+            y_mask = y_encoded[session_mask]
+            cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=self.seed)
+            # Evaluate on clean data first
+            start_time = time.time()
+            fold_scores = []
+            for i, (train_idx, valid_idx) in enumerate(cv.split(X_mask, y_mask)):
+                inner_res = _fit_and_score(self.model, X_mask, y_mask, parameters=None, fit_params=None, scorer=scorer, train=train_idx, test=valid_idx, verbose=0, error_score="raise")
+                fold_scores.append(inner_res["test_scores"])                
+            clean_score = np.mean(fold_scores)
+
+            intensities = [10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0]
+            for intensity in intensities:
+                noise_augmentor = EEGNoiseAugmentor(
+                    noise_type=self.noise_type,
+                    intensity=intensity,
+                    seed=self.seed
+                )
+                # Evaluate on corrupted data
+                fold_scores = []
+                X_to_corrupt = X_mask.copy()
+                for i, (train_idx, valid_idx) in enumerate(cv.split(X_to_corrupt, y_mask)):
+                    X_to_corrupt[valid_idx] = noise_augmentor.transform(X_to_corrupt[valid_idx])
+                    inner_res = _fit_and_score(self.model, X_to_corrupt, y_mask, scorer=scorer, train=train_idx, test=valid_idx, parameters=None, fit_params=None, verbose=0, error_score="raise")
+                    # Reset X_to_corrupt to original data
+                    X_to_corrupt[valid_idx] = X_mask[valid_idx]
+                    fold_scores.append(inner_res["test_scores"])                
+                corrupted_score = np.mean(fold_scores)
+                
+                end_time = time.time()
+                
+                result_row = {
+                    'clean_score': clean_score,
+                    'score': corrupted_score,
+                    'noise_type': self.noise_type,
+                    'intensity': intensity,
+                    'relative_drop': (clean_score - corrupted_score) / clean_score if clean_score > 0 else 0.0,
+                    'time': end_time - start_time,
+                    'samples': len(X_to_corrupt),
+                    'subject': str(metadata["subject"].iloc[0]) if len(metadata["subject"].unique()) == 1 else "multiple",
+                    'session': session,
+                    'channels': X_to_corrupt.shape[1],
+                    'n_sessions': len(metadata["session"].unique()),
+                    'dataset': metadata["dataset"].iloc[0] if "dataset" in metadata.columns else "unknown",
+                    'pipeline': f"{self.model_name}+MotorImagery",
+                    'seed': self.seed,
+                    'mode': self.mode,
+                    'model': self.model_name,
+                    'paradigm': 'MotorImagery',
+                    'resample': self.resample,
+                }
+                
+                config = self.model.get_params()
+                for k, v in config.items():
+                    if k.startswith(self.prefix):
+                        no_prefix = k[len(self.prefix):]
+                        if no_prefix in row_headers:
+                            result_row[no_prefix] = v
+                    elif k in row_headers:
+                        result_row[k] = v
+                
+                results.append(result_row)
+        
+        return pd.DataFrame.from_records(results)
+            
+        
     def process_subj(self, process_dict, dataset, subj):
         X, y, metadata = self.paradigm.get_data(dataset, subjects=[subj])
         y_encoded = LabelEncoder().fit_transform(y)
@@ -135,6 +232,10 @@ class NoiseWithinSessionEvaluation(WithinSessionEvaluation):
             if self.mode in ['augment_notune', 'perturb_notune']:
                 # Evaluate without tuning using default parameters
                 result_df = self.evaluate_without_tuning(X, y_encoded, metadata, wrapped_model_fn)
+                results.append(result_df)
+            elif self.mode == 'test_perturb':
+                # Evaluate in test_perturb mode using 3-fold CV within each session
+                result_df = self.evaluate_test_perturb(X, y_encoded, metadata, wrapped_model_fn)
                 results.append(result_df)
             else:
                 # Original tuning logic for 'augment' and 'perturb' modes

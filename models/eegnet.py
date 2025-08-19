@@ -28,16 +28,13 @@ def create_eegnet_classifier(n_chans, n_times, n_outputs, seed=get_seed()):
         optimizer=torch.optim.AdamW,
         optimizer__lr=1e-3,
         batch_size=64,
-        max_epochs=300,
+        max_epochs=100,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
-        train_split=ValidSplit(0.2, stratified=True, random_state=seed),
+        train_split=None, # CV is handled externally
         module__final_conv_length='auto',
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[
-            EarlyStopping(patience=75, monitor='valid_loss'),
-            LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=30)
-        ],
+        callbacks=[],
         # verbose=0
     )

@@ -37,9 +37,7 @@ def get_base_model_registry():
         "cnn_ncp": create_cnnncp_classifier,
         "cnncfc_v2": create_cnnncfc_v2_classifier,
         "cnncfc_compact": create_cnnncfc_compact_classifier,
-        "cnn_smallworld": create_cnnsmallworld_classifier,
-        "cnn_wiredcfc": create_cnnwiredcfc_classifier,
-        "spp_ncp": create_sppncp_classifier,
+        "cnn_smallworld": create_cnnsmallworld_classifier
     }
 
 # Dynamic CNNWiredCfC architecture registry
