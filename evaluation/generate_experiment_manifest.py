@@ -62,7 +62,7 @@ class ExperimentManifestGenerator:
                                 "overwrite": True,
                                 "estimated_runtime": "00:30:00",
                                 "memory": "8G",
-                                "cpus": 4
+                                "cpus": 1
                             }
                             experiments.append(experiment)
     
@@ -88,9 +88,9 @@ class ExperimentManifestGenerator:
                                 "intensity": None,
                                 "tune": True,
                                 "overwrite": True,
-                                "estimated_runtime": "02:00:00",
-                                "memory": "16G",
-                                "cpus": 8
+                                "estimated_runtime": "01:00:00",
+                                "memory": "8G",
+                                "cpus": 1
                             }
                             experiments.append(experiment)
         
@@ -119,9 +119,9 @@ class ExperimentManifestGenerator:
                                         "intensity": intensity,
                                         "tune": True,
                                         "overwrite": True,
-                                        "estimated_runtime": "03:00:00",
-                                        "memory": "16G",
-                                        "cpus": 8
+                                        "estimated_runtime": "06:00:00",
+                                        "memory": "8G",
+                                        "cpus": 1
                                     }
                                     experiments.append(experiment_augment)
                                     
@@ -137,9 +137,9 @@ class ExperimentManifestGenerator:
                                         "intensity": intensity,
                                         "tune": True,
                                         "overwrite": True,
-                                        "estimated_runtime": "03:00:00",
-                                        "memory": "16G",
-                                        "cpus": 8
+                                        "estimated_runtime": "06:00:00",
+                                        "memory": "8G",
+                                        "cpus": 1
                                     }
                                     experiments.append(experiment_perturb)
                                     
@@ -157,7 +157,7 @@ class ExperimentManifestGenerator:
                                         "overwrite": True,
                                         "estimated_runtime": "01:00:00",
                                         "memory": "8G",
-                                        "cpus": 4
+                                        "cpus": 1
                                     }
                                     experiments.append(experiment_augment_notune)
                                     
@@ -175,7 +175,7 @@ class ExperimentManifestGenerator:
                                         "overwrite": True,
                                         "estimated_runtime": "01:00:00",
                                         "memory": "8G",
-                                        "cpus": 4
+                                        "cpus": 1
                                     }
                                     experiments.append(experiment_augment_notune)
         
@@ -204,8 +204,8 @@ class ExperimentManifestGenerator:
                                         "tune": True,  # Recommended for test_perturb
                                         "overwrite": True,
                                         "estimated_runtime": "04:00:00",
-                                        "memory": "16G",
-                                        "cpus": 8
+                                        "memory": "8G",
+                                        "cpus": 1
                                     }
                                     experiments.append(experiment)
         
@@ -218,14 +218,14 @@ class ExperimentManifestGenerator:
         all_experiments = []
         
         if include_all:
-            print("  Adding baseline experiments...")
-            all_experiments.extend(self.generate_baseline_experiments())
+            # print("  Adding baseline experiments...")
+            # all_experiments.extend(self.generate_baseline_experiments())
             
-            print("  Adding tuning experiments...")
-            all_experiments.extend(self.generate_tuning_experiments())
+            # print("  Adding tuning experiments...")
+            # all_experiments.extend(self.generate_tuning_experiments())
             
-            print("  Adding noise experiments...")
-            all_experiments.extend(self.generate_noise_experiments())
+            # print("  Adding noise experiments...")
+            # all_experiments.extend(self.generate_noise_experiments())
             
             print("  Adding test perturbation experiments...")
             all_experiments.extend(self.generate_test_perturb_experiments())

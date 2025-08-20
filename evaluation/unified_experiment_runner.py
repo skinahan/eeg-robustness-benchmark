@@ -87,6 +87,9 @@ class UnifiedExperimentRunner:
         self.intensity = intensity
         self.tune = tune
         self.overwrite = overwrite
+
+        self.current_subject = -1
+        self.current_session = -1
         
         # Validate eval_mode
         if eval_mode == "CrossSubject":
@@ -214,7 +217,7 @@ class UnifiedExperimentRunner:
         
         return wrapped_model_fn
     
-    def prepare_data_cv(self, X: np.ndarray, y: np.ndarray, metadata: pd.DataFrame) -> Tuple[Any, Dict]:
+    def prepare_data_cv(self) -> Tuple[Any, Dict]:
         """
         Prepare data for cross-validation based on eval_mode.
         
@@ -224,18 +227,18 @@ class UnifiedExperimentRunner:
         """
         if self.eval_mode == "WithinSession":
             # Use StratifiedKFold for within-session evaluation
-            cv_splitter = StratifiedKFold(n_splits=3, shuffle=True, random_state=self.seed)
+            cv_splitter = StratifiedKFold(n_splits=5, shuffle=True, random_state=self.seed)
             cv_metadata = {
                 "cv_type": "StratifiedKFold",
-                "n_splits": 3,
-                "split_level": "session"
+                "n_splits": 5,
+                "split_level": "within_session"
             }
         elif self.eval_mode == "CrossSession":
             # Use LeaveOneGroupOut for cross-session evaluation
             cv_splitter = LeaveOneGroupOut()
             cv_metadata = {
                 "cv_type": "LeaveOneGroupOut",
-                "split_level": "session"
+                "split_level": "cross_session"
             }
         else:
             raise ValueError(f"Unsupported eval_mode: {self.eval_mode}")
@@ -258,6 +261,7 @@ class UnifiedExperimentRunner:
         
         if self.tune:
             # Apply two-stage hyperparameter optimization
+            self.current_session = session
             results.update(self._run_hyperparameter_optimization(X_train, y_train, X_valid, y_valid, fold_idx, metadata_train))
         else:
             # Evaluate without tuning
@@ -274,20 +278,11 @@ class UnifiedExperimentRunner:
         
         return results
     
-    def _run_hyperparameter_optimization(
-        self, 
-        X_train: np.ndarray, 
-        y_train: np.ndarray, 
-        X_valid: np.ndarray, 
-        y_valid: np.ndarray,
-        fold_idx: int,
-        metadata_train: pd.DataFrame
-    ) -> Dict[str, Any]:
-        """Run two-stage hyperparameter optimization."""
-        # Create output directory for this fold
-        fold_output_dir = os.path.join(self.output_dir, f"fold_{fold_idx}")
+    def _tune_and_get_params(self, X_train, y_train, X_valid, y_valid, metadata_train, fold_idx):
+        out_dir = create_output_path(self.model, self.seed, self.current_subject, self.current_session, self.mode, session_type=self.eval_mode)
+        fold_output_dir = os.path.join(out_dir, f"Optuna/fold_{fold_idx}")
         os.makedirs(fold_output_dir, exist_ok=True)
-        
+
         # Determine if we should use noise-aware optimization
         if self.noise_dict and self.mode in ['augment', 'perturb']:
             best_params, best_score = alternate_two_stage_optuna(
@@ -318,12 +313,43 @@ class UnifiedExperimentRunner:
                 arch_trials=20,
                 train_trials=20,
                 perturbed=False
-            )
+            )        
+
+        final_params = {}
+        possible_params = get_all_model_params(self.model)
+        module_params = [p for p in possible_params if 'module' in p]
+        optimizer_params = [p for p in possible_params if 'optimizer' in p]
+
+        prefix = ""
+        module_prefix = f"{prefix}module__"
+        optim_prefix = f"{prefix}optimizer__"
         
+        for k, v in best_params.items():
+            mod_prefixed_key = f"{module_prefix}{k}"
+            optim_prefixed_key = f"{optim_prefix}{k}"
+            if mod_prefixed_key in module_params:
+                final_params[mod_prefixed_key] = v
+            elif optim_prefixed_key in optimizer_params:
+                final_params[optim_prefixed_key] = v
+            else:
+                final_params[k] = v
+
+    def _run_hyperparameter_optimization(
+        self, 
+        X_train: np.ndarray, 
+        y_train: np.ndarray, 
+        X_valid: np.ndarray, 
+        y_valid: np.ndarray,
+        fold_idx: int,
+        metadata_train: pd.DataFrame
+    ) -> Dict[str, Any]:
+        """Run two-stage hyperparameter optimization."""
+        final_params, best_score = self._tune_and_get_params(X_train, y_train, X_valid, y_valid, metadata_train, fold_idx)
+
         # Train final model with best parameters
         n_chans, n_times = self._determine_data_dimensions()
         final_model = self._create_model(n_chans, n_times)
-        final_model.set_params(**best_params)
+        final_model.set_params(**final_params)
         
         # Train on full training set
         start_time = time.time()
@@ -336,14 +362,15 @@ class UnifiedExperimentRunner:
         validation_score = roc_auc_score(y_valid, y_pred)
         evaluation_time = time.time() - start_time
         
-        return {
-            'best_params': best_params,
-            'best_score': best_score,
-            'validation_score': validation_score,
+        result = {
+            'score': validation_score,
+            'best_validation_score': best_score,
             'training_time': training_time,
             'evaluation_time': evaluation_time,
-            'total_time': training_time + evaluation_time
+            'total_time': training_time + evaluation_time,            
         }
+        result.update(final_params)
+        return result
     
     def _evaluate_without_tuning(
         self, 
@@ -361,11 +388,8 @@ class UnifiedExperimentRunner:
         if self.noise_dict and self.mode in ['augment', 'augment_notune']:
             # For augmentation modes, apply to training data
             if hasattr(model, 'concat_and_augment'):
-                X_train_aug, y_train_aug, groups = model.concat_and_augment(X_train, y_train)
-                # Use GroupKFold for augmented data
-                cv = GroupKFold(n_splits=3)
-                # Simple evaluation: train on augmented data, test on validation
-                model.fit(X_train_aug, y_train_aug)
+                X_train, y_train, groups = model.concat_and_augment(X_train, y_train)
+                model.fit(X_train, y_train)
             else:
                 model.fit(X_train, y_train)
         else:
@@ -378,7 +402,10 @@ class UnifiedExperimentRunner:
         evaluation_time = time.time() - start_time
         
         return {
-            'validation_score': validation_score,
+            'score': validation_score,
+            'fold_idx': fold_idx,
+            'train_samples': len(X_train),
+            'valid_samples': len(X_valid),
             'evaluation_time': evaluation_time,
             'total_time': evaluation_time
         }
@@ -484,39 +511,59 @@ class UnifiedExperimentRunner:
         
         all_subject_results = []
         for subject in self.subjects:
+            self.current_subject = subject
             # Get data
             X, y, metadata = self.paradigm.get_data(self.dataset_obj, subjects=[subject])
             y_encoded = LabelEncoder().fit_transform(y)
             
             # Prepare cross-validation
-            cv_splitter, cv_metadata = self.prepare_data_cv(X, y_encoded, metadata)
+            cv_splitter, cv_metadata = self.prepare_data_cv()
             
             # Run cross-validation
-            all_results = []
-            
+            fold_indices = []
+            fold_metadata = []
             if self.eval_mode == "CrossSession":
                 # For cross-session, use LeaveOneGroupOut with session groups
                 groups = metadata['session'].values
-            else:
-                groups = None
-
-            for fold_idx, (train_idx, valid_idx) in enumerate(cv_splitter.split(X, y_encoded, groups=groups)):
-                X_train, X_valid = X[train_idx], X[valid_idx]
-                y_train, y_valid = y_encoded[train_idx], y_encoded[valid_idx]
-                
-                # Get session information for this fold
-                train_sessions = metadata.iloc[train_idx]['session'].values
-                valid_sessions = metadata.iloc[valid_idx]['session'].values
-                
+                folds = list(enumerate(cv_splitter.split(X, y_encoded, groups=groups)))
+                for fold_idx, (train_idx, valid_idx) in folds:
+                    session = metadata.iloc[valid_idx]['session'].values[0]
+                    fold_indices.append((fold_idx, (train_idx, valid_idx), session))
+                    fold_metadata.append(metadata.iloc[train_idx])
+            elif self.eval_mode == "WithinSession":
+                groups = None                
+                # WithinSession indices will be different than CrossSession indices, since we iterate over sessions rather than entire dataset.
+                # Store the adjusted indices for later evaluation
+                for session in metadata['session'].unique():
+                    session_idx = metadata['session'] == session
+                    # Sessions are continuous 'blocks', so the first index will determine the offset for indexing into the original arrays.
+                    first_idx = session_idx.index[0]
+                    X_session, y_session = X[session_idx], y_encoded[session_idx]
+                    session_metadata = metadata[session_idx]
+                    # We are splitting over X_session and y_session, so we need to adjust the indices accordingly when storing.
+                    folds = list(enumerate(cv_splitter.split(X_session, y_session)))
+                    for fold_idx, (train_idx, valid_idx) in folds:
+                        # Remember that the train and valid indices are relative to X_session and y_session, so we need to add the first_idx to get the correct indices into the original X and y_encoded arrays.
+                        train_idx += first_idx
+                        valid_idx += first_idx
+                        # Important note: Always store the 'session' as the session being used for evaluation / validation.
+                        fold_indices.append((fold_idx, (train_idx, valid_idx), session))
+                        fold_metadata.append(session_metadata.iloc[train_idx])
+            
+            all_results = []
+            for fold_idx, (train_idx, valid_idx), session in fold_indices:
+                X_train = X[train_idx]
+                y_train = y_encoded[train_idx]
+                X_valid = X[valid_idx]
+                y_valid = y_encoded[valid_idx]
+                metadata_train = fold_metadata[fold_idx]
                 if self.mode == 'test_perturb':
-                    fold_results = self._evaluate_test_perturb(X_train, y_train, X_valid, y_valid, fold_idx, valid_sessions[0])
+                    fold_results = self._evaluate_test_perturb(X_train, y_train, X_valid, y_valid, fold_idx, session)
                     all_results.extend(fold_results)
                 else:
-                    # Get training metadata for this fold
-                    metadata_train = metadata.iloc[train_idx]
-                    fold_result = self._evaluate_cv_fold(X_train, y_train, X_valid, y_valid, fold_idx, cv_metadata, valid_sessions[0], metadata_train)
+                    fold_result = self._evaluate_cv_fold(X_train, y_train, X_valid, y_valid, fold_idx, cv_metadata, session, metadata_train)
                     all_results.append(fold_result)
-                   
+                    
             # Convert results to DataFrame
             results_df = pd.DataFrame(all_results)
             

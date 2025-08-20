@@ -1470,7 +1470,7 @@ def create_cnnsmallworld_classifier(
     criterion = torch.nn.CrossEntropyLoss
     
     cnn_smallworld_net = EEGClassifier(
-        CNNSmallWorld_Learnable,
+        CNNSmallWorld,
         criterion=criterion,
         optimizer=torch.optim.AdamW,
         optimizer__lr=lr,

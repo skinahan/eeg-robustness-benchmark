@@ -138,12 +138,18 @@ def run_optuna_stage(
         perturbed=False,
         output_root="optuna_results"
 ):
-    train_mask = metadata["session"] == "0train"
-    X_train = X[train_mask]
-    y_train = y[train_mask]
-    # meta_train = metadata[train_mask].reset_index(drop=True)
+    # In the old version we explicitly wanted to only use 0train for hyperparameter optimization. That is no longer the case.
+    # In the current code version, we can expect X and y to be split before run_optuna_stage is called.
+    X_train = X
+    y_train = y
+    metadata_train = metadata
 
     if len(X_train) < 10:
+        print(f"Too few training samples: {len(X_train)}")
+        print(f"X_train shape: {X_train.shape}")
+        print(f"y_train shape: {y_train.shape}")
+        print(f"metadata shape: {metadata.shape}")
+        print(f"metadata: {metadata}")
         raise ValueError("Too few training samples for session 0.")
 
     param_prefix = "base_pipeline__" if perturbed else ""
@@ -151,47 +157,39 @@ def run_optuna_stage(
         resample = 250.0
 
     check_time = False
-    # Use time factor if architecture mode
-    # if stage_name == "architecture":
-    #     check_time = True
     model = model_fn(n_chans=22, n_times=int(resample * 4), n_outputs=2)
-    model.verbose = 1
+    model.verbose = 0
     model.callbacks = []
     model.train_split = None
     def objective(trial):
         # Sample hyperparameters
         params = param_space_fn(trial, param_prefix)
         params[f"{param_prefix}train_split"] = None
-        # params[f"{param_prefix}max_epochs"] = 50  # Fixed reasonable value
-        params[f"{param_prefix}verbose"] = 1
+        params[f"{param_prefix}verbose"] = 0
         params[f"{param_prefix}callbacks"] = []
         
         # Define model
         model.set_params(**params)
-
+        
         if model.max_epochs > 100:
             print("ERROR: Max epochs is greater than 100")
             raise ValueError("Max epochs is greater than 100")
             sys.exit(1)
         
 
-        cv = StratifiedKFold(n_splits=3, shuffle=True, random_state=seed)
+        # cv = StratifiedKFold(n_splits=3, shuffle=True, random_state=seed)
+        cv = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=seed)
         if check_time:
             start_time = time.time()
         roc_auc_score = unified_cv_training_loop_method(model, cv, X_train, y_train, trial=trial)
         if check_time:
             elapsed_time = time.time() - start_time
-            # print(f"elapsed time: {elapsed_time} seconds")
-            # 60s ~= 300 epochs * 0.2s / epoch
-            # +30s for: splitting, fold evaluation
             target_time = 90.0
-            # time_penalty = max(elapsed_time / target_time, 1.0)
             alpha = 1.0  # accuracy weight
             beta = 0.2  # penalty for slowness
             normalized_time = min(elapsed_time / target_time, 5.0)  # cap to prevent explosion
             composite_score = (alpha * roc_auc_score) - (beta * normalized_time)
             return composite_score
-            # composite_score = roc_auc_score / time_penalty
         else:
             composite_score = roc_auc_score
         return composite_score
@@ -202,7 +200,7 @@ def run_optuna_stage(
 
     study = optuna.create_study(direction="maximize")
 
-    study.optimize(objective, n_trials=n_trials)
+    study.optimize(objective, n_trials=n_trials, show_progress_bar=True)
 
     study_path = os.path.join(output_dir, "optuna_study.pkl")
     import joblib
@@ -251,13 +249,13 @@ def alternate_optuna_stage(
         # Sample hyperparameters
         params = param_space_fn(trial, param_prefix)
         params[f"{param_prefix}train_split"] = None
-        params[f"{param_prefix}max_epochs"] = 50  # Fixed reasonable value
-        params[f"{param_prefix}verbose"] = 1
+        params[f"{param_prefix}max_epochs"] = 100  # Fixed reasonable value
+        params[f"{param_prefix}verbose"] = 0
         params[f"{param_prefix}callbacks"] = []
 
         # Define model
         model.set_params(**params)
-        cv = StratifiedKFold(n_splits=3, shuffle=True, random_state=seed)
+        cv = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=seed)
         # Augmentation mode: Supplement clean input data with contaminated samples
         groups = None
         X_obj = X_train
