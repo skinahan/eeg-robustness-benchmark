@@ -557,6 +557,13 @@ class UnifiedExperimentRunner:
                 X_valid = X[valid_idx]
                 y_valid = y_encoded[valid_idx]
                 metadata_train = fold_metadata[fold_idx]
+
+                # TODO: Collapse _evaluate_test_perturb functionality into _evaluate_cv_fold.
+                # - We want to be able to support test_perturb mode with and without hyperparameter tuning.
+                # - Main idea - can we separate how a model is *trained* from how it is *evaluated*?
+                # - Essentially, treat test_perturb as a special case for when the CV fold is evaluated.
+                # - This would allow us to use the same _evaluate_cv_fold function for all modes.
+
                 if self.mode == 'test_perturb':
                     fold_results = self._evaluate_test_perturb(X_train, y_train, X_valid, y_valid, fold_idx, session)
                     all_results.extend(fold_results)
@@ -709,12 +716,16 @@ class UnifiedExperimentRunner:
         else:
             intensity_param = self.noise_dict['intensity'] if self.noise_dict else None
             
+        mode_str = self.mode
+        if self.tune and self.mode != "tune":
+            # Make sure the tuned and non-tuned modes are not mixed when creating output paths.
+            mode_str = f"{self.mode}_tune"
 
         log_all_subjects(
             results=results_df,
             subject_list=self.subjects,
             model_name=self.model,
-            mode=self.mode,
+            mode=mode_str,
             noise_type=self.noise_dict['noise_type'] if self.noise_dict else None,
             intensity=intensity_param,
             seed=self.seed,
@@ -746,6 +757,10 @@ def main():
         if not args.noise_type or args.intensity is None:
             parser.error(f"Mode {args.mode} requires both --noise_type and --intensity")
     
+    if args.mode in ["augment_notune", "perturb_notune"]:
+        if args.tune:
+            parser.error(f"Mode {args.mode} requires --tune flag to NOT be set.")
+
     if args.mode == "test_perturb" and not args.tune:
         print("Warning: test_perturb mode typically works best with --tune flag")
     
