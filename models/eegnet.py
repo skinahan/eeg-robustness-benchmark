@@ -32,9 +32,9 @@ def create_eegnet_classifier(n_chans, n_times, n_outputs, seed=get_seed()):
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
-        train_split=None, # CV is handled externally
         module__final_conv_length='auto',
+        train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[],
+        callbacks=[EarlyStopping(patience=10, load_best=True)],
         # verbose=0
     )

@@ -16,6 +16,7 @@ Supports:
 
 import os
 import sys
+import torch
 import argparse
 import uuid
 import warnings
@@ -176,9 +177,10 @@ class UnifiedExperimentRunner:
         model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
         
         # Set common model parameters
-        model.train_split = None
+        # model.train_split = None
         model.max_epochs = 100
-        model.callbacks = []
+        # model.callbacks = []
+        model.initialize()
         
         return model
     
@@ -257,26 +259,30 @@ class UnifiedExperimentRunner:
         metadata_train: pd.DataFrame
     ) -> Dict[str, Any]:
         """Evaluate a single CV fold."""
-        results = {}
+        all_results = []
         
         if self.tune:
-            # Apply two-stage hyperparameter optimization
+            # Apply two-stage hyperparameter optimization on X_train before evaluation on X_valid.
             self.current_session = session
-            results.update(self._run_hyperparameter_optimization(X_train, y_train, X_valid, y_valid, fold_idx, metadata_train))
+            all_results.extend(self._run_hyperparameter_optimization(X_train, y_train, X_valid, y_valid, fold_idx, metadata_train))
         else:
-            # Evaluate without tuning
-            results.update(self._evaluate_without_tuning(X_train, y_train, X_valid, y_valid, fold_idx))
-        
-        # Add metadata
-        results.update({
-            'fold_idx': fold_idx,
-            'cv_type': cv_metadata['cv_type'],
-            'split_level': cv_metadata['split_level'],
-            'session': session,
-            'subject': self.subjects[0]  # For now, assume single subject or use first subject
-        })
-        
-        return results
+            if self.mode == 'test_perturb':
+                all_results.extend(self._train_and_evaluate_perturb(X_train, y_train, X_valid, y_valid, fold_idx, session))
+            else:
+                # Evaluate on X_valid without tuning.
+                all_results.append(self._evaluate_without_tuning(X_train, y_train, X_valid, y_valid, fold_idx))
+
+        for i, result in enumerate(all_results):
+            # Add metadata
+            all_results[i].update({
+                'fold_idx': fold_idx,
+                'cv_type': cv_metadata['cv_type'],
+                'split_level': cv_metadata['split_level'],
+                'session': session,
+                'subject': self.subjects[0]  # For now, assume single subject or use first subject
+            })
+            
+        return all_results
     
     def _tune_and_get_params(self, X_train, y_train, X_valid, y_valid, metadata_train, fold_idx):
         out_dir = create_output_path(self.model, self.seed, self.current_subject, self.current_session, self.mode, session_type=self.eval_mode)
@@ -334,6 +340,8 @@ class UnifiedExperimentRunner:
             else:
                 final_params[k] = v
 
+        return final_params, best_score
+
     def _run_hyperparameter_optimization(
         self, 
         X_train: np.ndarray, 
@@ -353,24 +361,46 @@ class UnifiedExperimentRunner:
         
         # Train on full training set
         start_time = time.time()
+        final_model.module_.train()
         final_model.fit(X_train, y_train)
         training_time = time.time() - start_time
         
         # Evaluate on validation set
         start_time = time.time()
-        y_pred = final_model.predict_proba(X_valid)[:, 1]
+        final_model.module_.eval()
+        with torch.no_grad():
+            y_pred = final_model.predict_proba(X_valid)[:, 1]
         validation_score = roc_auc_score(y_valid, y_pred)
         evaluation_time = time.time() - start_time
-        
-        result = {
-            'score': validation_score,
-            'best_validation_score': best_score,
-            'training_time': training_time,
-            'evaluation_time': evaluation_time,
-            'total_time': training_time + evaluation_time,            
-        }
-        result.update(final_params)
-        return result
+        results = []
+        if self.mode == 'test_perturb':
+            clean_score = validation_score
+            session = self.current_session
+            # Add clean score result first
+            results.append({
+                'fold_idx': fold_idx,
+                'intensity': None,  # None indicates clean data
+                'clean_score': clean_score,
+                'corrupted_score': None,
+                'relative_drop': 0.0,  # No drop for clean data
+                'training_time': training_time,
+                'evaluation_time': evaluation_time,
+                'total_time': training_time + evaluation_time,
+                'session': session,
+            })            
+            # Evaluate on corrupted data
+            results.extend(self._evaluate_perturb(final_model, X_valid, y_valid, fold_idx, session, clean_score, training_time))
+        else:
+            results.append({
+                'score': validation_score,
+                'best_validation_score': best_score,
+                'training_time': training_time,
+                'evaluation_time': evaluation_time,
+                'total_time': training_time + evaluation_time,            
+            })
+        for i, result in enumerate(results):
+            results[i].update(final_params)
+        return results
     
     def _evaluate_without_tuning(
         self, 
@@ -383,7 +413,7 @@ class UnifiedExperimentRunner:
         """Evaluate model without hyperparameter tuning."""
         n_chans, n_times = self._determine_data_dimensions()
         model = self._create_model(n_chans, n_times)
-        
+        model.module_.train()
         # Apply noise if applicable
         if self.noise_dict and self.mode in ['augment', 'augment_notune']:
             # For augmentation modes, apply to training data
@@ -397,7 +427,9 @@ class UnifiedExperimentRunner:
         
         # Evaluate
         start_time = time.time()
-        y_pred = model.predict_proba(X_valid)[:, 1]
+        model.module_.eval()
+        with torch.no_grad():
+            y_pred = model.predict_proba(X_valid)[:, 1]
         validation_score = roc_auc_score(y_valid, y_pred)
         evaluation_time = time.time() - start_time
         
@@ -410,7 +442,55 @@ class UnifiedExperimentRunner:
             'total_time': evaluation_time
         }
     
-    def _evaluate_test_perturb(
+    def _evaluate_perturb(self, trained_model, X_valid, y_valid, fold_idx, session, clean_score, training_time):        
+        noise_type = self.noise_dict['noise_type']
+                
+        min_intensity = 10.0
+        max_intensity = 90.0
+        num_steps = 9
+        if noise_type == 'gaussian':
+            min_intensity = 1.0
+            max_intensity = 20.0
+            num_steps = 6
+        
+        intensities = np.linspace(start=min_intensity, stop=max_intensity, num=num_steps)
+        results = []
+        for intensity in intensities:
+            # Create corrupted validation data
+            noise_augmentor = EEGNoiseAugmentor(
+                noise_type=self.noise_dict['noise_type'],
+                intensity=intensity,
+                seed=self.seed
+            )
+            
+            X_valid_corrupted = noise_augmentor.transform(X_valid)
+            
+            # Evaluate on corrupted data
+            start_time = time.time()
+            trained_model.module_.eval()
+            with torch.no_grad():
+                y_pred_corrupted = trained_model.predict_proba(X_valid_corrupted)[:, 1]
+            evaluation_time = time.time() - start_time
+            corrupted_score = roc_auc_score(y_valid, y_pred_corrupted)
+            
+            # Calculate relative drop
+            relative_drop = (clean_score - corrupted_score) / clean_score if clean_score > 0 else 0.0
+            
+            results.append({
+                'fold_idx': fold_idx,
+                'intensity': intensity,
+                'clean_score': clean_score,
+                'corrupted_score': corrupted_score,
+                'relative_drop': relative_drop,
+                'training_time': training_time,
+                'evaluation_time': evaluation_time,
+                'total_time': training_time + evaluation_time,
+                'session': session,
+            })
+
+        return results
+
+    def _train_and_evaluate_perturb(
         self, 
         X_train: np.ndarray, 
         y_train: np.ndarray, 
@@ -426,14 +506,18 @@ class UnifiedExperimentRunner:
         n_chans, n_times = self._determine_data_dimensions()
         model = self._create_model(n_chans, n_times)
         
+        
         # Train on clean data
         start_time = time.time()
+        model.module_.train()
         model.fit(X_train, y_train)
         training_time = time.time() - start_time
         
         # Evaluate on clean validation data
         start_time = time.time()
-        y_pred_clean = model.predict_proba(X_valid)[:, 1]
+        model.module_.eval()
+        with torch.no_grad():
+            y_pred_clean = model.predict_proba(X_valid)[:, 1]
         clean_score = roc_auc_score(y_valid, y_pred_clean)
         evaluation_time = time.time() - start_time
         
@@ -452,47 +536,8 @@ class UnifiedExperimentRunner:
             'session': session,
         })
         
-        noise_type = self.noise_dict['noise_type']
-                
-        min_intensity = 10.0
-        max_intensity = 90.0
-        num_steps = 9
-        if noise_type == 'gaussian':
-            min_intensity = 3.0
-            max_intensity = 30.0
-        
-        intensities = np.linspace(start=min_intensity, stop=max_intensity, num=num_steps)
-        
-        for intensity in intensities:
-            # Create corrupted validation data
-            noise_augmentor = EEGNoiseAugmentor(
-                noise_type=self.noise_dict['noise_type'],
-                intensity=intensity,
-                seed=self.seed
-            )
-            
-            X_valid_corrupted = noise_augmentor.transform(X_valid)
-            
-            # Evaluate on corrupted data
-            start_time = time.time()
-            y_pred_corrupted = model.predict_proba(X_valid_corrupted)[:, 1]
-            evaluation_time = time.time() - start_time
-            corrupted_score = roc_auc_score(y_valid, y_pred_corrupted)
-            
-            # Calculate relative drop
-            relative_drop = (clean_score - corrupted_score) / clean_score if clean_score > 0 else 0.0
-            
-            results.append({
-                'fold_idx': fold_idx,
-                'intensity': intensity,
-                'clean_score': clean_score,
-                'corrupted_score': corrupted_score,
-                'relative_drop': relative_drop,
-                'training_time': training_time,
-                'evaluation_time': evaluation_time,
-                'total_time': training_time + evaluation_time,
-                'session': session,
-            })
+        # Evaluate on corrupted data
+        results.extend(self._evaluate_perturb(model, X_valid, y_valid, fold_idx, session, clean_score, training_time))
         
         return results
     
@@ -556,20 +601,9 @@ class UnifiedExperimentRunner:
                 y_train = y_encoded[train_idx]
                 X_valid = X[valid_idx]
                 y_valid = y_encoded[valid_idx]
-                metadata_train = fold_metadata[fold_idx]
-
-                # TODO: Collapse _evaluate_test_perturb functionality into _evaluate_cv_fold.
-                # - We want to be able to support test_perturb mode with and without hyperparameter tuning.
-                # - Main idea - can we separate how a model is *trained* from how it is *evaluated*?
-                # - Essentially, treat test_perturb as a special case for when the CV fold is evaluated.
-                # - This would allow us to use the same _evaluate_cv_fold function for all modes.
-
-                if self.mode == 'test_perturb':
-                    fold_results = self._evaluate_test_perturb(X_train, y_train, X_valid, y_valid, fold_idx, session)
-                    all_results.extend(fold_results)
-                else:
-                    fold_result = self._evaluate_cv_fold(X_train, y_train, X_valid, y_valid, fold_idx, cv_metadata, session, metadata_train)
-                    all_results.append(fold_result)
+                metadata_train = fold_metadata[fold_idx]            
+                fold_results = self._evaluate_cv_fold(X_train, y_train, X_valid, y_valid, fold_idx, cv_metadata, session, metadata_train)
+                all_results.extend(fold_results)
                     
             # Convert results to DataFrame
             results_df = pd.DataFrame(all_results)
@@ -712,7 +746,7 @@ class UnifiedExperimentRunner:
         # Call log_all_subjects with proper parameters
         # For test_perturb mode, we don't want to override the intensity values
         if self.mode == 'test_perturb':
-            intensity_param = None  # Let the results DataFrame handle intensity
+            intensity_param = 10.0
         else:
             intensity_param = self.noise_dict['intensity'] if self.noise_dict else None
             
@@ -740,7 +774,7 @@ def main():
     parser.add_argument("--dataset", type=str, default="BNCI2014_001", choices=["BNCI2014_001"])
     parser.add_argument("--subjects", type=int, nargs="+", required=True)
     parser.add_argument("--mode", type=str, required=True, 
-                       choices=["baseline", "tune", "augment", "perturb", "augment_notune", "perturb_notune", "test_perturb"])
+                       choices=["baseline", "tune", "augment", "perturb", "augment_notune", "perturb_notune", "test_perturb", "multirun"])
     parser.add_argument("--eval_mode", type=str, required=True, 
                        choices=["WithinSession", "CrossSession", "CrossSubject"])
     parser.add_argument("--seed", type=int, default=42)
@@ -753,16 +787,15 @@ def main():
     args = parser.parse_args()
     
     # Validate arguments
-    if args.mode in ["augment", "perturb", "augment_notune", "perturb_notune", "test_perturb"]:
+    if args.mode in ["augment", "perturb", "augment_notune", "perturb_notune", "test_perturb", "multirun"]:
         if not args.noise_type or args.intensity is None:
             parser.error(f"Mode {args.mode} requires both --noise_type and --intensity")
     
+
     if args.mode in ["augment_notune", "perturb_notune"]:
         if args.tune:
             parser.error(f"Mode {args.mode} requires --tune flag to NOT be set.")
 
-    if args.mode == "test_perturb" and not args.tune:
-        print("Warning: test_perturb mode typically works best with --tune flag")
     
     # Check if we should skip evaluation
     if not args.overwrite:
@@ -775,34 +808,62 @@ def main():
     
     warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
     
-    try:
-        # Create and run experiment
-        runner = UnifiedExperimentRunner(
-            model=args.model,
-            dataset=args.dataset,
-            subjects=args.subjects,
-            mode=args.mode,
-            eval_mode=args.eval_mode,
-            seed=args.seed,
-            noise_type=args.noise_type,
-            intensity=args.intensity,
-            tune=args.tune,
-            overwrite=args.overwrite
-        )
-        
-        results = runner.run_experiment()
-        print(f"Experiment completed successfully. Results shape: {results.shape}")
-        
-        # Aggregate results if requested
-        if args.aggregate:
-            collect_all_results(paradigm='MotorImagery')
+
+    if args.mode == 'multirun':
+        for model in MODEL_REGISTRY.keys():
+            for eval_mode in ["CrossSession"]:
+                for mode in ["test_perturb"]:
+                    for seed in [100, 200, 300, 400, 500]:
+                        # Run the no-tune versions first, these are fastest
+                        try:
+                            runner = UnifiedExperimentRunner(
+                                model=model,
+                                dataset=args.dataset,
+                                subjects=args.subjects,
+                                mode=mode,
+                                eval_mode=eval_mode,
+                                seed=seed,
+                                noise_type=args.noise_type,
+                                intensity=args.intensity,
+                                tune=args.tune,
+                                overwrite=args.overwrite
+                            )
+                            results = runner.run_experiment()
+                            print(f"Experiment completed successfully. Results shape: {results.shape}")
+                        except Exception as e:
+                            print(f"Experiment failed: {e}")
+                            import traceback
+                            traceback.print_exc()
+                            sys.exit(1)
+    else:
+        try:
+            # Create and run experiment
+            runner = UnifiedExperimentRunner(
+                model=args.model,
+                dataset=args.dataset,
+                subjects=args.subjects,
+                mode=args.mode,
+                eval_mode=args.eval_mode,
+                seed=args.seed,
+                noise_type=args.noise_type,
+                intensity=args.intensity,
+                tune=args.tune,
+                overwrite=args.overwrite
+            )
             
-    except Exception as e:
-        print(f"Experiment failed: {e}")
-        import traceback
-        traceback.print_exc()
-        sys.exit(1)
-    
+            results = runner.run_experiment()
+            print(f"Experiment completed successfully. Results shape: {results.shape}")
+            
+            # Aggregate results if requested
+            if args.aggregate:
+                collect_all_results(paradigm='MotorImagery', dataset=args.dataset)
+                
+        except Exception as e:
+            print(f"Experiment failed: {e}")
+            import traceback
+            traceback.print_exc()
+            sys.exit(1)
+        
     # Record end time
     end_time = time.time()
     print(f"Script ended at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")

@@ -108,10 +108,13 @@ def unified_cv_training_loop_method(model, cv, X_train, y_train, trial=None, gro
         X_train_part, y_train_part = X_train[train_idx], y_train[train_idx]
         X_valid_part, y_valid_part = X_train[valid_idx], y_train[valid_idx]
         # Fit on training fold
+        model.module_.train()
         model.fit(X_train_part, y_train_part)
 
         # Evaluate on held-out validation set
-        y_pred = model.predict_proba(X_valid_part)[:, 1]
+        model.module_.eval()
+        with torch.no_grad():
+            y_pred = model.predict_proba(X_valid_part)[:, 1]
         auc = roc_auc_score(y_valid_part, y_pred)
         # print(f"Fold {i} auc: {auc}")
         fold_scores.append(auc)
@@ -158,15 +161,15 @@ def run_optuna_stage(
 
     check_time = False
     model = model_fn(n_chans=22, n_times=int(resample * 4), n_outputs=2)
-    model.verbose = 0
-    model.callbacks = []
-    model.train_split = None
+    # model.verbose = 0
+    # model.callbacks = []
+    # model.train_split = None
     def objective(trial):
         # Sample hyperparameters
         params = param_space_fn(trial, param_prefix)
-        params[f"{param_prefix}train_split"] = None
-        params[f"{param_prefix}verbose"] = 0
-        params[f"{param_prefix}callbacks"] = []
+        # params[f"{param_prefix}train_split"] = None
+        # params[f"{param_prefix}verbose"] = 0
+        # params[f"{param_prefix}callbacks"] = []
         
         # Define model
         model.set_params(**params)
@@ -601,16 +604,16 @@ def cnn_ncp_architecture_space(trial, prefix):
         f"{prefix}module__F1": trial.suggest_categorical(f"{prefix}module__F1", [4, 8, 16]),
         f"{prefix}module__D": trial.suggest_categorical(f"{prefix}module__D", [1, 2, 4]),
         f"{prefix}module__kernel_length": trial.suggest_int(f"{prefix}module__kernel_length", 64, 256, step=32),
-        f"{prefix}module__ncp_hidden_dim": trial.suggest_int(f"{prefix}module__ncp_hidden_dim", 11, 16),
-        f"{prefix}module__sparsity": trial.suggest_float(f"{prefix}module__sparsity", 0.4, 0.9),
+        f"{prefix}module__ncp_hidden_dim": trial.suggest_int(f"{prefix}module__ncp_hidden_dim", 19, 128),
+        f"{prefix}module__sparsity": trial.suggest_float(f"{prefix}module__sparsity", 0.2, 0.9),
     }
 
 
 def cnn_ncp_training_space(trial, prefix):
     return {
-        f"{prefix}optimizer__lr": trial.suggest_loguniform("lr", 1e-4, 1e-2),
-        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform("weight_decay", 1e-4, 1e-1),
-        f"{prefix}max_epochs": trial.suggest_int("max_epochs", 10, 50),
+        f"{prefix}optimizer__lr": trial.suggest_loguniform("lr", 1e-5, 1e-2),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform("weight_decay", 1e-6, 1e-1),
+        # f"{prefix}max_epochs": trial.suggest_int("max_epochs", 10, 50),
     }
 
 
@@ -657,7 +660,6 @@ def eegnet_architecture_space(trial, prefix):
         f"{prefix}module__F1": trial.suggest_categorical(f"{prefix}module__F1", [4, 8, 16]),
         f"{prefix}module__D": trial.suggest_categorical(f"{prefix}module__D", [1, 2, 4]),
         f"{prefix}module__kernel_length": trial.suggest_int(f"{prefix}module__kernel_length", 64, 256, step=32),
-        f"{prefix}max_epochs": 100
     }
 
 
@@ -667,7 +669,6 @@ def eegnet_training_space(trial, prefix):
         f"{prefix}optimizer__lr": trial.suggest_loguniform("lr", 1e-4, 1e-2),
         f"{prefix}optimizer__weight_decay": trial.suggest_loguniform("weight_decay", 1e-6, 1e-2),
         f"{prefix}batch_size": trial.suggest_categorical("batch_size", [8, 16, 32, 64]),
-        f"{prefix}max_epochs": 100
     }
 
 

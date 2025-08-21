@@ -581,6 +581,7 @@ def load_architecture_from_file(filepath: str, logger: Optional[logging.Logger] 
     Returns:
         ArbitraryWiring instance
     """
+    seed = 17
     try:
         with open(filepath, 'r') as f:
             data = json.load(f)
@@ -599,21 +600,18 @@ def load_architecture_from_file(filepath: str, logger: Optional[logging.Logger] 
         wiring = WsFlexHiddenWiring(
             input_size=input_size,
             hidden_graph=wiring_matrix,
-            output_size=output_size
+            output_size=output_size,
+            input_strategy="degree_proportional",
+            output_strategy="uniform",
+            hidden_edge_orientation="random_oriented",
+            add_hidden_self_loops=True,
+            fan_in_inputs=None,
+            fan_in_hidden_per_output=None,
+            allow_signed_hidden_edges=True,
+            inhibitory_ratio=0.2,
+            seed=seed
         )
 
-        # Create the wiring instance
-        # wiring = ArbitraryWiring(
-        #     wiring_matrix=wiring_matrix,
-        #     input_size=input_size,
-        #     hidden_size=hidden_size,
-        #     output_size=output_size,
-        #     neuron_types=neuron_types,
-        #     connection_weights=connection_weights,
-        #     metadata=metadata,
-        #     logger=logger
-        # )
-        
         if logger:
             logger.info(f"Successfully loaded architecture from {filepath}")
         
