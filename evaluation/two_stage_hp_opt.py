@@ -173,7 +173,7 @@ def run_optuna_stage(
         
         # Define model
         model.set_params(**params)
-        
+        model.initialize()
         if model.max_epochs > 100:
             print("ERROR: Max epochs is greater than 100")
             raise ValueError("Max epochs is greater than 100")

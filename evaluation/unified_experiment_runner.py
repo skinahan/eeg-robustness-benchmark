@@ -520,21 +520,35 @@ class UnifiedExperimentRunner:
             y_pred_clean = model.predict_proba(X_valid)[:, 1]
         clean_score = roc_auc_score(y_valid, y_pred_clean)
         evaluation_time = time.time() - start_time
+
+        # Use a set threshold to restart training if clean score indicates underfitting.
+        if clean_score < 0.65:
+            # Disable early stopping
+            print(f"Re-training model without EarlyStopping due to underfitting.")
+            model.callbacks = []
+            model.module_.train()          
+            start_time = time.time()  
+            model.fit(X_train, y_train)
+            training_time = time.time() - start_time
+            model.module_.eval()
+            with torch.no_grad():
+                y_pred_clean = model.predict_proba(X_valid)[:, 1]
+            clean_score = roc_auc_score(y_valid, y_pred_clean)
         
         results = []
         
         # Add clean score result first
-        results.append({
-            'fold_idx': fold_idx,
-            'intensity': None,  # None indicates clean data
-            'clean_score': clean_score,
-            'corrupted_score': None,
-            'relative_drop': 0.0,  # No drop for clean data
-            'training_time': training_time,
-            'evaluation_time': evaluation_time,
-            'total_time': training_time + evaluation_time,
-            'session': session,
-        })
+        # results.append({
+        #     'fold_idx': fold_idx,
+        #     'intensity': None,  # None indicates clean data
+        #     'clean_score': clean_score,
+        #     'corrupted_score': None,
+        #     'relative_drop': 0.0,  # No drop for clean data
+        #     'training_time': training_time,
+        #     'evaluation_time': evaluation_time,
+        #     'total_time': training_time + evaluation_time,
+        #     'session': session,
+        # })
         
         # Evaluate on corrupted data
         results.extend(self._evaluate_perturb(model, X_valid, y_valid, fold_idx, session, clean_score, training_time))
