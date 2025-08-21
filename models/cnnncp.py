@@ -1474,7 +1474,7 @@ def create_cnnncfc_compact_classifier(n_chans, n_times, n_outputs):
         module__use_stochastic_depth=True,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[],
+        callbacks=[EarlyStopping(threshold=1e-4, patience=10, load_best=True)]
     )
     
     if torch.cuda.is_available():

@@ -146,8 +146,6 @@ def create_reegnet_classifier(n_chans=22, n_times=1001, n_outputs=2):
         module__lstm_hidden_size=32,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[
-            EarlyStopping(patience=10, monitor='valid_loss'),
-        ],
+        callbacks=[EarlyStopping(threshold=1e-4, patience=10, load_best=True)],
         # verbose=0  # Suppress epoch-level output
     )
