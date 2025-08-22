@@ -915,6 +915,7 @@ class CNNSmallWorld(EEGModuleMixin, nn.Module):
         ncp_output_size = F1
 
         # Use ModularSmallWorldWiring instead of AutoNCP
+        # The wiring will automatically expand units if needed to accommodate ncp_output_size
         wiring = ModularSmallWorldWiring(
             units=ncp_hidden_dim, 
             output_size=ncp_output_size,  # Match the expected output size
@@ -1118,6 +1119,7 @@ class CNNSmallWorld_Learnable(EEGModuleMixin, nn.Module):
         ncp_output_size = F2  # Use F2 for consistency
         
         # Use ModularSmallWorldWiring instead of AutoNCP
+        # The wiring will automatically expand units if needed to accommodate ncp_output_size
         wiring = ModularSmallWorldWiring(
             units=ncp_hidden_dim, 
             output_size=ncp_output_size,  # Match the expected output size

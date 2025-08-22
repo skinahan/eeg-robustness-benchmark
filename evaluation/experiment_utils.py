@@ -22,6 +22,10 @@ def extract_model_params(model) -> Dict[str, Any]:
 
 
 def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity, eval_mode='WithinSessionEvaluation'):
+
+    if not eval_mode.endswith("Evaluation"):
+        eval_mode = f"{eval_mode}Evaluation"
+
     """Check if evaluation should be skipped based on existing output files."""
     existing_output_paths = []
     expected_output_paths = []

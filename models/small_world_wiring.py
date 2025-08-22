@@ -4,6 +4,11 @@ import random
 
 class ModularSmallWorldWiring(Wiring):
     def __init__(self, units=32, output_size=8, n_modules=4, rewiring_prob=0.2, seed=None):
+        # Ensure we have enough units to accommodate the output_size plus at least 2 inter neurons
+        min_units = output_size + 2
+        if units < min_units:
+            units = min_units
+        
         super().__init__(units=units)
         
         # Set the output dimension (number of motor neurons)
@@ -11,7 +16,7 @@ class ModularSmallWorldWiring(Wiring):
         
         self.total_neurons = units
         self.n_modules = n_modules
-        self.module_size = self.total_neurons // n_modules
+        self.module_size = max(1, self.total_neurons // n_modules)  # Ensure at least 1
         self.rewiring_prob = rewiring_prob
         self.output_size = output_size
         
@@ -19,9 +24,13 @@ class ModularSmallWorldWiring(Wiring):
             np.random.seed(seed)
             random.seed(seed)
         
-        # Define neuron types and layers
+        # Define neuron types and layers - ensure valid indices
         self._motor_neurons = list(range(0, self.output_size))
         self._inter_neurons = list(range(self.output_size, self.total_neurons))
+        
+        # Validate that we have enough neurons
+        if len(self._inter_neurons) < 2:
+            raise ValueError(f"Not enough neurons for Small World wiring. Need at least {self.output_size + 2} total neurons, got {self.total_neurons}")
         
         # Build the wiring structure
         self._build_small_world_wiring()
@@ -39,12 +48,20 @@ class ModularSmallWorldWiring(Wiring):
 
     def _build_modular_connections(self):
         """Build dense local connections within modules for high clustering."""
+        # Ensure we have enough neurons to work with
+        if len(self._inter_neurons) < 2:
+            return  # Skip if not enough inter neurons
+        
         for m in range(self.n_modules):
             module_start = m * self.module_size
             module_end = min(module_start + self.module_size, self.total_neurons)
             
             # Get neurons in this module
             module_neurons = [n for n in range(module_start, module_end) if n in self._inter_neurons]
+            
+            # Skip if module has no inter neurons
+            if len(module_neurons) < 2:
+                continue
             
             # Create dense local connections within the module
             for i, neuron1 in enumerate(module_neurons):
@@ -58,6 +75,10 @@ class ModularSmallWorldWiring(Wiring):
 
     def _build_small_world_shortcuts(self):
         """Add long-range connections to create small-world properties."""
+        # Ensure we have enough neurons to work with
+        if len(self._inter_neurons) < 2:
+            return  # Skip if not enough inter neurons
+            
         # Add some random long-range connections between modules
         num_shortcuts = int(self.rewiring_prob * self.total_neurons)
         
@@ -88,6 +109,10 @@ class ModularSmallWorldWiring(Wiring):
 
     def _build_motor_connections(self):
         """Ensure motor neurons receive input from inter neurons."""
+        # Ensure we have enough neurons to work with
+        if len(self._inter_neurons) < 1 or len(self._motor_neurons) < 1:
+            return  # Skip if not enough neurons
+            
         for motor_neuron in self._motor_neurons:
             # Connect each motor neuron to several inter neurons
             num_inputs = min(8, len(self._inter_neurons))  # Each motor neuron gets up to 8 inputs
@@ -100,6 +125,10 @@ class ModularSmallWorldWiring(Wiring):
     def build(self, input_shape):
         """Build the wiring with input shape - required by NCPs."""
         super().build(input_shape)
+        
+        # Validate that we have a valid wiring configuration
+        if self.input_dim <= 0 or len(self._inter_neurons) < 1 or len(self._motor_neurons) < 1:
+            raise ValueError(f"Invalid wiring configuration: input_dim={self.input_dim}, inter_neurons={len(self._inter_neurons)}, motor_neurons={len(self._motor_neurons)}")
         
         # Connect sensory inputs to inter neurons
         for src in range(self.input_dim):

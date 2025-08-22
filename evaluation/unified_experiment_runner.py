@@ -811,10 +811,6 @@ def main():
             parser.error(f"Mode {args.mode} requires --tune flag to NOT be set.")
 
     
-    # Check if we should skip evaluation
-    if not args.overwrite:
-        if check_skip_eval(args.model, args.seed, args.subjects, args.mode, args.noise_type, args.intensity, args.eval_mode):
-            sys.exit(0)
     
     # Record start time
     start_time = time.time()
@@ -829,6 +825,13 @@ def main():
                 for mode in ["test_perturb"]:
                     for seed in [100, 200, 300, 400, 500]:
                         # Run the no-tune versions first, these are fastest
+                        if not args.overwrite:
+                            mode_str = mode
+                            if args.tune and mode != "tune":
+                                # Make sure the tuned and non-tuned modes are not mixed when creating output paths.
+                                mode_str = f"{mode_str}_tune"
+                            if check_skip_eval(model, seed, args.subjects, mode_str, args.noise_type, args.intensity, eval_mode):
+                                continue
                         try:
                             runner = UnifiedExperimentRunner(
                                 model=model,
@@ -850,6 +853,11 @@ def main():
                             traceback.print_exc()
                             sys.exit(1)
     else:
+        # Check if we should skip evaluation
+        if not args.overwrite:
+            if check_skip_eval(args.model, args.seed, args.subjects, args.mode, args.noise_type, args.intensity, args.eval_mode):
+                sys.exit(0)
+        
         try:
             # Create and run experiment
             runner = UnifiedExperimentRunner(
