@@ -2,8 +2,7 @@
 """
 Unified Experiment Runner for EEG Models
 
-This script consolidates the functionality from run_experiments.py and 
-run_cross_session_experiments.py into a single, flexible experiment runner.
+This script defines a single, flexible experiment runner.
 
 Supports:
 - Multiple evaluation modes: WithinSession, CrossSession, CrossSubject
@@ -376,18 +375,6 @@ class UnifiedExperimentRunner:
         if self.mode == 'test_perturb':
             clean_score = validation_score
             session = self.current_session
-            # Add clean score result first
-            results.append({
-                'fold_idx': fold_idx,
-                'intensity': None,  # None indicates clean data
-                'clean_score': clean_score,
-                'corrupted_score': None,
-                'relative_drop': 0.0,  # No drop for clean data
-                'training_time': training_time,
-                'evaluation_time': evaluation_time,
-                'total_time': training_time + evaluation_time,
-                'session': session,
-            })            
             # Evaluate on corrupted data
             results.extend(self._evaluate_perturb(final_model, X_valid, y_valid, fold_idx, session, clean_score, training_time))
         else:
@@ -443,52 +430,53 @@ class UnifiedExperimentRunner:
         }
     
     def _evaluate_perturb(self, trained_model, X_valid, y_valid, fold_idx, session, clean_score, training_time):        
-        noise_type = self.noise_dict['noise_type']
-                
-        min_intensity = 10.0
-        max_intensity = 90.0
-        num_steps = 9
-        if noise_type == 'gaussian':
-            min_intensity = 1.0
-            max_intensity = 20.0
-            num_steps = 6
-        
-        intensities = np.linspace(start=min_intensity, stop=max_intensity, num=num_steps)
-        results = []
-        for intensity in intensities:
-            # Create corrupted validation data
-            noise_augmentor = EEGNoiseAugmentor(
-                noise_type=self.noise_dict['noise_type'],
-                intensity=intensity,
-                seed=self.seed
-            )
-            
-            X_valid_corrupted = noise_augmentor.transform(X_valid)
-            
-            # Evaluate on corrupted data
-            start_time = time.time()
-            trained_model.module_.eval()
-            with torch.no_grad():
-                y_pred_corrupted = trained_model.predict_proba(X_valid_corrupted)[:, 1]
-            evaluation_time = time.time() - start_time
-            corrupted_score = roc_auc_score(y_valid, y_pred_corrupted)
-            
-            # Calculate relative drop
-            relative_drop = (clean_score - corrupted_score) / clean_score if clean_score > 0 else 0.0
-            
-            results.append({
-                'fold_idx': fold_idx,
-                'intensity': intensity,
-                'clean_score': clean_score,
-                'corrupted_score': corrupted_score,
-                'relative_drop': relative_drop,
-                'training_time': training_time,
-                'evaluation_time': evaluation_time,
-                'total_time': training_time + evaluation_time,
-                'session': session,
-            })
+        noise_types = ['gaussian', 'dropout', 'eog']
 
-        return results
+        results = []
+        trained_model.module_.eval()
+        with torch.no_grad():
+            for noise_type in noise_types:
+                min_intensity = 10.0
+                max_intensity = 90.0
+                num_steps = 9
+                if noise_type == 'gaussian':
+                    min_intensity = 1.0
+                    max_intensity = 20.0
+                    num_steps = 6            
+                intensities = np.linspace(start=min_intensity, stop=max_intensity, num=num_steps)            
+                for intensity in intensities:
+                    # Create corrupted validation data
+                    noise_augmentor = EEGNoiseAugmentor(
+                        noise_type=noise_type,
+                        intensity=intensity,
+                        seed=self.seed
+                    )
+                    
+                    X_valid_corrupted = noise_augmentor.transform(X_valid)
+                    
+                    # Evaluate on corrupted data
+                    start_time = time.time()                
+                    y_pred_corrupted = trained_model.predict_proba(X_valid_corrupted)[:, 1]
+                    evaluation_time = time.time() - start_time
+                    corrupted_score = roc_auc_score(y_valid, y_pred_corrupted)
+                    
+                    # Calculate relative drop
+                    relative_drop = (clean_score - corrupted_score) / clean_score if clean_score > 0 else 0.0
+                    
+                    results.append({
+                        'fold_idx': fold_idx,
+                        'noise_type': noise_type,
+                        'intensity': intensity,
+                        'clean_score': clean_score,
+                        'corrupted_score': corrupted_score,
+                        'relative_drop': relative_drop,
+                        'training_time': training_time,
+                        'evaluation_time': evaluation_time,
+                        'total_time': training_time + evaluation_time,
+                        'session': session,
+                    })
+
+            return results
 
     def _train_and_evaluate_perturb(
         self, 
@@ -536,19 +524,6 @@ class UnifiedExperimentRunner:
             clean_score = roc_auc_score(y_valid, y_pred_clean)
         
         results = []
-        
-        # Add clean score result first
-        # results.append({
-        #     'fold_idx': fold_idx,
-        #     'intensity': None,  # None indicates clean data
-        #     'clean_score': clean_score,
-        #     'corrupted_score': None,
-        #     'relative_drop': 0.0,  # No drop for clean data
-        #     'training_time': training_time,
-        #     'evaluation_time': evaluation_time,
-        #     'total_time': training_time + evaluation_time,
-        #     'session': session,
-        # })
         
         # Evaluate on corrupted data
         results.extend(self._evaluate_perturb(model, X_valid, y_valid, fold_idx, session, clean_score, training_time))
@@ -632,11 +607,11 @@ class UnifiedExperimentRunner:
             results_df['mode'] = self.mode
             results_df['eval_mode'] = self.eval_mode
             results_df['seed'] = self.seed
-            if self.noise_dict:
-                results_df['noise_type'] = self.noise_dict['noise_type']
-                # Only set intensity for non-test_perturb modes
-                if self.mode != 'test_perturb':
+            # For test_perturb mode, we don't want to override the noise_type and intensity values
+            if self.mode != 'test_perturb':
+                if self.noise_dict:
                     results_df['intensity'] = self.noise_dict['intensity']
+                    results_df['noise_type'] = self.noise_dict['noise_type']
             results_df['tune'] = self.tune
 
             n_chans, n_times = self._determine_data_dimensions()
@@ -799,9 +774,10 @@ def main():
     parser.add_argument("--aggregate", action="store_true")
     
     args = parser.parse_args()
-    
+
+    set_seeds(args.seed)
     # Validate arguments
-    if args.mode in ["augment", "perturb", "augment_notune", "perturb_notune", "test_perturb", "multirun"]:
+    if args.mode in ["augment", "perturb", "augment_notune", "perturb_notune"]:
         if not args.noise_type or args.intensity is None:
             parser.error(f"Mode {args.mode} requires both --noise_type and --intensity")
     
@@ -810,7 +786,11 @@ def main():
         if args.tune:
             parser.error(f"Mode {args.mode} requires --tune flag to NOT be set.")
 
-    
+    if args.mode == "test_perturb":
+        if not args.noise_type or args.intensity is None:
+            # Use default values for test_perturb mode, these are overwritten later anyway.
+            args.noise_type = "gaussian"
+            args.intensity = 10.0
     
     # Record start time
     start_time = time.time()
