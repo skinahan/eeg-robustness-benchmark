@@ -1,4 +1,5 @@
 # augmentation/noise.py
+from typing import Tuple
 
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -40,10 +41,12 @@ def load_generic_eog_template(template_path):
             'heog_std': data['heog_std'],
             'target_rms_median': data['target_rms_median']
         }
-        print(f"Loaded EOG template: {template['mixing_matrix'].shape}")
+        # print(f"Loaded EOG template: {template['mixing_matrix'].shape}")
         return template
     except Exception as e:
         raise ValueError(f"Failed to load EOG template from {template_path}: {e}")
+
+
 
 def interpolate_eog_topography_to_montage(source_montage, target_montage, source_matrix):
     """
@@ -52,9 +55,9 @@ def interpolate_eog_topography_to_montage(source_montage, target_montage, source
     Parameters
     ----------
     source_montage : str
-        Source montage name (e.g., 'standard_1005')
-    target_montage : str
-        Target montage name (e.g., 'biosemi64')
+        Source montage name (e.g., 'standard_1020')
+    target_montage : str or DigMontage
+        Target montage name (e.g., 'biosemi64') or montage object
     source_matrix : np.ndarray
         Source mixing matrix (n_source_channels, n_regressors)
         
@@ -65,37 +68,53 @@ def interpolate_eog_topography_to_montage(source_montage, target_montage, source
     """
     # Get montage information
     source_montage_obj = make_standard_montage(source_montage)
-    target_montage_obj = make_standard_montage(target_montage)
+    
+    # Handle target montage - could be string or montage object
+    if isinstance(target_montage, str):
+        target_montage_obj = make_standard_montage(target_montage)
+    else:
+        target_montage_obj = target_montage  # Already a montage object
     
     # Extract 3D positions
     source_pos = source_montage_obj.get_positions()['ch_pos']
     target_pos = target_montage_obj.get_positions()['ch_pos']
     
+    # For the source montage, we need to filter to only the channels that correspond to our source matrix
+    # The source matrix has 19 channels, so we need to find the 19 channels from standard_1020
+    # that correspond to our training data channels
+    expected_source_channels = ['Fp1', 'Fp2', 'F3', 'F4', 'C3', 'C4', 'P3', 'P4', 'O1', 'O2',
+                               'F7', 'F8', 'T3', 'T4', 'T5', 'T6', 'Fz', 'Cz', 'Pz']
+    
+    # Filter source positions to only include our expected channels
+    filtered_source_pos = {ch: source_pos[ch] for ch in expected_source_channels if ch in source_pos}
+    
     # Convert to arrays
-    source_channels = list(source_pos.keys())
+    source_channels = list(filtered_source_pos.keys())
     target_channels = list(target_pos.keys())
     
-    source_coords = np.array([source_pos[ch] for ch in source_channels])
+    source_coords = np.array([filtered_source_pos[ch] for ch in source_channels])
     target_coords = np.array([target_pos[ch] for ch in target_channels])
     
-    # Normalize to unit sphere for interpolation
-    source_coords_norm = source_coords / np.linalg.norm(source_coords, axis=1, keepdims=True)
-    target_coords_norm = target_coords / np.linalg.norm(target_coords, axis=1, keepdims=True)
+    # Check if we have the right number of source coordinates
+    if len(source_coords) != source_matrix.shape[0]:
+        raise ValueError(f"Source matrix has {source_matrix.shape[0]} channels but filtered montage has {len(source_coords)} channels")
     
-    # Interpolate each regressor separately
+    # CRITICAL FIX: Use nearest neighbor interpolation instead of linear to avoid zero-filling
+    # This ensures that each target channel gets the value from the closest source channel
     n_regressors = source_matrix.shape[1]
     interpolated_matrix = np.zeros((len(target_channels), n_regressors))
     
     for reg_idx in range(n_regressors):
-        # Use spherical spline interpolation
-        interpolated_values = griddata(
-            source_coords_norm, 
-            source_matrix[:, reg_idx], 
-            target_coords_norm, 
-            method='cubic',
-            fill_value=0.0  # Fill missing values with 0
-        )
-        interpolated_matrix[:, reg_idx] = interpolated_values
+        # For each target channel, find the closest source channel and use its value
+        for target_idx in range(len(target_channels)):
+            target_coord = target_coords[target_idx]
+            
+            # Find the closest source channel
+            distances = np.linalg.norm(source_coords - target_coord, axis=1)
+            closest_source_idx = np.argmin(distances)
+            
+            # Use the value from the closest source channel
+            interpolated_matrix[target_idx, reg_idx] = source_matrix[closest_source_idx, reg_idx]
     
     return interpolated_matrix
 
@@ -156,7 +175,7 @@ def generate_realistic_eog_regressors(n_times, sfreq, template_stats, seed=42):
         direction = rng.choice([-1, 1])  # random left/right
         heog_tc[start:end] += direction * lateral_amplitude * blink_template[:blink_len]
     
-    # Calibrate to match template statistics
+    # Calibrate to match template statistics (realistic EOG artifact strength)
     veog_tc = veog_tc / (np.std(veog_tc) + 1e-12) * template_stats['veog_std']
     heog_tc = heog_tc / (np.std(heog_tc) + 1e-12) * template_stats['heog_std']
     
@@ -224,9 +243,11 @@ def inject_realistic_eog_artifacts(data, info, template_path, montage_name='stan
                           not all(ch in current_ch_names for ch in source_channels))
     
     if needs_interpolation:
-        print(f"Interpolating EOG topography from 19-channel to {len(current_ch_names)}-channel montage")
+        # print(f"Interpolating EOG topography from 19-channel to {len(current_ch_names)}-channel montage")
+        # Use standard_1020 montage for source, but pass the actual target montage object
+        # so we only interpolate to the channels that actually exist in our data
         mixing_matrix = interpolate_eog_topography_to_montage(
-            'standard_1005', montage_name, template['mixing_matrix']
+            'standard_1020', current_montage, template['mixing_matrix']
         )
     else:
         # Use template directly if montage matches
@@ -245,23 +266,6 @@ def inject_realistic_eog_artifacts(data, info, template_path, montage_name='stan
     
     # Apply intensity scaling
     eog_artifacts *= intensity
-    
-    # Optional: Calibrate to match target RMS at frontal channels
-    if needs_interpolation:
-        # Find frontal channels in target montage
-        frontal_channels = [i for i, ch in enumerate(current_ch_names) 
-                           if any(frontal in ch.upper() for frontal in ['FP', 'FZ', 'F3', 'F4'])]
-        
-        if frontal_channels:
-            # Calculate current RMS at frontal channels
-            current_rms = np.sqrt(np.mean(eog_artifacts[frontal_channels, :] ** 2))
-            target_rms = template['target_rms_median']
-            
-            # Scale to match target RMS
-            if current_rms > 0:
-                scale_factor = target_rms / current_rms
-                eog_artifacts *= scale_factor
-                print(f"Calibrated EOG artifacts: frontal RMS = {target_rms:.2e} V")
     
     # Add artifacts to clean data
     contaminated_data = data_volts + eog_artifacts
@@ -299,6 +303,228 @@ def inject_scaled_eog_signal(data, info, scale_factor=4.0, seed=42):
 
     return raw_scaled.get_data() * 1e6 if is_microvolts else raw_scaled.get_data()
 
+
+def to_volts(arr: np.ndarray, verbose: bool = False) -> Tuple[np.ndarray, str]:
+    """
+    Ensure an ndarray is in Volts.
+
+    Heuristic:
+      - If max abs > 1e-3, assume microvolts → convert to V.
+      - Else, assume already in V.
+
+    Returns:
+        arr_V: Data in Volts
+        unit: Conversion description
+    """
+    arr = np.asarray(arr)
+    absmax = np.max(np.abs(arr))
+
+    if absmax > 1.0:  # heuristic threshold
+        arr_V = arr * 1e-6
+        unit = "µV→V"
+    else:
+        arr_V = arr.copy()
+        unit = "V"
+
+    if verbose:
+        print(f"[Unit check] Assumed {unit}. "
+              f"Input range: [{arr.min():.3e}, {arr.max():.3e}], "
+              f"Output range: [{arr_V.min():.3e}, {arr_V.max():.3e}]")
+
+    return arr_V, unit
+
+
+def inject_realistic_eog_artifacts_with_coverage(data, info, template_path, montage_name='standard_1005', 
+                                                temporal_coverage=0.1, seed=42, apply_car=True, artifact_scale_factor=1000.0):
+    """
+    Inject realistic EOG artifacts using the learned generic mixing template with controlled temporal coverage.
+    
+    This function:
+    1. Loads the generic EOG mixing template
+    2. Interpolates to the target montage if different from training
+    3. Generates realistic VEOG/HEOG time courses
+    4. Places artifacts to achieve the desired temporal coverage
+    5. Projects artifacts to EEG space using the mixing matrix
+    
+    Parameters
+    ----------
+    data : np.ndarray
+        EEG data, shape (n_channels, n_times) in Volts
+    info : mne.Info
+        MNE info object with channel information
+    template_path : str
+        Path to generic_eog_mixing_template.npz
+    montage_name : str
+        Target montage name for interpolation
+    temporal_coverage : float
+        Desired fraction of time covered by EOG artifacts (0.0 to 1.0)
+    seed : int
+        Random seed for reproducibility
+    apply_car : bool
+        Whether to apply CAR before injection (should match training)
+    artifact_scale_factor : float
+        Scaling factor to make EOG artifacts more impactful (default: 1000.0)
+        This addresses the issue where original artifacts were too weak to affect model performance
+        
+    Returns
+    -------
+    np.ndarray
+        Contaminated EEG data in same units as input
+    """
+    # Load the generic EOG template
+    template = load_generic_eog_template(template_path)
+    
+    # Ensure data is in Volts
+    data_volts, unit = to_volts(data)
+    is_microvolts = unit != "V"
+    
+    # Apply CAR if requested (should match training procedure)
+    if apply_car:
+        data_volts = data_volts - np.mean(data_volts, axis=0, keepdims=True)
+
+    # Get current montage
+    current_montage = info.get_montage()
+    if current_montage is None:
+        # Set default montage if none exists
+        info.set_montage(montage_name)
+        current_montage = info.get_montage()
+    
+    # Determine if interpolation is needed
+    source_channels = ['Fp1', 'Fp2', 'F3', 'F4', 'C3', 'C4', 'P3', 'P4', 'O1', 'O2',
+                      'F7', 'F8', 'T3', 'T4', 'T5', 'T6', 'Fz', 'Cz', 'Pz']
+    
+    current_ch_names = info.ch_names
+    needs_interpolation = (len(current_ch_names) != 19 or 
+                          not all(ch in current_ch_names for ch in source_channels))
+    
+    if needs_interpolation:
+        # Use standard_1020 montage for source, but pass the actual target montage object
+        mixing_matrix = interpolate_eog_topography_to_montage(
+            'standard_1020', current_montage, template['mixing_matrix']
+        )
+    else:
+        # Use template directly if montage matches
+        mixing_matrix = template['mixing_matrix']
+    
+    # CRITICAL FIX: Scale up the mixing matrix to make artifacts impactful
+    # The original values were too small (10^-4 to 10^-6) compared to EEG signals (10^0)
+    mixing_matrix = mixing_matrix * artifact_scale_factor
+    
+    # Generate realistic EOG regressors with controlled temporal coverage
+    n_times = data_volts.shape[1]
+    sfreq = info['sfreq']
+    veog_tc, heog_tc = generate_realistic_eog_regressors_with_coverage(
+        n_times, sfreq, template, temporal_coverage, seed=seed
+    )
+    
+    # Project EOG artifacts to EEG space
+    eog_regressors = np.vstack([veog_tc, heog_tc])  # (2, n_times)
+    eog_artifacts = mixing_matrix @ eog_regressors  # (n_channels, n_times)
+    
+    # Debug assertions to verify artifacts are now substantial
+    assert(np.sum(np.abs(eog_artifacts)) > 0)
+    assert(np.sum(np.abs(mixing_matrix)) > 0)
+    
+    # Add artifacts to clean data
+    contaminated_data = data_volts + eog_artifacts
+    assert(np.sum(np.abs(contaminated_data)) != np.sum(np.abs(data_volts)))
+    
+    # Convert back to original units
+    if is_microvolts:
+        contaminated_data *= 1e6
+    
+    return contaminated_data
+
+def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_stats, temporal_coverage, seed=42):
+    """
+    Generate realistic VEOG and HEOG time courses with controlled temporal coverage.
+    
+    Parameters
+    ----------
+    n_times : int
+        Number of time points
+    sfreq : float
+        Sampling frequency in Hz
+    template_stats : dict
+        Template statistics from load_generic_eog_template()
+    temporal_coverage : float
+        Desired fraction of time covered by EOG artifacts (0.0 to 1.0)
+    seed : int
+        Random seed for reproducibility
+        
+    Returns
+    -------
+    tuple
+        (veog_tc, heog_tc) - VEOG and HEOG time courses in Volts
+    """
+    rng = np.random.RandomState(seed)
+    
+    # Blink template parameters - use shorter duration to allow more blinks
+    blink_duration_ms = 100  # Reduced from 200ms to allow more blinks
+    blink_peak_ms = 50       # Reduced from 80ms proportionally
+    
+    # Convert to samples
+    blink_duration = int(blink_duration_ms * sfreq / 1000)
+    blink_peak = int(blink_peak_ms * sfreq / 1000)
+    
+    # Generate blink template (smooth gaussian-like)
+    t = np.arange(blink_duration)
+    blink_template = np.exp(-((t - blink_peak) / (0.35 * blink_peak + 1e-9)) ** 2)
+    blink_template = blink_template / np.max(blink_template)
+    
+    # Calculate how many blinks we need to achieve the desired temporal coverage
+    # Each blink covers blink_duration samples
+    # We want: (n_blinks * blink_duration) / n_times ≈ temporal_coverage
+    
+    # Calculate the target number of samples to cover
+    target_samples_to_cover = int(n_times * temporal_coverage)
+    
+    # Calculate how many blinks we need
+    n_blinks = max(1, target_samples_to_cover // blink_duration)
+    
+    # Ensure we don't exceed the maximum possible blinks
+    max_possible_blinks = n_times // blink_duration
+    n_blinks = min(n_blinks, max_possible_blinks)
+    
+    # Calculate actual temporal coverage achieved
+    actual_coverage = (n_blinks * blink_duration) / n_times
+    print(f"Desired EOG coverage: {temporal_coverage}, Actual coverage: {actual_coverage}")
+    
+    # Place blinks to achieve the desired coverage
+    # We'll place them evenly distributed across the time series
+    if n_blinks == 1:
+        # Single blink in the middle
+        blink_starts = [n_times // 2 - blink_duration // 2]
+    else:
+        # Distribute blinks evenly
+        spacing = n_times // (n_blinks + 1)
+        blink_starts = [spacing * (i + 1) - blink_duration // 2 for i in range(n_blinks)]
+        # Ensure blinks don't go out of bounds
+        blink_starts = [max(0, min(start, n_times - blink_duration)) for start in blink_starts]
+    
+    # Initialize time courses
+    veog_tc = np.zeros(n_times)
+    heog_tc = np.zeros(n_times)
+    
+    # Add blinks
+    for start in blink_starts:
+        end = min(start + blink_duration, n_times)
+        blink_len = end - start
+        
+        # VEOG: primary blink component
+        veog_tc[start:end] += blink_template[:blink_len]
+        
+        # HEOG: smaller lateral component (random direction)
+        lateral_amplitude = 0.2 * rng.uniform(0.5, 1.5)  # 20% of VEOG, with variability
+        direction = rng.choice([-1, 1])  # random left/right
+        heog_tc[start:end] += direction * lateral_amplitude * blink_template[:blink_len]
+    
+    # Calibrate to match template statistics (realistic EOG artifact strength)
+    veog_tc = veog_tc / (np.std(veog_tc) + 1e-12) * template_stats['veog_std']
+    heog_tc = heog_tc / (np.std(heog_tc) + 1e-12) * template_stats['heog_std']
+    
+    return veog_tc, heog_tc
+
 # === Enhanced EEGNoiseAugmentor Class ===
 
 class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
@@ -316,25 +542,33 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
     noise_type : str
         One of ['dropout', 'gaussian', 'eog', 'realistic_eog'].
     intensity : float
-        Noise severity/intensity. Meaning depends on noise_type:
+        Noise severity/intensity. Meaning depends on noise_type and mode:
         - For 'dropout': percentage of channels to drop (0-100).
         - For 'gaussian': scaling factor (D) for variance.
-        - For 'eog': scaling factor for realistic artifacts.
+        - For 'eog': 
+          * In test_perturb mode: temporal coverage of EOG artifacts (10% = 10% of the time covered by artifacts)
+          * In other modes: percentage of epochs to contaminate (0-100)
     seed : int
         Random seed for reproducibility.
     eog_template_path : str, optional
-        Path to generic EOG mixing template (default: 'eog_mixing_results/generic_eog_mixing_template.npz').
+        Path to generic EOG mixing template (default: 'notebooks/eog_mixing_results/generic_eog_mixing_template.npz').
     montage_name : str, optional
         Target montage name for EOG interpolation (default: 'standard_1020').
+    artifact_scale_factor : float, optional
+        Scaling factor to make EOG artifacts more impactful (default: 1000.0).
+        This addresses the issue where original artifacts were too weak to affect model performance.
+        Increase this value to make EOG contamination more severe.
     """
 
     def __init__(self, noise_type='dropout', intensity=10.0, seed=42, 
-                 eog_template_path='eog_mixing_results/generic_eog_mixing_template.npz', montage_name='standard_1020'):
+                 eog_template_path='notebooks/eog_mixing_results/generic_eog_mixing_template.npz', montage_name='standard_1020',
+                 artifact_scale_factor=1000.0):
         self.noise_type = noise_type
         self.intensity = intensity
         self.seed = seed
         self.eog_template_path = eog_template_path
         self.montage_name = montage_name
+        self.artifact_scale_factor = artifact_scale_factor
         
         # Validate parameters
         if noise_type == 'eog' and eog_template_path is None:
@@ -354,9 +588,7 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         if self.noise_type == 'dropout':
             return self._apply_channel_dropout(X)
         elif self.noise_type == 'gaussian':
-            return self._apply_gaussian_noise(X)
-        # elif self.noise_type == 'eog':
-        #     return self._apply_eog_noise(X)
+            return self._apply_gaussian_noise(X)        
         elif self.noise_type == 'eog':
             return self._apply_realistic_eog_noise(X)
         else:
@@ -408,7 +640,9 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
     def _apply_realistic_eog_noise(self, data):
         """
         Apply realistic EOG artifacts using the learned generic template.
-        Intensity controls artifact strength (1.0 = realistic, >1.0 = stronger).
+        
+        For test_perturb mode: intensity controls temporal coverage of EOG artifacts (10% = 10% of time covered by artifacts)
+        For other modes: intensity controls prevalence (percentage of epochs to contaminate)
         """
         n_epochs, n_channels, n_times = data.shape
         
@@ -421,19 +655,32 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         info = mne.create_info(ch_names=ch_names, sfreq=250, ch_types=['eeg'] * n_channels)
         info.set_montage(self.montage_name)
         
-        # Determine prevalence (fraction of epochs to contaminate)
-        prevalence = int(n_epochs * (self.intensity / 100))
+        # Check if we're in test_perturb mode by looking at the intensity value
+        # In test_perturb, intensity should control temporal coverage, not prevalence
+        is_test_perturb_mode = True
+        
+        if is_test_perturb_mode:
+            # For test_perturb: use 100% prevalence, intensity controls temporal coverage
+            prevalence = n_epochs  # Contaminate all epochs
+            # Convert intensity to temporal coverage (10% -> 0.1, 90% -> 0.9)
+            temporal_coverage = self.intensity / 100.0
+        else:
+            # For other modes: intensity controls prevalence, use fixed temporal coverage
+            prevalence = int(n_epochs * (self.intensity / 100))
+            temporal_coverage = 0.1  # Use 10% temporal coverage for non-test_perturb modes
+        
         contamination_idxs = np.random.choice(n_epochs, size=prevalence, replace=False)
         
         data_aug = data.copy()
         for i in contamination_idxs:
-            # Inject realistic EOG artifacts
-            contaminated_epoch = inject_realistic_eog_artifacts(
+            # Inject realistic EOG artifacts with controlled temporal coverage
+            contaminated_epoch = inject_realistic_eog_artifacts_with_coverage(
                 data[i], info, self.eog_template_path, 
                 montage_name=self.montage_name,
-                intensity=self.intensity, 
+                temporal_coverage=temporal_coverage,  # Control temporal coverage
                 seed=self.seed + i,  # Different seed for each epoch
-                apply_car=True
+                apply_car=True,
+                artifact_scale_factor=self.artifact_scale_factor  # Use the scaling factor
             )
             data_aug[i] = contaminated_epoch
             
@@ -441,78 +688,6 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
 
 
 from sklearn.base import BaseEstimator, ClassifierMixin
-
-# Replaces input with noise-augmented version
-class TrainOnlyNoiseClassifier(ClassifierMixin, BaseEstimator):
-    def __init__(self, base_pipeline, noise_type='dropout', intensity=25.0, seed=42):
-        self.base_pipeline = base_pipeline
-        self.noise_type = noise_type
-        self.intensity = intensity
-        self.seed = seed
-
-    def fit(self, X, y):
-        augmenter = EEGNoiseAugmentor(
-            noise_type=self.noise_type,
-            intensity=self.intensity,
-            seed=self.seed
-        )
-        X_aug = augmenter.fit_transform(X)
-        self.base_pipeline.fit(X_aug, y)
-        self.is_fitted_ = True
-        self.base_pipeline.is_fitted_ = True
-        # ✅ Expose fitted classes_ attribute from the wrapped classifier
-        if hasattr(self.base_pipeline, "classes_"):
-            self.classes_ = self.base_pipeline.classes_
-        elif hasattr(self.base_pipeline[-1], "classes_"):
-            self.classes_ = self.base_pipeline[-1].classes_
-        else:
-            raise AttributeError("Base pipeline does not expose `classes_` after fit")
-
-        return self
-
-    def predict(self, X):
-        return self.base_pipeline.predict(X)
-
-    def score(self, X, y, sample_weight=None):
-        return self.base_pipeline.score(X, y, sample_weight)
-
-    def predict_proba(self, X):
-        if hasattr(self.base_pipeline, 'predict_proba'):
-            return self.base_pipeline.predict_proba(X)
-        elif hasattr(self.base_pipeline[-1], 'predict_proba'):
-            return self.base_pipeline[-1].predict_proba(X)
-        else:
-            raise NotImplementedError("Underlying model does not support predict_proba()")
-
-    #
-    # def decision_function(self, X):
-    #     return self.base_pipeline.decision_function(X)
-
-    def get_params(self, deep=True):
-        params = super().get_params(deep=deep)
-        if deep and hasattr(self.base_pipeline, 'get_params'):
-            base_params = self.base_pipeline.get_params().copy()
-            for key in list(base_params.keys()):
-                base_params[f'base_pipeline__{key}'] = base_params.pop(key)
-            params.update(base_params)
-        return params
-
-    def set_params(self, **params):
-        base_params = {}
-        own_params = {}
-
-        for key, value in params.items():
-            if key.startswith('base_pipeline__'):
-                base_params[key[len('base_pipeline__'):]] = value
-            else:
-                own_params[key] = value
-
-        if base_params:
-            self.base_pipeline.set_params(**base_params)
-        if own_params:
-            super().set_params(**own_params)
-
-        return self
 
 # Creates an augmented sample for every sample in the set X
 class ConcatenatedNoiseAugmenter(ClassifierMixin, BaseEstimator):
@@ -599,213 +774,39 @@ class ConcatenatedNoiseAugmenter(ClassifierMixin, BaseEstimator):
         else:
             raise NotImplementedError("Underlying model does not support predict_proba()")
 
-# Test-time corruption classifier for robustness evaluation
-class TestOnlyNoiseClassifier(ClassifierMixin, BaseEstimator):
-    """
-    Wrapper classifier that applies deterministic corruption only at evaluation time.
-    
-    This class is designed for robustness evaluation where:
-    - Training and validation use clean data only
-    - Test evaluation applies a grid of corruptions with deterministic seeding
-    - Model selection is based on clean validation performance
-    
-    Parameters
-    ----------
-    base_pipeline : estimator or callable
-        The underlying estimator or a factory function that returns it.
-    corruption_plan : dict
-        Dictionary defining corruption families and intensity grids.
-    seed_base : int
-        Base seed for deterministic corruption generation.
-    freeze_seeds : bool, default=True
-        Whether to use deterministic seeding for corruptions.
-    score_clean_first : bool, default=True
-        Whether to evaluate clean test set before applying corruptions.
-    """
-    
-    def __init__(self, base_pipeline, corruption_plan, seed_base=42, 
-                 freeze_seeds=True, score_clean_first=True):
+
+# Replaces input with noise-augmented version
+class TrainOnlyNoiseClassifier(ClassifierMixin, BaseEstimator):
+    def __init__(self, base_pipeline, noise_type='dropout', intensity=25.0, seed=42):
         self.base_pipeline = base_pipeline
-        self.corruption_plan = corruption_plan
-        self.seed_base = seed_base
-        self.freeze_seeds = freeze_seeds
-        self.score_clean_first = score_clean_first
-        self.is_fitted_ = False
-        
+        self.noise_type = noise_type
+        self.intensity = intensity
+        self.seed = seed
+
     def fit(self, X, y):
-        """Fit the base pipeline on clean data."""
-        if callable(self.base_pipeline):
-            self.base_pipeline = self.base_pipeline()
-        
-        self.base_pipeline.fit(X, y)
+        augmenter = EEGNoiseAugmentor(
+            noise_type=self.noise_type,
+            intensity=self.intensity,
+            seed=self.seed
+        )
+        X_aug = augmenter.fit_transform(X)
+        self.base_pipeline.fit(X_aug, y)
         self.is_fitted_ = True
-        
-        # Expose fitted classes_ attribute from the wrapped classifier
+        self.base_pipeline.is_fitted_ = True
+        # ✅ Expose fitted classes_ attribute from the wrapped classifier
         if hasattr(self.base_pipeline, "classes_"):
             self.classes_ = self.base_pipeline.classes_
         elif hasattr(self.base_pipeline[-1], "classes_"):
             self.classes_ = self.base_pipeline[-1].classes_
         else:
-            raise AttributeError("Base pipeline does not expose `classes_` after fit")
-        
-        return self
-    
+            raise AttributeError("Base pipeline does not expose `classes_` attribute")
+
     def predict(self, X):
-        """Predict using the base pipeline."""
+        if not self.is_fitted_:
+            raise RuntimeError("This TrainOnlyNoiseClassifier instance is not fitted yet.")
         return self.base_pipeline.predict(X)
-    
-    def score(self, X, y, sample_weight=None):
-        """Score using the base pipeline."""
-        return self.base_pipeline.score(X, y, sample_weight)
-    
+
     def predict_proba(self, X):
-        """Predict probabilities using the base pipeline."""
-        if hasattr(self.base_pipeline, 'predict_proba'):
-            return self.base_pipeline.predict_proba(X)
-        elif hasattr(self.base_pipeline[-1], 'predict_proba'):
-            return self.base_pipeline[-1].predict_proba(X)
-        else:
-            raise NotImplementedError("Underlying model does not support predict_proba()")
-    
-    def evaluate_on_corruptions(self, test_data, test_labels, metadata):
-        """
-        Evaluate the model on a grid of corruptions.
-        
-        Parameters
-        ----------
-        test_data : array-like
-            Test data to evaluate on.
-        test_labels : array-like
-            Test labels.
-        metadata : dict
-            Metadata containing subject_id, session, fold_id, etc.
-        
-        Returns
-        -------
-        dict
-            Dictionary containing evaluation results for each corruption family and intensity.
-        """
-        results = {
-            'per_example': [],
-            'per_family': [],
-            'clean_metrics': {}
-        }
-        
-        # Get test fold ID and subject ID for seed derivation
-        test_fold_id = metadata.get('fold_id', 0)
-        subject_id = metadata.get('subject_id', metadata.get('subject', 0))
-        
-        # Evaluate clean test set first if requested
-        if self.score_clean_first:
-            clean_score = self.score(test_data, test_labels)
-            results['clean_metrics']['clean_score'] = clean_score
-            
-            # Add clean result to per-example results
-            clean_result = {
-                'family': 'clean',
-                'intensity': 0.0,
-                'seed_used': self.seed_base,
-                'metric_name': 'score',
-                'metric_value': clean_score,
-                'clean_metric': clean_score,
-                'relative_drop': 0.0,
-                'test_fold_id': test_fold_id,
-                'subject_id': subject_id
-            }
-            results['per_example'].append(clean_result)
-        
-        # Build corruption grid from plan
-        from augmentation.corruption_utils import build_corruption_grid
-        corruption_grid = build_corruption_grid(self.corruption_plan)
-        
-        # Evaluate on each corruption
-        for family, intensity, params in corruption_grid:
-            if family == 'clean':  # Skip clean, already handled
-                continue
-                
-            # Derive deterministic seed
-            from augmentation.corruption_utils import derive_corruption_seed
-            corruption_seed = derive_corruption_seed(
-                self.seed_base, family, intensity, test_fold_id, subject_id
-            )
-            
-            # Apply corruption
-            from augmentation.corruption_utils import apply_corruption
-            corrupted_data = apply_corruption(
-                test_data, family, intensity, corruption_seed, params
-            )
-            
-            # Evaluate on corrupted data
-            corrupted_score = self.score(corrupted_data, test_labels)
-            
-            # Compute relative drop
-            from augmentation.corruption_utils import compute_relative_drop
-            relative_drop = compute_relative_drop(clean_score, corrupted_score)
-            
-            # Store result
-            result = {
-                'family': family,
-                'intensity': intensity,
-                'seed_used': corruption_seed,
-                'metric_name': 'score',
-                'metric_value': corrupted_score,
-                'clean_metric': clean_score,
-                'relative_drop': relative_drop,
-                'test_fold_id': test_fold_id,
-                'subject_id': subject_id
-            }
-            results['per_example'].append(result)
-        
-        # Compute per-family summaries
-        from augmentation.corruption_utils import compute_aurc
-        families = set(r['family'] for r in results['per_example'] if r['family'] != 'clean')
-        
-        for family in families:
-            family_results = [r for r in results['per_example'] if r['family'] == family]
-            intensities = [r['intensity'] for r in family_results]
-            metrics = [r['metric_value'] for r in family_results]
-            
-            # Sort by intensity for AURC computation
-            sorted_pairs = sorted(zip(intensities, metrics))
-            sorted_intensities, sorted_metrics = zip(*sorted_pairs)
-            
-            aurc = compute_aurc(sorted_intensities, sorted_metrics)
-            worst_case = min(sorted_metrics)
-            mean_relative_drop = np.mean([r['relative_drop'] for r in family_results])
-            
-            family_summary = {
-                'family': family,
-                'aurc': aurc,
-                'worst_case_metric': worst_case,
-                'mean_relative_drop': mean_relative_drop,
-                'n_points': len(family_results)
-            }
-            results['per_family'].append(family_summary)
-        
-        return results
-    
-    def get_params(self, deep=True):
-        params = super().get_params(deep=deep)
-        if deep and hasattr(self.base_pipeline, 'get_params'):
-            base_params = self.base_pipeline.get_params().copy()
-            for key in list(base_params.keys()):
-                base_params[f'base_pipeline__{key}'] = base_params.pop(key)
-            params.update(base_params)
-        return params
-    
-    def set_params(self, **params):
-        base_params = {}
-        own_params = {}
-        
-        for key, value in params.items():
-            if key.startswith('base_pipeline__'):
-                base_params[key[len('base_pipeline__'):]] = value
-            else:
-                own_params[key] = value
-        
-        if base_params:
-            self.base_pipeline.set_params(**base_params)
-        if own_params:
-            super().set_params(**own_params)
-        
-        return self
+        if not self.is_fitted_:
+            raise RuntimeError("This TrainOnlyNoiseClassifier instance is not fitted yet.")
+        return self.base_pipeline.predict_proba(X)

@@ -430,7 +430,7 @@ class UnifiedExperimentRunner:
         }
     
     def _evaluate_perturb(self, trained_model, X_valid, y_valid, fold_idx, session, clean_score, training_time):        
-        noise_types = ['gaussian', 'dropout', 'eog']
+        noise_types = ['eog', 'gaussian', 'dropout']
 
         results = []
         trained_model.module_.eval()
