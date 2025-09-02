@@ -128,22 +128,29 @@ def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
                     df = pd.read_csv(full_path)
                     selected_type = None
                     intensity = None
-                    for type in noise_types:
-                        if type in file:
-                            selected_type = type
-                            for strength in intensities:
-                                if strength in file:
-                                    intensity = strength
-                                    break
-                            break
-                    if selected_type is not None and intensity is not None:
-                        df['noise_type'] = selected_type
-                        df['intensity'] = intensity
+                    
+                    # Only set noise_type and intensity if they don't already exist in the CSV
+                    if 'noise_type' not in df.columns or 'intensity' not in df.columns:
+                        for type in noise_types:
+                            if type in file:
+                                selected_type = type
+                                for strength in intensities:
+                                    if strength in file:
+                                        intensity = strength
+                                        break
+                                break
+                        if selected_type is not None and intensity is not None:
+                            if 'noise_type' not in df.columns:
+                                df['noise_type'] = selected_type
+                            if 'intensity' not in df.columns:
+                                df['intensity'] = intensity
 
-                    if 'cross_session' in full_path or 'CrossSessionEvaluation' in full_path:
-                        df['eval_mode'] = 'CrossSessionEvaluation'
-                    else:
-                        df['eval_mode'] = 'WithinSessionEvaluation'
+                    # Only set eval_mode if it doesn't already exist in the CSV
+                    if 'eval_mode' not in df.columns:
+                        if 'cross_session' in full_path or 'CrossSessionEvaluation' in full_path:
+                            df['eval_mode'] = 'CrossSessionEvaluation'
+                        else:
+                            df['eval_mode'] = 'WithinSessionEvaluation'
 
                     all_dfs.append(df)
                 except Exception as e:
