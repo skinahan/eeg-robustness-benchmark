@@ -488,7 +488,7 @@ def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_sta
     
     # Calculate actual temporal coverage achieved
     actual_coverage = (n_blinks * blink_duration) / n_times
-    print(f"Desired EOG coverage: {temporal_coverage}, Actual coverage: {actual_coverage}")
+    # print(f"Desired EOG coverage: {temporal_coverage}, Actual coverage: {actual_coverage}")
     
     # Place blinks to achieve the desired coverage
     # We'll place them evenly distributed across the time series

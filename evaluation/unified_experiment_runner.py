@@ -763,7 +763,7 @@ def main():
     parser.add_argument("--dataset", type=str, default="BNCI2014_001", choices=["BNCI2014_001"])
     parser.add_argument("--subjects", type=int, nargs="+", required=True)
     parser.add_argument("--mode", type=str, required=True, 
-                       choices=["baseline", "tune", "augment", "perturb", "augment_notune", "perturb_notune", "test_perturb", "multirun"])
+                       choices=["baseline", "tune", "augment", "perturb", "augment_notune", "perturb_notune", "test_perturb", "multirun", "aggregate_only"])
     parser.add_argument("--eval_mode", type=str, required=True, 
                        choices=["WithinSession", "CrossSession", "CrossSubject"])
     parser.add_argument("--seed", type=int, default=42)
@@ -774,6 +774,10 @@ def main():
     parser.add_argument("--aggregate", action="store_true")
     
     args = parser.parse_args()
+
+    if args.mode == "aggregate_only":
+        collect_all_results(paradigm='MotorImagery', dataset=args.dataset)
+        sys.exit(0)
 
     set_seeds(args.seed)
     # Validate arguments
@@ -798,7 +802,6 @@ def main():
     
     warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
     
-
     if args.mode == 'multirun':
         for model in MODEL_REGISTRY.keys():
             for eval_mode in ["CrossSession"]:
