@@ -2,7 +2,7 @@ import torch
 from braindecode.models import EEGNetv4, EEGModuleMixin
 from braindecode import EEGClassifier
 from skorch.dataset import ValidSplit
-from skorch.callbacks import EarlyStopping, LRScheduler
+from skorch.callbacks import LRScheduler
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 import torch
 import torch.nn as nn
@@ -11,7 +11,7 @@ from typing import Optional
 from sklearn.base import TransformerMixin, BaseEstimator
 import numpy as np
 
-from globals import get_seed
+from globals import get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS
 
 
 class To4DArray(TransformerMixin, BaseEstimator):
@@ -138,7 +138,7 @@ def create_reegnet_classifier(n_chans=22, n_times=1001, n_outputs=2):
         optimizer__lr=1e-4,
         optimizer__weight_decay=1e-3,
         batch_size=64,
-        max_epochs=100,
+        max_epochs=DEFAULT_MAX_EPOCHS,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
@@ -146,6 +146,6 @@ def create_reegnet_classifier(n_chans=22, n_times=1001, n_outputs=2):
         module__lstm_hidden_size=32,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[EarlyStopping(threshold=1e-4, patience=10, load_best=True)],
+        callbacks=[get_early_stopping_callback()],
         # verbose=0  # Suppress epoch-level output
     )

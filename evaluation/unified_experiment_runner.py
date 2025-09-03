@@ -39,7 +39,7 @@ project_root = os.path.dirname(current_dir)
 sys.path.insert(0, project_root)
 
 from config import MODEL_REGISTRY, get_paradigm
-from globals import set_seeds
+from globals import set_seeds, DEFAULT_MAX_EPOCHS, UNDERFITTING_THRESHOLD
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
 from evaluation.two_stage_hp_opt import alternate_two_stage_optuna, run_two_stage_optuna, format_params, get_all_model_params
 from utils import create_output_path, create_hdf5_model_path
@@ -177,7 +177,7 @@ class UnifiedExperimentRunner:
         
         # Set common model parameters
         # model.train_split = None
-        model.max_epochs = 100
+        model.max_epochs = DEFAULT_MAX_EPOCHS
         # model.callbacks = []
         model.initialize()
         
@@ -191,7 +191,7 @@ class UnifiedExperimentRunner:
         if self.mode in ['perturb', 'perturb_notune']:
             def wrapped_model_fn(n_chans, n_times, n_outputs):
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
-                base_model.max_epochs = 100
+                base_model.max_epochs = 200
                 return TrainOnlyNoiseClassifier(
                     base_pipeline=base_model,
                     noise_type=self.noise_dict["noise_type"],
@@ -201,7 +201,7 @@ class UnifiedExperimentRunner:
         elif self.mode in ['augment', 'augment_notune']:
             def wrapped_model_fn(n_chans, n_times, n_outputs):
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
-                base_model.max_epochs = 100
+                base_model.max_epochs = 200
                 return ConcatenatedNoiseAugmenter(
                     base_pipeline=base_model,
                     noise_type=self.noise_dict["noise_type"],
@@ -211,7 +211,7 @@ class UnifiedExperimentRunner:
         elif self.mode == 'test_perturb':
             def wrapped_model_fn(n_chans, n_times, n_outputs):
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
-                base_model.max_epochs = 100
+                base_model.max_epochs = 200
                 return base_model
         else:
             return self.model_fn
@@ -510,7 +510,7 @@ class UnifiedExperimentRunner:
         evaluation_time = time.time() - start_time
 
         # Use a set threshold to restart training if clean score indicates underfitting.
-        if clean_score < 0.65:
+        if clean_score < UNDERFITTING_THRESHOLD:
             # Disable early stopping
             print(f"Re-training model without EarlyStopping due to underfitting.")
             model.callbacks = []
@@ -521,7 +521,8 @@ class UnifiedExperimentRunner:
             model.module_.eval()
             with torch.no_grad():
                 y_pred_clean = model.predict_proba(X_valid)[:, 1]
-            clean_score = roc_auc_score(y_valid, y_pred_clean)
+            new_clean_score = roc_auc_score(y_valid, y_pred_clean)
+            clean_score = max(clean_score, )
         
         results = []
         
@@ -804,7 +805,7 @@ def main():
     
     if args.mode == 'multirun':
         for model in MODEL_REGISTRY.keys():
-            for eval_mode in ["CrossSession"]:
+            for eval_mode in ["WithinSession"]:
                 for mode in ["test_perturb"]:
                     for seed in [100, 200, 300, 400, 500]:
                         # Run the no-tune versions first, these are fastest

@@ -71,12 +71,8 @@ def enhanced_cv_training_loop(
         
         # Add early stopping callback if supported
         if hasattr(model, 'callbacks'):
-            from skorch.callbacks import EarlyStopping
-            early_stopping = EarlyStopping(
-                monitor='valid_loss',
-                patience=early_stopping_patience
-            )
-            model.callbacks = [early_stopping]
+            from globals import get_early_stopping_callback
+            model.callbacks = [get_early_stopping_callback()]
         
         model.fit(X_train_part, y_train_part)
         
@@ -174,9 +170,9 @@ def run_optuna_stage(
         # Define model
         model.set_params(**params)
         model.initialize()
-        if model.max_epochs > 100:
-            print("ERROR: Max epochs is greater than 100")
-            raise ValueError("Max epochs is greater than 100")
+        if model.max_epochs > 200:
+            print("ERROR: Max epochs is greater than 200")
+            raise ValueError("Max epochs is greater than 200")
             sys.exit(1)
         
 
@@ -252,7 +248,8 @@ def alternate_optuna_stage(
         # Sample hyperparameters
         params = param_space_fn(trial, param_prefix)
         params[f"{param_prefix}train_split"] = None
-        params[f"{param_prefix}max_epochs"] = 100  # Fixed reasonable value
+        from globals import DEFAULT_MAX_EPOCHS
+        params[f"{param_prefix}max_epochs"] = DEFAULT_MAX_EPOCHS  # Fixed reasonable value
         params[f"{param_prefix}verbose"] = 0
         params[f"{param_prefix}callbacks"] = []
 
@@ -410,9 +407,9 @@ def cnn_smallworld_training_space(trial, prefix):
         ),
         
         # Training parameters
-        f"{prefix}max_epochs": trial.suggest_int(
-            f"{prefix}max_epochs", 20, 100
-        ),
+        # f"{prefix}max_epochs": trial.suggest_int(
+        #     f"{prefix}max_epochs", 20, 100
+        # ),
         f"{prefix}batch_size": trial.suggest_categorical(
             f"{prefix}batch_size", [16, 32, 64, 128]
         ),
@@ -463,9 +460,9 @@ def cnn_wiredcfc_training_space(trial, prefix):
         ),
         
         # Training parameters
-        f"{prefix}max_epochs": trial.suggest_int(
-            f"{prefix}max_epochs", 20, 100
-        ),
+        # f"{prefix}max_epochs": trial.suggest_int(
+        #     f"{prefix}max_epochs", 20, 100
+        # ),
         f"{prefix}batch_size": trial.suggest_categorical(
             f"{prefix}batch_size", [16, 32, 64, 128]
         ),
@@ -589,9 +586,9 @@ def improved_cnncfc_training_space(trial, prefix):
         ),
         
         # Training parameters
-        f"{prefix}max_epochs": trial.suggest_int(
-            f"{prefix}max_epochs", 20, 100
-        ),
+        # f"{prefix}max_epochs": trial.suggest_int(
+        #     f"{prefix}max_epochs", 20, 100
+        # ),
         f"{prefix}batch_size": trial.suggest_categorical(
             f"{prefix}batch_size", [16, 32, 64, 128]
         ),
@@ -1113,9 +1110,9 @@ def adaptive_improved_cnncfc_training_space(trial, prefix, previous_best=None):
         ),
         
         # Training parameters
-        f"{prefix}max_epochs": trial.suggest_int(
-            f"{prefix}max_epochs", 15, 200
-        ),
+        # f"{prefix}max_epochs": trial.suggest_int(
+        #     f"{prefix}max_epochs", 15, 200
+        # ),
         f"{prefix}batch_size": trial.suggest_categorical(
             f"{prefix}batch_size", [8, 16, 32, 64, 128]
         ),
@@ -1208,9 +1205,9 @@ def adaptive_cnn_wiredcfc_training_space(trial, prefix, previous_best=None):
         ),
         
         # Training parameters
-        f"{prefix}max_epochs": trial.suggest_int(
-            f"{prefix}max_epochs", 15, 200
-        ),
+        # f"{prefix}max_epochs": trial.suggest_int(
+        #     f"{prefix}max_epochs", 15, 200
+        # ),
         f"{prefix}batch_size": trial.suggest_categorical(
             f"{prefix}batch_size", [8, 16, 32, 64, 128]
         ),

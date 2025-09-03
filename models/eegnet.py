@@ -2,10 +2,10 @@ import torch
 from braindecode.models import EEGNetv4
 from braindecode import EEGClassifier
 from skorch.dataset import ValidSplit
-from skorch.callbacks import EarlyStopping, LRScheduler
+from skorch.callbacks import LRScheduler
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
-from globals import get_seed
+from globals import get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS
 
 
 def create_eegnet_classifier(n_chans, n_times, n_outputs, seed=get_seed()):
@@ -28,13 +28,13 @@ def create_eegnet_classifier(n_chans, n_times, n_outputs, seed=get_seed()):
         optimizer=torch.optim.AdamW,
         optimizer__lr=1e-3,
         batch_size=64,
-        max_epochs=100,
+        max_epochs=DEFAULT_MAX_EPOCHS,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
         module__final_conv_length='auto',
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[EarlyStopping(threshold=1e-4, patience=10, load_best=True)],
+        callbacks=[get_early_stopping_callback()],
         # verbose=0
     )

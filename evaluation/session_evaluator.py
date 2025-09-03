@@ -68,7 +68,7 @@ class NoiseWithinSessionEvaluation(WithinSessionEvaluation):
             def wrapped_model_fn(n_chans, n_times, n_outputs):
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
                 base_model.train_split = None
-                base_model.max_epochs = 100
+                base_model.max_epochs = 200
                 base_model.callbacks = []
                 return base_model
         return wrapped_model_fn

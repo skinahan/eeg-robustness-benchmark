@@ -1,7 +1,6 @@
 from skorch.dataset import ValidSplit
-from globals import set_seeds
-from globals import get_seed
-from skorch.callbacks import EarlyStopping, LRScheduler
+from globals import set_seeds, get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS
+from skorch.callbacks import LRScheduler
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from braindecode import EEGClassifier
 import torch
@@ -1424,7 +1423,7 @@ def create_cnnncfc_v2_classifier(n_chans, n_times, n_outputs):
         optimizer__lr=1e-3,
         optimizer__weight_decay=1e-3,
         batch_size=64,
-        max_epochs=100,
+        max_epochs=DEFAULT_MAX_EPOCHS,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
@@ -1438,7 +1437,7 @@ def create_cnnncfc_v2_classifier(n_chans, n_times, n_outputs):
         module__max_seq_length=250,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[EarlyStopping(threshold=1e-4, patience=10, load_best=True)]
+        callbacks=[get_early_stopping_callback()]
     )
 
     if torch.cuda.is_available():
@@ -1466,7 +1465,7 @@ def create_cnnncfc_compact_classifier(n_chans, n_times, n_outputs):
         optimizer__lr=5e-4,
         optimizer__weight_decay=1e-2,
         batch_size=64,
-        max_epochs=100,
+        max_epochs=DEFAULT_MAX_EPOCHS,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
@@ -1476,7 +1475,7 @@ def create_cnnncfc_compact_classifier(n_chans, n_times, n_outputs):
         module__use_stochastic_depth=True,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[EarlyStopping(threshold=1e-4, patience=10, load_best=True)]
+        callbacks=[get_early_stopping_callback()]
     )
     
     if torch.cuda.is_available():
@@ -1511,7 +1510,7 @@ def create_cnnncp_classifier(
         optimizer__lr=lr,
         optimizer__weight_decay=weight_decay,
         batch_size=batch_size,
-        max_epochs=100,
+        max_epochs=DEFAULT_MAX_EPOCHS,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
@@ -1519,7 +1518,7 @@ def create_cnnncp_classifier(
         module__sparsity=net_sparsity,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[EarlyStopping(threshold=1e-4, patience=10, load_best=True)],
+        callbacks=[get_early_stopping_callback()],
         # verbose=0  # Suppress epoch-level output
     )
     
@@ -1572,7 +1571,7 @@ def create_cnnsmallworld_classifier(
         optimizer__lr=lr,
         optimizer__weight_decay=weight_decay,
         batch_size=batch_size,
-        max_epochs=100,
+        max_epochs=DEFAULT_MAX_EPOCHS,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
@@ -1588,7 +1587,7 @@ def create_cnnsmallworld_classifier(
         module__rewiring_prob=rewiring_prob,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[EarlyStopping(threshold=1e-4, patience=10, load_best=True)]
+        callbacks=[get_early_stopping_callback()]
     )
     
     if torch.cuda.is_available():
@@ -1633,7 +1632,7 @@ def create_cnncfc_v2_learnable_classifier(
         optimizer__lr=lr,
         optimizer__weight_decay=weight_decay,
         batch_size=batch_size,
-        max_epochs=100,
+        max_epochs=DEFAULT_MAX_EPOCHS,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
@@ -1701,7 +1700,7 @@ def create_cnnsmallworld_learnable_classifier(
         optimizer__lr=lr,
         optimizer__weight_decay=weight_decay,
         batch_size=batch_size,
-        max_epochs=100,
+        max_epochs=DEFAULT_MAX_EPOCHS,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
@@ -1763,7 +1762,7 @@ def create_cnnwiredcfc_classifier(
         optimizer__lr=lr,
         optimizer__weight_decay=weight_decay,
         batch_size=batch_size,
-        max_epochs=100,
+        max_epochs=DEFAULT_MAX_EPOCHS,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
@@ -1778,7 +1777,7 @@ def create_cnnwiredcfc_classifier(
         module__mixed_memory=mixed_memory,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[EarlyStopping(threshold=1e-4, patience=10, load_best=True)],
+        callbacks=[get_early_stopping_callback()],
     )
     
     if torch.cuda.is_available():
