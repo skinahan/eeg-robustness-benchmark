@@ -522,7 +522,7 @@ class UnifiedExperimentRunner:
             with torch.no_grad():
                 y_pred_clean = model.predict_proba(X_valid)[:, 1]
             new_clean_score = roc_auc_score(y_valid, y_pred_clean)
-            clean_score = max(clean_score, )
+            clean_score = max(clean_score, new_clean_score)
         
         results = []
         
