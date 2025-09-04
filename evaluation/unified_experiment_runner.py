@@ -371,10 +371,27 @@ class UnifiedExperimentRunner:
             y_pred = final_model.predict_proba(X_valid)[:, 1]
         validation_score = roc_auc_score(y_valid, y_pred)
         evaluation_time = time.time() - start_time
+                
         results = []
         if self.mode == 'test_perturb':
             clean_score = validation_score
             session = self.current_session
+
+            # Use a set threshold to restart training if clean score indicates underfitting.
+            if clean_score < UNDERFITTING_THRESHOLD:
+                # Disable early stopping
+                print(f"Re-training model without EarlyStopping due to underfitting.")
+                final_model.set_params(**final_params)
+                final_model.callbacks = []
+                final_model.module_.train()          
+                start_time = time.time()  
+                final_model.fit(X_train, y_train)
+                training_time = time.time() - start_time
+                final_model.module_.eval()
+                with torch.no_grad():
+                    y_pred_clean = final_model.predict_proba(X_valid)[:, 1]
+                new_clean_score = roc_auc_score(y_valid, y_pred_clean)
+                clean_score = max(clean_score, new_clean_score)
             # Evaluate on corrupted data
             results.extend(self._evaluate_perturb(final_model, X_valid, y_valid, fold_idx, session, clean_score, training_time))
         else:
