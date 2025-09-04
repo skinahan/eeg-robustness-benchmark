@@ -52,4 +52,4 @@ def get_early_stopping_callback():
 DEFAULT_MAX_EPOCHS = 200  # Increased from 100
 
 # Underfitting detection threshold
-UNDERFITTING_THRESHOLD = 0.70  # Lowered from 0.65 to catch more underfitting cases
+UNDERFITTING_THRESHOLD = 0.70  # Increased from 0.65 to catch more underfitting cases
