@@ -1,0 +1,20 @@
+{
+  "trial_number": 416,
+  "objectives": {
+    "entropy": 0.2748951825943059,
+    "curvature": 0.6506156488816908
+  },
+  "robustness_score": 0.46275541573799833,
+  "parameters": {
+    "units": 114,
+    "output_size": 16,
+    "n_modules": null,
+    "rewiring_prob": 0.5084743715052314,
+    "connection_density": null,
+    "target_clustering": 0.525566866942644,
+    "target_path_length": 3.7232801474711925,
+    "k_degree": 24,
+    "p_rewiring": 0.0004030422517501235,
+    "seed": 416
+  }
+}

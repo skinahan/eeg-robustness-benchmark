@@ -268,11 +268,11 @@ class ModularSmallWorldGraphGenerator:
         """Add sensory input connections to inter neurons."""
         # For now, we'll add virtual sensory nodes
         # In practice, these would be connected to actual input data
-        num_sensory_inputs = min(16, len(inter_neurons) // 2)
+        num_sensory_inputs = min(8, len(inter_neurons) // 2)
         
         for i in range(num_sensory_inputs):
             # Connect each sensory input to multiple inter neurons
-            num_targets = min(6, len(inter_neurons))
+            num_targets = min(2, len(inter_neurons))
             selected_targets = random.sample(inter_neurons, num_targets)
             
             for target in selected_targets:

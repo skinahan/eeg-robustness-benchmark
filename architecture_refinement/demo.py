@@ -349,69 +349,69 @@ def main():
     # Setup visualization style
     create_visualization_style()
     
-    logger.info("Starting extended architecture refinement demo with 7 objectives")
+    # logger.info("Starting extended architecture refinement demo with 7 objectives")
 
-    # Step 1: Generate candidate graphs using Watts-Strogatz flex approach
-    logger.info("Step 1: Generating candidate graphs using Watts-Strogatz flex approach")
+    # # Step 1: Generate candidate graphs using Watts-Strogatz flex approach
+    # logger.info("Step 1: Generating candidate graphs using Watts-Strogatz flex approach")
     graph_generator = ModularSmallWorldGraphGenerator(config.graph_generation, logger=logger)
     
-    # Ensure graph generator uses the same seed as the experiment
-    if hasattr(graph_generator.config, 'seed'):
-        graph_generator.config.seed = config.experiment.random_seed
-        logger.info(f"Graph generator seed set to: {config.experiment.random_seed}")
-    else:
-        # Set the seed directly if the config doesn't have it
-        np.random.seed(config.experiment.random_seed)
-        random.seed(config.experiment.random_seed)
-        logger.info(f"Random seeds set to: {config.experiment.random_seed}")
+    # # Ensure graph generator uses the same seed as the experiment
+    # if hasattr(graph_generator.config, 'seed'):
+    #     graph_generator.config.seed = config.experiment.random_seed
+    #     logger.info(f"Graph generator seed set to: {config.experiment.random_seed}")
+    # else:
+    #     # Set the seed directly if the config doesn't have it
+    #     np.random.seed(config.experiment.random_seed)
+    #     random.seed(config.experiment.random_seed)
+    #     logger.info(f"Random seeds set to: {config.experiment.random_seed}")
     
-    # Use demo-specific configuration
-    demo_config = config.graph_generation
-    demo_config.num_candidates = 5  # Increased for better search space coverage
+    # # Use demo-specific configuration
+    # demo_config = config.graph_generation
+    # demo_config.num_candidates = 5  # Increased for better search space coverage
     
-    # Use the new flex graph generation method
-    candidate_graphs = graph_generator.generate_watts_strogatz_flex_graphs(num_candidates=demo_config.num_candidates)
+    # # Use the new flex graph generation method
+    # candidate_graphs = graph_generator.generate_watts_strogatz_flex_graphs(num_candidates=demo_config.num_candidates)
     
-    logger.info(f"Generated {len(candidate_graphs)} flex candidate graphs")
+    # logger.info(f"Generated {len(candidate_graphs)} flex candidate graphs")
     
-    # Step 2: Analyze graph topology (focusing on entropy and curvature)
-    logger.info("Step 2: Analyzing graph topology for entropy and curvature metrics")
+    # # Step 2: Analyze graph topology (focusing on entropy and curvature)
+    # logger.info("Step 2: Analyzing graph topology for entropy and curvature metrics")
     topology_analyzer = TopologyAnalyzer(config, logger=logger)
     
-    # Analyze all graphs
-    graphs = [graph for graph, params in candidate_graphs]
-    topology_metrics = topology_analyzer.analyze_graph_batch(graphs)
+    # # Analyze all graphs
+    # graphs = [graph for graph, params in candidate_graphs]
+    # topology_metrics = topology_analyzer.analyze_graph_batch(graphs)
     
-    # Log some example metrics
-    if topology_metrics:
-        # Find the first valid metrics (not empty)
-        example_metrics = None
-        for metrics in topology_metrics:
-            if metrics and isinstance(metrics, dict) and len(metrics) > 0:
-                example_metrics = metrics
-                break
+    # # Log some example metrics
+    # if topology_metrics:
+    #     # Find the first valid metrics (not empty)
+    #     example_metrics = None
+    #     for metrics in topology_metrics:
+    #         if metrics and isinstance(metrics, dict) and len(metrics) > 0:
+    #             example_metrics = metrics
+    #             break
         
-        if example_metrics:
-            logger.info(f"Example metrics from first valid graph:")
-            # Focus on the two key metrics
-            entropy = example_metrics.get('degree_entropy', 0.0)
-            if isinstance(entropy, (int, float)):
-                logger.info(f"  - Degree Entropy: {entropy:.4f}")
-            else:
-                logger.info(f"  - Degree Entropy: {entropy}")
+    #     if example_metrics:
+    #         logger.info(f"Example metrics from first valid graph:")
+    #         # Focus on the two key metrics
+    #         entropy = example_metrics.get('degree_entropy', 0.0)
+    #         if isinstance(entropy, (int, float)):
+    #             logger.info(f"  - Degree Entropy: {entropy:.4f}")
+    #         else:
+    #             logger.info(f"  - Degree Entropy: {entropy}")
                 
-            curvature = example_metrics.get('avg_ricci_curvature', 0.0)
-            if isinstance(curvature, (int, float)):
-                logger.info(f"  - Ollivier-Ricci Curvature: {curvature:.4f}")
-            else:
-                logger.info(f"  - Ollivier-Ricci Curvature: {curvature}")
+    #         curvature = example_metrics.get('avg_ricci_curvature', 0.0)
+    #         if isinstance(curvature, (int, float)):
+    #             logger.info(f"  - Ollivier-Ricci Curvature: {curvature:.4f}")
+    #         else:
+    #             logger.info(f"  - Ollivier-Ricci Curvature: {curvature}")
                 
-            logger.info(f"  - Number of Nodes: {example_metrics.get('num_nodes', 'N/A')}")
-            logger.info(f"  - Number of Edges: {example_metrics.get('num_edges', 'N/A')}")
-        else:
-            logger.warning("No valid metrics found in any graph")
-    else:
-        logger.warning("No topology metrics generated")
+    #         logger.info(f"  - Number of Nodes: {example_metrics.get('num_nodes', 'N/A')}")
+    #         logger.info(f"  - Number of Edges: {example_metrics.get('num_edges', 'N/A')}")
+    #     else:
+    #         logger.warning("No valid metrics found in any graph")
+    # else:
+    #     logger.warning("No topology metrics generated")
 
     # Step 3: Run simplified 2-objective optimization (entropy, curvature)
     logger.info("Step 3: Running 2-objective optimization (entropy, curvature)")
@@ -419,10 +419,10 @@ def main():
     
     # Use demo-specific optimization configuration
     demo_opt_config = config.optimization
-    demo_opt_config.n_trials = 500  # Increased for better optimization
+    demo_opt_config.n_trials = 500
     optimization_results = optimizer.optimize(
         n_trials=demo_opt_config.n_trials,
-        timeout=1200,  # 20 minutes for demo
+        timeout=1200,
         n_jobs=1
     )
     
@@ -432,7 +432,7 @@ def main():
     logger.info("Step 4: Converting top architectures to WiredCfC format")
     
     # Get the best solutions
-    best_solutions = optimizer.get_best_solutions(n_solutions=5)
+    best_solutions = optimizer.get_best_solutions(n_solutions=10)
     
     if not best_solutions:
         logger.warning("No best solutions found for architecture conversion")
@@ -480,8 +480,8 @@ def main():
                 logger.warning(f"Invalid output_size for trial {trial_number}: {output_size} (should be 2-20)")
                 continue
             
-            if k_degree < 2 or k_degree > units // 2:
-                logger.warning(f"Invalid k_degree for trial {trial_number}: {k_degree} (should be 2-{units//2})")
+            if k_degree < 2 or k_degree > units:
+                logger.warning(f"Invalid k_degree for trial {trial_number}: {k_degree} (should be 2-{units})")
                 continue
             
             if p_rewiring < 0.0 or p_rewiring > 1.0:
@@ -589,8 +589,8 @@ def main():
     optimizer.export_best_graphs(str(Path(config.logging.output_dir) / "best_graphs"))
 
     # Step 6: Generate comprehensive analysis plots
-    logger.info("Step 6: Generating comprehensive analysis plots")
-    create_summary_plots(topology_metrics, optimization_results, plots_dir, logger)
+    # logger.info("Step 6: Generating comprehensive analysis plots")
+    # create_summary_plots(topology_metrics, optimization_results, plots_dir, logger)
     
     # Print experiment summary
     print_experiment_summary(config, optimization_results, logger)

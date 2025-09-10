@@ -11,14 +11,14 @@ from pathlib import Path
 class GraphGenerationConfig:
     """Configuration for graph generation parameters."""
     # Network size parameters
-    min_units: int = 16
-    max_units: int = 64
+    min_units: int = 10
+    max_units: int = 128
     min_output_size: int = 4
-    max_output_size: int = 16
+    max_output_size: int = 32
     
     # Modular structure parameters
     min_modules: int = 1
-    max_modules: int = 8
+    max_modules: int = 16
     min_module_size: int = 2
     
     # Small-world parameters
@@ -30,12 +30,12 @@ class GraphGenerationConfig:
     max_connection_density: float = 0.9
 
     min_k_degree: int = 2
-    max_k_degree: int = 6
+    max_k_degree: int = 9
     min_p_rewiring: float = 0.0
     max_p_rewiring: float = 1.0
     
     # Generation strategy
-    num_candidates: int = 1000
+    num_candidates: int = 500
     seed: Optional[int] = 42
 
 @dataclass
@@ -60,10 +60,10 @@ class TopologyMetricsConfig:
 
 @dataclass
 class OptimizationConfig:
-    n_trials: int = 100
-    timeout: int = 3600
+    n_trials: int = 1000
+    timeout: int = 36000
     n_jobs: int = 1
-    n_pareto_solutions: int = 10
+    n_pareto_solutions: int = 30
     
     # Objective weights for the 7-objective optimization
     entropy_weight: float = 0.15
@@ -90,7 +90,7 @@ class OptimizationConfig:
     
     # Watts-Strogatz specific parameters
     min_k_degree: int = 2
-    max_k_degree: int = 6
+    max_k_degree: int = 24
     min_p_rewiring: float = 0.0
     max_p_rewiring: float = 1.0
 
@@ -98,7 +98,7 @@ class OptimizationConfig:
 class ArchitectureConfig:
     """Configuration for WiredCfC architecture conversion."""
     # Model parameters
-    input_size: int = 64
+    input_size: int = 16
     hidden_size: int = 64
     output_size: int = 8
     

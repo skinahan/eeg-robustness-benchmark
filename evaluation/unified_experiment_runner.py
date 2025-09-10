@@ -93,7 +93,8 @@ class UnifiedExperimentRunner:
         
         # Validate eval_mode
         if eval_mode == "CrossSubject":
-            raise NotImplementedError("CrossSubject evaluation mode is not yet implemented")
+            # CrossSubject evaluation is now implemented
+            pass
         
         # Validate noise parameters for noise-aware modes
         noise_requiring_modes = ["augment", "perturb", "augment_notune", "perturb_notune", "test_perturb"]
@@ -240,6 +241,13 @@ class UnifiedExperimentRunner:
             cv_metadata = {
                 "cv_type": "LeaveOneGroupOut",
                 "split_level": "cross_session"
+            }
+        elif self.eval_mode == "CrossSubject":
+            # Use LeaveOneGroupOut for cross-subject evaluation
+            cv_splitter = LeaveOneGroupOut()
+            cv_metadata = {
+                "cv_type": "LeaveOneGroupOut",
+                "split_level": "cross_subject"
             }
         else:
             raise ValueError(f"Unsupported eval_mode: {self.eval_mode}")
@@ -453,13 +461,13 @@ class UnifiedExperimentRunner:
         trained_model.module_.eval()
         with torch.no_grad():
             for noise_type in noise_types:
-                min_intensity = 10.0
-                max_intensity = 90.0
-                num_steps = 9
-                if noise_type == 'gaussian':
-                    min_intensity = 1.0
-                    max_intensity = 20.0
-                    num_steps = 6            
+                min_intensity = 1.0
+                max_intensity = 50.0
+                num_steps = 20
+                # if noise_type == 'gaussian':
+                #     min_intensity = 1.0
+                #     max_intensity = 20.0
+                #     num_steps = 19            
                 intensities = np.linspace(start=min_intensity, stop=max_intensity, num=num_steps)            
                 for intensity in intensities:
                     # Create corrupted validation data
@@ -562,56 +570,34 @@ class UnifiedExperimentRunner:
         print(f"  Tune: {self.tune}")
         
         all_subject_results = []
-        for subject in self.subjects:
-            self.current_subject = subject
-            # Get data
-            X, y, metadata = self.paradigm.get_data(self.dataset_obj, subjects=[subject])
+        
+        if self.eval_mode == "CrossSubject":
+            # For CrossSubject, get data from all subjects at once
+            X, y, metadata = self.paradigm.get_data(self.dataset_obj, subjects=self.subjects)
             y_encoded = LabelEncoder().fit_transform(y)
             
             # Prepare cross-validation
             cv_splitter, cv_metadata = self.prepare_data_cv()
             
-            # Run cross-validation
-            fold_indices = []
-            fold_metadata = []
-            if self.eval_mode == "CrossSession":
-                # For cross-session, use LeaveOneGroupOut with session groups
-                groups = metadata['session'].values
-                folds = list(enumerate(cv_splitter.split(X, y_encoded, groups=groups)))
-                for fold_idx, (train_idx, valid_idx) in folds:
-                    session = metadata.iloc[valid_idx]['session'].values[0]
-                    fold_indices.append((fold_idx, (train_idx, valid_idx), session))
-                    fold_metadata.append(metadata.iloc[train_idx])
-            elif self.eval_mode == "WithinSession":
-                groups = None                
-                # WithinSession indices will be different than CrossSession indices, since we iterate over sessions rather than entire dataset.
-                # Store the adjusted indices for later evaluation
-                for session in metadata['session'].unique():
-                    session_idx = metadata['session'] == session
-                    # Sessions are continuous 'blocks', so the first index will determine the offset for indexing into the original arrays.
-                    first_idx = session_idx.index[0]
-                    X_session, y_session = X[session_idx], y_encoded[session_idx]
-                    session_metadata = metadata[session_idx]
-                    # We are splitting over X_session and y_session, so we need to adjust the indices accordingly when storing.
-                    folds = list(enumerate(cv_splitter.split(X_session, y_session)))
-                    for fold_idx, (train_idx, valid_idx) in folds:
-                        # Remember that the train and valid indices are relative to X_session and y_session, so we need to add the first_idx to get the correct indices into the original X and y_encoded arrays.
-                        train_idx += first_idx
-                        valid_idx += first_idx
-                        # Important note: Always store the 'session' as the session being used for evaluation / validation.
-                        fold_indices.append((fold_idx, (train_idx, valid_idx), session))
-                        fold_metadata.append(session_metadata.iloc[train_idx])
+            # Run cross-validation with subject groups
+            groups = metadata['subject'].values
+            folds = list(enumerate(cv_splitter.split(X, y_encoded, groups=groups)))
             
             all_results = []
-            for fold_idx, (train_idx, valid_idx), session in fold_indices:
+            for fold_idx, (train_idx, valid_idx) in folds:
+                # Get the subject that was left out for this fold
+                left_out_subject = metadata.iloc[valid_idx]['subject'].values[0]
+                session = f"subject_{left_out_subject}"
+                
                 X_train = X[train_idx]
                 y_train = y_encoded[train_idx]
                 X_valid = X[valid_idx]
                 y_valid = y_encoded[valid_idx]
-                metadata_train = fold_metadata[fold_idx]            
+                metadata_train = metadata.iloc[train_idx]
+                
                 fold_results = self._evaluate_cv_fold(X_train, y_train, X_valid, y_valid, fold_idx, cv_metadata, session, metadata_train)
                 all_results.extend(fold_results)
-                    
+            
             # Convert results to DataFrame
             results_df = pd.DataFrame(all_results)
             
@@ -619,7 +605,6 @@ class UnifiedExperimentRunner:
             results_df = self._aggregate_fold_results(results_df)
             
             # Add experiment metadata
-            results_df['subject'] = subject
             results_df['model'] = self.model
             results_df['dataset'] = self.dataset
             results_df['mode'] = self.mode
@@ -640,10 +625,92 @@ class UnifiedExperimentRunner:
                 if k in row_headers and k not in results_df.columns:
                     results_df[k] = v
 
-            all_subject_results.append(results_df)            
-            # Clean up HDF5 path
-            if os.path.isdir(self.hdf5_path):
-                shutil.rmtree(self.hdf5_path)
+            all_subject_results.append(results_df)
+            
+        else:
+            # For WithinSession and CrossSession, process subjects individually
+            for subject in self.subjects:
+                self.current_subject = subject
+                # Get data
+                X, y, metadata = self.paradigm.get_data(self.dataset_obj, subjects=[subject])
+                y_encoded = LabelEncoder().fit_transform(y)
+                
+                # Prepare cross-validation
+                cv_splitter, cv_metadata = self.prepare_data_cv()
+                
+                # Run cross-validation
+                fold_indices = []
+                fold_metadata = []
+                if self.eval_mode == "CrossSession":
+                    # For cross-session, use LeaveOneGroupOut with session groups
+                    groups = metadata['session'].values
+                    folds = list(enumerate(cv_splitter.split(X, y_encoded, groups=groups)))
+                    for fold_idx, (train_idx, valid_idx) in folds:
+                        session = metadata.iloc[valid_idx]['session'].values[0]
+                        fold_indices.append((fold_idx, (train_idx, valid_idx), session))
+                        fold_metadata.append(metadata.iloc[train_idx])
+                elif self.eval_mode == "WithinSession":
+                    groups = None                
+                    # WithinSession indices will be different than CrossSession indices, since we iterate over sessions rather than entire dataset.
+                    # Store the adjusted indices for later evaluation
+                    for session in metadata['session'].unique():
+                        session_idx = metadata['session'] == session
+                        # Sessions are continuous 'blocks', so the first index will determine the offset for indexing into the original arrays.
+                        first_idx = session_idx.index[0]
+                        X_session, y_session = X[session_idx], y_encoded[session_idx]
+                        session_metadata = metadata[session_idx]
+                        # We are splitting over X_session and y_session, so we need to adjust the indices accordingly when storing.
+                        folds = list(enumerate(cv_splitter.split(X_session, y_session)))
+                        for fold_idx, (train_idx, valid_idx) in folds:
+                            # Remember that the train and valid indices are relative to X_session and y_session, so we need to add the first_idx to get the correct indices into the original X and y_encoded arrays.
+                            train_idx += first_idx
+                            valid_idx += first_idx
+                            # Important note: Always store the 'session' as the session being used for evaluation / validation.
+                            fold_indices.append((fold_idx, (train_idx, valid_idx), session))
+                            fold_metadata.append(session_metadata.iloc[train_idx])
+                
+                all_results = []
+                for fold_idx, (train_idx, valid_idx), session in fold_indices:
+                    X_train = X[train_idx]
+                    y_train = y_encoded[train_idx]
+                    X_valid = X[valid_idx]
+                    y_valid = y_encoded[valid_idx]
+                    metadata_train = fold_metadata[fold_idx]            
+                    fold_results = self._evaluate_cv_fold(X_train, y_train, X_valid, y_valid, fold_idx, cv_metadata, session, metadata_train)
+                    all_results.extend(fold_results)
+                        
+                # Convert results to DataFrame
+                results_df = pd.DataFrame(all_results)
+                
+                # Aggregate fold results according to eval_mode and mode
+                results_df = self._aggregate_fold_results(results_df)
+                
+                # Add experiment metadata
+                results_df['subject'] = subject
+                results_df['model'] = self.model
+                results_df['dataset'] = self.dataset
+                results_df['mode'] = self.mode
+                results_df['eval_mode'] = self.eval_mode
+                results_df['seed'] = self.seed
+                # For test_perturb mode, we don't want to override the noise_type and intensity values
+                if self.mode != 'test_perturb':
+                    if self.noise_dict:
+                        results_df['intensity'] = self.noise_dict['intensity']
+                        results_df['noise_type'] = self.noise_dict['noise_type']
+                results_df['tune'] = self.tune
+
+                n_chans, n_times = self._determine_data_dimensions()
+                model_instance = self._create_model(n_chans, n_times)
+                row_headers = get_all_model_params(self.model)
+                config = model_instance.get_params()
+                for k, v in config.items():
+                    if k in row_headers and k not in results_df.columns:
+                        results_df[k] = v
+
+                all_subject_results.append(results_df)            
+                # Clean up HDF5 path
+                if os.path.isdir(self.hdf5_path):
+                    shutil.rmtree(self.hdf5_path)
         
         all_results_df = pd.concat(all_subject_results)
         # Save results
@@ -738,6 +805,12 @@ class UnifiedExperimentRunner:
         elif self.eval_mode == "CrossSession":
             # simply drop the fold_idx column
             results_df = results_df.drop(columns=['fold_idx'])
+            return results_df
+        elif self.eval_mode == "CrossSubject":
+            # For CrossSubject, simply drop the fold_idx column
+            # Results are already per subject (left-out subject), so no further aggregation needed
+            if 'fold_idx' in results_df.columns:
+                results_df = results_df.drop(columns=['fold_idx'])
             return results_df
         else:
             return results_df

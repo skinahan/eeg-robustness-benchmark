@@ -268,7 +268,7 @@ class WiredCfCConverter:
         
         for edge in graph.edges():
             u, v = edge
-            weight = graph[u][v].get('weight', 1.0)
+            weight = graph[u][v].get('weight', 0.1)
             original_connections += 1
             
             # Get mapped indices
