@@ -1,5 +1,5 @@
-from moabb.datasets import BNCI2014_001
-from moabb.paradigms import MotorImagery
+from moabb.datasets import BNCI2014_001, Lee2019_SSVEP
+from moabb.paradigms import MotorImagery, SSVEP
 from models.eegnet import create_eegnet_classifier
 from models.reegnet import create_reegnet_classifier
 from models.cnnncp import create_cnnncp_classifier, create_cnnncfc_v2_classifier, create_cnnncfc_compact_classifier, create_cnnsmallworld_classifier, create_cnnwiredcfc_classifier
@@ -22,6 +22,15 @@ DEFAULT_PARADIGM = MotorImagery(
         baseline=None,
         resample=None,
         n_classes=2
+    )
+
+# SSVEP paradigm for Lee2019_SSVEP dataset
+DEFAULT_SSVEP_PARADIGM = SSVEP(
+        n_classes=4,
+        tmin=0.0,
+        tmax=4.0,
+        baseline=None,
+        resample=None
     )
 DEFAULT_SEED = 42
 
@@ -194,14 +203,24 @@ try:
 except Exception as e:
     print(f"⚠️ Could not initialize default architectures: {e}")
 
-def get_paradigm(resample=None):
-    return MotorImagery(
-        events=["left_hand", "right_hand"],
-        fmin=8, fmax=35,
-        tmin=0.0, tmax=None,
-        baseline=None,
-        resample=resample,
-        n_classes=2
-    )
+def get_paradigm(resample=None, dataset="BNCI2014_001"):
+    """Get the appropriate paradigm based on dataset."""
+    if dataset == "Lee2019_SSVEP":
+        return SSVEP(
+            n_classes=4,
+            tmin=0.0,
+            tmax=4.0,
+            baseline=None,
+            resample=resample
+        )
+    else:  # Default to MotorImagery for BNCI2014_001
+        return MotorImagery(
+            events=["left_hand", "right_hand"],
+            fmin=8, fmax=35,
+            tmin=0.0, tmax=None,
+            baseline=None,
+            resample=resample,
+            n_classes=2
+        )
 
 MODEL_REGISTRY = get_model_registry()

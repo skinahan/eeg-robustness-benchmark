@@ -34,7 +34,10 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
         sessions_to_check = ['0train', '1test']
                         
         for session in sessions_to_check:
-            out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode)
+            # Determine paradigm and dataset for path creation
+            paradigm = "SSVEP" if "SSVEP" in str(model_name) or "ssvep" in str(model_name).lower() else "MotorImagery"
+            dataset = "Lee2019_SSVEP" if "SSVEP" in str(model_name) or "ssvep" in str(model_name).lower() else "BNCI2014_001"
+            out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
             if noise_type is not None and intensity is not None:
                 filename_suffix = f"_{noise_type}_{intensity}"
             else:
@@ -54,13 +57,13 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
     return False
 
 
-def log_all_subjects(results, subject_list, model_name, mode, noise_type, intensity, seed, eval_mode='WithinSessionEvaluation'):
+def log_all_subjects(results, subject_list, model_name, mode, noise_type, intensity, seed, eval_mode='WithinSessionEvaluation', paradigm='MotorImagery', dataset='BNCI2014_001'):
     """Log results for all subjects to individual CSV files."""
     for subj in subject_list:        
         subject_df = results[results['subject'] == int(subj)]
         for session in subject_df['session'].unique():
             session_df = subject_df[subject_df['session'] == session]
-            out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode)
+            out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
             os.makedirs(out_dir, exist_ok=True)
             if noise_type is not None and intensity is not None:
                 filename_suffix = f"_{noise_type}_{intensity}" 

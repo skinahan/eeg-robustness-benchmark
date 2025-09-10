@@ -46,7 +46,7 @@ from utils import create_output_path, create_hdf5_model_path
 from evaluation.experiment_utils import check_skip_eval, log_all_subjects, collect_all_results
 
 # Import MOABB components
-from moabb.datasets import BNCI2014_001
+from moabb.datasets import BNCI2014_001, Lee2019_SSVEP
 from moabb.evaluations import WithinSessionEvaluation, CrossSessionEvaluation
 from moabb.evaluations.utils import create_save_path, save_model_cv, save_model_list
 from mne.epochs import BaseEpochs
@@ -123,7 +123,11 @@ class UnifiedExperimentRunner:
         if self.dataset == "BNCI2014_001":
             self.dataset_obj = BNCI2014_001()
             self.dataset_obj.subject_list = self.subjects
-            self.paradigm = get_paradigm(resample=None)  # Will be set dynamically
+            self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
+        elif self.dataset == "Lee2019_SSVEP":
+            self.dataset_obj = Lee2019_SSVEP()
+            self.dataset_obj.subject_list = self.subjects
+            self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
         else:
             raise ValueError(f"Unsupported dataset: {self.dataset}")
     
@@ -139,12 +143,15 @@ class UnifiedExperimentRunner:
         
         # Create unique HDF5 path
         unique_id = uuid.uuid4().hex[:8]
+        paradigm_name = "SSVEP" if self.dataset == "Lee2019_SSVEP" else "MotorImagery"
         self.hdf5_path = create_hdf5_model_path(
             self.model, 
             self.seed, 
             '0train', 
             self.mode, 
-            session_type=session_type
+            session_type=session_type,
+            paradigm=paradigm_name,
+            dataset=self.dataset
         )
         
         # Add noise-specific subdirectory if applicable
@@ -172,8 +179,15 @@ class UnifiedExperimentRunner:
         
         return n_chans, n_times
     
-    def _create_model(self, n_chans: int, n_times: int, n_outputs: int = 2):
+    def _create_model(self, n_chans: int, n_times: int, n_outputs: int = None):
         """Create model instance with proper dimensions."""
+        # Determine number of outputs based on dataset
+        if n_outputs is None:
+            if self.dataset == "Lee2019_SSVEP":
+                n_outputs = 4  # SSVEP has 4 classes
+            else:
+                n_outputs = 2  # MotorImagery has 2 classes
+        
         model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
         
         # Set common model parameters
@@ -190,7 +204,9 @@ class UnifiedExperimentRunner:
             return self.model_fn
         
         if self.mode in ['perturb', 'perturb_notune']:
-            def wrapped_model_fn(n_chans, n_times, n_outputs):
+            def wrapped_model_fn(n_chans, n_times, n_outputs=None):
+                if n_outputs is None:
+                    n_outputs = 4 if self.dataset == "Lee2019_SSVEP" else 2
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
                 base_model.max_epochs = 200
                 return TrainOnlyNoiseClassifier(
@@ -200,7 +216,9 @@ class UnifiedExperimentRunner:
                     seed=self.seed
                 )
         elif self.mode in ['augment', 'augment_notune']:
-            def wrapped_model_fn(n_chans, n_times, n_outputs):
+            def wrapped_model_fn(n_chans, n_times, n_outputs=None):
+                if n_outputs is None:
+                    n_outputs = 4 if self.dataset == "Lee2019_SSVEP" else 2
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
                 base_model.max_epochs = 200
                 return ConcatenatedNoiseAugmenter(
@@ -210,7 +228,9 @@ class UnifiedExperimentRunner:
                     seed=self.seed
                 )
         elif self.mode == 'test_perturb':
-            def wrapped_model_fn(n_chans, n_times, n_outputs):
+            def wrapped_model_fn(n_chans, n_times, n_outputs=None):
+                if n_outputs is None:
+                    n_outputs = 4 if self.dataset == "Lee2019_SSVEP" else 2
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
                 base_model.max_epochs = 200
                 return base_model
@@ -376,8 +396,15 @@ class UnifiedExperimentRunner:
         start_time = time.time()
         final_model.module_.eval()
         with torch.no_grad():
-            y_pred = final_model.predict_proba(X_valid)[:, 1]
-        validation_score = roc_auc_score(y_valid, y_pred)
+            y_pred_proba = final_model.predict_proba(X_valid)
+            # Handle both binary and multiclass cases
+            if self.dataset == "Lee2019_SSVEP":
+                # For SSVEP (4 classes), use all probabilities
+                validation_score = roc_auc_score(y_valid, y_pred_proba, multi_class='ovr')
+            else:
+                # For MotorImagery (2 classes), use second column
+                y_pred = y_pred_proba[:, 1]
+                validation_score = roc_auc_score(y_valid, y_pred)
         evaluation_time = time.time() - start_time
                 
         results = []
@@ -397,8 +424,15 @@ class UnifiedExperimentRunner:
                 training_time = time.time() - start_time
                 final_model.module_.eval()
                 with torch.no_grad():
-                    y_pred_clean = final_model.predict_proba(X_valid)[:, 1]
-                new_clean_score = roc_auc_score(y_valid, y_pred_clean)
+                    y_pred_proba = final_model.predict_proba(X_valid)
+                    # Handle both binary and multiclass cases
+                    if self.dataset == "Lee2019_SSVEP":
+                        # For SSVEP (4 classes), use all probabilities
+                        new_clean_score = roc_auc_score(y_valid, y_pred_proba, multi_class='ovr')
+                    else:
+                        # For MotorImagery (2 classes), use second column
+                        y_pred_clean = y_pred_proba[:, 1]
+                        new_clean_score = roc_auc_score(y_valid, y_pred_clean)
                 clean_score = max(clean_score, new_clean_score)
             # Evaluate on corrupted data
             results.extend(self._evaluate_perturb(final_model, X_valid, y_valid, fold_idx, session, clean_score, training_time))
@@ -441,8 +475,15 @@ class UnifiedExperimentRunner:
         start_time = time.time()
         model.module_.eval()
         with torch.no_grad():
-            y_pred = model.predict_proba(X_valid)[:, 1]
-        validation_score = roc_auc_score(y_valid, y_pred)
+            y_pred_proba = model.predict_proba(X_valid)
+            # Handle both binary and multiclass cases
+            if self.dataset == "Lee2019_SSVEP":
+                # For SSVEP (4 classes), use all probabilities
+                validation_score = roc_auc_score(y_valid, y_pred_proba, multi_class='ovr')
+            else:
+                # For MotorImagery (2 classes), use second column
+                y_pred = y_pred_proba[:, 1]
+                validation_score = roc_auc_score(y_valid, y_pred)
         evaluation_time = time.time() - start_time
         
         return {
@@ -481,9 +522,16 @@ class UnifiedExperimentRunner:
                     
                     # Evaluate on corrupted data
                     start_time = time.time()                
-                    y_pred_corrupted = trained_model.predict_proba(X_valid_corrupted)[:, 1]
+                    y_pred_proba_corrupted = trained_model.predict_proba(X_valid_corrupted)
+                    # Handle both binary and multiclass cases
+                    if self.dataset == "Lee2019_SSVEP":
+                        # For SSVEP (4 classes), use all probabilities
+                        corrupted_score = roc_auc_score(y_valid, y_pred_proba_corrupted, multi_class='ovr')
+                    else:
+                        # For MotorImagery (2 classes), use second column
+                        y_pred_corrupted = y_pred_proba_corrupted[:, 1]
+                        corrupted_score = roc_auc_score(y_valid, y_pred_corrupted)
                     evaluation_time = time.time() - start_time
-                    corrupted_score = roc_auc_score(y_valid, y_pred_corrupted)
                     
                     # Calculate relative drop
                     relative_drop = (clean_score - corrupted_score) / clean_score if clean_score > 0 else 0.0
@@ -530,8 +578,15 @@ class UnifiedExperimentRunner:
         start_time = time.time()
         model.module_.eval()
         with torch.no_grad():
-            y_pred_clean = model.predict_proba(X_valid)[:, 1]
-        clean_score = roc_auc_score(y_valid, y_pred_clean)
+            y_pred_proba = model.predict_proba(X_valid)
+            # Handle both binary and multiclass cases
+            if self.dataset == "Lee2019_SSVEP":
+                # For SSVEP (4 classes), use all probabilities
+                clean_score = roc_auc_score(y_valid, y_pred_proba, multi_class='ovr')
+            else:
+                # For MotorImagery (2 classes), use second column
+                y_pred_clean = y_pred_proba[:, 1]
+                clean_score = roc_auc_score(y_valid, y_pred_clean)
         evaluation_time = time.time() - start_time
 
         # Use a set threshold to restart training if clean score indicates underfitting.
@@ -545,8 +600,15 @@ class UnifiedExperimentRunner:
             training_time = time.time() - start_time
             model.module_.eval()
             with torch.no_grad():
-                y_pred_clean = model.predict_proba(X_valid)[:, 1]
-            new_clean_score = roc_auc_score(y_valid, y_pred_clean)
+                y_pred_proba = model.predict_proba(X_valid)
+                # Handle both binary and multiclass cases
+                if self.dataset == "Lee2019_SSVEP":
+                    # For SSVEP (4 classes), use all probabilities
+                    new_clean_score = roc_auc_score(y_valid, y_pred_proba, multi_class='ovr')
+                else:
+                    # For MotorImagery (2 classes), use second column
+                    y_pred_clean = y_pred_proba[:, 1]
+                    new_clean_score = roc_auc_score(y_valid, y_pred_clean)
             clean_score = max(clean_score, new_clean_score)
         
         results = []
@@ -835,6 +897,9 @@ class UnifiedExperimentRunner:
             # Make sure the tuned and non-tuned modes are not mixed when creating output paths.
             mode_str = f"{self.mode}_tune"
 
+        # Determine paradigm for log_all_subjects
+        paradigm_name = "SSVEP" if self.dataset == "Lee2019_SSVEP" else "MotorImagery"
+        
         log_all_subjects(
             results=results_df,
             subject_list=self.subjects,
@@ -843,7 +908,9 @@ class UnifiedExperimentRunner:
             noise_type=self.noise_dict['noise_type'] if self.noise_dict else None,
             intensity=intensity_param,
             seed=self.seed,
-            eval_mode=eval_mode_str
+            eval_mode=eval_mode_str,
+            paradigm=paradigm_name,
+            dataset=self.dataset
         )
 
 
@@ -851,7 +918,7 @@ def main():
     """Main entry point for the unified experiment runner."""
     parser = argparse.ArgumentParser(description="Unified EEG Experiment Runner")
     parser.add_argument("--model", type=str, required=True, choices=list(MODEL_REGISTRY.keys()))
-    parser.add_argument("--dataset", type=str, default="BNCI2014_001", choices=["BNCI2014_001"])
+    parser.add_argument("--dataset", type=str, default="BNCI2014_001", choices=["BNCI2014_001", "Lee2019_SSVEP"])
     parser.add_argument("--subjects", type=int, nargs="+", required=True)
     parser.add_argument("--mode", type=str, required=True, 
                        choices=["baseline", "tune", "augment", "perturb", "augment_notune", "perturb_notune", "test_perturb", "multirun", "aggregate_only"])

@@ -637,6 +637,40 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
             )            
         return data_aug
 
+    def _generate_channel_names(self, n_channels):
+        """
+        Generate appropriate channel names based on the number of channels.
+        
+        Args:
+            n_channels (int): Number of channels in the dataset
+            
+        Returns:
+            list: List of channel names
+        """
+        if n_channels == 22:
+            # BNCI2014_001 dataset
+            return [
+                'Fz', 'FC3', 'FC1', 'FCz', 'FC2', 'FC4',
+                'C5', 'C3', 'C1', 'Cz', 'C2', 'C4', 'C6',
+                'CP3', 'CP1', 'CPz', 'CP2', 'CP4',
+                'P1', 'Pz', 'P2', 'POz'
+            ]
+        elif n_channels == 62:
+            # Lee2019_SSVEP dataset (62 EEG channels following 10-20 system)
+            return [
+                'Fp1', 'Fp2', 'F3', 'F4', 'C3', 'C4', 'P3', 'P4', 'O1', 'O2',
+                'F7', 'F8', 'T3', 'T4', 'T5', 'T6', 'Fz', 'Cz', 'Pz', 'Oz',
+                'FC1', 'FC2', 'CP1', 'CP2', 'FC5', 'FC6', 'CP5', 'CP6',
+                'FC3', 'FC4', 'CP3', 'CP4', 'C1', 'C2', 'C5', 'C6',
+                'P1', 'P2', 'P5', 'P6', 'PO3', 'PO4', 'PO7', 'PO8',
+                'F1', 'F2', 'AF3', 'AF4', 'AF7', 'AF8',
+                'FT7', 'FT8', 'TP7', 'TP8', 'PO9', 'PO10', 'P9', 'P10',
+                'F9', 'F10', 'FT9', 'FT10'
+            ]
+        else:
+            # Generic fallback - generate channel names
+            return [f'EEG{i+1:03d}' for i in range(n_channels)]
+
     def _apply_realistic_eog_noise(self, data):
         """
         Apply realistic EOG artifacts using the learned generic template.
@@ -646,12 +680,8 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         """
         n_epochs, n_channels, n_times = data.shape
         
-        ch_names = [
-            'Fz', 'FC3', 'FC1', 'FCz', 'FC2', 'FC4',
-            'C5', 'C3', 'C1', 'Cz', 'C2', 'C4', 'C6',
-            'CP3', 'CP1', 'CPz', 'CP2', 'CP4',
-            'P1', 'Pz', 'P2', 'POz'
-        ]
+        # Generate channel names based on the number of channels
+        ch_names = self._generate_channel_names(n_channels)
         info = mne.create_info(ch_names=ch_names, sfreq=250, ch_types=['eeg'] * n_channels)
         info.set_montage(self.montage_name)
         
