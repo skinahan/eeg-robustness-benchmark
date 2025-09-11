@@ -959,40 +959,41 @@ def main():
     print(f"Script started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
     warnings.filterwarnings("ignore", message="warnEpochs", category=UserWarning)
-    
+    all_models = MODEL_REGISTRY.keys()
+    limited_models = ["eegnet", "reegnet", "cnn_ncp"]
     if args.mode == 'multirun':
-        for model in MODEL_REGISTRY.keys():
-            for eval_mode in ["WithinSession"]:
-                for mode in ["test_perturb"]:
-                    for seed in [100, 200, 300, 400, 500]:
-                        # Run the no-tune versions first, these are fastest
-                        if not args.overwrite:
-                            mode_str = mode
-                            if args.tune and mode != "tune":
-                                # Make sure the tuned and non-tuned modes are not mixed when creating output paths.
-                                mode_str = f"{mode_str}_tune"
-                            if check_skip_eval(model, seed, args.subjects, mode_str, args.noise_type, args.intensity, eval_mode):
-                                continue
-                        try:
-                            runner = UnifiedExperimentRunner(
-                                model=model,
-                                dataset=args.dataset,
-                                subjects=args.subjects,
-                                mode=mode,
-                                eval_mode=eval_mode,
-                                seed=seed,
-                                noise_type=args.noise_type,
-                                intensity=args.intensity,
-                                tune=args.tune,
-                                overwrite=args.overwrite
-                            )
-                            results = runner.run_experiment()
-                            print(f"Experiment completed successfully. Results shape: {results.shape}")
-                        except Exception as e:
-                            print(f"Experiment failed: {e}")
-                            import traceback
-                            traceback.print_exc()
-                            sys.exit(1)
+        for model in limited_models:
+            eval_mode = args.eval_mode
+            for mode in ["test_perturb"]:
+                for seed in [100, 200, 300, 400, 500]:
+                    # Run the no-tune versions first, these are fastest
+                    if not args.overwrite:
+                        mode_str = mode
+                        if args.tune and mode != "tune":
+                            # Make sure the tuned and non-tuned modes are not mixed when creating output paths.
+                            mode_str = f"{mode_str}_tune"
+                        if check_skip_eval(model, seed, args.subjects, mode_str, args.noise_type, args.intensity, eval_mode):
+                            continue
+                    try:
+                        runner = UnifiedExperimentRunner(
+                            model=model,
+                            dataset=args.dataset,
+                            subjects=args.subjects,
+                            mode=mode,
+                            eval_mode=eval_mode,
+                            seed=seed,
+                            noise_type=args.noise_type,
+                            intensity=args.intensity,
+                            tune=args.tune,
+                            overwrite=args.overwrite
+                        )
+                        results = runner.run_experiment()
+                        print(f"Experiment completed successfully. Results shape: {results.shape}")
+                    except Exception as e:
+                        print(f"Experiment failed: {e}")
+                        import traceback
+                        traceback.print_exc()
+                        sys.exit(1)
     else:
         # Check if we should skip evaluation
         if not args.overwrite:
