@@ -2,16 +2,7 @@
 
 import mne
 # Motor Imagery Datasets
-from moabb.datasets import BNCI2014_001
-from moabb.datasets import BNCI2014_004
-from moabb.datasets import BNCI2015_001
-from moabb.datasets import Lee2019_MI
-from moabb.datasets import Zhou2016
-# P300
-from moabb.datasets import BNCI2014_009
-from moabb.datasets import EPFLP300
-# SSVEP
-from moabb.datasets import Lee2019_SSVEP
+from moabb.datasets import BI2015a, BNCI2014_001, Lee2019_SSVEP
 
 def download_dataset(dataset):
     print(f"Starting dataset {dataset.code} download...")
@@ -26,17 +17,12 @@ def download_dataset(dataset):
 def download_bnci2014_001():
     dataset = BNCI2014_001()
     return download_dataset(dataset)
-
-def download_bnci2014_004():
-    dataset = BNCI2014_004()
-    return download_dataset(dataset)
-
-def download_bnci2014_009():
-    dataset = BNCI2014_009()
-    return download_dataset(dataset)
-
 def download_lee2019_SSVEP():
     dataset = Lee2019_SSVEP()
+    return download_dataset(dataset)
+
+def download_BI2015a():
+    dataset = BI2015a()
     return download_dataset(dataset)
 
 if __name__ == "__main__":
