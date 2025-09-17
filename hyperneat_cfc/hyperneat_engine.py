@@ -63,12 +63,50 @@ class HyperNEATEvolutionEngine:
         os.makedirs(output_dir, exist_ok=True)
     
     def initialize_population(self):
-        """Initialize the population with random genomes"""
+        """Initialize the population with diverse random genomes"""
         self.logger.info(f"Initializing population of size {self.population_size}")
+        
+        # Determine CPPN input size based on substrate dimensions
+        sample_cell = self.substrate.cells[0] if self.substrate.cells else None
+        if sample_cell:
+            if hasattr(sample_cell, 'z'):
+                # 3D substrate: [x1, y1, z1, x2, y2, z2]
+                cppn_input_size = 6
+            elif hasattr(sample_cell, 'y'):
+                # 2D substrate: [x1, y1, x2, y2]
+                cppn_input_size = 4
+            else:
+                # 1D substrate: [x1, x2]
+                cppn_input_size = 2
+        else:
+            # Default to 2D
+            cppn_input_size = 4
+        
+        # Define parameter ranges for diverse initialization - encouraging sparsity
+        param_ranges = {
+            'input_nodes': [cppn_input_size],  # Dynamic based on substrate
+            'hidden_nodes': [2, 3, 4, 5, 6],  # Smaller hidden networks
+            'output_nodes': [1, 2],  # Fewer output nodes
+            'max_connections': [5, 8, 10, 12, 15],  # Much fewer connections
+            'proj_size': [None, 2],  # Will be validated
+            'mode': ["default", "pure", "no_gate"],
+            'mixed_memory': [True, False],
+            'return_sequences': [False]
+        }
         
         self.population = []
         for i in range(self.population_size):
-            genome = HyperNEATGenome()
+            # Create genome with random parameters
+            genome = HyperNEATGenome(
+                input_nodes=random.choice(param_ranges['input_nodes']),
+                hidden_nodes=random.choice(param_ranges['hidden_nodes']),
+                output_nodes=random.choice(param_ranges['output_nodes']),
+                max_connections=random.choice(param_ranges['max_connections']),
+                proj_size=random.choice(param_ranges['proj_size']),
+                mode=random.choice(param_ranges['mode']),
+                mixed_memory=random.choice(param_ranges['mixed_memory']),
+                return_sequences=random.choice(param_ranges['return_sequences'])
+            )
             genome.generation = 0
             self.population.append(genome)
         
@@ -172,7 +210,11 @@ class HyperNEATEvolutionEngine:
             output_nodes=genome.output_nodes,
             max_connections=genome.max_connections,
             weight_range=genome.weight_range,
-            bias_range=genome.bias_range
+            bias_range=genome.bias_range,
+            proj_size=genome.proj_size,
+            mode=genome.mode,
+            mixed_memory=genome.mixed_memory,
+            return_sequences=genome.return_sequences
         )
         
         # Copy nodes and connections

@@ -8,11 +8,11 @@ from ncps.wirings import AutoNCP
 import torch
 from torch import nn
 from skorch.dataset import ValidSplit
-from skorch.callbacks import EarlyStopping, LRScheduler
+from skorch.callbacks import LRScheduler
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from braindecode import EEGClassifier
 
-from globals import get_seed
+from globals import get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS
 
 
 class SPP_Feature_Extractor(nn.Module):
@@ -144,7 +144,7 @@ def create_sppncp_classifier(
         batch_size=64,
         weight_decay=1e-3
 ):
-    from globals import get_seed
+    from globals import get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS
 
     if net_size <= n_outputs + 2:
         new_net_size = n_outputs + 3
@@ -170,7 +170,7 @@ def create_sppncp_classifier(
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
         callbacks=[
-            EarlyStopping(patience=40, monitor='valid_loss'),
+            get_early_stopping_callback(),
             LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=30)
         ],
     )

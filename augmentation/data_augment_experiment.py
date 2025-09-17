@@ -30,7 +30,7 @@ def run_grouped_augmented_experiment(model_name, subject_list, seed, resample, n
         fold_scores = []
         for train_idx, val_idx in cv.split(X_aug, y_aug, groups):
             model = clone(base_model)
-            model.max_epochs = 100
+            model.max_epochs = 200
             model.train_split = None
             model.callbacks = []
             model.fit(X_aug[train_idx], y_aug[train_idx])

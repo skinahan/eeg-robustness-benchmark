@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import itertools
+import numpy as np
 
 def aggregate_results(input_dir):
     """
@@ -449,13 +450,21 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
     - tune_setting: bool, True for tuned, False for baseline
     - output_dir: str, directory to save plots
     """
+    # Define correct intensity values (from unified_experiment_runner.py)
+    # These are the standardized intensity values used by the current experiment runner
+    # Filters out old/inconsistent intensity values from previous experiment configurations
+    correct_intensities = np.linspace(1.0, 50.0, 20)
+    valid_seeds = [100, 200, 300, 400, 500]
+    
     # Filter data
     df_filtered = df[
         (df['mode'] == 'test_perturb') &
         (df['eval_mode'] == 'CrossSession') &
         (df['model'] == model_name) &
         (df['noise_type'] == noise_type) &
-        (df['tune'] == tune_setting)
+        (df['tune'] == tune_setting) &
+        (df['seed'].isin(valid_seeds)) &
+        (df['intensity'].isin(correct_intensities))
     ].copy()
     
     if df_filtered.empty:
@@ -535,12 +544,20 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
     - models: list, specific models to include (if None, uses all available models)
     - output_dir: str, directory to save plots
     """
+    # Define correct intensity values (from unified_experiment_runner.py)
+    # These are the standardized intensity values used by the current experiment runner
+    # Filters out old/inconsistent intensity values from previous experiment configurations
+    correct_intensities = np.linspace(1.0, 50.0, 20)
+    valid_seeds = [100, 200, 300, 400, 500]
+    
     # Filter data
     df_filtered = df[
         (df['mode'] == 'test_perturb') &
         (df['eval_mode'] == 'CrossSession') &
         (df['noise_type'] == noise_type) &
-        (df['tune'] == tune_setting)
+        (df['tune'] == tune_setting) &
+        (df['seed'].isin(valid_seeds)) &
+        (df['intensity'].isin(correct_intensities))
     ].copy()
     
     # Filter by specific models if provided
@@ -675,9 +692,9 @@ if __name__ == '__main__':
     
     # Define model subsets for comparison
     model_subsets = {
-        'main_models': ['eegnet', 'reegnet'],
-        'cfc_models': ['cnncfc_compact', 'cnncfc_v2'],
-        'wired_models': ['wiredcfc_arch1', 'wiredcfc_arch2', 'wiredcfc_arch3'],
+        'main_models': ['eegnet', 'reegnet', 'cnn_ncp'],
+        # 'cfc_models': ['cnncfc_compact', 'cnncfc_v2'],
+        # 'wired_models': ['wiredcfc_arch1', 'wiredcfc_arch2', 'wiredcfc_arch3'],
         'all_models': None  # Will use all available models
     }
     
