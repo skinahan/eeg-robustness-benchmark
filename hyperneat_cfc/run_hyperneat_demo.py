@@ -125,16 +125,16 @@ def run_demo_evolution(population_size: int = 10, generations: int = 20, output_
     print(f"  Time points: {n_times}")
     print(f"  Classes: {n_classes}")
     
-    # Create substrate
+    # Create substrate with smaller hidden size for sparser networks
     print(f"\nCreating CfC substrate...")
     substrate = CfCSubstrate(
         input_size=n_channels,
-        hidden_size=8,
+        hidden_size=6,  # Reduced from 8 to encourage sparsity
         output_size=n_classes,
         layout_type="hierarchical"
     )
     
-    # Create fitness evaluator
+    # Create fitness evaluator with higher connection threshold
     print(f"Creating fitness evaluator...")
     fitness_evaluator = HyperNEATFitnessEvaluator(
         substrate=substrate,
@@ -153,15 +153,15 @@ def run_demo_evolution(population_size: int = 10, generations: int = 20, output_
     print(f"  - Evolved connection patterns from CPPN")
     print(f"  - Proper adjacency matrix utilization")
     
-    # Create evolution engine
+    # Create evolution engine with parameters encouraging sparsity
     print(f"Creating evolution engine...")
     evolution_engine = HyperNEATEvolutionEngine(
         substrate=substrate,
         fitness_evaluator=fitness_evaluator,
         population_size=population_size,
         generations=generations,
-        mutation_rate=0.30,
-        crossover_rate=0.8,
+        mutation_rate=0.1,
+        crossover_rate=0.7,
         elitism_size=2,
         output_dir=output_dir
     )
@@ -205,7 +205,8 @@ def test_single_genome():
         input_nodes=4,
         hidden_nodes=6,
         output_nodes=1,
-        max_connections=15
+        max_connections=15,
+        proj_size=2,
     )
     
     # Create phenotype
@@ -213,7 +214,7 @@ def test_single_genome():
     
     # Develop the genome into a network
     print("Developing genome into CfC network...")
-    model = phenotype.develop(genome)
+    model = phenotype.develop(genome, n_chans=n_channels, n_times=n_times)
     
     print(f"Model created:")
     print(f"  Input size: {n_channels}")

@@ -2,7 +2,7 @@
 
 A comprehensive system for optimizing CfC (Closed-form Continuous-time) network architectures using graph-theoretic metrics and multi-objective optimization. This project implements a complete pipeline from graph generation to WiredCfC architecture conversion, designed for creating robust and efficient neural network architectures.
 
-## 🎯 Project Overview
+## Project Overview
 
 The Architecture Refinement project addresses the challenge of designing robust neural network architectures by:
 
@@ -11,7 +11,7 @@ The Architecture Refinement project addresses the challenge of designing robust 
 3. **Optimizing designs** through multi-objective optimization with Optuna
 4. **Converting to WiredCfC** for downstream training and deployment
 
-## 🏗️ Architecture Components
+## Architecture Components
 
 ### Core Modules
 
@@ -31,39 +31,39 @@ The Architecture Refinement project addresses the challenge of designing robust 
 - **Comprehensive Logging**: Rich logging and visualization capabilities
 - **Reproducible Research**: Deterministic execution and result caching
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
 1. **Clone the repository**:
-   ```bash
-   git clone <repository-url>
-   cd architecture_refinement
-   ```
+ ```bash
+ git clone <repository-url>
+ cd architecture_refinement
+ ```
 
 2. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+ ```bash
+ pip install -r requirements.txt
+ ```
 
 3. **Run the demo**:
-   ```bash
-   # Full demo
-   python demo.py
-   
-   # Quick demo (faster, fewer trials)
-   python demo.py --quick
-   ```
+ ```bash
+ # Full demo
+ python demo.py
+ 
+ # Quick demo (faster, fewer trials)
+ python demo.py --quick
+ ```
 
 ### Basic Usage
 
 ```python
 from architecture_refinement import (
-    Config, 
-    ModularSmallWorldGraphGenerator,
-    TopologyAnalyzer,
-    MultiObjectiveOptimizer,
-    WiredCfCConverter
+ Config, 
+ ModularSmallWorldGraphGenerator,
+ TopologyAnalyzer,
+ MultiObjectiveOptimizer,
+ WiredCfCConverter
 )
 
 # Setup configuration
@@ -83,11 +83,11 @@ results = optimizer.optimize(n_trials=50)
 
 # Convert to WiredCfC
 converter = WiredCfCConverter(config.architecture)
-best_graphs = [g for g, p in candidate_graphs[:5]]  # Top 5 graphs
+best_graphs = [g for g, p in candidate_graphs[:5]] # Top 5 graphs
 architectures = converter.convert_batch_architectures(best_graphs)
 ```
 
-## 📊 Graph-Theoretic Metrics
+## Graph-Theoretic Metrics
 
 ### Entropy Measures
 - **Degree Entropy**: Measures the diversity of node degrees
@@ -108,7 +108,7 @@ architectures = converter.convert_batch_architectures(best_graphs)
 - **Local Efficiency**: Local clustering efficiency
 - **Cost Efficiency**: Efficiency per connection
 
-## 🔧 Configuration
+## Configuration
 
 The system uses a hierarchical configuration structure:
 
@@ -137,7 +137,7 @@ config.architecture.hidden_size = 64
 config.architecture.output_size = 8
 ```
 
-## 📈 Optimization Process
+## Optimization Process
 
 ### Multi-Objective Optimization
 
@@ -155,7 +155,7 @@ The system optimizes four key objectives:
 - **Constraints**: Configurable minimum thresholds for each metric
 - **Validation**: Automatic constraint checking and solution filtering
 
-## 🎨 Visualization and Analysis
+## Visualization and Analysis
 
 ### Generated Plots
 
@@ -169,15 +169,15 @@ The system optimizes four key objectives:
 
 ```
 outputs/
-├── plots/                    # Generated visualizations
-├── models/                   # Saved model architectures
-├── logs/                     # Experiment logs
-├── optimization/             # Optimization results
-├── best_graphs/             # Top-ranked graph files
-└── architectures/            # WiredCfC specifications
+ plots/ # Generated visualizations
+ models/ # Saved model architectures
+ logs/ # Experiment logs
+ optimization/ # Optimization results
+ best_graphs/ # Top-ranked graph files
+ architectures/ # WiredCfC specifications
 ```
 
-## 🔬 Research Applications
+## Research Applications
 
 ### EEG Signal Processing
 - **Robust Architecture Design**: Noise-resistant network topologies
@@ -194,7 +194,7 @@ outputs/
 - **Robustness Engineering**: Adversarial attack resistance
 - **Efficiency Optimization**: Performance vs. complexity trade-offs
 
-## 🧪 Experiment Management
+## Experiment Management
 
 ### Reproducibility Features
 
@@ -219,16 +219,16 @@ save_results(results, "experiment_results", "outputs")
 previous_results = load_results("outputs/experiment_results.json")
 ```
 
-## 🚧 Advanced Usage
+## Advanced Usage
 
 ### Custom Graph Generation
 
 ```python
 # Parameterized graph generation
 parameter_ranges = {
-    'units': [32, 64, 128],
-    'n_modules': [2, 4, 8],
-    'rewiring_prob': [0.1, 0.3, 0.5]
+ 'units': [32, 64, 128],
+ 'n_modules': [2, 4, 8],
+ 'rewiring_prob': [0.1, 0.3, 0.5]
 }
 
 graphs = graph_generator.generate_parameterized_graphs(parameter_ranges)
@@ -239,9 +239,9 @@ graphs = graph_generator.generate_parameterized_graphs(parameter_ranges)
 ```python
 # Extend topology analyzer
 class CustomTopologyAnalyzer(TopologyAnalyzer):
-    def _compute_custom_metric(self, graph):
-        # Implement custom metric
-        return custom_value
+ def _compute_custom_metric(self, graph):
+ # Implement custom metric
+ return custom_value
 ```
 
 ### Integration with External Tools
@@ -255,7 +255,7 @@ external_graph = nx.read_graphml("external_architecture.graphml")
 architecture = converter.convert_graph_to_wiredcfc(external_graph)
 ```
 
-## 📚 API Reference
+## API Reference
 
 ### Core Classes
 
@@ -279,7 +279,7 @@ architecture = converter.convert_graph_to_wiredcfc(external_graph)
 - `create_wiredcfc_model(architecture)`: Create PyTorch model
 - `validate_architecture(architecture)`: Architecture validation
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -297,7 +297,7 @@ logger = setup_logging(level="DEBUG")
 # Validate configuration
 errors = validate_config(config)
 if errors:
-    print(f"Configuration errors: {errors}")
+ print(f"Configuration errors: {errors}")
 ```
 
 ## 🤝 Contributing
@@ -307,16 +307,16 @@ if errors:
 1. **Fork the repository**
 2. **Create a feature branch**
 3. **Install development dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   pip install pytest black flake8
-   ```
+ ```bash
+ pip install -r requirements.txt
+ pip install pytest black flake8
+ ```
 4. **Run tests and linting**:
-   ```bash
-   pytest tests/
-   black .
-   flake8 .
-   ```
+ ```bash
+ pytest tests/
+ black .
+ flake8 .
+ ```
 
 ### Code Style
 
@@ -325,18 +325,18 @@ if errors:
 - **Testing**: Unit tests for all major components
 - **Logging**: Structured logging throughout the system
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **NCPs Library**: For the CfC implementation foundation
 - **Optuna**: For the optimization framework
 - **NetworkX**: For graph analysis capabilities
 - **Research Community**: For inspiration and feedback
 
-## 📞 Support
+## Support
 
 For questions, issues, or contributions:
 

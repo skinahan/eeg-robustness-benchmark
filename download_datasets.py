@@ -30,4 +30,5 @@ if __name__ == "__main__":
     # download_bnci2014_001()
     # download_bnci2014_004()
     # download_bnci2014_009()
-    download_lee2019_SSVEP()
+    # download_lee2019_SSVEP()
+    download_BI2015a()

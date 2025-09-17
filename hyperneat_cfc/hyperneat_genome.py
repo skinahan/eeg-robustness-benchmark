@@ -61,7 +61,12 @@ class HyperNEATGenome:
         output_nodes: int = 1,  # connection weight
         max_connections: int = 20,
         weight_range: Tuple[float, float] = (-3.0, 3.0),
-        bias_range: Tuple[float, float] = (-1.0, 1.0)
+        bias_range: Tuple[float, float] = (-1.0, 1.0),
+        # CfC architecture parameters (evolvable)
+        proj_size: Optional[int] = None,
+        mode: str = "default",
+        mixed_memory: bool = False,
+        return_sequences: bool = False
     ):
         self.input_nodes = input_nodes
         self.hidden_nodes = hidden_nodes
@@ -69,6 +74,15 @@ class HyperNEATGenome:
         self.max_connections = max_connections
         self.weight_range = weight_range
         self.bias_range = bias_range
+        
+        # CfC architecture parameters
+        self.proj_size = proj_size
+        self.mode = mode
+        self.mixed_memory = mixed_memory
+        self.return_sequences = return_sequences
+        
+        # Validate and fix proj_size constraint
+        self._validate_proj_size()
         
         # Genome components
         self.nodes: List[CPPNNode] = []
@@ -162,9 +176,9 @@ class HyperNEATGenome:
                 node.bias = np.clip(node.bias, *self.bias_range)
         
         # Mutate node activations
-        for node in self.nodes:
-            if node.node_type == 'hidden' and random.random() < mutation_rate * 0.5:
-                node.activation = random.choice(['tanh', 'sigmoid', 'relu', 'sin', 'cos'])
+        # for node in self.nodes:
+        #     if node.node_type == 'hidden' and random.random() < mutation_rate * 0.5:
+        #         node.activation = random.choice(['tanh', 'sigmoid', 'relu', 'sin', 'cos'])
         
         # Add new connections
         if random.random() < mutation_rate * 0.3:
@@ -173,6 +187,56 @@ class HyperNEATGenome:
         # Remove connections
         if random.random() < mutation_rate * 0.2:
             self._remove_random_connection()
+        
+        # Mutate CfC architecture parameters
+        if random.random() < mutation_rate:
+            self._mutate_cfc_parameters()
+        
+        # Validate and fix proj_size constraint after mutation
+        self._validate_proj_size()
+    
+    def _mutate_cfc_parameters(self):
+        """Mutate CfC architecture parameters with sparsity bias"""
+        # Mutate proj_size - must be None or equal to output_size
+        if random.random() < 0.1:  # 10% chance
+            if self.proj_size is None:
+                # Can become output_size (if we have output nodes)
+                if self.output_nodes > 0:
+                    self.proj_size = self.output_nodes
+            else:
+                # Can become None
+                self.proj_size = None
+        
+        # Mutate max_connections to encourage sparsity
+        if random.random() < 0.15:  # 15% chance - increased for sparsity
+            # Bias towards reducing connections
+            if random.random() < 0.7:  # 70% chance to reduce
+                self.max_connections = max(3, self.max_connections - random.randint(1, 3))
+            else:  # 30% chance to increase
+                self.max_connections = min(20, self.max_connections + random.randint(1, 2))
+        
+        # Mutate mode
+        if random.random() < 0.1:
+            self.mode = random.choice(["default", "pure", "no_gate"])
+        
+        # Mutate mixed_memory
+        if random.random() < 0.1:
+            self.mixed_memory = not self.mixed_memory
+        
+        # Mutate return_sequences
+        if random.random() < 0.1:
+            self.return_sequences = False#not self.return_sequences
+    
+    def _validate_proj_size(self):
+        """Validate and fix proj_size constraint: must be None or equal to output_size"""
+        # Note: This validation is called during genome creation, but we don't have access
+        # to the substrate's output size here. The actual validation should happen
+        # during phenotype development when we have access to the substrate.
+        # For now, we'll just ensure proj_size is a reasonable value.
+        if self.proj_size is not None and self.proj_size <= 0:
+            self.proj_size = None
+        
+
     
     def _add_random_connection(self):
         """Add a random connection to the genome"""
@@ -213,7 +277,11 @@ class HyperNEATGenome:
             output_nodes=self.output_nodes,
             max_connections=self.max_connections,
             weight_range=self.weight_range,
-            bias_range=self.bias_range
+            bias_range=self.bias_range,
+            proj_size=self.proj_size if random.random() < 0.5 else other.proj_size,
+            mode=self.mode if random.random() < 0.5 else other.mode,
+            mixed_memory=self.mixed_memory if random.random() < 0.5 else other.mixed_memory,
+            return_sequences=self.return_sequences if random.random() < 0.5 else other.return_sequences
         )
         
         # Clear child's genome
@@ -338,7 +406,12 @@ class HyperNEATGenome:
                            'weight': c.weight, 'enabled': c.enabled} for c in self.connections],
             'fitness': self.fitness,
             'generation': self.generation,
-            'innovation_number': self.innovation_number
+            'innovation_number': self.innovation_number,
+            # CfC architecture parameters
+            'proj_size': self.proj_size,
+            'mode': self.mode,
+            'mixed_memory': self.mixed_memory,
+            'return_sequences': self.return_sequences
         }
     
     @classmethod
@@ -350,6 +423,13 @@ class HyperNEATGenome:
         genome.fitness = data.get('fitness', 0.0)
         genome.generation = data.get('generation', 0)
         genome.innovation_number = data.get('innovation_number', 0)
+        
+        # Load CfC architecture parameters
+        genome.proj_size = data.get('proj_size', None)
+        genome.mode = data.get('mode', 'default')
+        genome.mixed_memory = data.get('mixed_memory', False)
+        genome.return_sequences = data.get('return_sequences', False)
+        
         return genome
     
     def save(self, filepath: str):

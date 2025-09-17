@@ -72,138 +72,157 @@ class HyperNEATFitnessEvaluator:
         Returns:
             Dictionary containing fitness scores
         """
-        try:
-            # Develop genome into CfC network
-            model = self.phenotype.develop(genome)
-            model.to(self.device)
-            
-            # Log architecture information
-            if hasattr(model, 'use_evolved_architecture') and model.use_evolved_architecture:
-                self.logger.info(f"Using evolved HyperNEAT architecture with {len(model.connections)} connections")
-            else:
-                self.logger.info("Using standard CfC architecture")
-            
-            # Train the model
-            train_accuracy = self._train_model(model)
-            
-            # Evaluate on clean test data
-            clean_accuracy = self._evaluate_model(model, self.test_data[0], self.test_data[1])
-            
-            # Test noise resilience
-            noise_resilience = self._evaluate_noise_resilience(model)
-            
-            # Calculate complexity score
-            complexity_score = self._calculate_complexity_score(model)
-            
-            # Log connection information if using evolved architecture
-            if hasattr(model, 'connections') and model.connections:
-                evolved_connections = len(model.connections)
-                print(f"Evolved connections: {evolved_connections}")
-            
-            print(f"Complexity score: {complexity_score}")
-            print(f"Noise resilience: {noise_resilience}")
-            print(f"Clean accuracy: {clean_accuracy}")
-            print(f"Train accuracy: {train_accuracy}")
-            # Calculate overall fitness
-            overall_fitness = self._calculate_overall_fitness(
-                clean_accuracy, noise_resilience, complexity_score
-            )
-            print(f"Overall fitness: {overall_fitness}")
-            
-            # Update genome fitness
-            genome.fitness = overall_fitness
-            
-            return {
-                'clean_accuracy': clean_accuracy,
-                'train_accuracy': train_accuracy,
-                'noise_resilience': noise_resilience,
-                'complexity_score': complexity_score,
-                'overall_fitness': overall_fitness,
-                'parameter_count': model.get_parameter_count()
-            }
-            
-        except Exception as e:
-            print(e)
-            print(e.traceback)
-            sys.exit(-1)
-            self.logger.warning(f"Evaluation failed for genome: {e}")
-            # Return minimal fitness for failed evaluations
-            return {
-                'clean_accuracy': 0.0,
-                'train_accuracy': 0.0,
-                'noise_resilience': 0.0,
-                'complexity_score': 1.0,  # High complexity penalty
-                'overall_fitness': 0.0,
-                'parameter_count': 0
-            }
+        # Develop genome into CfC network
+        # Get data dimensions for model development
+        n_samples, n_chans, n_times = self.train_data[0].shape
+        model = self.phenotype.develop(genome, n_chans=n_chans, n_times=n_times)
+        model.to(self.device)
+        
+        # Log architecture information
+        if hasattr(model, 'use_evolved_architecture') and model.use_evolved_architecture:
+            self.logger.info(f"Using evolved HyperNEAT architecture with {len(model.connections)} connections")
+        else:
+            self.logger.info("Using standard CfC architecture")
+        
+        # Train the model
+        train_accuracy = self._train_model(model)
+        
+        # Evaluate on clean test data
+        clean_accuracy = self._evaluate_model(model, self.test_data[0], self.test_data[1])
+        
+        # Test noise resilience
+        noise_resilience = self._evaluate_noise_resilience(model)
+        
+        # Calculate complexity score
+        complexity_score = self._calculate_complexity_score(model)
+        
+        # Log connection information if using evolved architecture
+        if hasattr(model, 'connections') and model.connections:
+            evolved_connections = len(model.connections)
+            print(f"Evolved connections: {evolved_connections}")
+        
+        print(f"Complexity score: {complexity_score}")
+        print(f"Noise resilience: {noise_resilience}")
+        print(f"Clean accuracy: {clean_accuracy}")
+        print(f"Train accuracy: {train_accuracy}")
+        # Calculate overall fitness
+        overall_fitness = self._calculate_overall_fitness(
+            clean_accuracy, noise_resilience, complexity_score
+        )
+        print(f"Overall fitness: {overall_fitness}")
+        
+        # Update genome fitness
+        genome.fitness = overall_fitness
+        
+        return {
+            'clean_accuracy': clean_accuracy,
+            'train_accuracy': train_accuracy,
+            'noise_resilience': noise_resilience,
+            'complexity_score': complexity_score,
+            'overall_fitness': overall_fitness,
+            'parameter_count': model.get_parameter_count()
+        }
+        
     
     def _train_model(self, model: HyperNEATCfC) -> float:
         """Train the CfC model and return training accuracy"""
-        model.train()
-        
-        # Prepare data
-        X_train, y_train = self.train_data
-        X_val, y_val = self.val_data
-        
-        # Convert to tensors
-        X_train_tensor = torch.FloatTensor(X_train).to(self.device)
-        y_train_tensor = torch.LongTensor(y_train).to(self.device)
-        X_val_tensor = torch.FloatTensor(X_val).to(self.device)
-        y_val_tensor = torch.LongTensor(y_val).to(self.device)
-        
-        # Setup training
-        criterion = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(model.parameters(), lr=self.learning_rate)
-        
-        best_val_acc = 0.0
-        patience = 10
-        patience_counter = 0
-        
-        for epoch in range(self.max_epochs):
-            # Training
+        try:
             model.train()
-            optimizer.zero_grad()
             
-            # Forward pass
-            outputs, _ = model(X_train_tensor)
-            loss = criterion(outputs, y_train_tensor)
+            # Prepare data
+            X_train, y_train = self.train_data
+            X_val, y_val = self.val_data
             
-            # Backward pass
-            loss.backward()
-            optimizer.step()
+            # Convert to tensors
+            X_train_tensor = torch.FloatTensor(X_train).to(self.device)
+            y_train_tensor = torch.LongTensor(y_train).to(self.device)
+            X_val_tensor = torch.FloatTensor(X_val).to(self.device)
+            y_val_tensor = torch.LongTensor(y_val).to(self.device)
             
-            # Validation
-            model.eval()
-            with torch.no_grad():
-                val_outputs, _ = model(X_val_tensor)
-                val_preds = torch.argmax(val_outputs, dim=1)
-                val_acc = accuracy_score(y_val, val_preds.cpu().numpy())
-                
-                if val_acc > best_val_acc:
-                    best_val_acc = val_acc
-                    patience_counter = 0
-                else:
-                    patience_counter += 1
-                
-                # Early stopping
-                if patience_counter >= patience:
-                    break
-        
-        return best_val_acc
+            # Setup training
+            criterion = nn.CrossEntropyLoss()
+            optimizer = optim.Adam(model.parameters(), lr=self.learning_rate)
+            
+            best_val_acc = 0.0
+            patience = 10
+            patience_counter = 0
+            
+            for epoch in range(self.max_epochs):
+                try:
+                    # Training
+                    model.train()
+                    optimizer.zero_grad()
+                    
+                    # Forward pass
+                    outputs, _ = model(X_train_tensor)
+                    
+                    # Check output dimensions
+                    if outputs.shape[-1] != 2:
+                        print(f"Warning: Model outputs {outputs.shape[-1]} classes, expected 2 for binary classification")
+                        return 0.0  # Return 0 accuracy for invalid models
+                    
+                    loss = criterion(outputs, y_train_tensor)
+                    
+                    # Check for NaN loss
+                    if torch.isnan(loss):
+                        print(f"Warning: NaN loss detected during training")
+                        return 0.0
+                    
+                    # Backward pass
+                    loss.backward()
+                    optimizer.step()
+                    
+                    # Validation
+                    model.eval()
+                    with torch.no_grad():
+                        val_outputs, _ = model(X_val_tensor)
+                        val_preds = torch.argmax(val_outputs, dim=1)
+                        val_acc = accuracy_score(y_val, val_preds.cpu().numpy())
+                        
+                        if val_acc > best_val_acc:
+                            best_val_acc = val_acc
+                            patience_counter = 0
+                        else:
+                            patience_counter += 1
+                        
+                        # Early stopping
+                        if patience_counter >= patience:
+                            break
+                            
+                except Exception as e:
+                    print(f"Warning: Training error at epoch {epoch}: {e}")
+                    return 0.0
+            
+            return best_val_acc
+            
+        except Exception as e:
+            print(f"Warning: Model training failed: {e}")
+            return 0.0
     
     def _evaluate_model(self, model: HyperNEATCfC, X: np.ndarray, y: np.ndarray) -> float:
         """Evaluate model on given data"""
-        model.eval()
-        
-        X_tensor = torch.FloatTensor(X).to(self.device)
-        y_tensor = torch.LongTensor(y).to(self.device)
-        
-        with torch.no_grad():
-            outputs, _ = model(X_tensor)
-            preds = torch.argmax(outputs, dim=1)
-            accuracy = accuracy_score(y, preds.cpu().numpy())
-        
-        return accuracy
+        try:
+            model.eval()
+            
+            X_tensor = torch.FloatTensor(X).to(self.device)
+            y_tensor = torch.LongTensor(y).to(self.device)
+            
+            with torch.no_grad():
+                outputs, _ = model(X_tensor)
+                
+                # Check output dimensions
+                if outputs.shape[-1] != 2:
+                    print(f"Warning: Model outputs {outputs.shape[-1]} classes during evaluation, expected 2")
+                    return 0.0
+                
+                preds = torch.argmax(outputs, dim=1)
+                accuracy = accuracy_score(y, preds.cpu().numpy())
+            
+            return accuracy
+            
+        except Exception as e:
+            print(f"Warning: Model evaluation failed: {e}")
+            return 0.0
     
     def _evaluate_noise_resilience(self, model: HyperNEATCfC) -> float:
         """Evaluate model's resilience to different types of noise"""
@@ -279,22 +298,30 @@ class HyperNEATFitnessEvaluator:
         noise_resilience: float, 
         complexity_score: float
     ) -> float:
-        """Calculate overall fitness score"""
+        """Calculate overall fitness score with sparsity bonus"""
         # Weights for different objectives
         weights = {
             'accuracy': 1.0,
             'noise_resilience': 0.1,
-            'complexity': 0.1
+            'complexity': 0.2  # Increased weight for sparsity
         }
         
         # Complexity penalty (lower complexity is better)
         complexity_penalty = 1.0 - complexity_score
         
+        # Add sparsity bonus for very sparse networks
+        sparsity_bonus = 0.0
+        if complexity_score < 0.1:  # Very sparse networks
+            sparsity_bonus = 0.1
+        elif complexity_score < 0.2:  # Moderately sparse networks
+            sparsity_bonus = 0.05
+        
         # Calculate weighted fitness
         fitness = (
             weights['accuracy'] * accuracy +
             weights['noise_resilience'] * noise_resilience +
-            weights['complexity'] * complexity_penalty
+            weights['complexity'] * complexity_penalty +
+            sparsity_bonus
         )
         
         return fitness
