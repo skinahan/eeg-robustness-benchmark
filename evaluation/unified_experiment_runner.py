@@ -589,28 +589,30 @@ class UnifiedExperimentRunner:
                 clean_score = roc_auc_score(y_valid, y_pred_clean)
         evaluation_time = time.time() - start_time
 
-        # Use a set threshold to restart training if clean score indicates underfitting.
-        if clean_score < UNDERFITTING_THRESHOLD:
-            # Disable early stopping
-            print(f"Re-training model without EarlyStopping due to underfitting.")
-            model.callbacks = []
-            model.module_.train()          
-            start_time = time.time()  
-            model.fit(X_train, y_train)
-            training_time = time.time() - start_time
-            model.module_.eval()
-            with torch.no_grad():
-                y_pred_proba = model.predict_proba(X_valid)
-                # Handle both binary and multiclass cases
-                if self.dataset == "Lee2019_SSVEP":
-                    # For SSVEP (4 classes), use all probabilities
-                    new_clean_score = roc_auc_score(y_valid, y_pred_proba, multi_class='ovr')
-                else:
-                    # For MotorImagery (2 classes), use second column
-                    y_pred_clean = y_pred_proba[:, 1]
-                    new_clean_score = roc_auc_score(y_valid, y_pred_clean)
-            clean_score = max(clean_score, new_clean_score)
-        
+        # If we are tuning, we incur too high a time cost to re-train the model this often.
+        if not self.tune:
+            # Use a set threshold to restart training if clean score indicates underfitting.
+            if clean_score < UNDERFITTING_THRESHOLD:
+                # Disable early stopping
+                print(f"Re-training model without EarlyStopping due to underfitting.")
+                model.callbacks = []
+                model.module_.train()          
+                start_time = time.time()  
+                model.fit(X_train, y_train)
+                training_time = time.time() - start_time
+                model.module_.eval()
+                with torch.no_grad():
+                    y_pred_proba = model.predict_proba(X_valid)
+                    # Handle both binary and multiclass cases
+                    if self.dataset == "Lee2019_SSVEP":
+                        # For SSVEP (4 classes), use all probabilities
+                        new_clean_score = roc_auc_score(y_valid, y_pred_proba, multi_class='ovr')
+                    else:
+                        # For MotorImagery (2 classes), use second column
+                        y_pred_clean = y_pred_proba[:, 1]
+                        new_clean_score = roc_auc_score(y_valid, y_pred_clean)
+                clean_score = max(clean_score, new_clean_score)
+            
         results = []
         
         # Evaluate on corrupted data

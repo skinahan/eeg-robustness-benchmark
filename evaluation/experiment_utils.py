@@ -152,8 +152,18 @@ def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
                     if 'eval_mode' not in df.columns:
                         if 'cross_session' in full_path or 'CrossSessionEvaluation' in full_path:
                             df['eval_mode'] = 'CrossSessionEvaluation'
+                        elif 'cross_subject' in full_path or 'CrossSubjectEvaluation' in full_path:
+                            df['eval_mode'] = 'CrossSubjectEvaluation'
                         else:
                             df['eval_mode'] = 'WithinSessionEvaluation'
+
+                    # Ensure dataset column is set
+                    if 'dataset' not in df.columns:
+                        df['dataset'] = dataset
+                    
+                    # Ensure paradigm column is set
+                    if 'paradigm' not in df.columns:
+                        df['paradigm'] = paradigm
 
                     all_dfs.append(df)
                 except Exception as e:
@@ -164,8 +174,41 @@ def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
         out_file = os.path.join(root, "all_results.csv")
         full_df.to_csv(out_file, index=False)
         print(f"Aggregated results saved to: {out_file}")
+        return full_df
     else:
         print("No CSV files found to aggregate.")
+        return None
+
+
+def collect_all_results_unified():
+    """Collect and aggregate results from all datasets and paradigms."""
+    all_results = []
+    
+    # Define all dataset-paradigm combinations
+    dataset_paradigms = [
+        ("MotorImagery", "BNCI2014_001"),
+        ("SSVEP", "Lee2019_SSVEP")
+    ]
+    
+    for paradigm, dataset in dataset_paradigms:
+        print(f"\n=== Collecting results for {paradigm} - {dataset} ===")
+        result_df = collect_all_results(paradigm, dataset)
+        if result_df is not None:
+            all_results.append(result_df)
+    
+    if all_results:
+        # Combine all results into a single DataFrame
+        unified_df = pd.concat(all_results, ignore_index=True)
+        
+        # Save unified results
+        unified_file = os.path.join("evaluation", "results", "unified_all_results.csv")
+        os.makedirs(os.path.dirname(unified_file), exist_ok=True)
+        unified_df.to_csv(unified_file, index=False)
+        print(f"\nUnified results saved to: {unified_file}")
+        return unified_df
+    else:
+        print("No results found to aggregate.")
+        return None
 
 
 def add_experiment_metadata(df, model_name, seed, mode, resample, config):
