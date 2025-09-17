@@ -6,7 +6,7 @@ from sklearn.preprocessing import LabelEncoder
 
 from augmentation.noise import EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
 from config import MODEL_REGISTRY
-from evaluation.run_experiments import get_paradigm
+from config import get_paradigm
 from evaluation.two_stage_hp_opt import run_two_stage_optuna
 
 

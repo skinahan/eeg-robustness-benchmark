@@ -1,4 +1,6 @@
 # bench_cfc.py
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 import time
 import torch
 from ncps.torch import CfC as BaselineCfC
@@ -22,6 +24,7 @@ def measure_latency(model, x, timespans=None, warmup=20, iters=100):
     return (t1 - t0) * 1000.0 / iters  # ms per inference
 
 def main():
+
     torch.set_float32_matmul_precision("high")  # enable TF32 where available
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -68,17 +71,17 @@ def main():
         activation="lecun_tanh", use_amp=False,
         cell_cls=CfCCellFused
     ).to(device)
-
-    # 5) FUSED + AMP + torch.compile
-    opt_fused_amp_comp = compiled(opt_fused_amp, fullgraph=True)
-    # prime the compiled graph
-    _ = opt_fused_amp_comp(x, timespans=timespans)
+    #
+    # # 5) FUSED + AMP + torch.compile
+    # opt_fused_amp_comp = compiled(opt_fused_amp, fullgraph=True)
+    # # prime the compiled graph
+    # _ = opt_fused_amp_comp(x, timespans=timespans)
 
     ms_base   = measure_latency(base, x, timespans=timespans)
     ms_opt    = measure_latency(opt_no_fuse, x, timespans=timespans)
     ms_fused  = measure_latency(opt_fused, x, timespans=timespans)
     ms_amp    = measure_latency(opt_fused_amp, x, timespans=timespans)
-    ms_comp   = measure_latency(opt_fused_amp_comp, x, timespans=timespans)
+    # ms_comp   = measure_latency(opt_fused_amp_comp, x, timespans=timespans)
 
     print(f"Device: {device}")
     print(f"Shapes: x=({B},{L},{C}), H={H}, P={P}")
@@ -86,7 +89,7 @@ def main():
     print(f"Optimized wrapper (no fusion)   : {ms_opt:8.3f} ms / inf  (x{ms_base/max(ms_opt,1e-6):.2f})")
     print(f"Optimized + FUSED cell          : {ms_fused:8.3f} ms / inf  (x{ms_base/max(ms_fused,1e-6):.2f})")
     print(f"+ AMP                            : {ms_amp:8.3f} ms / inf  (x{ms_base/max(ms_amp,1e-6):.2f})")
-    print(f"+ AMP + torch.compile            : {ms_comp:8.3f} ms / inf  (x{ms_base/max(ms_comp,1e-6):.2f})")
+    # print(f"+ AMP + torch.compile            : {ms_comp:8.3f} ms / inf  (x{ms_base/max(ms_comp,1e-6):.2f})")
 
 if __name__ == "__main__":
     main()
