@@ -32,12 +32,13 @@ from evaluation.experiment_utils import collect_all_results_unified
 class ExperimentAutomation:
     """Main class for experiment automation."""
     
-    def __init__(self, config_file: str = "experiment_config.yaml"):
+    def __init__(self, config_file: str = "experiment_config.yaml", preaggregated_results_file: str = None):
         """Initialize the automation system with configuration."""
         self.config_file = config_file
         self.config = self._load_config()
         self.existing_results = None
         self.missing_experiments = []
+        self.preaggregated_results_file = preaggregated_results_file
         
     def _load_config(self) -> Dict[str, Any]:
         """Load configuration from YAML file."""
@@ -51,6 +52,30 @@ class ExperimentAutomation:
             sys.exit(1)
         except yaml.YAMLError as e:
             print(f"[ERROR] Error parsing YAML configuration: {e}")
+            sys.exit(1)
+    
+    def load_preaggregated_results(self) -> pd.DataFrame:
+        """Load pre-aggregated results from CSV file."""
+        print("\n" + "="*60)
+        print("LOADING PRE-AGGREGATED RESULTS")
+        print("="*60)
+        
+        try:
+            self.existing_results = pd.read_csv(self.preaggregated_results_file)
+            print(f"[OK] Loaded {len(self.existing_results)} result rows from {self.preaggregated_results_file}")
+            print(f"[INFO] Results summary:")
+            print(f"   - Datasets: {self.existing_results['dataset'].unique()}")
+            print(f"   - Models: {self.existing_results['model'].unique()}")
+            print(f"   - Eval modes: {self.existing_results['eval_mode'].unique()}")
+            print(f"   - Modes: {self.existing_results['mode'].unique()}")
+            if 'seed' in self.existing_results.columns:
+                print(f"   - Seeds: {sorted(self.existing_results['seed'].unique())}")
+            return self.existing_results
+        except FileNotFoundError:
+            print(f"[ERROR] Pre-aggregated results file not found: {self.preaggregated_results_file}")
+            sys.exit(1)
+        except Exception as e:
+            print(f"[ERROR] Error loading pre-aggregated results: {e}")
             sys.exit(1)
     
     def aggregate_existing_results(self) -> pd.DataFrame:
@@ -326,7 +351,7 @@ class ExperimentAutomation:
                         slurm_args = "--time=2-12:00:00 --mem=12G"
                     else:
                         # CrossSession without tuning: ~3 hours (with buffer)
-                        slurm_args = "--time=0-06:00:00 --mem=12G"
+                        slurm_args = "--time=0-04:30:00 --mem=12G"
                         
                 elif exp['eval_mode'] == 'WithinSession':
                     if exp['tune']:
@@ -396,8 +421,11 @@ class ExperimentAutomation:
         print("[START] Starting Experiment Automation")
         print("="*60)
         
-        # Step 1: Aggregate existing results
-        self.aggregate_existing_results()
+        # Step 1: Load existing results (either aggregate or load pre-aggregated)
+        if self.preaggregated_results_file:
+            self.load_preaggregated_results()
+        else:
+            self.aggregate_existing_results()
         
         # Step 2: Identify missing experiments
         self.identify_missing_experiments()
@@ -433,6 +461,8 @@ def main():
                        help="Path to configuration YAML file")
     parser.add_argument("--output-dir", type=str, default=None,
                        help="Output directory for generated scripts and reports")
+    parser.add_argument("--preaggregated-results", type=str, default=None,
+                       help="Path to pre-aggregated results CSV file (skips aggregation step)")
     parser.add_argument("--aggregate-only", action="store_true",
                        help="Only aggregate existing results, don't generate missing experiments")
     parser.add_argument("--missing-only", action="store_true",
@@ -441,14 +471,19 @@ def main():
     args = parser.parse_args()
     
     # Initialize automation system
-    automation = ExperimentAutomation(args.config)
+    automation = ExperimentAutomation(args.config, args.preaggregated_results)
     
     if args.aggregate_only:
-        # Only aggregate results
+        # Only aggregate results (ignore pre-aggregated file for this mode)
+        if args.preaggregated_results:
+            print("[WARNING] --preaggregated-results ignored in --aggregate-only mode")
         automation.aggregate_existing_results()
     elif args.missing_only:
         # Only identify missing experiments
-        automation.aggregate_existing_results()
+        if args.preaggregated_results:
+            automation.load_preaggregated_results()
+        else:
+            automation.aggregate_existing_results()
         automation.identify_missing_experiments()
         automation.generate_summary_report(args.output_dir)
     else:
