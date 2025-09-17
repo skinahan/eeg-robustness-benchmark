@@ -78,179 +78,211 @@ class ExperimentAutomation:
         return self.existing_results
     
     def generate_expected_experiments(self) -> List[Dict[str, Any]]:
-        """Generate all expected experimental combinations based on configuration."""
+        """
+        Generate all expected test_perturb results based on configuration, 
+        then identify which multirun jobs are needed to generate missing results.
+        """
         print("\n" + "="*60)
-        print("GENERATING EXPECTED EXPERIMENTS")
+        print("GENERATING EXPECTED TEST_PERTURB EXPERIMENTS")
         print("="*60)
         
-        expected_experiments = []
+        expected_test_perturb_results = []
         
         # Get base configurations
         datasets = self.config['datasets']
         models = self.config['models']
         eval_modes = self.config['eval_modes']
-        experiment_modes = self.config['experiment_modes']
         seeds = self.config['seeds']
+        noise_types = self.config['noise_types']
         
-        # Generate all combinations
+        # Generate noise intensities (same as in unified_experiment_runner.py)
+        noise_intensities = np.linspace(1.0, 50.0, 20)
+        
+        # Generate all expected test_perturb result combinations
         for dataset_name, dataset_config in datasets.items():
             for model_config in models:
                 for eval_mode in eval_modes:
-                    for exp_mode_config in experiment_modes:
-                        for seed in seeds:
-                            # Handle subject groups
-                            subjects = dataset_config['subjects']
-                            
-                            # Determine noise requirements
-                            exp_mode = exp_mode_config['name']
-                            requires_noise = exp_mode_config['requires_noise']
-                            
-                            if requires_noise:
-                                # For modes that require noise, iterate through noise types and intensities
-                                noise_types = self.config['noise_types']
-
-                                # Use the same noise intensity range as in unified_experiment_runner.py _train_and_evaluate_perturb
-                                # min_intensity = 1.0, max_intensity = 50.0, num_steps = 20
-                                
-                                noise_intensities = np.linspace(1.0, 50.0, 20)
-
-                                for noise_type in noise_types:
-                                    for intensity in noise_intensities:
+                    for seed in seeds:
+                        for noise_type in noise_types:
+                            for intensity in noise_intensities:
+                                for tune_flag in [False, True]:
+                                    subjects = dataset_config['subjects']
+                                    
+                                    if eval_mode == 'CrossSession':
+                                        # For CrossSession, create separate entries for each subject
+                                        for subject in subjects:
+                                            experiment = {
+                                                'dataset': dataset_name,
+                                                'paradigm': dataset_config['paradigm'],
+                                                'subject': subject,
+                                                'model': model_config['name'],
+                                                'eval_mode': eval_mode,
+                                                'mode': 'test_perturb',
+                                                'seed': seed,
+                                                'noise_type': noise_type,
+                                                'intensity': intensity,
+                                                'tune': tune_flag
+                                            }
+                                            expected_test_perturb_results.append(experiment)
+                                    else:
+                                        # For WithinSession, results are aggregated across subjects
                                         experiment = {
                                             'dataset': dataset_name,
                                             'paradigm': dataset_config['paradigm'],
-                                            'subjects': subjects,
+                                            'subjects': subjects,  # All subjects together
                                             'model': model_config['name'],
                                             'eval_mode': eval_mode,
-                                            'mode': exp_mode,
+                                            'mode': 'test_perturb',
                                             'seed': seed,
                                             'noise_type': noise_type,
                                             'intensity': intensity,
-                                            'tune': False  # Will be determined based on mode
+                                            'tune': tune_flag
                                         }
-                                        
-                                        # Handle tuning logic
-                                        if exp_mode == 'tune':
-                                            experiment['tune'] = True
-                                        elif exp_mode_config['supports_tuning']:
-                                            # Create both tuned and untuned versions for applicable modes
-                                            for tune_flag in [False, True]:
-                                                exp_copy = experiment.copy()
-                                                exp_copy['tune'] = tune_flag
-                                                expected_experiments.append(exp_copy)
-                                        else:
-                                            expected_experiments.append(experiment)
-                            else:
-                                # For modes that don't require noise
-                                experiment = {
-                                    'dataset': dataset_name,
-                                    'paradigm': dataset_config['paradigm'],
-                                    'subjects': subjects,
-                                    'model': model_config['name'],
-                                    'eval_mode': eval_mode,
-                                    'mode': exp_mode,
-                                    'seed': seed,
-                                    'noise_type': None,
-                                    'intensity': None,
-                                    'tune': False
-                                }
-                                
-                                # Handle tuning logic
-                                if exp_mode == 'tune':
-                                    experiment['tune'] = True
-                                elif exp_mode_config['supports_tuning']:
-                                    # Create both tuned and untuned versions
-                                    for tune_flag in [False, True]:
-                                        exp_copy = experiment.copy()
-                                        exp_copy['tune'] = tune_flag
-                                        expected_experiments.append(exp_copy)
-                                else:
-                                    expected_experiments.append(experiment)
+                                        expected_test_perturb_results.append(experiment)
         
-        print(f"[OK] Generated {len(expected_experiments)} expected experiments")
-        return expected_experiments
+        print(f"[OK] Generated {len(expected_test_perturb_results)} expected test_perturb results")
+        
+        # Store for use in identify_missing_experiments
+        self.expected_test_perturb_results = expected_test_perturb_results
+        
+        # For now, return empty list - multirun jobs will be determined in identify_missing_experiments
+        return []
     
     def identify_missing_experiments(self) -> List[Dict[str, Any]]:
-        """Identify which expected experiments are missing from existing results."""
+        """
+        Identify missing test_perturb results and map them to required multirun jobs.
+        """
         print("\n" + "="*60)
-        print("IDENTIFYING MISSING EXPERIMENTS")
+        print("IDENTIFYING MISSING TEST_PERTURB RESULTS")
         print("="*60)
         
+        # First generate expected test_perturb results
+        self.generate_expected_experiments()  # This populates self.expected_test_perturb_results
+        
         if self.existing_results is None or self.existing_results.empty:
-            print("[WARNING] No existing results found, all experiments are missing")
-            self.missing_experiments = self.generate_expected_experiments()
-            return self.missing_experiments
+            print("[WARNING] No existing results found, all test_perturb results are missing")
+            missing_test_perturb_results = self.expected_test_perturb_results
+        else:
+            # Find missing test_perturb results
+            missing_test_perturb_results = []
+            
+            for expected_result in self.expected_test_perturb_results:
+                # Create filter for this specific test_perturb result
+                filter_conditions = []
+                
+                # Basic filters
+                filter_conditions.append(self.existing_results['dataset'] == expected_result['dataset'])
+                filter_conditions.append(self.existing_results['model'] == expected_result['model'])
+                filter_conditions.append(self.existing_results['eval_mode'].str.contains(expected_result['eval_mode'], na=False))
+                filter_conditions.append(self.existing_results['seed'] == expected_result['seed'])
+                filter_conditions.append(self.existing_results['noise_type'] == expected_result['noise_type'])
+                filter_conditions.append(self.existing_results['intensity'] == expected_result['intensity'])
+                
+                # Handle mode filtering (account for tuning suffixes)
+                mode_col = self.existing_results['mode']
+                if expected_result['tune']:
+                    # Look for tuned versions
+                    mode_condition = (mode_col == "test_perturb_tune") | (mode_col == "test_perturb")
+                else:
+                    mode_condition = mode_col == "test_perturb"
+                filter_conditions.append(mode_condition)
+                
+                # Handle subject filtering
+                if expected_result['eval_mode'] == 'CrossSession':
+                    # For CrossSession, check specific subject
+                    if 'subject' in self.existing_results.columns:
+                        filter_conditions.append(self.existing_results['subject'] == expected_result['subject'])
+                # For WithinSession, we don't filter by subject as results are aggregated
+                
+                # Apply all filters
+                combined_filter = filter_conditions[0]
+                for condition in filter_conditions[1:]:
+                    combined_filter = combined_filter & condition
+                
+                # Check if any results match
+                matching_results = self.existing_results[combined_filter]
+                
+                if len(matching_results) == 0:
+                    missing_test_perturb_results.append(expected_result)
         
-        expected_experiments = self.generate_expected_experiments()
-        missing_experiments = []
+        print(f"[OK] Found {len(missing_test_perturb_results)} missing test_perturb results out of {len(self.expected_test_perturb_results)} total expected")
         
-        for expected_exp in expected_experiments:
-            # Create a filter for this experiment
-            filter_conditions = []
-            
-            # Basic filters
-            filter_conditions.append(self.existing_results['dataset'] == expected_exp['dataset'])
-            filter_conditions.append(self.existing_results['model'] == expected_exp['model'])
-            filter_conditions.append(self.existing_results['eval_mode'].str.contains(expected_exp['eval_mode'], na=False))
-            filter_conditions.append(self.existing_results['seed'] == expected_exp['seed'])
-            
-            # Handle mode filtering (account for tuning suffixes)
-            mode_col = self.existing_results['mode']
-            if expected_exp['tune'] and expected_exp['mode'] != 'tune':
-                # Look for tuned versions
-                mode_condition = (mode_col == f"{expected_exp['mode']}_tune") | (mode_col == expected_exp['mode'])
+        # Now map missing results to required multirun jobs
+        print("\n" + "="*60)
+        print("MAPPING TO REQUIRED MULTIRUN JOBS")
+        print("="*60)
+        
+        required_multirun_jobs = set()
+        
+        for missing_result in missing_test_perturb_results:
+            if missing_result['eval_mode'] == 'CrossSession':
+                # For CrossSession, each subject needs its own multirun job
+                job_key = (
+                    missing_result['dataset'],
+                    missing_result['eval_mode'], 
+                    missing_result['subject'],
+                    missing_result['tune']
+                )
             else:
-                mode_condition = mode_col == expected_exp['mode']
-            filter_conditions.append(mode_condition)
-            
-            # Handle noise filtering
-            if expected_exp['noise_type'] is not None:
-                filter_conditions.append(self.existing_results['noise_type'] == expected_exp['noise_type'])
-                filter_conditions.append(self.existing_results['intensity'] == expected_exp['intensity'])
-            else:
-                # For experiments without noise, check that noise_type is null/empty
-                filter_conditions.append(
-                    self.existing_results['noise_type'].isna() | 
-                    (self.existing_results['noise_type'] == '')
+                # For WithinSession, all subjects are processed together
+                subjects_tuple = tuple(missing_result['subjects'])
+                job_key = (
+                    missing_result['dataset'],
+                    missing_result['eval_mode'],
+                    subjects_tuple,
+                    missing_result['tune']
                 )
             
-            # Apply all filters
-            combined_filter = filter_conditions[0]
-            for condition in filter_conditions[1:]:
-                combined_filter = combined_filter & condition
+            required_multirun_jobs.add(job_key)
+        
+        # Convert to list of multirun job dictionaries
+        missing_experiments = []
+        for job_key in required_multirun_jobs:
+            dataset, eval_mode, subjects_or_subject, tune = job_key
             
-            # Check if any results match
-            matching_results = self.existing_results[combined_filter]
+            if eval_mode == 'CrossSession':
+                # Single subject for CrossSession
+                subjects = [subjects_or_subject]
+            else:
+                # Multiple subjects for WithinSession
+                subjects = list(subjects_or_subject)
             
-            if len(matching_results) == 0:
-                missing_experiments.append(expected_exp)
+            multirun_job = {
+                'dataset': dataset,
+                'eval_mode': eval_mode,
+                'subjects': subjects,
+                'tune': tune,
+                'mode': 'multirun',  # This will generate test_perturb results
+                'paradigm': next(config['paradigm'] for name, config in self.config['datasets'].items() if name == dataset)
+            }
+            missing_experiments.append(multirun_job)
         
         self.missing_experiments = missing_experiments
-        print(f"[OK] Found {len(missing_experiments)} missing experiments out of {len(expected_experiments)} total expected")
+        print(f"[OK] Mapped to {len(missing_experiments)} required multirun jobs")
         
-        # Print summary of missing experiments
+        # Print summary of missing multirun jobs
         if missing_experiments:
-            print("\n[INFO] Missing experiments summary:")
+            print("\n[INFO] Missing multirun jobs summary:")
             missing_df = pd.DataFrame(missing_experiments)
             
             print("   By dataset:")
             for dataset, count in missing_df['dataset'].value_counts().items():
-                print(f"     - {dataset}: {count} experiments")
+                print(f"     - {dataset}: {count} multirun jobs")
             
-            print("   By model:")
-            for model, count in missing_df['model'].value_counts().items():
-                print(f"     - {model}: {count} experiments")
+            print("   By eval_mode:")
+            for eval_mode, count in missing_df['eval_mode'].value_counts().items():
+                print(f"     - {eval_mode}: {count} multirun jobs")
             
-            print("   By mode:")
-            for mode, count in missing_df['mode'].value_counts().items():
-                print(f"     - {mode}: {count} experiments")
+            print("   By tune flag:")
+            for tune, count in missing_df['tune'].value_counts().items():
+                print(f"     - {'tuned' if tune else 'not tuned'}: {count} multirun jobs")
         
         return missing_experiments
     
     def generate_shell_script(self, output_dir: str = None) -> str:
-        """Generate shell script with missing experiment commands."""
+        """Generate shell script with missing multirun sbatch commands."""
         print("\n" + "="*60)
-        print("GENERATING SHELL SCRIPT")
+        print("GENERATING SBATCH SHELL SCRIPT")
         print("="*60)
         
         if output_dir is None:
@@ -259,66 +291,70 @@ class ExperimentAutomation:
         os.makedirs(output_dir, exist_ok=True)
         
         script_file = os.path.join(output_dir, self.config['output']['missing_script_file'])
-        python_exec = self.config['output']['python_executable']
         
         with open(script_file, 'w') as f:
             f.write("#!/bin/bash\n")
-            f.write("# Generated experiment automation script\n")
+            f.write("# Generated multirun sbatch automation script\n")
             f.write(f"# Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-            f.write(f"# Total missing experiments: {len(self.missing_experiments)}\n\n")
+            f.write(f"# Total missing multirun jobs: {len(self.missing_experiments)}\n\n")
             
             f.write("set -e  # Exit on any error\n\n")
             
-            f.write("echo \"Starting experiment automation...\"\n")
-            f.write("echo \"Total experiments to run: {}\"\n\n".format(len(self.missing_experiments)))
+            f.write("echo \"Starting multirun experiment automation...\"\n")
+            f.write("echo \"Total multirun jobs to submit: {}\"\n\n".format(len(self.missing_experiments)))
             
             for i, exp in enumerate(self.missing_experiments, 1):
-                # Build command arguments
-                subjects_str = " ".join(map(str, exp['subjects']))
-                
-                # Handle noise arguments
-                noise_args = ""
-                if exp['noise_type'] is not None:
-                    noise_args = f"--noise_type {exp['noise_type']} --intensity {exp['intensity']}"
+                # Build sbatch command arguments
+                if exp['eval_mode'] == 'CrossSession':
+                    # For CrossSession, single subject
+                    subjects_str = str(exp['subjects'][0])
+                else:
+                    # For WithinSession, space-separated subjects
+                    subjects_str = " ".join(map(str, exp['subjects']))
                 
                 # Handle tuning flag
-                tune_flag = "--tune" if exp['tune'] else ""
+                tune_flag = "true" if exp['tune'] else "false"
                 
-                # Generate command
-                command = self.config['command_template'].format(
-                    python_executable=python_exec,
-                    model=exp['model'],
-                    dataset=exp['dataset'],
-                    subjects_str=subjects_str,
-                    mode=exp['mode'],
-                    eval_mode=exp['eval_mode'],
-                    seed=exp['seed'],
-                    noise_args=noise_args,
-                    tune_flag=tune_flag
-                )
+                # Generate sbatch command with appropriate time limits
+                # WithinSession takes ~5x longer than CrossSession
+                if exp['eval_mode'] == 'WithinSession':
+                    # Longer time limit for WithinSession
+                    slurm_args = "--time=4-12:00:00 --mem=12G"
+                elif exp['eval_mode'] == 'CrossSession':
+                    # Standard time limit for CrossSession  
+                    slurm_args = "--time=0-17:30:00 --mem=12G"
+                else:
+                    # Default time limit for other modes
+                    slurm_args = "--time=0-17:30:00 --mem=12G"
                 
-                # Write experiment command
-                f.write(f"# Experiment {i}/{len(self.missing_experiments)}\n")
-                f.write(f"# {exp['model']} | {exp['dataset']} | {exp['mode']} | {exp['eval_mode']} | seed={exp['seed']}")
-                if exp['noise_type']:
-                    f.write(f" | {exp['noise_type']}={exp['intensity']}")
+                # Format: sbatch {slurm_args} unified_eval_script.sh {subject} {dataset} {eval_mode} {tune_flag}
+                command = f"sbatch {slurm_args} unified_eval_script.sh {subjects_str} {exp['dataset']} {exp['eval_mode']} {tune_flag}"
+                
+                # Write sbatch command
+                f.write(f"# Multirun Job {i}/{len(self.missing_experiments)}\n")
+                f.write(f"# Dataset: {exp['dataset']} | Eval: {exp['eval_mode']} | Subjects: {exp['subjects']}")
                 if exp['tune']:
                     f.write(" | TUNED")
                 f.write("\n")
-                f.write(f"echo \"Running experiment {i}/{len(self.missing_experiments)}...\"\n")
+                f.write(f"# This multirun will generate test_perturb results for models: eegnet, reegnet, cnn_ncp\n")
+                f.write(f"# This multirun will generate test_perturb results for seeds: 100, 200, 300, 400, 500\n")
+                f.write(f"# This multirun will generate test_perturb results for all noise types and intensities\n")
+                f.write(f"echo \"Submitting multirun job {i}/{len(self.missing_experiments)}...\"\n")
                 f.write(f"{command}\n")
                 f.write("if [ $? -eq 0 ]; then\n")
-                f.write(f"    echo \"[SUCCESS] Experiment {i} completed successfully\"\n")
+                f.write(f"    echo \"[SUCCESS] Multirun job {i} submitted successfully\"\n")
                 f.write("else\n")
-                f.write(f"    echo \"[ERROR] Experiment {i} failed\"\n")
+                f.write(f"    echo \"[ERROR] Multirun job {i} submission failed\"\n")
                 f.write("    exit 1\n")
-                f.write("fi\n\n")
+                f.write("fi\n")
+                f.write("sleep 1  # Brief pause between submissions\n\n")
         
         # Make script executable
         os.chmod(script_file, 0o755)
         
-        print(f"[OK] Generated shell script: {script_file}")
-        print(f"[INFO] Script contains {len(self.missing_experiments)} experiment commands")
+        print(f"[OK] Generated sbatch shell script: {script_file}")
+        print(f"[INFO] Script contains {len(self.missing_experiments)} multirun sbatch commands")
+        print(f"[INFO] Each sbatch command format: sbatch unified_eval_script.sh <subjects> <dataset> <eval_mode> <tune_flag>")
         
         return script_file
     

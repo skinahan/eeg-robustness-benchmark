@@ -197,11 +197,11 @@ def initialize_default_architectures():
 
 # Try to initialize default architectures
 try:
- import os
- # initialize_default_architectures()
- load_architectures_from_directory()
+    import os
+    # initialize_default_architectures()
+    load_architectures_from_directory()
 except Exception as e:
- print(f"WARNING: Could not initialize default architectures: {e}")
+    print(f"WARNING: Could not initialize default architectures: {e}")
 
 def get_paradigm(resample=None, dataset="BNCI2014_001"):
     """Get the appropriate paradigm based on dataset."""

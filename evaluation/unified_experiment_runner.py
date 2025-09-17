@@ -384,8 +384,8 @@ class UnifiedExperimentRunner:
         # Train final model with best parameters
         n_chans, n_times = self._determine_data_dimensions()
         final_model = self._create_model(n_chans, n_times)
+        final_params['verbose'] = 0
         final_model.set_params(**final_params)
-        
         # Train on full training set
         start_time = time.time()
         final_model.module_.train()
@@ -418,7 +418,7 @@ class UnifiedExperimentRunner:
                 print(f"Re-training model without EarlyStopping due to underfitting.")
                 final_model.set_params(**final_params)
                 final_model.callbacks = []
-                final_model.module_.train()          
+                final_model.module_.train()
                 start_time = time.time()  
                 final_model.fit(X_train, y_train)
                 training_time = time.time() - start_time

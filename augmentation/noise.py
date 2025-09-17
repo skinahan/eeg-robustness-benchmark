@@ -579,6 +579,14 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         if noise_type == 'eog' and not Path(eog_template_path).exists():
             raise FileNotFoundError(f"EOG template file not found: {eog_template_path}")
 
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        if not isinstance(X, np.ndarray):
+            raise ValueError("Expected X to be a NumPy array of shape (n_epochs, n_channels, n_times).")
+        
         if self.noise_type == 'dropout':
             return self._apply_channel_dropout(X)
         elif self.noise_type == 'gaussian':
@@ -587,13 +595,6 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
             return self._apply_realistic_eog_noise(X)
         else:
             raise ValueError(f"Unsupported noise type: {self.noise_type}")
-
-    def fit(self, X, y=None):
-        return self
-
-    def transform(self, X):
-        if not isinstance(X, np.ndarray):
-            raise ValueError("Expected X to be a NumPy array of shape (n_epochs, n_channels, n_times).")
 
     def _apply_channel_dropout(self, data):
         np.random.seed(self.seed)

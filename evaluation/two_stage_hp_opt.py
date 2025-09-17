@@ -234,9 +234,11 @@ def alternate_optuna_stage(
 ):
     noise_type = noise_dict["noise_type"]
     intensity = noise_dict["intensity"]
-    train_mask = metadata["session"] == "0train"
-    X_train = X[train_mask]
-    y_train = y[train_mask]
+    X_train = X
+    y_train = y
+    # train_mask = metadata["session"] == "0train"
+    # X_train = X[train_mask]
+    # y_train = y[train_mask]
 
     if len(X_train) < 10:
         raise ValueError("Too few training samples for session 0.")

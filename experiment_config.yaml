@@ -8,11 +8,11 @@ datasets:
     paradigm: "MotorImagery"
     subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9]  # All subjects
     
-  Lee2019_SSVEP:
-    name: "Lee2019_SSVEP"
-    paradigm: "SSVEP"
-    # Subject split 1: 1-27
-    subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+  # Lee2019_SSVEP:
+  #   name: "Lee2019_SSVEP"
+  #   paradigm: "SSVEP"
+  #   # Subject split 1: 1-27
+  #   subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
 
 # Model configurations
 models:
@@ -28,17 +28,18 @@ models:
 # Evaluation modes
 eval_modes:
   - "CrossSession"
+  - "WithinSession"
 
 noise_types:
   - "gaussian"
   - "dropout"
   - "eog"
 
-# Experiment modes
+# Experiment modes (multirun approach)
 experiment_modes:
-  - name: "test_perturb"
-    display_name: "Multi-Run"
-    requires_noise: false
+  - name: "multirun"
+    display_name: "Multirun (Test Perturb)"
+    requires_noise: false  # Handled internally by multirun
     supports_tuning: true
     
 # Random seeds for reproducibility
@@ -82,12 +83,12 @@ output:
   aggregated_results_file: "all_results.csv"
   
   # Filename for missing experiments shell script
-  missing_script_file: "run_missing_experiments.sh"
+  missing_script_file: "run_missing_multirun_jobs.sh"
   
   # Python executable path (update this for your system)
   python_executable: "C:\\Users\\Kinah\\anaconda3\\envs\\ncp_robustness_proj\\python.exe"
 
-# Command template for generating experiment commands
+# Command template for generating multirun experiment commands
 command_template: |
   {python_executable} evaluation/unified_experiment_runner.py \
     --model {model} \
