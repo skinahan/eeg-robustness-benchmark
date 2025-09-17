@@ -316,16 +316,31 @@ class ExperimentAutomation:
                 tune_flag = "true" if exp['tune'] else "false"
                 
                 # Generate sbatch command with appropriate time limits
+                # Base estimates: CrossSession without tuning ~3 hours
                 # WithinSession takes ~5x longer than CrossSession
-                if exp['eval_mode'] == 'WithinSession':
-                    # Longer time limit for WithinSession
-                    slurm_args = "--time=4-12:00:00 --mem=12G"
-                elif exp['eval_mode'] == 'CrossSession':
-                    # Standard time limit for CrossSession  
-                    slurm_args = "--time=0-17:30:00 --mem=12G"
+                # Tuning adds significant overhead (~20x for CrossSession)
+                
+                if exp['eval_mode'] == 'CrossSession':
+                    if exp['tune']:
+                        # CrossSession with tuning: ~2.5 days
+                        slurm_args = "--time=2-12:00:00 --mem=12G"
+                    else:
+                        # CrossSession without tuning: ~3 hours (with buffer)
+                        slurm_args = "--time=0-06:00:00 --mem=12G"
+                        
+                elif exp['eval_mode'] == 'WithinSession':
+                    if exp['tune']:
+                        # WithinSession with tuning: ~5x longer than CrossSession tuning
+                        # 2.5 days * 5 = ~12.5 days (use 14 days for safety)
+                        slurm_args = "--time=14-00:00:00 --mem=12G"
+                    else:
+                        # WithinSession without tuning: ~5x longer than CrossSession
+                        # 3 hours * 5 = 15 hours (with buffer, use 1 day)
+                        slurm_args = "--time=1-00:00:00 --mem=12G"
+                        
                 else:
-                    # Default time limit for other modes
-                    slurm_args = "--time=0-17:30:00 --mem=12G"
+                    # Default time limit for other modes (CrossSubject, etc.)
+                    slurm_args = "--time=1-00:00:00 --mem=12G"
                 
                 # Format: sbatch {slurm_args} unified_eval_script.sh {subject} {dataset} {eval_mode} {tune_flag}
                 command = f"sbatch {slurm_args} unified_eval_script.sh {subjects_str} {exp['dataset']} {exp['eval_mode']} {tune_flag}"

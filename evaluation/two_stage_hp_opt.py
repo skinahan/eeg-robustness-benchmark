@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import sklearn
 import torch
+import joblib
 from moabb.evaluations import WithinSessionSplitter
 from optuna.visualization import plot_optimization_history, plot_param_importances
 from sklearn.model_selection import StratifiedKFold, GroupKFold
@@ -164,7 +165,7 @@ def run_optuna_stage(
         # Sample hyperparameters
         params = param_space_fn(trial, param_prefix)
         # params[f"{param_prefix}train_split"] = None
-        # params[f"{param_prefix}verbose"] = 0
+        params[f"{param_prefix}verbose"] = 0
         # params[f"{param_prefix}callbacks"] = []
         
         # Define model
@@ -202,11 +203,11 @@ def run_optuna_stage(
     study.optimize(objective, n_trials=n_trials, show_progress_bar=True)
 
     study_path = os.path.join(output_dir, "optuna_study.pkl")
-    import joblib
+    
     joblib.dump(study, study_path)
 
-    with open(os.path.join(output_dir, "best_params.json"), "w") as f:
-        json.dump({"best_score": study.best_value, "best_params": study.best_params}, f, indent=2)
+    # with open(os.path.join(output_dir, "best_params.json"), "w") as f:
+    #     json.dump({"best_score": study.best_value, "best_params": study.best_params}, f, indent=2)
 
     # try:
     #     plot_optimization_history(study).write_html(os.path.join(output_dir, f"optuna_{stage_name}_history.html"))
