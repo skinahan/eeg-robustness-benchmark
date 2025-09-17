@@ -1,0 +1,103 @@
+# Comprehensive Experiment Configuration
+# This configuration defines all experimental combinations to be run
+
+# Dataset configurations
+datasets:
+  BNCI2014_001:
+    name: "BNCI2014_001"
+    paradigm: "MotorImagery"
+    subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9]  # All subjects
+    
+  Lee2019_SSVEP:
+    name: "Lee2019_SSVEP"
+    paradigm: "SSVEP"
+    # Subject split 1: 1-27
+    subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+
+# Model configurations
+models:
+  - name: "eegnet"
+    display_name: "EEGNet"
+    
+  - name: "reegnet"
+    display_name: "REEGNet"
+    
+  - name: "cnn_ncp"
+    display_name: "CNN-NCP"
+    
+# Evaluation modes
+eval_modes:
+  - "CrossSession"
+
+noise_types:
+  - "gaussian"
+  - "dropout"
+  - "eog"
+
+# Experiment modes
+experiment_modes:
+  - name: "test_perturb"
+    display_name: "Multi-Run"
+    requires_noise: false
+    supports_tuning: true
+    
+# Random seeds for reproducibility
+seeds:
+  - 100
+  - 200
+  - 300
+  - 400
+  - 500
+
+# Subject group configurations for different experiment scales
+subject_groups:
+  full: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+# Experiment filtering and prioritization
+experiment_filters:
+  # Skip certain combinations to reduce experiment size
+  skip_combinations:
+    # Skip test_perturb for certain models if they're too slow
+    # - model: "cnn_ncp"
+    #   mode: "test_perturb"
+    
+    # Skip certain eval modes for specific datasets
+    # - dataset: "Lee2019_SSVEP"
+    #   eval_mode: "CrossSubject"  # SSVEP might not support cross-subject well
+  
+  # Priority levels for experiment execution
+  priority_levels:
+    high:
+      - all_remaining: true
+
+# Output configuration
+output:
+  # Directory for generated shell scripts
+  script_dir: "generated_scripts"
+  
+  # Directory for aggregated results
+  results_dir: "evaluation/results"
+  
+  # Filename for the aggregated results
+  aggregated_results_file: "all_results.csv"
+  
+  # Filename for missing experiments shell script
+  missing_script_file: "run_missing_experiments.sh"
+  
+  # Python executable path (update this for your system)
+  python_executable: "C:\\Users\\Kinah\\anaconda3\\envs\\ncp_robustness_proj\\python.exe"
+
+# Command template for generating experiment commands
+command_template: |
+  {python_executable} evaluation/unified_experiment_runner.py \
+    --model {model} \
+    --dataset {dataset} \
+    --subjects {subjects_str} \
+    --mode {mode} \
+    --eval_mode {eval_mode} \
+    --seed {seed} \
+    {noise_args} \
+    {tune_flag} \
+    --overwrite
+
+
