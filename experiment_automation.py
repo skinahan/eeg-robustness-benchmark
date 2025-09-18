@@ -39,6 +39,15 @@ class ExperimentAutomation:
         self.existing_results = None
         self.missing_experiments = []
         self.preaggregated_results_file = preaggregated_results_file
+        # Performance optimization caches
+        self._cached_noise_intensities = None
+        self._cached_existing_signatures = None
+        
+    def _invalidate_caches(self):
+        """Invalidate all performance caches."""
+        self._cached_existing_signatures = None
+        if hasattr(self, 'expected_test_perturb_results'):
+            delattr(self, 'expected_test_perturb_results')
         
     def _load_config(self) -> Dict[str, Any]:
         """Load configuration from YAML file."""
@@ -62,6 +71,10 @@ class ExperimentAutomation:
         
         try:
             self.existing_results = pd.read_csv(self.preaggregated_results_file)
+            
+            # Invalidate caches when new results are loaded
+            self._invalidate_caches()
+            
             print(f"[OK] Loaded {len(self.existing_results)} result rows from {self.preaggregated_results_file}")
             print(f"[INFO] Results summary:")
             print(f"   - Datasets: {self.existing_results['dataset'].unique()}")
@@ -87,6 +100,9 @@ class ExperimentAutomation:
         # Use the updated aggregation function
         self.existing_results = collect_all_results_unified()
         
+        # Invalidate caches when new results are loaded
+        self._invalidate_caches()
+        
         if self.existing_results is not None:
             print(f"[OK] Aggregated {len(self.existing_results)} result rows")
             print(f"[INFO] Results summary:")
@@ -106,12 +122,11 @@ class ExperimentAutomation:
         """
         Generate all expected test_perturb results based on configuration, 
         then identify which multirun jobs are needed to generate missing results.
+        Optimized version using itertools.product for better performance.
         """
         print("\n" + "="*60)
         print("GENERATING EXPECTED TEST_PERTURB EXPERIMENTS")
         print("="*60)
-        
-        expected_test_perturb_results = []
         
         # Get base configurations
         datasets = self.config['datasets']
@@ -120,50 +135,71 @@ class ExperimentAutomation:
         seeds = self.config['seeds']
         noise_types = self.config['noise_types']
         
-        # Generate noise intensities (same as in unified_experiment_runner.py)
-        noise_intensities = np.linspace(1.0, 50.0, 20)
+        # Pre-compute noise intensities once (same as in unified_experiment_runner.py)
+        if self._cached_noise_intensities is None:
+            self._cached_noise_intensities = np.linspace(1.0, 50.0, 20)
+            noise_intensities = self._cached_noise_intensities
+        else:
+            noise_intensities = self._cached_noise_intensities
         
-        # Generate all expected test_perturb result combinations
-        for dataset_name, dataset_config in datasets.items():
-            for model_config in models:
-                for eval_mode in eval_modes:
-                    for seed in seeds:
-                        for noise_type in noise_types:
-                            for intensity in noise_intensities:
-                                for tune_flag in [False, True]:
-                                    subjects = dataset_config['subjects']
-                                    
-                                    if eval_mode == 'CrossSession':
-                                        # For CrossSession, create separate entries for each subject
-                                        for subject in subjects:
-                                            experiment = {
-                                                'dataset': dataset_name,
-                                                'paradigm': dataset_config['paradigm'],
-                                                'subject': subject,
-                                                'model': model_config['name'],
-                                                'eval_mode': eval_mode,
-                                                'mode': 'test_perturb',
-                                                'seed': seed,
-                                                'noise_type': noise_type,
-                                                'intensity': intensity,
-                                                'tune': tune_flag
-                                            }
-                                            expected_test_perturb_results.append(experiment)
-                                    else:
-                                        # For WithinSession, results are aggregated across subjects
-                                        experiment = {
-                                            'dataset': dataset_name,
-                                            'paradigm': dataset_config['paradigm'],
-                                            'subjects': subjects,  # All subjects together
-                                            'model': model_config['name'],
-                                            'eval_mode': eval_mode,
-                                            'mode': 'test_perturb',
-                                            'seed': seed,
-                                            'noise_type': noise_type,
-                                            'intensity': intensity,
-                                            'tune': tune_flag
-                                        }
-                                        expected_test_perturb_results.append(experiment)
+        # Use itertools.product for efficient cartesian product generation
+        expected_test_perturb_results = []
+        
+        # Pre-extract values for faster iteration
+        dataset_items = list(datasets.items())
+        model_names = [model['name'] for model in models]
+        tune_flags = [False, True]
+        
+        print(f"[INFO] Generating combinations from:")
+        print(f"   - Datasets: {len(dataset_items)}")
+        print(f"   - Models: {len(model_names)}")
+        print(f"   - Eval modes: {len(eval_modes)}")
+        print(f"   - Seeds: {len(seeds)}")
+        print(f"   - Noise types: {len(noise_types)}")
+        print(f"   - Intensities: {len(noise_intensities)}")
+        print(f"   - Tune flags: {len(tune_flags)}")
+        
+        # Generate combinations using itertools.product for better performance
+        combinations = itertools.product(
+            dataset_items, model_names, eval_modes, seeds, 
+            noise_types, noise_intensities, tune_flags
+        )
+        
+        print("[INFO] Processing combinations...")
+        for (dataset_name, dataset_config), model_name, eval_mode, seed, noise_type, intensity, tune_flag in tqdm(combinations, desc="Generating experiments"):
+            subjects = dataset_config['subjects']
+            
+            if eval_mode == 'CrossSession' or eval_mode == 'WithinSession':
+                # For CrossSession and WithinSession, create separate entries for each subject
+                for subject in subjects:
+                    experiment = {
+                        'dataset': dataset_name,
+                        'paradigm': dataset_config['paradigm'],
+                        'subject': subject,
+                        'model': model_name,
+                        'eval_mode': eval_mode,
+                        'mode': 'test_perturb',
+                        'seed': seed,
+                        'noise_type': noise_type,
+                        'intensity': intensity,
+                        'tune': tune_flag
+                    }
+                    expected_test_perturb_results.append(experiment)
+            else:
+                # For Cross-Subject, results are aggregated across subjects
+                experiment = {
+                    'dataset': dataset_name,
+                    'paradigm': dataset_config['paradigm'],
+                    'subjects': subjects,  # All subjects together
+                    'model': model_name,
+                    'eval_mode': eval_mode,
+                    'mode': 'test_perturb',
+                    'seed': seed,
+                    'noise_type': noise_type,
+                    'intensity': intensity,
+                    'tune': tune_flag
+                }
+                expected_test_perturb_results.append(experiment)
         
         print(f"[OK] Generated {len(expected_test_perturb_results)} expected test_perturb results")
         
@@ -181,53 +217,93 @@ class ExperimentAutomation:
         print("IDENTIFYING MISSING TEST_PERTURB RESULTS")
         print("="*60)
         
-        # First generate expected test_perturb results
-        self.generate_expected_experiments()  # This populates self.expected_test_perturb_results
+        # Generate expected test_perturb results (cached if already generated)
+        if not hasattr(self, 'expected_test_perturb_results'):
+            self.generate_expected_experiments()  # This populates self.expected_test_perturb_results
+        else:
+            print("[INFO] Using cached expected test_perturb results")
         
         if self.existing_results is None or self.existing_results.empty:
             print("[WARNING] No existing results found, all test_perturb results are missing")
             missing_test_perturb_results = self.expected_test_perturb_results
         else:
-            # Find missing test_perturb results
+            # Convert expected results to DataFrame for vectorized operations
+            print("[INFO] Converting expected results to DataFrame for efficient comparison...")
+            expected_df = pd.DataFrame(self.expected_test_perturb_results)
+            
+            # Prepare existing results for comparison
+            existing_df = self.existing_results.copy()
+            
+            # Normalize eval_mode column in existing results for matching
+            if 'eval_mode' in existing_df.columns:
+                existing_df['eval_mode_normalized'] = existing_df['eval_mode'].str.replace('Evaluation', '', regex=False)
+            else:
+                existing_df['eval_mode_normalized'] = 'Unknown'
+                
+            # Normalize mode column to handle tuning suffixes
+            if 'mode' in existing_df.columns:
+                existing_df['mode_normalized'] = existing_df['mode'].str.replace('_tune', '', regex=False)
+            else:
+                existing_df['mode_normalized'] = 'Unknown'
+            
+            # Create a set of existing result signatures for fast lookup (with caching)
+            if self._cached_existing_signatures is None or len(self._cached_existing_signatures) != len(existing_df):
+                print("[INFO] Creating lookup set for existing results...")
+                existing_signatures = set()
+                
+                for _, row in existing_df.iterrows():
+                    # Create signature based on the matching criteria
+                    signature_parts = [
+                        row.get('dataset', ''),
+                        row.get('model', ''),
+                        row.get('eval_mode_normalized', ''),
+                        row.get('seed', ''),
+                        row.get('noise_type', ''),
+                        str(row.get('intensity', '')),  # Convert to string for consistent comparison
+                        row.get('mode_normalized', '')
+                    ]
+                    
+                    # Add subject if present (for CrossSession/WithinSession)
+                    if 'subject' in row and pd.notna(row['subject']):
+                        signature_parts.append(str(row['subject']))
+                    else:
+                        signature_parts.append('no_subject')
+                        
+                    signature = '|'.join(str(part) for part in signature_parts)
+                    existing_signatures.add(signature)
+                
+                # Cache the signatures for future use
+                self._cached_existing_signatures = existing_signatures
+            else:
+                print("[INFO] Using cached existing result signatures")
+                existing_signatures = self._cached_existing_signatures
+            
+            # Find missing results using set operations
+            print("[INFO] Identifying missing experiments using vectorized comparison...")
             missing_test_perturb_results = []
             
-            for expected_result in tqdm(self.expected_test_perturb_results):
-                # Create filter for this specific test_perturb result
-                filter_conditions = []
+            for expected_result in tqdm(self.expected_test_perturb_results, desc="Checking missing experiments"):
+                # Create signature for expected result
+                signature_parts = [
+                    expected_result['dataset'],
+                    expected_result['model'],
+                    expected_result['eval_mode'],
+                    str(expected_result['seed']),
+                    expected_result['noise_type'],
+                    str(expected_result['intensity']),
+                    'test_perturb'  # Mode is always test_perturb for expected results
+                ]
                 
-                # Basic filters
-                filter_conditions.append(self.existing_results['dataset'] == expected_result['dataset'])
-                filter_conditions.append(self.existing_results['model'] == expected_result['model'])
-                filter_conditions.append(self.existing_results['eval_mode'].str.contains(expected_result['eval_mode'], na=False))
-                filter_conditions.append(self.existing_results['seed'] == expected_result['seed'])
-                filter_conditions.append(self.existing_results['noise_type'] == expected_result['noise_type'])
-                filter_conditions.append(self.existing_results['intensity'] == expected_result['intensity'])
-                
-                # Handle mode filtering (account for tuning suffixes)
-                mode_col = self.existing_results['mode']
-                if expected_result['tune']:
-                    # Look for tuned versions
-                    mode_condition = (mode_col == "test_perturb_tune") | (mode_col == "test_perturb")
+                # Add subject if present
+                if 'subject' in expected_result:
+                    signature_parts.append(str(expected_result['subject']))
                 else:
-                    mode_condition = mode_col == "test_perturb"
-                filter_conditions.append(mode_condition)
+                    signature_parts.append('no_subject')
+                    
+                signature = '|'.join(str(part) for part in signature_parts)
                 
-                # Handle subject filtering
-                if expected_result['eval_mode'] == 'CrossSession':
-                    # For CrossSession, check specific subject
-                    if 'subject' in self.existing_results.columns:
-                        filter_conditions.append(self.existing_results['subject'] == expected_result['subject'])
-                # For WithinSession, we don't filter by subject as results are aggregated
-                
-                # Apply all filters
-                combined_filter = filter_conditions[0]
-                for condition in filter_conditions[1:]:
-                    combined_filter = combined_filter & condition
-                
-                # Check if any results match
-                matching_results = self.existing_results[combined_filter]
-                
-                if len(matching_results) == 0:
+                # Check if this signature exists in our set
+                if signature not in existing_signatures:
                     missing_test_perturb_results.append(expected_result)
         
         print(f"[OK] Found {len(missing_test_perturb_results)} missing test_perturb results out of {len(self.expected_test_perturb_results)} total expected")
@@ -240,7 +316,7 @@ class ExperimentAutomation:
         required_multirun_jobs = set()
         
         for missing_result in missing_test_perturb_results:
-            if missing_result['eval_mode'] == 'CrossSession':
+            if missing_result['eval_mode'] == 'CrossSession' or missing_result['eval_mode'] == 'WithinSession':
                 # For CrossSession, each subject needs its own multirun job
                 job_key = (
                     missing_result['dataset'],
@@ -249,7 +325,7 @@ class ExperimentAutomation:
                     missing_result['tune']
                 )
             else:
-                # For WithinSession, all subjects are processed together
+                # For Cross-Subject, all subjects are processed together
                 subjects_tuple = tuple(missing_result['subjects'])
                 job_key = (
                     missing_result['dataset'],
@@ -265,11 +341,11 @@ class ExperimentAutomation:
         for job_key in required_multirun_jobs:
             dataset, eval_mode, subjects_or_subject, tune = job_key
             
-            if eval_mode == 'CrossSession':
+            if eval_mode == 'CrossSession' or eval_mode == 'WithinSession':
                 # Single subject for CrossSession
                 subjects = [subjects_or_subject]
             else:
-                # Multiple subjects for WithinSession
+                # Multiple subjects for Cross-Subject
                 subjects = list(subjects_or_subject)
             
             multirun_job = {
@@ -330,11 +406,11 @@ class ExperimentAutomation:
             
             for i, exp in enumerate(self.missing_experiments, 1):
                 # Build sbatch command arguments
-                if exp['eval_mode'] == 'CrossSession':
+                if exp['eval_mode'] == 'CrossSession' or exp['eval_mode'] == 'WithinSession':
                     # For CrossSession, single subject
                     subjects_str = str(exp['subjects'][0])
                 else:
-                    # For WithinSession, space-separated subjects
+                    # For CrossSubject, space-separated subjects
                     subjects_str = " ".join(map(str, exp['subjects']))
                 
                 # Handle tuning flag
