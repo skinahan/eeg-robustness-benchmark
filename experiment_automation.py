@@ -27,7 +27,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
 
 from evaluation.experiment_utils import collect_all_results_unified
-
+from tqdm import tqdm
 
 class ExperimentAutomation:
     """Main class for experiment automation."""
@@ -191,7 +191,7 @@ class ExperimentAutomation:
             # Find missing test_perturb results
             missing_test_perturb_results = []
             
-            for expected_result in self.expected_test_perturb_results:
+            for expected_result in tqdm(self.expected_test_perturb_results):
                 # Create filter for this specific test_perturb result
                 filter_conditions = []
                 
