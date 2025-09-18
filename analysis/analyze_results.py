@@ -671,6 +671,245 @@ def generate_all_test_perturb_plots(df, models=None, output_dir='plots'):
     print(f"All test_perturb plots generated and saved to {output_dir}")
 
 
+def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, dataset='BNCI2014_001', output_dir='plots'):
+    """
+    Create per-subject plots for test_perturb results.
+    
+    Parameters:
+    - df: DataFrame with test_perturb results
+    - model_name: str, name of the model
+    - noise_type: str, 'dropout', 'gaussian', or 'eog'
+    - tune_setting: bool, True for tuned, False for baseline
+    - dataset: str, dataset name for directory organization
+    - output_dir: str, base directory to save plots
+    """
+    # Define correct intensity values
+    correct_intensities = np.linspace(1.0, 50.0, 20)
+    valid_seeds = [100, 200, 300, 400, 500]
+    
+    # Filter data
+    df_filtered = df[
+        (df['mode'] == 'test_perturb') &
+        (df['eval_mode'] == 'CrossSession') &
+        (df['model'] == model_name) &
+        (df['noise_type'] == noise_type) &
+        (df['tune'] == tune_setting) &
+        (df['seed'].isin(valid_seeds)) &
+        (df['intensity'].isin(correct_intensities))
+    ].copy()
+    
+    if df_filtered.empty:
+        print(f"No data found for per-subject plot: {model_name}, {noise_type}, tune={tune_setting}")
+        return
+    
+    # Remove rows with missing corrupted_score
+    df_filtered = df_filtered.dropna(subset=['corrupted_score'])
+    
+    # Add clean_score as intensity 0.0
+    clean_data = df_filtered.dropna(subset=['clean_score']).copy()
+    if not clean_data.empty:
+        clean_summary = clean_data.groupby(['model', 'noise_type', 'seed', 'session', 'subject'])['clean_score'].first().reset_index()
+        clean_summary['intensity'] = 0.0
+        clean_summary['corrupted_score'] = clean_summary['clean_score']
+        clean_summary['tune'] = tune_setting
+        clean_summary['mode'] = 'test_perturb'
+        clean_summary['eval_mode'] = 'CrossSession'
+        
+        df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
+    
+    # Get unique subjects
+    subjects = sorted(df_filtered['subject'].unique())
+    tune_label = "tuned" if tune_setting else "baseline"
+    
+    # Create plots for each subject
+    for subject in subjects:
+        subject_data = df_filtered[df_filtered['subject'] == subject]
+        
+        if subject_data.empty:
+            continue
+        
+        # Create both bar and line plots
+        for plot_type in ['bar', 'line']:
+            plt.figure(figsize=(12, 8), dpi=300)
+            
+            if plot_type == 'bar':
+                sns.barplot(
+                    data=subject_data,
+                    x='intensity',
+                    y='corrupted_score',
+                    hue='session',
+                    palette='Set2',
+                    errorbar=('ci', 95)
+                )
+            else:
+                sns.lineplot(
+                    data=subject_data,
+                    x='intensity',
+                    y='corrupted_score',
+                    hue='session',
+                    marker='o',
+                    palette='Set2',
+                    errorbar=('ci', 95)
+                )
+            
+            plt.title(f'{model_name} - Subject {subject} - {noise_type.capitalize()} Noise ({tune_label.capitalize()})\nTest Perturb Performance', 
+                     fontsize=14, fontweight='bold')
+            plt.xlabel('Noise Intensity (%)', fontsize=12)
+            plt.ylabel('Corrupted Score (ROC AUC)', fontsize=12)
+            plt.legend(title='Session', fontsize=10, title_fontsize=11)
+            plt.grid(True, alpha=0.3)
+            plt.ylim(0, 1)
+            
+            # Create directory structure
+            subject_dir = os.path.join(output_dir, dataset, f'subject_{subject}', noise_type)
+            os.makedirs(subject_dir, exist_ok=True)
+            
+            # Save plot
+            filename = f"{model_name}_{tune_label}_{plot_type}_test_perturb.png"
+            output_file = os.path.join(subject_dir, filename)
+            plt.tight_layout()
+            plt.savefig(output_file, dpi=300, bbox_inches='tight')
+            plt.close()
+            
+            print(f"Saved per-subject {plot_type} plot: {output_file}")
+
+
+def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, models=None, dataset='BNCI2014_001', output_dir='plots'):
+    """
+    Create multi-subject comparison plots for test_perturb results.
+    
+    Parameters:
+    - df: DataFrame with test_perturb results
+    - noise_type: str, 'dropout', 'gaussian', or 'eog'
+    - tune_setting: bool, True for tuned, False for baseline
+    - models: list, specific models to include (if None, uses all available models)
+    - dataset: str, dataset name for directory organization
+    - output_dir: str, base directory to save plots
+    """
+    # Define correct intensity values
+    correct_intensities = np.linspace(1.0, 50.0, 20)
+    valid_seeds = [100, 200, 300, 400, 500]
+    
+    # Filter data
+    df_filtered = df[
+        (df['mode'] == 'test_perturb') &
+        (df['eval_mode'] == 'CrossSession') &
+        (df['noise_type'] == noise_type) &
+        (df['tune'] == tune_setting) &
+        (df['seed'].isin(valid_seeds)) &
+        (df['intensity'].isin(correct_intensities))
+    ].copy()
+    
+    # Filter by specific models if provided
+    if models is not None:
+        df_filtered = df_filtered[df_filtered['model'].isin(models)]
+    
+    if df_filtered.empty:
+        print(f"No data found for multisubject plot: {noise_type}, tune={tune_setting}")
+        return
+    
+    # Remove rows with missing corrupted_score
+    df_filtered = df_filtered.dropna(subset=['corrupted_score'])
+    
+    # Add clean_score as intensity 0.0
+    clean_data = df_filtered.dropna(subset=['clean_score']).copy()
+    if not clean_data.empty:
+        clean_summary = clean_data.groupby(['model', 'noise_type', 'seed', 'session', 'subject'])['clean_score'].first().reset_index()
+        clean_summary['intensity'] = 0.0
+        clean_summary['corrupted_score'] = clean_summary['clean_score']
+        clean_summary['tune'] = tune_setting
+        clean_summary['mode'] = 'test_perturb'
+        clean_summary['eval_mode'] = 'CrossSession'
+        
+        df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
+    
+    tune_label = "tuned" if tune_setting else "baseline"
+    
+    # Create both bar and line plots
+    for plot_type in ['bar', 'line']:
+        plt.figure(figsize=(14, 8), dpi=300)
+        
+        if plot_type == 'bar':
+            sns.barplot(
+                data=df_filtered,
+                x='intensity',
+                y='corrupted_score',
+                hue='model',
+                palette='tab10',
+                errorbar=('ci', 95)
+            )
+        else:
+            sns.lineplot(
+                data=df_filtered,
+                x='intensity',
+                y='corrupted_score',
+                hue='model',
+                marker='o',
+                palette='tab10',
+                linewidth=2.5,
+                markersize=8,
+                errorbar=('ci', 95)
+            )
+        
+        plt.title(f'Multi-Subject Model Comparison - {noise_type.capitalize()} Noise ({tune_label.capitalize()})\nTest Perturb Performance (All Subjects)', 
+                 fontsize=14, fontweight='bold')
+        plt.xlabel('Noise Intensity (%)', fontsize=12)
+        plt.ylabel('Corrupted Score (ROC AUC)', fontsize=12)
+        plt.legend(title='Model', fontsize=10, title_fontsize=11, bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.grid(True, alpha=0.3)
+        plt.ylim(0, 1)
+        
+        # Create directory structure
+        multisubject_dir = os.path.join(output_dir, dataset, 'multisubject', noise_type)
+        os.makedirs(multisubject_dir, exist_ok=True)
+        
+        # Save plot
+        filename = f"model_comparison_{tune_label}_{plot_type}_test_perturb.png"
+        output_file = os.path.join(multisubject_dir, filename)
+        plt.tight_layout()
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        print(f"Saved multisubject {plot_type} plot: {output_file}")
+
+
+def generate_organized_test_perturb_plots(df, models=None, dataset='BNCI2014_001', output_dir='plots'):
+    """
+    Generate all test_perturb plots with organized directory structure.
+    
+    Parameters:
+    - df: DataFrame with all results
+    - models: list, specific models to include (if None, uses all available models)
+    - dataset: str, dataset name for directory organization
+    - output_dir: str, base directory to save plots
+    """
+    # Get unique values
+    if models is None:
+        models = df[df['mode'] == 'test_perturb']['model'].unique()
+    
+    noise_types = df[df['mode'] == 'test_perturb']['noise_type'].unique()
+    tune_settings = df[df['mode'] == 'test_perturb']['tune'].unique()
+    
+    print(f"Generating organized plots for {len(models)} models, {len(noise_types)} noise types, {len(tune_settings)} tune settings")
+    print(f"Models: {list(models)}")
+    print(f"Noise types: {list(noise_types)}")
+    
+    # Generate per-subject plots for each model
+    print("\n=== Generating per-subject plots ===")
+    for model in models:
+        for noise_type in noise_types:
+            for tune_setting in tune_settings:
+                plot_test_perturb_per_subject(df, model, noise_type, tune_setting, dataset, output_dir)
+    
+    # Generate multi-subject comparison plots
+    print("\n=== Generating multi-subject comparison plots ===")
+    for noise_type in noise_types:
+        for tune_setting in tune_settings:
+            plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, models, dataset, output_dir)
+    
+    print(f"\nAll organized test_perturb plots generated and saved to {output_dir}")
+
+
 def generate_model_subset_plots(df, model_subsets, output_dir='plots'):
     """
     Generate plots for different model subsets for easy comparison.
@@ -698,12 +937,24 @@ if __name__ == '__main__':
         'all_models': None  # Will use all available models
     }
     
-    # Generate plots for the main model subset (eegnet, reegnet, cnn_ncp)
-    print("Generating plots for main model subset...")
-    generate_all_test_perturb_plots(aggregated_df, models=model_subsets['main_models'], output_dir='./plots/')
+    # Determine dataset from the data
+    dataset = aggregated_df['dataset'].iloc[0] if 'dataset' in aggregated_df.columns else 'BNCI2014_001'
+    
+    # Generate organized plots with per-subject breakdowns
+    print("Generating organized plots with per-subject breakdowns...")
+    generate_organized_test_perturb_plots(
+        aggregated_df, 
+        models=model_subsets['main_models'], 
+        dataset=dataset,
+        output_dir='./plots/'
+    )
+    
+    # Also generate the original plots for backward compatibility
+    print("\n=== Generating original plots for backward compatibility ===")
+    generate_all_test_perturb_plots(aggregated_df, models=model_subsets['main_models'], output_dir='./plots/legacy/')
     
     # Uncomment to generate plots for all subsets:
-    # generate_model_subset_plots(aggregated_df, model_subsets, output_dir='./plots/')
+    # generate_model_subset_plots(aggregated_df, model_subsets, output_dir='./plots/legacy/')
     
     # Legacy code (commented out)
     # run_completion_report(input_dir, aggregated_df)
