@@ -2,7 +2,7 @@
 from typing import Tuple
 
 import numpy as np
-from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.base import BaseEstimator, TransformerMixin, ClassifierMixin
 import mne
 from mne.simulation import add_eog
 from mne.io import RawArray
@@ -45,10 +45,7 @@ def load_generic_eog_template(template_path):
         return template
     except Exception as e:
         raise ValueError(f"Failed to load EOG template from {template_path}: {e}")
-    
-
-
-
+ 
 def interpolate_eog_topography_to_montage(source_montage, target_montage, source_matrix):
     """
     Interpolate EOG topography from source montage to target montage using spherical splines.
@@ -304,7 +301,6 @@ def inject_scaled_eog_signal(data, info, scale_factor=4.0, seed=42):
 
     return raw_scaled.get_data() * 1e6 if is_microvolts else raw_scaled.get_data()
 
-
 def to_volts(arr: np.ndarray, verbose: bool = False) -> Tuple[np.ndarray, str]:
     """
     Ensure an ndarray is in Volts.
@@ -333,7 +329,6 @@ def to_volts(arr: np.ndarray, verbose: bool = False) -> Tuple[np.ndarray, str]:
         f"Output range: [{arr_V.min():.3e}, {arr_V.max():.3e}]")
 
     return arr_V, unit
-
 
 def inject_realistic_eog_artifacts_with_coverage(data, info, template_path, montage_name='standard_1005', 
  temporal_coverage=0.1, seed=42, apply_car=True, artifact_scale_factor=1000.0):
@@ -534,7 +529,7 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
 
     Supports four noise types:
     - 'dropout': Randomly zero out a percentage of EEG channels.
-    - 'gaussian': Add Gaussian noise to a subset of channels.
+    - 'gaussian': Add Gaussian noise with magnitude-aware scaling.
     - 'eog': Add realistic EOG artifacts using learned template.
     - 'realistic_eog': Add realistic EOG artifacts using learned template (legacy).
 
@@ -545,7 +540,7 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
     intensity : float
     Noise severity/intensity. Meaning depends on noise_type and mode:
     - For 'dropout': percentage of channels to drop (0-100).
-    - For 'gaussian': scaling factor (D) for variance.
+    - For 'gaussian': noise-to-signal ratio as percentage (10.0 = 10% noise relative to signal RMS).
     - For 'eog': 
     * In test_perturb mode: temporal coverage of EOG artifacts (10% = 10% of the time covered by artifacts)
     * In other modes: percentage of epochs to contaminate (0-100)
@@ -559,17 +554,21 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
     Scaling factor to make EOG artifacts more impactful (default: 1000.0).
     This addresses the issue where original artifacts were too weak to affect model performance.
     Increase this value to make EOG contamination more severe.
+    use_improved_gaussian : bool, optional
+    Whether to use the improved magnitude-aware Gaussian noise implementation (default: True).
+    If False, uses the original fixed-scaling implementation for backward compatibility.
     """
 
     def __init__(self, noise_type='dropout', intensity=10.0, seed=42, 
     eog_template_path='notebooks/eog_mixing_results/generic_eog_mixing_template.npz', montage_name='standard_1020',
-    artifact_scale_factor=1000.0):
+    artifact_scale_factor=1000.0, use_improved_gaussian=True):
         self.noise_type = noise_type
         self.intensity = intensity
         self.seed = seed
         self.eog_template_path = eog_template_path
         self.montage_name = montage_name
         self.artifact_scale_factor = artifact_scale_factor
+        self.use_improved_gaussian = use_improved_gaussian
         
         # Validate parameters
         if noise_type == 'eog' and eog_template_path is None:
@@ -590,7 +589,7 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         if self.noise_type == 'dropout':
             return self._apply_channel_dropout(X)
         elif self.noise_type == 'gaussian':
-            return self._apply_gaussian_noise(X) 
+            return self._improved_apply_gaussian_noise(X)
         elif self.noise_type == 'eog':
             return self._apply_realistic_eog_noise(X)
         else:
@@ -607,12 +606,50 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         return data_aug
 
     def _apply_gaussian_noise(self, data):
+        """Original implementation: Fixed scaling factor without magnitude awareness."""
         np.random.seed(self.seed)
         n_epochs, n_channels, n_times = data.shape
         data_aug = data.copy()
         for i in range(n_epochs):
             noise = np.random.randn(n_channels, n_times)
             data_aug[i] += self.intensity * noise
+        return data_aug
+
+    def _improved_apply_gaussian_noise(self, data):
+        """
+        Improved Gaussian noise application with magnitude-aware scaling.
+        
+        The intensity parameter represents the noise-to-signal ratio (NSR) as a percentage.
+        For example, intensity=10.0 means 10% noise relative to the signal's RMS.
+        This ensures consistent noise levels across different datasets with varying magnitudes.
+        
+        Parameters
+        ----------
+        data : np.ndarray
+            EEG data of shape (n_epochs, n_channels, n_times)
+            
+        Returns
+        -------
+        np.ndarray
+            Data with magnitude-aware Gaussian noise added
+        """
+        np.random.seed(self.seed)
+        n_epochs, n_channels, n_times = data.shape
+        data_aug = data.copy()
+        
+        # Calculate overall signal RMS once (assuming consistent units within dataset)
+        # Use robust RMS calculation across all epochs for stable scaling
+        signal_rms = np.sqrt(np.mean(data**2))
+        
+        # Scale noise to achieve desired noise-to-signal ratio
+        # intensity is interpreted as percentage (10.0 = 10% noise)
+        noise_scale = (self.intensity / 100.0) * signal_rms
+        
+        # Apply noise to all epochs
+        for i in range(n_epochs):
+            noise = np.random.randn(n_channels, n_times)
+            data_aug[i] += noise_scale * noise
+            
         return data_aug
 
     def _apply_eog_noise(self, data):
@@ -718,9 +755,6 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
             
         return data_aug
 
-
-from sklearn.base import BaseEstimator, ClassifierMixin
-
 # Creates an augmented sample for every sample in the set X
 class ConcatenatedNoiseAugmenter(ClassifierMixin, BaseEstimator):
     def __init__(self, base_pipeline, noise_type='dropout', intensity=25.0, seed=42, return_groups=False):
@@ -824,6 +858,7 @@ class ConcatenatedNoiseAugmenter(ClassifierMixin, BaseEstimator):
 
 
     # Replaces input with noise-augmented version
+
 class TrainOnlyNoiseClassifier(ClassifierMixin, BaseEstimator):
     def __init__(self, base_pipeline, noise_type='dropout', intensity=25.0, seed=42):
         self.base_pipeline = base_pipeline
