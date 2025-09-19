@@ -313,33 +313,40 @@ class ExperimentAutomation:
         print("MAPPING TO REQUIRED MULTIRUN JOBS")
         print("="*60)
         
+        # Define the limited models that will be used in multirun mode
+        limited_models = ["eegnet", "reegnet", "cnn_ncp"]
+        
         required_multirun_jobs = set()
         
         for missing_result in missing_test_perturb_results:
             if missing_result['eval_mode'] == 'CrossSession' or missing_result['eval_mode'] == 'WithinSession':
-                # For CrossSession, each subject needs its own multirun job
-                job_key = (
-                    missing_result['dataset'],
-                    missing_result['eval_mode'], 
-                    missing_result['subject'],
-                    missing_result['tune']
-                )
+                # For CrossSession, each subject needs its own multirun job for each model
+                for model in limited_models:
+                    job_key = (
+                        missing_result['dataset'],
+                        missing_result['eval_mode'], 
+                        missing_result['subject'],
+                        missing_result['tune'],
+                        model
+                    )
+                    required_multirun_jobs.add(job_key)
             else:
-                # For Cross-Subject, all subjects are processed together
+                # For Cross-Subject, all subjects are processed together for each model
                 subjects_tuple = tuple(missing_result['subjects'])
-                job_key = (
-                    missing_result['dataset'],
-                    missing_result['eval_mode'],
-                    subjects_tuple,
-                    missing_result['tune']
-                )
-            
-            required_multirun_jobs.add(job_key)
+                for model in limited_models:
+                    job_key = (
+                        missing_result['dataset'],
+                        missing_result['eval_mode'],
+                        subjects_tuple,
+                        missing_result['tune'],
+                        model
+                    )
+                    required_multirun_jobs.add(job_key)
         
         # Convert to list of multirun job dictionaries
         missing_experiments = []
         for job_key in required_multirun_jobs:
-            dataset, eval_mode, subjects_or_subject, tune = job_key
+            dataset, eval_mode, subjects_or_subject, tune, model = job_key
             
             if eval_mode == 'CrossSession' or eval_mode == 'WithinSession':
                 # Single subject for CrossSession
@@ -353,6 +360,7 @@ class ExperimentAutomation:
                 'eval_mode': eval_mode,
                 'subjects': subjects,
                 'tune': tune,
+                'model': model,
                 'mode': 'multirun',  # This will generate test_perturb results
                 'paradigm': next(config['paradigm'] for name, config in self.config['datasets'].items() if name == dataset)
             }
@@ -369,6 +377,10 @@ class ExperimentAutomation:
             print("   By dataset:")
             for dataset, count in missing_df['dataset'].value_counts().items():
                 print(f"     - {dataset}: {count} multirun jobs")
+            
+            print("   By model:")
+            for model, count in missing_df['model'].value_counts().items():
+                print(f"     - {model}: {count} multirun jobs")
             
             print("   By eval_mode:")
             for eval_mode, count in missing_df['eval_mode'].value_counts().items():
@@ -416,6 +428,9 @@ class ExperimentAutomation:
                 # Handle tuning flag
                 tune_flag = "true" if exp['tune'] else "false"
                 
+                # Get model name
+                model = exp['model']
+                
                 # Generate sbatch command with appropriate time limits
                 # Base estimates: CrossSession without tuning ~3 hours
                 # WithinSession takes ~5x longer than CrossSession
@@ -433,7 +448,7 @@ class ExperimentAutomation:
                     if exp['tune']:
                         # WithinSession with tuning: ~5x longer than CrossSession tuning
                         # 2.5 days * 5 = ~12.5 days (use 14 days for safety)
-                        slurm_args = "--time=14-00:00:00 --mem=12G"
+                        slurm_args = "--time=7-00:00:00 --mem=12G"
                     else:
                         # WithinSession without tuning: ~5x longer than CrossSession
                         # 3 hours * 5 = 15 hours (with buffer, use 1 day)
@@ -443,16 +458,16 @@ class ExperimentAutomation:
                     # Default time limit for other modes (CrossSubject, etc.)
                     slurm_args = "--time=1-00:00:00 --mem=12G"
                 
-                # Format: sbatch {slurm_args} unified_eval_script.sh {subject} {dataset} {eval_mode} {tune_flag}
-                command = f"sbatch {slurm_args} unified_eval_script.sh {subjects_str} {exp['dataset']} {exp['eval_mode']} {tune_flag}"
+                # Format: sbatch {slurm_args} unified_eval_script.sh {subject} {dataset} {eval_mode} {tune_flag} {model}
+                command = f"sbatch {slurm_args} unified_eval_script.sh {subjects_str} {exp['dataset']} {exp['eval_mode']} {tune_flag} {model}"
                 
                 # Write sbatch command
                 f.write(f"# Multirun Job {i}/{len(self.missing_experiments)}\n")
-                f.write(f"# Dataset: {exp['dataset']} | Eval: {exp['eval_mode']} | Subjects: {exp['subjects']}")
+                f.write(f"# Dataset: {exp['dataset']} | Model: {model} | Eval: {exp['eval_mode']} | Subjects: {exp['subjects']}")
                 if exp['tune']:
                     f.write(" | TUNED")
                 f.write("\n")
-                f.write(f"# This multirun will generate test_perturb results for models: eegnet, reegnet, cnn_ncp\n")
+                f.write(f"# This multirun will generate test_perturb results for model: {model}\n")
                 f.write(f"# This multirun will generate test_perturb results for seeds: 100, 200, 300, 400, 500\n")
                 f.write(f"# This multirun will generate test_perturb results for all noise types and intensities\n")
                 f.write(f"echo \"Submitting multirun job {i}/{len(self.missing_experiments)}...\"\n")
