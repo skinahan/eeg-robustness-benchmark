@@ -97,10 +97,15 @@ class UnifiedExperimentRunner:
             pass
         
         # Validate noise parameters for noise-aware modes
-        noise_requiring_modes = ["augment", "perturb", "augment_notune", "perturb_notune", "test_perturb"]
+        noise_requiring_modes = ["augment", "perturb", "augment_notune", "perturb_notune"]
         if mode in noise_requiring_modes and (not noise_type or intensity is None):
             raise ValueError(f"Mode '{mode}' requires both --noise_type and --intensity parameters")
         
+        if mode == "test_perturb" and (not noise_type or intensity is None):
+            noise_type = "gaussian"
+            intensity = 10.0
+            print(f"Using default noise type and intensity for test_perturb mode: {noise_type} {intensity}")
+
         # Set seeds
         set_seeds(seed)
         
@@ -942,7 +947,7 @@ def main():
     set_seeds(args.seed)
     # Validate arguments
     if args.mode in ["augment", "perturb", "augment_notune", "perturb_notune"]:
-        if not args.noise_type or args.intensity is None:
+        if args.noise_type is None or args.intensity is None:
             parser.error(f"Mode {args.mode} requires both --noise_type and --intensity")
     
 
@@ -951,7 +956,7 @@ def main():
             parser.error(f"Mode {args.mode} requires --tune flag to NOT be set.")
 
     if args.mode == "test_perturb":
-        if not args.noise_type or args.intensity is None:
+        if not args.noise_type or args.noise_type is None or args.intensity is None:
             # Use default values for test_perturb mode, these are overwritten later anyway.
             args.noise_type = "gaussian"
             args.intensity = 10.0

@@ -639,7 +639,7 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         
         # Calculate overall signal RMS once (assuming consistent units within dataset)
         # Use robust RMS calculation across all epochs for stable scaling
-        signal_rms = np.sqrt(np.mean(data**2))
+        signal_rms = np.sqrt(np.mean(data**2))*2
         
         # Scale noise to achieve desired noise-to-signal ratio
         # intensity is interpreted as percentage (10.0 = 10% noise)
