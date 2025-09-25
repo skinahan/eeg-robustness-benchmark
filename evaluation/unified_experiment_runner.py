@@ -737,7 +737,14 @@ class UnifiedExperimentRunner:
                             # Important note: Always store the 'session' as the session being used for evaluation / validation.
                             fold_indices.append((fold_idx, (train_idx, valid_idx), session))
                             fold_metadata.append(session_metadata.iloc[train_idx])
-                
+                elif self.eval_mode == "CrossSubject":
+                    groups = metadata['subject'].values
+                    folds = list(enumerate(cv_splitter.split(X, y_encoded, groups=groups)))
+                    for fold_idx, (train_idx, valid_idx) in folds:
+                        session = metadata.iloc[valid_idx]['subject'].values[0]
+                        fold_indices.append((fold_idx, (train_idx, valid_idx), session))
+                        fold_metadata.append(metadata.iloc[train_idx])
+
                 all_results = []
                 for fold_idx, (train_idx, valid_idx), session in fold_indices:
                     X_train = X[train_idx]

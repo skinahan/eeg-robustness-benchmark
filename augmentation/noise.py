@@ -618,38 +618,43 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
     def _improved_apply_gaussian_noise(self, data):
         """
         Improved Gaussian noise application with magnitude-aware scaling.
-        
-        The intensity parameter represents the noise-to-signal ratio (NSR) as a percentage.
-        For example, intensity=10.0 means 10% noise relative to the signal's RMS.
-        This ensures consistent noise levels across different datasets with varying magnitudes.
-        
+
+        The intensity parameter now represents the percentage of channels to contaminate
+        in each epoch (e.g., intensity=10.0 means 10% of channels per epoch will have noise added).
+        The noise itself is scaled to the signal RMS (noise_scale = 1.0 * signal_rms).
+
         Parameters
         ----------
         data : np.ndarray
             EEG data of shape (n_epochs, n_channels, n_times)
-            
+
         Returns
         -------
         np.ndarray
-            Data with magnitude-aware Gaussian noise added
+            Data with magnitude-aware Gaussian noise added to a proportion of channels
         """
         np.random.seed(self.seed)
         n_epochs, n_channels, n_times = data.shape
         data_aug = data.copy()
-        
+
         # Calculate overall signal RMS once (assuming consistent units within dataset)
-        # Use robust RMS calculation across all epochs for stable scaling
-        signal_rms = np.sqrt(np.mean(data**2))*2
-        
-        # Scale noise to achieve desired noise-to-signal ratio
-        # intensity is interpreted as percentage (10.0 = 10% noise)
-        noise_scale = (self.intensity / 100.0) * signal_rms
-        
-        # Apply noise to all epochs
+        signal_rms = np.sqrt(np.mean(data**2))
+
+        # Set noise scale to 1.0 * signal_rms
+        noise_scale = 1.0 * signal_rms
+
+        # Determine number of channels to contaminate per epoch
+        n_contam = int(np.round(n_channels * self.intensity / 100.0))
+        n_contam = max(1, n_contam) if self.intensity > 0 else 0
+        n_contam = min(n_contam, n_channels)
+
         for i in range(n_epochs):
-            noise = np.random.randn(n_channels, n_times)
-            data_aug[i] += noise_scale * noise
-            
+            if n_contam == 0:
+                continue
+            contam_idxs = np.random.choice(n_channels, size=n_contam, replace=False)
+            noise = np.random.randn(n_contam, n_times)
+            data_aug[i, contam_idxs, :] += noise_scale * noise
+
         return data_aug
 
     def _apply_eog_noise(self, data):
