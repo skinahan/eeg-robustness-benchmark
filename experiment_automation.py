@@ -282,31 +282,109 @@ class ExperimentAutomation:
             print("[INFO] Identifying missing experiments using vectorized comparison...")
             missing_test_perturb_results = []
             
+            # Track missing combinations for better diagnostics
+            missing_combinations = {}
+            
+            # Pre-compute intensity mapping for better performance
+            print("[INFO] Pre-computing intensity mappings...")
+            existing_intensities = sorted(existing_df['intensity'].unique())
+            intensity_mapping = {}
+            
+            for expected_result in self.expected_test_perturb_results:
+                intensity = expected_result['intensity']
+                if intensity not in intensity_mapping:
+                    # Find matching intensity in existing data with tolerance
+                    matching_intensity = None
+                    for existing_intensity in existing_intensities:
+                        if abs(intensity - existing_intensity) < 1e-10:
+                            matching_intensity = existing_intensity
+                            break
+                    intensity_mapping[intensity] = matching_intensity
+            
+            print("[INFO] Checking missing experiments...")
             for expected_result in tqdm(self.expected_test_perturb_results, desc="Checking missing experiments"):
-                # Create signature for expected result
-                signature_parts = [
-                    expected_result['dataset'],
-                    expected_result['model'],
-                    expected_result['eval_mode'],
-                    str(expected_result['seed']),
-                    expected_result['noise_type'],
-                    str(expected_result['intensity']),
-                    'test_perturb'  # Mode is always test_perturb for expected results
-                ]
+                # Create signature for expected result with floating-point tolerance for intensity
+                intensity = expected_result['intensity']
+                matching_intensity = intensity_mapping[intensity]
                 
-                # Add subject if present
-                if 'subject' in expected_result:
-                    signature_parts.append(str(expected_result['subject']))
-                else:
-                    signature_parts.append('no_subject')
+                if matching_intensity is None:
+                    # This intensity doesn't exist in the data at all
+                    signature_parts = [
+                        expected_result['dataset'],
+                        expected_result['model'],
+                        expected_result['eval_mode'],
+                        str(expected_result['seed']),
+                        expected_result['noise_type'],
+                        str(intensity),
+                        'test_perturb'  # Mode is always test_perturb for expected results
+                    ]
                     
-                signature = '|'.join(str(part) for part in signature_parts)
+                    # Add subject if present
+                    if 'subject' in expected_result:
+                        signature_parts.append(str(expected_result['subject']))
+                    else:
+                        signature_parts.append('no_subject')
+                        
+                    signature = '|'.join(str(part) for part in signature_parts)
+                else:
+                    # Use the matching intensity from existing data
+                    signature_parts = [
+                        expected_result['dataset'],
+                        expected_result['model'],
+                        expected_result['eval_mode'],
+                        str(expected_result['seed']),
+                        expected_result['noise_type'],
+                        str(matching_intensity),
+                        'test_perturb'  # Mode is always test_perturb for expected results
+                    ]
+                    
+                    # Add subject if present
+                    if 'subject' in expected_result:
+                        signature_parts.append(str(expected_result['subject']))
+                    else:
+                        signature_parts.append('no_subject')
+                        
+                    signature = '|'.join(str(part) for part in signature_parts)
                 
                 # Check if this signature exists in our set
                 if signature not in existing_signatures:
                     missing_test_perturb_results.append(expected_result)
+                    
+                    # Track missing combinations for diagnostics
+                    combo_key = (expected_result['dataset'], expected_result['model'], 
+                               expected_result['eval_mode'], expected_result['seed'],
+                               expected_result['noise_type'])
+                    if combo_key not in missing_combinations:
+                        missing_combinations[combo_key] = []
+                    missing_combinations[combo_key].append(expected_result.get('subject', 'no_subject'))
         
         print(f"[OK] Found {len(missing_test_perturb_results)} missing test_perturb results out of {len(self.expected_test_perturb_results)} total expected")
+        
+        # Print detailed diagnostics of missing combinations
+        if missing_combinations:
+            print(f"\n[INFO] Missing combinations breakdown:")
+            print(f"   Total missing combinations: {len(missing_combinations)}")
+            
+            # Group by eval_mode and noise_type for better understanding
+            missing_by_eval_noise = {}
+            for combo_key, subjects in missing_combinations.items():
+                dataset, model, eval_mode, seed, noise_type = combo_key
+                key = (eval_mode, noise_type)
+                if key not in missing_by_eval_noise:
+                    missing_by_eval_noise[key] = 0
+                missing_by_eval_noise[key] += len(subjects) * 20  # 20 intensities per combination
+            
+            print(f"   Missing by eval_mode and noise_type:")
+            for (eval_mode, noise_type), count in sorted(missing_by_eval_noise.items()):
+                print(f"     - {eval_mode} + {noise_type}: {count} missing results")
+            
+            # Show first few missing combinations as examples
+            print(f"\n[INFO] Example missing combinations (first 10):")
+            for i, (combo_key, subjects) in enumerate(list(missing_combinations.items())[:10]):
+                dataset, model, eval_mode, seed, noise_type = combo_key
+                print(f"     {i+1}. {dataset} | {model} | {eval_mode} | seed={seed} | {noise_type} | subjects={subjects[:3]}{'...' if len(subjects) > 3 else ''}")
+        else:
+            print("[INFO] No missing combinations found - all expected results are present!")
         
         # Now map missing results to required multirun jobs
         print("\n" + "="*60)

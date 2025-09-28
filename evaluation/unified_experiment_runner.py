@@ -807,26 +807,6 @@ class UnifiedExperimentRunner:
                     # test_perturb mode: calculate fold score means for both clean folds and corrupted validation data
                     agg_results = []
                     
-                    # Handle clean scores (intensity is None)
-                    clean_df = results_df[results_df['intensity'].isna()] if 'intensity' in results_df.columns else results_df
-                    if len(clean_df) > 0:
-                        for session in clean_df['session'].unique():
-                            session_df = clean_df[clean_df['session'] == session]
-                            if len(session_df) > 0:
-                                agg_row = {
-                                    'subject': session_df['subject'].iloc[0],
-                                    'session': session,
-                                    'score': session_df['clean_score'].mean() if 'clean_score' in session_df.columns else session_df['score'].mean() if 'score' in session_df.columns else 0.0,
-                                    'model': self.model,
-                                    'mode': self.mode,
-                                    'eval_mode': self.eval_mode,
-                                    'seed': self.seed,
-                                    'tune': self.tune,
-                                    'noise_type': self.noise_dict['noise_type'] if self.noise_dict else None,
-                                    'intensity': 'clean'
-                                }
-                                agg_results.append(agg_row)
-                    
                     # Handle corrupted scores at different intensities
                     if 'intensity' in results_df.columns:
                         for intensity in results_df['intensity'].unique():
@@ -846,7 +826,13 @@ class UnifiedExperimentRunner:
                                                 'seed': self.seed,
                                                 'tune': self.tune,
                                                 'noise_type': self.noise_dict['noise_type'] if self.noise_dict else None,
-                                                'intensity': intensity
+                                                'intensity': intensity,
+                                                'clean_score': session_df['clean_score'].mean() if 'clean_score' in session_df.columns else 0.0,
+                                                'corrupted_score': session_df['corrupted_score'].mean() if 'corrupted_score' in session_df.columns else 0.0,
+                                                'relative_drop': session_df['relative_drop'].mean() if 'relative_drop' in session_df.columns else 0.0,
+                                                'training_time': session_df['training_time'].mean() if 'training_time' in session_df.columns else 0.0,
+                                                'evaluation_time': session_df['evaluation_time'].mean() if 'evaluation_time' in session_df.columns else 0.0,
+                                                'total_time': session_df['total_time'].mean() if 'total_time' in session_df.columns else 0.0
                                             }
                                             agg_results.append(agg_row)
                 else:
