@@ -553,7 +553,7 @@ class ExperimentAutomation:
                         
                 else:
                     # Default time limit for other modes (CrossSubject, etc.)
-                    slurm_args = "--time=1-00:00:00 --mem=12G"
+                    slurm_args = "--time=7-00:00:00 --mem=12G"
                 
                 # Format: sbatch {slurm_args} unified_eval_script.sh {subject} {dataset} {eval_mode} {tune_flag} {model}
                 command = f"sbatch {slurm_args} unified_eval_script.sh {subjects_str} {exp['dataset']} {exp['eval_mode']} {tune_flag} {model}"
