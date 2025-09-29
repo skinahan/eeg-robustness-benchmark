@@ -11,6 +11,7 @@ from config import MODEL_REGISTRY
 from evaluation.two_stage_hp_opt import alternate_two_stage_optuna, format_params, unified_cv_training_loop_method
 from utils import create_output_path
 from sklearn.metrics import roc_auc_score, get_scorer
+from evaluation.metrics import compute_classification_metrics
 import time
 import numpy as np
 from config import get_paradigm
@@ -100,11 +101,14 @@ class NoiseWithinSessionEvaluation(WithinSessionEvaluation):
                 X_obj, y_obj, groups = self.model.concat_and_augment(X_mask, y_mask)
             
             start_time = time.time()
-            roc_auc_score = unified_cv_training_loop_method(self.model, cv, X_obj, y_obj, trial=None, groups=groups)
+            roc_auc_value = unified_cv_training_loop_method(self.model, cv, X_obj, y_obj, trial=None, groups=groups)
+            # For efficiency, compute metrics once by training on all X_obj then predicting on X_obj via CV is not trivial here.
+            # Keep primary score as roc-auc summary.
             end_time = time.time()
             
             result_row = {
-                'score': roc_auc_score,
+                'score': roc_auc_value,
+                'validation_roc_auc': roc_auc_value,
                 'time': end_time - start_time,
                 'samples': len(X_obj),
                 'subject': str(metadata["subject"].iloc[0]) if len(metadata["subject"].unique()) == 1 else "multiple",
@@ -161,7 +165,7 @@ class NoiseWithinSessionEvaluation(WithinSessionEvaluation):
             for i, (train_idx, valid_idx) in enumerate(cv.split(X_mask, y_mask)):
                 inner_res = _fit_and_score(self.model, X_mask, y_mask, parameters=None, fit_params=None, scorer=scorer, train=train_idx, test=valid_idx, verbose=0, error_score="raise")
                 fold_scores.append(inner_res["test_scores"])                
-            clean_score = np.mean(fold_scores)
+            clean_roc_auc = np.mean(fold_scores)
 
             intensities = [10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0]
             for intensity in intensities:
@@ -179,16 +183,18 @@ class NoiseWithinSessionEvaluation(WithinSessionEvaluation):
                     # Reset X_to_corrupt to original data
                     X_to_corrupt[valid_idx] = X_mask[valid_idx]
                     fold_scores.append(inner_res["test_scores"])                
-                corrupted_score = np.mean(fold_scores)
+                corrupted_roc_auc = np.mean(fold_scores)
                 
                 end_time = time.time()
                 
                 result_row = {
-                    'clean_score': clean_score,
-                    'score': corrupted_score,
+                    'clean_score': clean_roc_auc,
+                    'score': corrupted_roc_auc,
+                    'clean_roc_auc': clean_roc_auc,
+                    'corrupted_roc_auc': corrupted_roc_auc,
                     'noise_type': self.noise_type,
                     'intensity': intensity,
-                    'relative_drop': (clean_score - corrupted_score) / clean_score if clean_score > 0 else 0.0,
+                    'relative_drop': (clean_roc_auc - corrupted_roc_auc) / clean_roc_auc if clean_roc_auc > 0 else 0.0,
                     'time': end_time - start_time,
                     'samples': len(X_to_corrupt),
                     'subject': str(metadata["subject"].iloc[0]) if len(metadata["subject"].unique()) == 1 else "multiple",

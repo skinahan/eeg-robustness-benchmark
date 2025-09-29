@@ -44,6 +44,7 @@ from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, Conc
 from evaluation.two_stage_hp_opt import alternate_two_stage_optuna, run_two_stage_optuna, format_params, get_all_model_params
 from utils import create_output_path, create_hdf5_model_path, get_noise_intensities
 from evaluation.experiment_utils import check_skip_eval, log_all_subjects, collect_all_results
+from evaluation.metrics import compute_classification_metrics
 
 # Import MOABB components
 from moabb.datasets import BNCI2014_001, Lee2019_SSVEP
@@ -402,14 +403,9 @@ class UnifiedExperimentRunner:
         final_model.module_.eval()
         with torch.no_grad():
             y_pred_proba = final_model.predict_proba(X_valid)
-            # Handle both binary and multiclass cases
-            if self.dataset == "Lee2019_SSVEP":
-                # For SSVEP (4 classes), use all probabilities
-                validation_score = roc_auc_score(y_valid, y_pred_proba, multi_class='ovr')
-            else:
-                # For MotorImagery (2 classes), use second column
-                y_pred = y_pred_proba[:, 1]
-                validation_score = roc_auc_score(y_valid, y_pred)
+            num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+            metrics_clean = compute_classification_metrics(y_valid, y_pred_proba, num_classes)
+            validation_score = metrics_clean["roc_auc"]
         evaluation_time = time.time() - start_time
                 
         results = []
@@ -430,20 +426,20 @@ class UnifiedExperimentRunner:
                 final_model.module_.eval()
                 with torch.no_grad():
                     y_pred_proba = final_model.predict_proba(X_valid)
-                    # Handle both binary and multiclass cases
-                    if self.dataset == "Lee2019_SSVEP":
-                        # For SSVEP (4 classes), use all probabilities
-                        new_clean_score = roc_auc_score(y_valid, y_pred_proba, multi_class='ovr')
-                    else:
-                        # For MotorImagery (2 classes), use second column
-                        y_pred_clean = y_pred_proba[:, 1]
-                        new_clean_score = roc_auc_score(y_valid, y_pred_clean)
+                    num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+                    metrics_retrain = compute_classification_metrics(y_valid, y_pred_proba, num_classes)
+                    new_clean_score = metrics_retrain["roc_auc"]
                 clean_score = max(clean_score, new_clean_score)
             # Evaluate on corrupted data
             results.extend(self._evaluate_perturb(final_model, X_valid, y_valid, fold_idx, session, clean_score, training_time))
         else:
             results.append({
                 'score': validation_score,
+                'validation_roc_auc': metrics_clean["roc_auc"],
+                'validation_accuracy': metrics_clean["accuracy"],
+                'validation_precision': metrics_clean["precision"],
+                'validation_recall': metrics_clean["recall"],
+                'validation_f1': metrics_clean["f1"],
                 'best_validation_score': best_score,
                 'training_time': training_time,
                 'evaluation_time': evaluation_time,
@@ -481,18 +477,18 @@ class UnifiedExperimentRunner:
         model.module_.eval()
         with torch.no_grad():
             y_pred_proba = model.predict_proba(X_valid)
-            # Handle both binary and multiclass cases
-            if self.dataset == "Lee2019_SSVEP":
-                # For SSVEP (4 classes), use all probabilities
-                validation_score = roc_auc_score(y_valid, y_pred_proba, multi_class='ovr')
-            else:
-                # For MotorImagery (2 classes), use second column
-                y_pred = y_pred_proba[:, 1]
-                validation_score = roc_auc_score(y_valid, y_pred)
+            num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+            metrics_clean = compute_classification_metrics(y_valid, y_pred_proba, num_classes)
+            validation_score = metrics_clean["roc_auc"]
         evaluation_time = time.time() - start_time
         
         return {
             'score': validation_score,
+            'validation_roc_auc': metrics_clean["roc_auc"],
+            'validation_accuracy': metrics_clean["accuracy"],
+            'validation_precision': metrics_clean["precision"],
+            'validation_recall': metrics_clean["recall"],
+            'validation_f1': metrics_clean["f1"],
             'fold_idx': fold_idx,
             'train_samples': len(X_train),
             'valid_samples': len(X_valid),
@@ -506,6 +502,10 @@ class UnifiedExperimentRunner:
         results = []
         trained_model.module_.eval()
         with torch.no_grad():
+            # Compute clean metrics once for efficiency
+            y_pred_proba_clean = trained_model.predict_proba(X_valid)
+            num_classes_clean = 4 if self.dataset == "Lee2019_SSVEP" else 2
+            metrics_clean = compute_classification_metrics(y_valid, y_pred_proba_clean, num_classes_clean)
             for noise_type in noise_types:
                 # Use dynamic bounds based on dataset and noise type
                 intensities = get_noise_intensities(self.dataset, noise_type, num_steps=20)            
@@ -522,14 +522,9 @@ class UnifiedExperimentRunner:
                     # Evaluate on corrupted data
                     start_time = time.time()                
                     y_pred_proba_corrupted = trained_model.predict_proba(X_valid_corrupted)
-                    # Handle both binary and multiclass cases
-                    if self.dataset == "Lee2019_SSVEP":
-                        # For SSVEP (4 classes), use all probabilities
-                        corrupted_score = roc_auc_score(y_valid, y_pred_proba_corrupted, multi_class='ovr')
-                    else:
-                        # For MotorImagery (2 classes), use second column
-                        y_pred_corrupted = y_pred_proba_corrupted[:, 1]
-                        corrupted_score = roc_auc_score(y_valid, y_pred_corrupted)
+                    num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+                    metrics_corrupted = compute_classification_metrics(y_valid, y_pred_proba_corrupted, num_classes)
+                    corrupted_score = metrics_corrupted["roc_auc"]
                     evaluation_time = time.time() - start_time
                     
                     # Calculate relative drop
@@ -541,6 +536,16 @@ class UnifiedExperimentRunner:
                         'intensity': intensity,
                         'clean_score': clean_score,
                         'corrupted_score': corrupted_score,
+                        'clean_roc_auc': clean_score,
+                        'clean_accuracy': metrics_clean["accuracy"],
+                        'clean_precision': metrics_clean["precision"],
+                        'clean_recall': metrics_clean["recall"],
+                        'clean_f1': metrics_clean["f1"],
+                        'corrupted_roc_auc': metrics_corrupted["roc_auc"],
+                        'corrupted_accuracy': metrics_corrupted["accuracy"],
+                        'corrupted_precision': metrics_corrupted["precision"],
+                        'corrupted_recall': metrics_corrupted["recall"],
+                        'corrupted_f1': metrics_corrupted["f1"],
                         'relative_drop': relative_drop,
                         'training_time': training_time,
                         'evaluation_time': evaluation_time,
@@ -578,14 +583,9 @@ class UnifiedExperimentRunner:
         model.module_.eval()
         with torch.no_grad():
             y_pred_proba = model.predict_proba(X_valid)
-            # Handle both binary and multiclass cases
-            if self.dataset == "Lee2019_SSVEP":
-                # For SSVEP (4 classes), use all probabilities
-                clean_score = roc_auc_score(y_valid, y_pred_proba, multi_class='ovr')
-            else:
-                # For MotorImagery (2 classes), use second column
-                y_pred_clean = y_pred_proba[:, 1]
-                clean_score = roc_auc_score(y_valid, y_pred_clean)
+            num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+            metrics_clean = compute_classification_metrics(y_valid, y_pred_proba, num_classes)
+            clean_score = metrics_clean["roc_auc"]
         evaluation_time = time.time() - start_time
 
         # If we are tuning, we incur too high a time cost to re-train the model this often.
@@ -602,14 +602,9 @@ class UnifiedExperimentRunner:
                 model.module_.eval()
                 with torch.no_grad():
                     y_pred_proba = model.predict_proba(X_valid)
-                    # Handle both binary and multiclass cases
-                    if self.dataset == "Lee2019_SSVEP":
-                        # For SSVEP (4 classes), use all probabilities
-                        new_clean_score = roc_auc_score(y_valid, y_pred_proba, multi_class='ovr')
-                    else:
-                        # For MotorImagery (2 classes), use second column
-                        y_pred_clean = y_pred_proba[:, 1]
-                        new_clean_score = roc_auc_score(y_valid, y_pred_clean)
+                    num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+                    metrics_retrain = compute_classification_metrics(y_valid, y_pred_proba, num_classes)
+                    new_clean_score = metrics_retrain["roc_auc"]
                 clean_score = max(clean_score, new_clean_score)
             
         results = []

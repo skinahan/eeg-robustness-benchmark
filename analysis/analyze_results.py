@@ -439,7 +439,23 @@ def run_completion_report(output_dir, aggregated_df):
     # Also save to disk
     summary_df.to_csv(os.path.join(output_dir, "experiment_completion_report.csv"), index=False)
 
-def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting, output_dir='plots'):
+def _get_metric_columns(metric: str):
+    metric = metric.lower()
+    clean_col = f"clean_{metric}" if metric != 'roc_auc' else 'clean_roc_auc'
+    corrupted_col = f"corrupted_{metric}" if metric != 'roc_auc' else 'corrupted_roc_auc'
+    # Backward compatibility fallbacks
+    if metric == 'roc_auc':
+        return clean_col, corrupted_col, 'Corrupted Score (ROC AUC)'
+    y_label_map = {
+        'accuracy': 'Corrupted Accuracy',
+        'precision': 'Corrupted Precision',
+        'recall': 'Corrupted Recall',
+        'f1': 'Corrupted F1-score',
+    }
+    return clean_col, corrupted_col, y_label_map.get(metric, f'Corrupted {metric}')
+
+
+def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting, output_dir='plots', metric: str='roc_auc'):
     """
     Plot individual model performance for test_perturb case.
     
@@ -471,16 +487,27 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
         print(f"No data found for {model_name}, {noise_type}, tune={tune_setting}")
         return
     
-    # Remove rows with missing corrupted_score
-    df_filtered = df_filtered.dropna(subset=['corrupted_score'])
+    # Determine metric columns
+    clean_col, corrupted_col, y_label = _get_metric_columns(metric)
+
+    # Prefer new metric columns; fallback to legacy if necessary
+    fallback_corrupted = 'corrupted_score'
+    fallback_clean = 'clean_score'
+    if corrupted_col not in df_filtered.columns and fallback_corrupted in df_filtered.columns and metric == 'roc_auc':
+        corrupted_col = fallback_corrupted
+    if clean_col not in df_filtered.columns and fallback_clean in df_filtered.columns and metric == 'roc_auc':
+        clean_col = fallback_clean
+
+    # Remove rows with missing corrupted metric
+    df_filtered = df_filtered.dropna(subset=[corrupted_col])
     
     # Add clean_score as intensity 0.0 (one row per model, noise_type, seed, session combination)
-    clean_data = df_filtered.dropna(subset=['clean_score']).copy()
+    clean_data = df_filtered.dropna(subset=[clean_col]).copy()
     if not clean_data.empty:
-        # Get unique clean_score values per model, noise_type, seed, session combination
-        clean_summary = clean_data.groupby(['model', 'noise_type', 'seed', 'session'])['clean_score'].first().reset_index()
+        # Get unique clean metric per model, noise_type, seed, session combination
+        clean_summary = clean_data.groupby(['model', 'noise_type', 'seed', 'session'])[clean_col].first().reset_index()
         clean_summary['intensity'] = 0.0
-        clean_summary['corrupted_score'] = clean_summary['clean_score']
+        clean_summary[corrupted_col] = clean_summary[clean_col]
         clean_summary['tune'] = tune_setting
         clean_summary['mode'] = 'test_perturb'
         clean_summary['eval_mode'] = 'CrossSession'
@@ -498,7 +525,7 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
             sns.barplot(
                 data=df_filtered,
                 x='intensity',
-                y='corrupted_score',
+                y=corrupted_col,
                 hue='session',
                 palette='Set2',
                 errorbar=('ci', 95)
@@ -507,7 +534,7 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
             sns.lineplot(
                 data=df_filtered,
                 x='intensity',
-                y='corrupted_score',
+                y=corrupted_col,
                 hue='session',
                 marker='o',
                 palette='Set2',
@@ -517,14 +544,14 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
         plt.title(f'{model_name} - {noise_type.capitalize()} Noise ({tune_label})\nTest Perturb Performance', 
                  fontsize=14, fontweight='bold')
         plt.xlabel('Noise Intensity (%)', fontsize=12)
-        plt.ylabel('Corrupted Score (ROC AUC)', fontsize=12)
+        plt.ylabel(y_label, fontsize=12)
         plt.legend(title='Session', fontsize=10, title_fontsize=11)
         plt.grid(True, alpha=0.3)
         plt.ylim(0, 1)  # Consistent y-axis limits for better comparison
         
         # Save plot
         os.makedirs(output_dir, exist_ok=True)
-        filename = f"{model_name}_{noise_type}_{'tuned' if tune_setting else 'baseline'}_{plot_type}_test_perturb.png"
+        filename = f"{model_name}_{noise_type}_{metric}_{'tuned' if tune_setting else 'baseline'}_{plot_type}_test_perturb.png"
         output_file = os.path.join(output_dir, filename)
         plt.tight_layout()
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
@@ -533,7 +560,7 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
         print(f"Saved {plot_type} plot: {output_file}")
 
 
-def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=None, output_dir='plots'):
+def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=None, output_dir='plots', metric: str='roc_auc'):
     """
     Create master comparison plot overlaying specified models for a given noise type and tune setting.
     
@@ -568,16 +595,20 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
         print(f"No data found for master plot: {noise_type}, tune={tune_setting}")
         return
     
-    # Remove rows with missing corrupted_score
-    df_filtered = df_filtered.dropna(subset=['corrupted_score'])
+    clean_col, corrupted_col, y_label = _get_metric_columns(metric)
+    if corrupted_col not in df_filtered.columns and 'corrupted_score' in df_filtered.columns and metric == 'roc_auc':
+        corrupted_col = 'corrupted_score'
+    if clean_col not in df_filtered.columns and 'clean_score' in df_filtered.columns and metric == 'roc_auc':
+        clean_col = 'clean_score'
+    df_filtered = df_filtered.dropna(subset=[corrupted_col])
     
     # Add clean_score as intensity 0.0 for each model, noise_type, seed, session combination
-    clean_data = df_filtered.dropna(subset=['clean_score']).copy()
+    clean_data = df_filtered.dropna(subset=[clean_col]).copy()
     if not clean_data.empty:
         # Get unique clean_score values per model, noise_type, seed, session combination
-        clean_summary = clean_data.groupby(['model', 'noise_type', 'seed', 'session'])['clean_score'].first().reset_index()
+        clean_summary = clean_data.groupby(['model', 'noise_type', 'seed', 'session'])[clean_col].first().reset_index()
         clean_summary['intensity'] = 0.0
-        clean_summary['corrupted_score'] = clean_summary['clean_score']
+        clean_summary[corrupted_col] = clean_summary[clean_col]
         clean_summary['tune'] = tune_setting
         clean_summary['mode'] = 'test_perturb'
         clean_summary['eval_mode'] = 'CrossSession'
@@ -598,7 +629,7 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
             sns.barplot(
                 data=df_mean,
                 x='intensity',
-                y='corrupted_score',
+                y=corrupted_col,
                 hue='model',
                 palette='tab10',
                 errorbar=('ci', 95)
@@ -607,7 +638,7 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
             sns.lineplot(
                 data=df_mean,
                 x='intensity',
-                y='corrupted_score',
+                y=corrupted_col,
                 hue='model',
                 marker='o',
                 palette='tab10',
@@ -619,14 +650,14 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
         plt.title(f'Model Comparison - {noise_type.capitalize()} Noise ({tune_label})\nTest Perturb Performance (Mean Across Sessions)', 
                  fontsize=14, fontweight='bold')
         plt.xlabel('Noise Intensity (%)', fontsize=12)
-        plt.ylabel('Corrupted Score (ROC AUC)', fontsize=12)
+        plt.ylabel(y_label, fontsize=12)
         plt.legend(title='Model', fontsize=10, title_fontsize=11, bbox_to_anchor=(1.05, 1), loc='upper left')
         plt.grid(True, alpha=0.3)
         plt.ylim(0, 1)  # Consistent y-axis limits for better comparison
         
         # Save plot
         os.makedirs(output_dir, exist_ok=True)
-        filename = f"master_comparison_{noise_type}_{'tuned' if tune_setting else 'baseline'}_{plot_type}_test_perturb.png"
+        filename = f"master_comparison_{noise_type}_{metric}_{'tuned' if tune_setting else 'baseline'}_{plot_type}_test_perturb.png"
         output_file = os.path.join(output_dir, filename)
         plt.tight_layout()
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
@@ -635,7 +666,7 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
         print(f"Saved master {plot_type} plot: {output_file}")
 
 
-def generate_all_test_perturb_plots(df, models=None, output_dir='plots'):
+def generate_all_test_perturb_plots(df, models=None, output_dir='plots', metrics=('roc_auc','accuracy','precision','recall','f1')):
     """
     Generate all test_perturb plots as specified in the requirements.
     
@@ -657,21 +688,23 @@ def generate_all_test_perturb_plots(df, models=None, output_dir='plots'):
     print(f"Models: {list(models)}")
     print(f"Noise types: {list(noise_types)}")
     
-    # Generate individual model plots
+    # Generate individual model plots for each metric
     for model in models:
         for noise_type in noise_types:
             for tune_setting in tune_settings:
-                plot_test_perturb_individual_model(df, model, noise_type, tune_setting, output_dir)
+                for metric in metrics:
+                    plot_test_perturb_individual_model(df, model, noise_type, tune_setting, output_dir, metric)
     
-    # Generate master comparison plots
+    # Generate master comparison plots for each metric
     for noise_type in noise_types:
         for tune_setting in tune_settings:
-            plot_test_perturb_master_comparison(df, noise_type, tune_setting, models, output_dir)
+            for metric in metrics:
+                plot_test_perturb_master_comparison(df, noise_type, tune_setting, models, output_dir, metric)
     
     print(f"All test_perturb plots generated and saved to {output_dir}")
 
 
-def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, dataset='BNCI2014_001', output_dir='plots'):
+def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, dataset='BNCI2014_001', output_dir='plots', metric: str='roc_auc'):
     """
     Create per-subject plots for test_perturb results.
     
@@ -702,15 +735,19 @@ def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, data
         print(f"No data found for per-subject plot: {model_name}, {noise_type}, tune={tune_setting}")
         return
     
-    # Remove rows with missing corrupted_score
-    df_filtered = df_filtered.dropna(subset=['corrupted_score'])
+    clean_col, corrupted_col, y_label = _get_metric_columns(metric)
+    if corrupted_col not in df_filtered.columns and 'corrupted_score' in df_filtered.columns and metric == 'roc_auc':
+        corrupted_col = 'corrupted_score'
+    if clean_col not in df_filtered.columns and 'clean_score' in df_filtered.columns and metric == 'roc_auc':
+        clean_col = 'clean_score'
+    df_filtered = df_filtered.dropna(subset=[corrupted_col])
     
     # Add clean_score as intensity 0.0
-    clean_data = df_filtered.dropna(subset=['clean_score']).copy()
+    clean_data = df_filtered.dropna(subset=[clean_col]).copy()
     if not clean_data.empty:
-        clean_summary = clean_data.groupby(['model', 'noise_type', 'seed', 'session', 'subject'])['clean_score'].first().reset_index()
+        clean_summary = clean_data.groupby(['model', 'noise_type', 'seed', 'session', 'subject'])[clean_col].first().reset_index()
         clean_summary['intensity'] = 0.0
-        clean_summary['corrupted_score'] = clean_summary['clean_score']
+        clean_summary[corrupted_col] = clean_summary[clean_col]
         clean_summary['tune'] = tune_setting
         clean_summary['mode'] = 'test_perturb'
         clean_summary['eval_mode'] = 'CrossSession'
@@ -736,7 +773,7 @@ def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, data
                 sns.barplot(
                     data=subject_data,
                     x='intensity',
-                    y='corrupted_score',
+                    y=corrupted_col,
                     hue='session',
                     palette='Set2',
                     errorbar=('ci', 95)
@@ -745,7 +782,7 @@ def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, data
                 sns.lineplot(
                     data=subject_data,
                     x='intensity',
-                    y='corrupted_score',
+                    y=corrupted_col,
                     hue='session',
                     marker='o',
                     palette='Set2',
@@ -755,7 +792,7 @@ def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, data
             plt.title(f'{model_name} - Subject {subject} - {noise_type.capitalize()} Noise ({tune_label.capitalize()})\nTest Perturb Performance', 
                      fontsize=14, fontweight='bold')
             plt.xlabel('Noise Intensity (%)', fontsize=12)
-            plt.ylabel('Corrupted Score (ROC AUC)', fontsize=12)
+            plt.ylabel(y_label, fontsize=12)
             plt.legend(title='Session', fontsize=10, title_fontsize=11)
             plt.grid(True, alpha=0.3)
             plt.ylim(0, 1)
@@ -765,7 +802,7 @@ def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, data
             os.makedirs(subject_dir, exist_ok=True)
             
             # Save plot
-            filename = f"{model_name}_{tune_label}_{plot_type}_test_perturb.png"
+            filename = f"{model_name}_{metric}_{tune_label}_{plot_type}_test_perturb.png"
             output_file = os.path.join(subject_dir, filename)
             plt.tight_layout()
             plt.savefig(output_file, dpi=300, bbox_inches='tight')

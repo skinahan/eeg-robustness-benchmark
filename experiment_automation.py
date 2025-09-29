@@ -539,7 +539,7 @@ class ExperimentAutomation:
                         slurm_args = "--time=2-12:00:00 --mem=12G"
                     else:
                         # CrossSession without tuning: ~3 hours (with buffer)
-                        slurm_args = "--time=0-04:30:00 --mem=12G"
+                        slurm_args = "--time=0-06:00:00 --mem=12G"
                         
                 elif exp['eval_mode'] == 'WithinSession':
                     if exp['tune']:
