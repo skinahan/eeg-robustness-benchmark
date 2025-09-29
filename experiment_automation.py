@@ -242,9 +242,21 @@ class ExperimentAutomation:
         else:
             print("[INFO] Using cached expected test_perturb results")
         
+        # Initialize missing_combinations for diagnostics
+        missing_combinations = {}
+        
         if self.existing_results is None or self.existing_results.empty:
             print("[WARNING] No existing results found, all test_perturb results are missing")
             missing_test_perturb_results = self.expected_test_perturb_results
+            
+            # Populate missing_combinations for diagnostics when no existing results
+            for expected_result in self.expected_test_perturb_results:
+                combo_key = (expected_result['dataset'], expected_result['model'], 
+                           expected_result['eval_mode'], expected_result['seed'],
+                           expected_result['noise_type'])
+                if combo_key not in missing_combinations:
+                    missing_combinations[combo_key] = []
+                missing_combinations[combo_key].append(expected_result.get('subject', 'no_subject'))
         else:
             # Convert expected results to DataFrame for vectorized operations
             print("[INFO] Converting expected results to DataFrame for efficient comparison...")
@@ -300,9 +312,6 @@ class ExperimentAutomation:
             # Find missing results using set operations
             print("[INFO] Identifying missing experiments using vectorized comparison...")
             missing_test_perturb_results = []
-            
-            # Track missing combinations for better diagnostics
-            missing_combinations = {}
             
             # Pre-compute intensity mapping for better performance
             print("[INFO] Pre-computing intensity mappings...")

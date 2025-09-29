@@ -29,6 +29,7 @@ models:
 eval_modes:
   - "CrossSession"
   - "WithinSession"
+  - "CrossSubject"
 
 noise_types:
   - "gaussian"
