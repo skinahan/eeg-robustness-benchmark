@@ -1,0 +1,15 @@
+{
+  "noise_type": "gaussian",
+  "dataset": "BNCI2014_001",
+  "saturation_point": 100.0,
+  "confidence_interval": [
+    0.6920524691358025,
+    0.8920524691358025
+  ],
+  "chance_threshold": 0.56,
+  "performance_at_saturation": 0.7920524691358025,
+  "performance_std": 0.1,
+  "is_statistically_significant": false,
+  "detection_method": "coarse_exploration_only",
+  "timestamp": "2025-09-25 09:44:34"
+}
