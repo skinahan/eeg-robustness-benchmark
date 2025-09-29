@@ -42,7 +42,7 @@ from config import MODEL_REGISTRY, get_paradigm
 from globals import set_seeds, DEFAULT_MAX_EPOCHS, UNDERFITTING_THRESHOLD
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
 from evaluation.two_stage_hp_opt import alternate_two_stage_optuna, run_two_stage_optuna, format_params, get_all_model_params
-from utils import create_output_path, create_hdf5_model_path
+from utils import create_output_path, create_hdf5_model_path, get_noise_intensities
 from evaluation.experiment_utils import check_skip_eval, log_all_subjects, collect_all_results
 
 # Import MOABB components
@@ -507,14 +507,8 @@ class UnifiedExperimentRunner:
         trained_model.module_.eval()
         with torch.no_grad():
             for noise_type in noise_types:
-                min_intensity = 1.0
-                max_intensity = 50.0
-                num_steps = 20
-                # if noise_type == 'gaussian':
-                #     min_intensity = 1.0
-                #     max_intensity = 20.0
-                #     num_steps = 19            
-                intensities = np.linspace(start=min_intensity, stop=max_intensity, num=num_steps)            
+                # Use dynamic bounds based on dataset and noise type
+                intensities = get_noise_intensities(self.dataset, noise_type, num_steps=20)            
                 for intensity in intensities:
                     # Create corrupted validation data
                     noise_augmentor = EEGNoiseAugmentor(
@@ -933,8 +927,12 @@ def main():
     
     args = parser.parse_args()
 
+    paradigm_name = "MotorImagery"
+    if args.dataset == "Lee2019_SSVEP":
+        paradigm_name = "SSVEP"
+
     if args.mode == "aggregate_only":
-        collect_all_results(paradigm='MotorImagery', dataset=args.dataset)
+        collect_all_results(paradigm=paradigm_name, dataset=args.dataset)
         sys.exit(0)
 
     set_seeds(args.seed)
@@ -973,7 +971,7 @@ def main():
                     if args.tune and mode != "tune":
                         # Make sure the tuned and non-tuned modes are not mixed when creating output paths.
                         mode_str = f"{mode_str}_tune"
-                    if check_skip_eval(model, seed, args.subjects, mode_str, args.noise_type, args.intensity, eval_mode):
+                    if check_skip_eval(model, seed, args.subjects, mode_str, args.noise_type, args.intensity, eval_mode, paradigm_name, args.dataset):
                         continue
                 try:
                     runner = UnifiedExperimentRunner(
@@ -998,7 +996,7 @@ def main():
     else:
         # Check if we should skip evaluation
         if not args.overwrite:
-            if check_skip_eval(args.model, args.seed, args.subjects, args.mode, args.noise_type, args.intensity, args.eval_mode):
+            if check_skip_eval(args.model, args.seed, args.subjects, args.mode, args.noise_type, args.intensity, args.eval_mode, paradigm_name, args.dataset):
                 sys.exit(0)
         
         try:

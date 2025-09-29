@@ -21,7 +21,7 @@ def extract_model_params(model) -> Dict[str, Any]:
     return {}
 
 
-def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity, eval_mode='WithinSessionEvaluation'):
+def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity, eval_mode='CrossSession', paradigm='MotorImagery', dataset='BNCI2014_001'):
 
     if not eval_mode.endswith("Evaluation"):
         eval_mode = f"{eval_mode}Evaluation"
@@ -35,8 +35,6 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
                         
         for session in sessions_to_check:
             # Determine paradigm and dataset for path creation
-            paradigm = "SSVEP" if "SSVEP" in str(model_name) or "ssvep" in str(model_name).lower() else "MotorImagery"
-            dataset = "Lee2019_SSVEP" if "SSVEP" in str(model_name) or "ssvep" in str(model_name).lower() else "BNCI2014_001"
             out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
             if noise_type is not None and intensity is not None:
                 filename_suffix = f"_{noise_type}_{intensity}"
@@ -57,7 +55,7 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
     return False
 
 
-def log_all_subjects(results, subject_list, model_name, mode, noise_type, intensity, seed, eval_mode='WithinSessionEvaluation', paradigm='MotorImagery', dataset='BNCI2014_001'):
+def log_all_subjects(results, subject_list, model_name, mode, noise_type, intensity, seed, eval_mode='CrossSession', paradigm='MotorImagery', dataset='BNCI2014_001'):
     """Log results for all subjects to individual CSV files."""
     for subj in subject_list:        
         subject_df = results[results['subject'] == int(subj)]

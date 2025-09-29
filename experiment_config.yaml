@@ -35,6 +35,21 @@ noise_types:
   - "dropout"
   - "eog"
 
+# Noise perturbation configuration
+noise_perturbation:
+  # Dynamic bounds are determined by saturation results
+  # Bounds are set based on saturation_points_summary.csv
+  # Each dataset + noise_type combination has its own bounds
+  # Format: min_intensity = 1.0, max_intensity = saturation_point
+  saturation_file: "saturation_results/saturation_points_summary.csv"
+  num_steps: 20  # Number of intensity steps between min and max
+  default_bounds: [1.0, 50.0]  # Fallback bounds if saturation data not available
+  
+  # Example bounds based on current saturation results:
+  # BNCI2014_001 + dropout: 1.0 to 50.0 (saturation point: 50.0)
+  # Lee2019_SSVEP + dropout: 1.0 to 100.0 (saturation point: 100.0)
+  # All other combinations: 1.0 to 100.0 (saturation point: 100.0)
+
 # Experiment modes (multirun approach)
 experiment_modes:
   - name: "multirun"

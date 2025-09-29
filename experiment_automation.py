@@ -27,6 +27,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
 
 from evaluation.experiment_utils import collect_all_results_unified
+from utils import get_noise_intensities
 from tqdm import tqdm
 
 class ExperimentAutomation:
@@ -135,12 +136,8 @@ class ExperimentAutomation:
         seeds = self.config['seeds']
         noise_types = self.config['noise_types']
         
-        # Pre-compute noise intensities once (same as in unified_experiment_runner.py)
-        if self._cached_noise_intensities is None:
-            self._cached_noise_intensities = np.linspace(1.0, 50.0, 20)
-            noise_intensities = self._cached_noise_intensities
-        else:
-            noise_intensities = self._cached_noise_intensities
+        # Note: We'll compute noise intensities dynamically per dataset and noise type
+        # This ensures consistency with unified_experiment_runner.py
         
         # Use itertools.product for efficient cartesian product generation
         expected_test_perturb_results = []
@@ -156,50 +153,72 @@ class ExperimentAutomation:
         print(f"   - Eval modes: {len(eval_modes)}")
         print(f"   - Seeds: {len(seeds)}")
         print(f"   - Noise types: {len(noise_types)}")
-        print(f"   - Intensities: {len(noise_intensities)}")
+        print(f"   - Intensities: Dynamic (based on saturation points)")
         print(f"   - Tune flags: {len(tune_flags)}")
         
-        # Generate combinations using itertools.product for better performance
-        combinations = itertools.product(
-            dataset_items, model_names, eval_modes, seeds, 
-            noise_types, noise_intensities, tune_flags
-        )
+        # Generate combinations using nested loops since intensities are now dynamic
+        # We can't use itertools.product with dynamic intensities
         
         print("[INFO] Processing combinations...")
-        for (dataset_name, dataset_config), model_name, eval_mode, seed, noise_type, intensity, tune_flag in tqdm(combinations, desc="Generating experiments"):
-            subjects = dataset_config['subjects']
-            
-            if eval_mode == 'CrossSession' or eval_mode == 'WithinSession':
-                # For CrossSession and WithinSession, create separate entries for each subject
-                for subject in subjects:
-                    experiment = {
-                        'dataset': dataset_name,
-                        'paradigm': dataset_config['paradigm'],
-                        'subject': subject,
-                        'model': model_name,
-                        'eval_mode': eval_mode,
-                        'mode': 'test_perturb',
-                        'seed': seed,
-                        'noise_type': noise_type,
-                        'intensity': intensity,
-                        'tune': tune_flag
-                    }
-                    expected_test_perturb_results.append(experiment)
-            else:
-                # For Cross-Subject, results are aggregated across subjects
-                experiment = {
-                    'dataset': dataset_name,
-                    'paradigm': dataset_config['paradigm'],
-                    'subjects': subjects,  # All subjects together
-                    'model': model_name,
-                    'eval_mode': eval_mode,
-                    'mode': 'test_perturb',
-                    'seed': seed,
-                    'noise_type': noise_type,
-                    'intensity': intensity,
-                    'tune': tune_flag
-                }
-                expected_test_perturb_results.append(experiment)
+        total_combinations = 0
+        
+        # Calculate total combinations for progress tracking
+        for dataset_name, dataset_config in dataset_items:
+            for noise_type in noise_types:
+                intensities = get_noise_intensities(dataset_name, noise_type, num_steps=20)
+                total_combinations += len(model_names) * len(eval_modes) * len(seeds) * len(intensities) * len(tune_flags)
+        
+        print(f"[INFO] Total combinations to process: {total_combinations}")
+        
+        # Process combinations with dynamic intensities
+        processed = 0
+        for dataset_name, dataset_config in dataset_items:
+            for model_name in model_names:
+                for eval_mode in eval_modes:
+                    for seed in seeds:
+                        for noise_type in noise_types:
+                            # Get dynamic intensities for this dataset and noise type
+                            intensities = get_noise_intensities(dataset_name, noise_type, num_steps=20)
+                            
+                            for intensity in intensities:
+                                for tune_flag in tune_flags:
+                                    processed += 1
+                                    if processed % 1000 == 0:
+                                        print(f"[INFO] Processed {processed}/{total_combinations} combinations...")
+                                    
+                                    subjects = dataset_config['subjects']
+                                    
+                                    if eval_mode == 'CrossSession' or eval_mode == 'WithinSession':
+                                        # For CrossSession and WithinSession, create separate entries for each subject
+                                        for subject in subjects:
+                                            experiment = {
+                                                'dataset': dataset_name,
+                                                'paradigm': dataset_config['paradigm'],
+                                                'subject': subject,
+                                                'model': model_name,
+                                                'eval_mode': eval_mode,
+                                                'mode': 'test_perturb',
+                                                'seed': seed,
+                                                'noise_type': noise_type,
+                                                'intensity': intensity,
+                                                'tune': tune_flag
+                                            }
+                                            expected_test_perturb_results.append(experiment)
+                                    else:
+                                        # For Cross-Subject, results are aggregated across subjects
+                                        experiment = {
+                                            'dataset': dataset_name,
+                                            'paradigm': dataset_config['paradigm'],
+                                            'subjects': subjects,  # All subjects together
+                                            'model': model_name,
+                                            'eval_mode': eval_mode,
+                                            'mode': 'test_perturb',
+                                            'seed': seed,
+                                            'noise_type': noise_type,
+                                            'intensity': intensity,
+                                            'tune': tune_flag
+                                        }
+                                        expected_test_perturb_results.append(experiment)
         
         print(f"[OK] Generated {len(expected_test_perturb_results)} expected test_perturb results")
         
