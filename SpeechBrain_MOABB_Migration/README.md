@@ -1,1 +1,0 @@
-This project directory contains the re-work of the robustness testing experiments into SpeechBrain-MOABB

@@ -1,0 +1,10 @@
+{
+  "best_score": 0.9333333333333333,
+  "best_params": {
+    "module__F1": 8,
+    "module__D": 2,
+    "module__kernel_length": 96,
+    "module__ncp_hidden_dim": 41,
+    "module__sparsity": 0.33088813601943246
+  }
+}

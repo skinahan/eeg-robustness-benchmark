@@ -1,0 +1,9 @@
+{
+  "best_score": 1.0,
+  "best_params": {
+    "module__drop_prob": 0.3231006705274376,
+    "lr": 0.0004040374199315858,
+    "weight_decay": 0.0006817353764748963,
+    "batch_size": 8
+  }
+}

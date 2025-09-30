@@ -1,0 +1,15 @@
+{
+  "best_score": 0.8952380952380953,
+  "best_params": {
+    "module__ncp_hidden_dim": 14,
+    "module__drop_prob": 0.4329266483304782,
+    "module__use_stochastic_depth": false,
+    "module__max_seq_length": 174,
+    "module__mixed_memory": true,
+    "module__mode": "default",
+    "module__activation": "gelu",
+    "module__backbone_units": 155,
+    "module__backbone_layers": 2,
+    "module__backbone_dropout": 0.11501280789040813
+  }
+}

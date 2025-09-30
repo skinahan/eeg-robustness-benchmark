@@ -1,0 +1,6 @@
+{
+  "best_score": 0.9857142857142858,
+  "best_params": {
+    "module__lstm_hidden_size": 32
+  }
+}

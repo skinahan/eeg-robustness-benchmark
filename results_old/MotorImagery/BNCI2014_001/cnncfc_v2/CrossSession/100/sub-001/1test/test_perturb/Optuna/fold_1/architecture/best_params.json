@@ -1,0 +1,19 @@
+{
+  "best_score": 0.9523809523809524,
+  "best_params": {
+    "module__ncp_hidden_dim": 22,
+    "module__drop_prob": 0.10577164094493974,
+    "module__F1": 12,
+    "module__D": 4,
+    "module__kernel_length": 256,
+    "module__temporal_kernel_size": 3,
+    "module__temporal_stride": 6,
+    "module__max_seq_length": 584,
+    "module__mixed_memory": false,
+    "module__mode": "pure",
+    "module__activation": "lecun_tanh",
+    "module__backbone_units": 180,
+    "module__backbone_layers": 2,
+    "module__backbone_dropout": 0.12910570649818326
+  }
+}

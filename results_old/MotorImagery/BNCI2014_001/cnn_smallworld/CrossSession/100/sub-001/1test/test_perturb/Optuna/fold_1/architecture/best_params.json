@@ -1,0 +1,15 @@
+{
+  "best_score": 0.8857142857142858,
+  "best_params": {
+    "module__ncp_hidden_dim": 80,
+    "module__drop_prob": 0.38604560181702297,
+    "module__F1": 16,
+    "module__D": 2,
+    "module__kernel_length": 192,
+    "module__temporal_kernel_size": 3,
+    "module__temporal_stride": 2,
+    "module__max_seq_length": 464,
+    "module__n_modules": 1,
+    "module__rewiring_prob": 0.20644101232467593
+  }
+}

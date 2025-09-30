@@ -78,8 +78,17 @@ def enhanced_cv_training_loop(
         model.fit(X_train_part, y_train_part)
         
         # Evaluate
-        y_pred = model.predict_proba(X_valid_part)[:, 1]
-        auc = roc_auc_score(y_valid_part, y_pred)
+        y_pred_proba = model.predict_proba(X_valid_part)
+        
+        # Handle both binary and multi-class classification
+        n_classes = y_pred_proba.shape[1]
+        if n_classes == 2:
+            # Binary classification - use positive class probabilities
+            y_pred = y_pred_proba[:, 1]
+            auc = roc_auc_score(y_valid_part, y_pred)
+        else:
+            # Multi-class classification - use all probabilities with OvR strategy
+            auc = roc_auc_score(y_valid_part, y_pred_proba, multi_class='ovr')
         fold_scores.append(auc)
         fold_times.append(time.time() - start_time)
         
@@ -111,8 +120,17 @@ def unified_cv_training_loop_method(model, cv, X_train, y_train, trial=None, gro
         # Evaluate on held-out validation set
         model.module_.eval()
         with torch.no_grad():
-            y_pred = model.predict_proba(X_valid_part)[:, 1]
-        auc = roc_auc_score(y_valid_part, y_pred)
+            y_pred_proba = model.predict_proba(X_valid_part)
+        
+        # Handle both binary and multi-class classification
+        n_classes = y_pred_proba.shape[1]
+        if n_classes == 2:
+            # Binary classification - use positive class probabilities
+            y_pred = y_pred_proba[:, 1]
+            auc = roc_auc_score(y_valid_part, y_pred)
+        else:
+            # Multi-class classification - use all probabilities with OvR strategy
+            auc = roc_auc_score(y_valid_part, y_pred_proba, multi_class='ovr')
         # print(f"Fold {i} auc: {auc}")
         fold_scores.append(auc)
         # if trial is not None:

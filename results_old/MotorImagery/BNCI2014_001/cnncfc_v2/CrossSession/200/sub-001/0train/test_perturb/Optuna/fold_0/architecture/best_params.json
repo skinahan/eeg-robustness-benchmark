@@ -1,0 +1,19 @@
+{
+  "best_score": 0.942857142857143,
+  "best_params": {
+    "module__ncp_hidden_dim": 43,
+    "module__drop_prob": 0.2673937974861796,
+    "module__F1": 4,
+    "module__D": 4,
+    "module__kernel_length": 176,
+    "module__temporal_kernel_size": 5,
+    "module__temporal_stride": 2,
+    "module__max_seq_length": 655,
+    "module__mixed_memory": true,
+    "module__mode": "pure",
+    "module__activation": "tanh",
+    "module__backbone_units": 189,
+    "module__backbone_layers": 2,
+    "module__backbone_dropout": 0.2250695618112064
+  }
+}
