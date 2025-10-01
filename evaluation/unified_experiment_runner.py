@@ -92,11 +92,6 @@ class UnifiedExperimentRunner:
         self.current_subject = -1
         self.current_session = -1
         
-        # Validate eval_mode
-        if eval_mode == "CrossSubject":
-            # CrossSubject evaluation is now implemented
-            pass
-        
         # Validate noise parameters for noise-aware modes
         noise_requiring_modes = ["augment", "perturb", "augment_notune", "perturb_notune"]
         if mode in noise_requiring_modes and (not noise_type or intensity is None):
@@ -144,6 +139,8 @@ class UnifiedExperimentRunner:
             session_type = "WithinSessionEvaluation"
         elif self.eval_mode == "CrossSession":
             session_type = "CrossSessionEvaluation"
+        elif self.eval_mode == "CrossSubject":
+            session_type = "CrossSubjectEvaluation"
         else:
             session_type = "UnifiedEvaluation"
         
@@ -195,13 +192,13 @@ class UnifiedExperimentRunner:
                 n_outputs = 2  # MotorImagery has 2 classes
         
         model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
-        
+        assert(model is not None)
         # Set common model parameters
         # model.train_split = None
         model.max_epochs = DEFAULT_MAX_EPOCHS
+
         # model.callbacks = []
         model.initialize()
-        
         return model
     
     def _get_wrapped_model_function(self):

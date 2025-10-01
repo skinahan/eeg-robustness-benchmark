@@ -962,9 +962,332 @@ def generate_model_subset_plots(df, model_subsets, output_dir='plots'):
         generate_all_test_perturb_plots(df, models, subset_output_dir)
 
 
+def plot_custom_comparison(df, filters=None, x_var='intensity', y_var='corrupted_score', 
+                          hue_var='model', style_var=None, col_var=None, row_var=None,
+                          plot_type='line', output_dir='plots', output_filename=None,
+                          title=None, xlabel=None, ylabel=None, figsize=(12, 8),
+                          include_clean_baseline=True, metric='roc_auc', **kwargs):
+    """
+    Flexible method to extract and plot specific combinations of data points.
+    
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        The full results dataframe
+    filters : dict, optional
+        Dictionary of column names and values to filter on. Values can be:
+        - Single value: e.g., {'noise_type': 'eog'}
+        - List of values: e.g., {'model': ['eegnet', 'cnn_ncp']}
+        - Callable for complex filtering: e.g., {'intensity': lambda x: x <= 20.0}
+    x_var : str, default='intensity'
+        Variable for x-axis
+    y_var : str, default='corrupted_score'
+        Variable for y-axis
+    hue_var : str, default='model'
+        Variable to color by (different lines/bars)
+    style_var : str, optional
+        Variable for line style differentiation
+    col_var : str, optional
+        Variable for column faceting
+    row_var : str, optional
+        Variable for row faceting
+    plot_type : str, default='line'
+        Type of plot: 'line', 'bar', 'scatter', or 'box'
+    output_dir : str, default='plots'
+        Directory to save the plot
+    output_filename : str, optional
+        Custom filename for output. If None, auto-generates based on filters
+    title : str, optional
+        Plot title. If None, auto-generates based on filters
+    xlabel : str, optional
+        X-axis label. If None, uses x_var with formatting
+    ylabel : str, optional
+        Y-axis label. If None, uses y_var with formatting
+    figsize : tuple, default=(12, 8)
+        Figure size
+    include_clean_baseline : bool, default=True
+        For test_perturb mode, include clean baseline at intensity=0
+    metric : str, default='roc_auc'
+        Metric to use ('roc_auc', 'accuracy', 'precision', 'recall', 'f1')
+    **kwargs : additional keyword arguments
+        Passed to seaborn plotting function
+        
+    Returns:
+    --------
+    tuple : (filtered_df, output_path)
+        The filtered dataframe and path where plot was saved
+        
+    Examples:
+    ---------
+    # Compare eegnet and cnn_ncp under EOG noise with CrossSession evaluation
+    plot_custom_comparison(
+        df, 
+        filters={
+            'model': ['eegnet', 'cnn_ncp'],
+            'noise_type': 'eog',
+            'eval_mode': 'CrossSession',
+            'mode': 'test_perturb',
+            'tune': True
+        },
+        hue_var='model',
+        style_var='session'
+    )
+    
+    # Compare performance across different noise types for a single model
+    plot_custom_comparison(
+        df,
+        filters={
+            'model': 'eegnet',
+            'eval_mode': 'CrossSession',
+            'tune': True,
+            'intensity': lambda x: x <= 30.0
+        },
+        hue_var='noise_type',
+        col_var='session'
+    )
+    """
+    # Apply filters
+    df_filtered = df.copy()
+    filter_summary = []
+    
+    if filters:
+        for col, value in filters.items():
+            if callable(value):
+                df_filtered = df_filtered[df_filtered[col].apply(value)]
+                filter_summary.append(f"{col}=custom")
+            elif isinstance(value, (list, tuple)):
+                df_filtered = df_filtered[df_filtered[col].isin(value)]
+                filter_summary.append(f"{col}={','.join(map(str, value))}")
+            else:
+                df_filtered = df_filtered[df_filtered[col] == value]
+                filter_summary.append(f"{col}={value}")
+    
+    if df_filtered.empty:
+        print(f"No data found matching filters: {filters}")
+        return None, None
+    
+    # Handle metric columns
+    if y_var in ['corrupted_score', 'clean_score']:
+        clean_col, corrupted_col, y_label_default = _get_metric_columns(metric)
+        
+        # Check if new metric columns exist, otherwise use legacy
+        if metric == 'roc_auc':
+            if corrupted_col not in df_filtered.columns and 'corrupted_score' in df_filtered.columns:
+                corrupted_col = 'corrupted_score'
+            if clean_col not in df_filtered.columns and 'clean_score' in df_filtered.columns:
+                clean_col = 'clean_score'
+        
+        # Update y_var to actual column name
+        if y_var == 'corrupted_score':
+            y_var = corrupted_col
+        elif y_var == 'clean_score':
+            y_var = clean_col
+    else:
+        y_label_default = y_var.replace('_', ' ').title()
+    
+    # Remove rows with missing y values
+    df_filtered = df_filtered.dropna(subset=[y_var])
+    
+    # Add clean baseline if requested and appropriate
+    if include_clean_baseline and 'mode' in df_filtered.columns:
+        if 'test_perturb' in df_filtered['mode'].unique():
+            clean_col_name = y_var.replace('corrupted', 'clean') if 'corrupted' in y_var else 'clean_score'
+            if clean_col_name in df_filtered.columns:
+                clean_data = df_filtered.dropna(subset=[clean_col_name]).copy()
+                if not clean_data.empty:
+                    # Get grouping columns
+                    group_cols = [col for col in ['model', 'noise_type', 'seed', 'session', 'subject', 
+                                                   'eval_mode', 'tune'] if col in clean_data.columns]
+                    
+                    clean_summary = clean_data.groupby(group_cols)[clean_col_name].first().reset_index()
+                    clean_summary[x_var] = 0.0
+                    clean_summary[y_var] = clean_summary[clean_col_name]
+                    
+                    # Copy other columns
+                    for col in df_filtered.columns:
+                        if col not in clean_summary.columns:
+                            clean_summary[col] = df_filtered[col].iloc[0] if col in df_filtered.columns else None
+                    
+                    df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
+    
+    # Set up plot style
+    sns.set_theme(style="whitegrid")
+    
+    # Create facet grid if col_var or row_var specified
+    if col_var or row_var:
+        g = sns.FacetGrid(df_filtered, col=col_var, row=row_var, height=6, aspect=1.5, 
+                         hue=hue_var, palette='tab10')
+        
+        if plot_type == 'line':
+            g.map_dataframe(sns.lineplot, x=x_var, y=y_var, marker='o', 
+                           errorbar=('ci', 95), **kwargs)
+        elif plot_type == 'bar':
+            g.map_dataframe(sns.barplot, x=x_var, y=y_var, 
+                           errorbar=('ci', 95), **kwargs)
+        elif plot_type == 'scatter':
+            g.map_dataframe(sns.scatterplot, x=x_var, y=y_var, s=100, **kwargs)
+        elif plot_type == 'box':
+            g.map_dataframe(sns.boxplot, x=x_var, y=y_var, **kwargs)
+        
+        g.add_legend()
+        
+        if title:
+            g.fig.suptitle(title, fontsize=14, fontweight='bold', y=1.02)
+        
+        fig = g.fig
+    else:
+        # Single plot
+        fig, ax = plt.subplots(figsize=figsize, dpi=300)
+        
+        plot_kwargs = {
+            'data': df_filtered,
+            'x': x_var,
+            'y': y_var,
+            'hue': hue_var,
+            'ax': ax,
+            **kwargs
+        }
+        
+        if style_var:
+            plot_kwargs['style'] = style_var
+        
+        if plot_type == 'line':
+            sns.lineplot(**plot_kwargs, marker='o', errorbar=('ci', 95), linewidth=2.5, markersize=8)
+        elif plot_type == 'bar':
+            sns.barplot(**plot_kwargs, errorbar=('ci', 95))
+        elif plot_type == 'scatter':
+            sns.scatterplot(**plot_kwargs, s=100)
+        elif plot_type == 'box':
+            sns.boxplot(**plot_kwargs)
+        else:
+            raise ValueError(f"Unknown plot_type: {plot_type}")
+        
+        # Labels and title
+        ax.set_xlabel(xlabel if xlabel else x_var.replace('_', ' ').title(), fontsize=12)
+        ax.set_ylabel(ylabel if ylabel else y_label_default, fontsize=12)
+        
+        if title:
+            ax.set_title(title, fontsize=14, fontweight='bold')
+        else:
+            # Auto-generate title from filters
+            title_parts = [f"{k}={v}" for k, v in (filters or {}).items() if not callable(v)]
+            if title_parts:
+                ax.set_title(' | '.join(title_parts[:3]), fontsize=12)
+        
+        ax.legend(title=hue_var.replace('_', ' ').title(), fontsize=10, title_fontsize=11)
+        ax.grid(True, alpha=0.3)
+        
+        if y_var in ['score', 'corrupted_score', 'clean_score', 'corrupted_roc_auc', 'clean_roc_auc']:
+            ax.set_ylim(0, 1)
+    
+    # Save plot
+    os.makedirs(output_dir, exist_ok=True)
+    
+    if output_filename is None:
+        # Auto-generate filename
+        filename_parts = ['custom_plot']
+        if filters:
+            for key, val in list(filters.items())[:3]:
+                if not callable(val):
+                    val_str = '_'.join(map(str, val)) if isinstance(val, (list, tuple)) else str(val)
+                    filename_parts.append(f"{key}_{val_str}")
+        output_filename = '_'.join(filename_parts) + '.png'
+    
+    output_path = os.path.join(output_dir, output_filename)
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    print(f"Plot saved to: {output_path}")
+    print(f"Filtered data shape: {df_filtered.shape}")
+    
+    return df_filtered, output_path
+
+
+def extract_custom_data(df, filters=None, columns=None, aggregate=None, group_by=None):
+    """
+    Flexible method to extract specific data points from results.
+    
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        The full results dataframe
+    filters : dict, optional
+        Dictionary of column names and values to filter on (same as plot_custom_comparison)
+    columns : list, optional
+        Specific columns to return. If None, returns all columns
+    aggregate : str or dict, optional
+        Aggregation function(s) to apply. Can be:
+        - String: 'mean', 'median', 'std', 'min', 'max', 'count'
+        - Dict: {col: func} for column-specific aggregations
+    group_by : str or list, optional
+        Column(s) to group by before aggregation
+        
+    Returns:
+    --------
+    pd.DataFrame
+        Filtered and/or aggregated dataframe
+        
+    Examples:
+    ---------
+    # Get all data for eegnet under EOG noise
+    data = extract_custom_data(
+        df,
+        filters={'model': 'eegnet', 'noise_type': 'eog'}
+    )
+    
+    # Get mean scores by intensity level
+    data = extract_custom_data(
+        df,
+        filters={'model': ['eegnet', 'cnn_ncp'], 'noise_type': 'eog'},
+        aggregate='mean',
+        group_by=['model', 'intensity']
+    )
+    """
+    # Apply filters
+    df_filtered = df.copy()
+    
+    if filters:
+        for col, value in filters.items():
+            if callable(value):
+                df_filtered = df_filtered[df_filtered[col].apply(value)]
+            elif isinstance(value, (list, tuple)):
+                df_filtered = df_filtered[df_filtered[col].isin(value)]
+            else:
+                df_filtered = df_filtered[df_filtered[col] == value]
+    
+    # Select columns
+    if columns:
+        df_filtered = df_filtered[columns]
+    
+    # Aggregate if requested
+    if aggregate and group_by:
+        df_filtered = df_filtered.groupby(group_by).agg(aggregate).reset_index()
+    elif aggregate:
+        raise ValueError("aggregate requires group_by to be specified")
+    
+    return df_filtered
+
+
 if __name__ == '__main__':
     input_dir = '../sol_results/'
     aggregated_df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
+    
+    # Example usage of custom plotting functions
+    print("\n=== Example: Custom comparison of eegnet and cnn_ncp under EOG noise ===")
+    plot_custom_comparison(
+        aggregated_df,
+        filters={
+            'model': ['eegnet', 'cnn_ncp'],
+            'noise_type': 'eog',
+            'eval_mode': 'CrossSession',
+            'mode': 'test_perturb',
+            'tune': True
+        },
+        hue_var='model',
+        style_var='session',
+        output_filename='eegnet_vs_cnn_ncp_eog_crosssession.png'
+    )
     
     # Define model subsets for comparison
     model_subsets = {

@@ -25,8 +25,31 @@ class Conv2dWithConstraint(nn.Conv2d):
         )
         return super(Conv2dWithConstraint, self).forward(x)
 
+class NCPOnlyModel(EEGModuleMixin, nn.Module):
+    def __init__(self, n_chans, n_times, n_outputs, ncp_hidden_dim=24, drop_prob=0.05, sparsity=0.85):
+        super().__init__(
+            n_outputs=n_outputs,
+            n_chans=n_chans,
+            n_times=n_times,
+        )
+        self.wiring = AutoNCP(ncp_hidden_dim, n_outputs, sparsity_level=sparsity, seed=get_seed())
+        self.ncp = CfC(
+            input_size=n_chans,
+            units=self.wiring,
+            proj_size=2,
+            return_sequences=False,
+            batch_first=True,
+            mixed_memory=True,
+            mode="default"
+        )
+
+    def forward(self, x):
+        x = x.permute(0, 2, 1)
+        x, _ = self.ncp(x)
+        return x
+
 class CfCOnlyModel(EEGModuleMixin, nn.Module):
-    def __init__(self, n_chans, n_times, n_outputs, ncp_hidden_dim=22, drop_prob=0.05):
+    def __init__(self, n_chans, n_times, n_outputs, ncp_hidden_dim=24, drop_prob=0.05):
         super().__init__(
             n_outputs=n_outputs,
             n_chans=n_chans,
@@ -34,6 +57,7 @@ class CfCOnlyModel(EEGModuleMixin, nn.Module):
             input_window_seconds=None,
             sfreq=None
         )
+
         self.ncp = CfC(
             input_size=n_chans,
             units=ncp_hidden_dim,
@@ -41,15 +65,18 @@ class CfCOnlyModel(EEGModuleMixin, nn.Module):
             return_sequences=False,
             batch_first=True,
             mixed_memory=True,
-            mode="pure"
+            mode="default",
+            activation="lecun_tanh",
+            backbone_units=128,
+            backbone_layers=3,
+            backbone_dropout=0.0
         )
-        self.fc = nn.Linear(ncp_hidden_dim, n_outputs)
         self._glorot_weight_zero_bias()
         
     def forward(self, x):
-        x = x.squeeze(2)  # [B, C, T]
+        x = x.permute(0, 2, 1)
         x, _ = self.ncp(x)  # [B, T', H]
-        return self.fc(x)
+        return x
     
     def _glorot_weight_zero_bias(self):
         for m in self.modules():
@@ -1792,4 +1819,77 @@ def create_cnnwiredcfc_classifier(
         cnn_wiredcfc_net.initialize()
 
     return cnn_wiredcfc_net
+
+
+def create_ncp_only_classifier(n_chans, n_times, n_outputs):
+    """Create a NCPOnlyModel classifier."""
+    seed = get_seed()
+    criterion = torch.nn.CrossEntropyLoss
+    ncp_only_net = EEGClassifier(
+        NCPOnlyModel,
+        criterion=criterion,
+        optimizer=torch.optim.AdamW,
+        optimizer__lr=1e-3,
+        optimizer__weight_decay=0.0,
+        batch_size=64,
+        max_epochs=DEFAULT_MAX_EPOCHS,
+        module__n_chans=n_chans,
+        module__n_times=n_times,
+        module__n_outputs=n_outputs,
+        module__ncp_hidden_dim=24,
+        module__drop_prob=0.05,
+        module__sparsity=0.85,
+        train_split=ValidSplit(0.2, stratified=True, random_state=seed),
+        device='cuda' if torch.cuda.is_available() else 'cpu',
+        callbacks=[get_early_stopping_callback()],
+    )
+    
+    if torch.cuda.is_available():
+        ncp_only_net.initialize()
+        ncp_only_net.module_.cuda()
+        # Only use torch.compile if it's available and compatible
+        try:
+            ncp_only_net.module_ = torch.compile(ncp_only_net.module_)
+        except Exception as e:
+            print(f"Warning: torch.compile failed, using standard model: {e}")
+
+    return ncp_only_net
+
+def create_cfc_only_classifier(n_chans, n_times, n_outputs):
+    """Create a CfCOnlyModel classifier."""
+    seed = get_seed()
+    criterion = torch.nn.CrossEntropyLoss
+    cfc_only_net = EEGClassifier(
+        CfCOnlyModel,
+        criterion=criterion,
+        optimizer=torch.optim.AdamW,
+        optimizer__lr=1e-3,
+        optimizer__weight_decay=0.0,
+        batch_size=64,
+        max_epochs=DEFAULT_MAX_EPOCHS,
+        module__n_chans=n_chans,
+        module__n_times=n_times,
+        module__n_outputs=n_outputs,
+        module__ncp_hidden_dim=32,
+        module__drop_prob=0.05,
+        train_split=ValidSplit(0.2, stratified=True, random_state=seed),
+        device='cuda' if torch.cuda.is_available() else 'cpu',
+        callbacks=[
+            get_early_stopping_callback(),
+            LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=5)
+            ],
+    )
+    
+    if torch.cuda.is_available():
+        cfc_only_net.initialize()
+        cfc_only_net.module_.cuda()
+        # Only use torch.compile if it's available and compatible
+        try:
+            cfc_only_net.module_ = torch.compile(cfc_only_net.module_)
+        except Exception as e:
+            print(f"Warning: torch.compile failed, using standard model: {e}")
+    else:
+        cfc_only_net.initialize()
+    
+    return cfc_only_net
     
