@@ -358,7 +358,7 @@ def cnncfc_compact_training_space(trial, prefix):
     return {
         # Optimizer parameters
         f"{prefix}optimizer__lr": trial.suggest_loguniform(
-            f"{prefix}optimizer__lr", 1e-5, 1e-2
+            f"{prefix}optimizer__lr", 1e-6, 1e-2
         ),
         f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
             f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
@@ -366,7 +366,7 @@ def cnncfc_compact_training_space(trial, prefix):
         
         # Training parameters
         f"{prefix}batch_size": trial.suggest_categorical(
-            f"{prefix}batch_size", [16, 32, 64, 128]
+            f"{prefix}batch_size", [4, 8, 16, 32, 64]
         ),
     }
 
@@ -421,7 +421,7 @@ def cnn_smallworld_training_space(trial, prefix):
     return {
         # Optimizer parameters
         f"{prefix}optimizer__lr": trial.suggest_loguniform(
-            f"{prefix}optimizer__lr", 1e-5, 1e-2
+            f"{prefix}optimizer__lr", 1e-6, 1e-2
         ),
         f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
             f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
@@ -432,7 +432,7 @@ def cnn_smallworld_training_space(trial, prefix):
         #     f"{prefix}max_epochs", 20, 100
         # ),
         f"{prefix}batch_size": trial.suggest_categorical(
-            f"{prefix}batch_size", [16, 32, 64, 128]
+            f"{prefix}batch_size", [4, 8, 16, 32, 64]
         ),
     }
 
@@ -474,7 +474,7 @@ def cnn_wiredcfc_training_space(trial, prefix):
     return {
         # Optimizer parameters
         f"{prefix}optimizer__lr": trial.suggest_loguniform(
-            f"{prefix}optimizer__lr", 1e-5, 1e-2
+            f"{prefix}optimizer__lr", 1e-6, 1e-2
         ),
         f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
             f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
@@ -485,7 +485,7 @@ def cnn_wiredcfc_training_space(trial, prefix):
         #     f"{prefix}max_epochs", 20, 100
         # ),
         f"{prefix}batch_size": trial.suggest_categorical(
-            f"{prefix}batch_size", [16, 32, 64, 128]
+            f"{prefix}batch_size", [4, 8, 16, 32, 64]
         ),
     }
 
@@ -600,7 +600,7 @@ def improved_cnncfc_training_space(trial, prefix):
     return {
         # Optimizer parameters
         f"{prefix}optimizer__lr": trial.suggest_loguniform(
-            f"{prefix}optimizer__lr", 1e-5, 1e-2
+            f"{prefix}optimizer__lr", 1e-6, 1e-2
         ),
         f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
             f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
@@ -611,7 +611,7 @@ def improved_cnncfc_training_space(trial, prefix):
         #     f"{prefix}max_epochs", 20, 100
         # ),
         f"{prefix}batch_size": trial.suggest_categorical(
-            f"{prefix}batch_size", [16, 32, 64, 128]
+            f"{prefix}batch_size", [4, 8, 16, 32, 64]
         ),
     }
 
@@ -629,9 +629,10 @@ def cnn_ncp_architecture_space(trial, prefix):
 
 def cnn_ncp_training_space(trial, prefix):
     return {
-        f"{prefix}optimizer__lr": trial.suggest_loguniform("lr", 1e-5, 1e-2),
-        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform("weight_decay", 1e-6, 1e-1),
-        # f"{prefix}max_epochs": trial.suggest_int("max_epochs", 10, 50),
+        f"{prefix}module__drop_prob": trial.suggest_float(f"{prefix}module__drop_prob", 0.1, 0.5),
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(f"{prefix}optimizer__lr", 1e-6, 1e-2),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(f"{prefix}optimizer__weight_decay", 1e-6, 1e-2),
+        f"{prefix}batch_size": trial.suggest_categorical(f"{prefix}batch_size", [4, 8, 16, 32, 64]),
     }
 
 
@@ -650,9 +651,9 @@ def spp_ncp_architecture_space(trial, prefix):
 
 def spp_ncp_training_space(trial, prefix):
     return {
-        f"{prefix}optimizer__lr": trial.suggest_loguniform("lr", 1e-4, 1e-2),
-        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform("weight_decay", 1e-6, 1e-2),
-        f"{prefix}batch_size": trial.suggest_categorical("batch_size", [8, 16, 32, 64]),
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(f"{prefix}optimizer__lr", 1e-6, 1e-2),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(f"{prefix}optimizer__weight_decay", 1e-6, 1e-2),
+        f"{prefix}batch_size": trial.suggest_categorical(f"{prefix}batch_size", [4, 8, 16, 32, 64]),
         f"{prefix}module__drop_prob": trial.suggest_float(f"{prefix}module__drop_prob", 0.1, 0.5)
     }
 
@@ -666,9 +667,9 @@ def reegnet_architecture_space(trial, prefix):
 
 def reegnet_training_space(trial, prefix):
     return {
-        f"{prefix}optimizer__lr": trial.suggest_loguniform("lr", 1e-4, 1e-2),
-        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform("weight_decay", 1e-6, 1e-2),
-        f"{prefix}batch_size": trial.suggest_categorical("batch_size", [8, 16, 32, 64]),
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(f"{prefix}optimizer__lr", 1e-6, 1e-2),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(f"{prefix}optimizer__weight_decay", 1e-6, 1e-2),
+        f"{prefix}batch_size": trial.suggest_categorical(f"{prefix}batch_size", [4, 8, 16, 32, 64]),
         f"{prefix}module__drop_prob": trial.suggest_float(f"{prefix}module__drop_prob", 0.1, 0.5),
     }
 
@@ -684,9 +685,9 @@ def eegnet_architecture_space(trial, prefix):
 def eegnet_training_space(trial, prefix):
     return {
         f"{prefix}module__drop_prob": trial.suggest_float(f"{prefix}module__drop_prob", 0.1, 0.5),
-        f"{prefix}optimizer__lr": trial.suggest_loguniform("lr", 1e-4, 1e-2),
-        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform("weight_decay", 1e-6, 1e-2),
-        f"{prefix}batch_size": trial.suggest_categorical("batch_size", [8, 16, 32, 64]),
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(f"{prefix}optimizer__lr", 1e-6, 1e-2),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(f"{prefix}optimizer__weight_decay", 1e-6, 1e-2),
+        f"{prefix}batch_size": trial.suggest_categorical(f"{prefix}batch_size", [4, 8, 16, 32, 64]),
     }
 
 
@@ -1127,7 +1128,7 @@ def adaptive_improved_cnncfc_training_space(trial, prefix, previous_best=None):
             f"{prefix}optimizer__lr", 1e-6, 1e-2
         ),
         f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
-            f"{prefix}optimizer__weight_decay", 1e-8, 1e-1
+            f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
         ),
         
         # Training parameters
@@ -1135,7 +1136,7 @@ def adaptive_improved_cnncfc_training_space(trial, prefix, previous_best=None):
         #     f"{prefix}max_epochs", 15, 200
         # ),
         f"{prefix}batch_size": trial.suggest_categorical(
-            f"{prefix}batch_size", [8, 16, 32, 64, 128]
+            f"{prefix}batch_size", [4, 8, 16, 32, 64]
         ),
         
         # Learning rate scheduling
@@ -1222,7 +1223,7 @@ def adaptive_cnn_wiredcfc_training_space(trial, prefix, previous_best=None):
             f"{prefix}optimizer__lr", 1e-6, 1e-2
         ),
         f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
-            f"{prefix}optimizer__weight_decay", 1e-8, 1e-1
+            f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
         ),
         
         # Training parameters
@@ -1230,7 +1231,7 @@ def adaptive_cnn_wiredcfc_training_space(trial, prefix, previous_best=None):
         #     f"{prefix}max_epochs", 15, 200
         # ),
         f"{prefix}batch_size": trial.suggest_categorical(
-            f"{prefix}batch_size", [8, 16, 32, 64, 128]
+            f"{prefix}batch_size", [4, 8, 16, 32, 64]
         ),
         
         # Learning rate scheduling

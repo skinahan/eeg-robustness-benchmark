@@ -1,6 +1,6 @@
 from skorch.dataset import ValidSplit
 from globals import set_seeds, get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS
-from skorch.callbacks import LRScheduler
+from skorch.callbacks import LRScheduler, GradientNormClipping
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from braindecode import EEGClassifier
 import torch
@@ -64,12 +64,12 @@ class CfCOnlyModel(EEGModuleMixin, nn.Module):
             proj_size=2,
             return_sequences=False,
             batch_first=True,
-            mixed_memory=True,
-            mode="default",
-            activation="lecun_tanh",
-            backbone_units=128,
-            backbone_layers=3,
-            backbone_dropout=0.0
+            mixed_memory=False,
+            mode="pure",
+            # activation="lecun_tanh",
+            # backbone_units=128,
+            # backbone_layers=3,
+            # backbone_dropout=0.0
         )
         self._glorot_weight_zero_bias()
         
@@ -1523,7 +1523,8 @@ def create_cnnncp_classifier(
         lr=1e-3,
         batch_size=16,
         weight_decay=5e-4,
-        classifier_type=3
+        classifier_type=3,
+        gradient_clip_value=1.0
 ):
     classifier = CNNNCPv3
     seed = get_seed()
@@ -1545,7 +1546,10 @@ def create_cnnncp_classifier(
         module__sparsity=net_sparsity,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[get_early_stopping_callback()],
+        callbacks=[
+            get_early_stopping_callback(),
+            GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2)
+        ],
         # verbose=0  # Suppress epoch-level output
     )
     
@@ -1821,7 +1825,7 @@ def create_cnnwiredcfc_classifier(
     return cnn_wiredcfc_net
 
 
-def create_ncp_only_classifier(n_chans, n_times, n_outputs):
+def create_ncp_only_classifier(n_chans, n_times, n_outputs, gradient_clip_value=1.0):
     """Create a NCPOnlyModel classifier."""
     seed = get_seed()
     criterion = torch.nn.CrossEntropyLoss
@@ -1841,7 +1845,10 @@ def create_ncp_only_classifier(n_chans, n_times, n_outputs):
         module__sparsity=0.85,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[get_early_stopping_callback()],
+        callbacks=[
+            get_early_stopping_callback(),
+            GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2)
+        ],
     )
     
     if torch.cuda.is_available():
@@ -1855,7 +1862,7 @@ def create_ncp_only_classifier(n_chans, n_times, n_outputs):
 
     return ncp_only_net
 
-def create_cfc_only_classifier(n_chans, n_times, n_outputs):
+def create_cfc_only_classifier(n_chans, n_times, n_outputs, gradient_clip_value=1.0):
     """Create a CfCOnlyModel classifier."""
     seed = get_seed()
     criterion = torch.nn.CrossEntropyLoss
@@ -1863,9 +1870,9 @@ def create_cfc_only_classifier(n_chans, n_times, n_outputs):
         CfCOnlyModel,
         criterion=criterion,
         optimizer=torch.optim.AdamW,
-        optimizer__lr=1e-3,
-        optimizer__weight_decay=0.0,
-        batch_size=64,
+        optimizer__lr=1e-4,
+        optimizer__weight_decay=1e-3,
+        batch_size=12,
         max_epochs=DEFAULT_MAX_EPOCHS,
         module__n_chans=n_chans,
         module__n_times=n_times,
@@ -1876,8 +1883,9 @@ def create_cfc_only_classifier(n_chans, n_times, n_outputs):
         device='cuda' if torch.cuda.is_available() else 'cpu',
         callbacks=[
             get_early_stopping_callback(),
-            LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=5)
-            ],
+            # LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=5),
+            GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2)
+        ],
     )
     
     if torch.cuda.is_available():
