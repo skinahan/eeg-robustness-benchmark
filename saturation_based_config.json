@@ -1,0 +1,112 @@
+{
+  "experiment_info": {
+    "description": "Comprehensive noise benchmarking based on adaptive saturation point detection",
+    "saturation_detection_method": "adaptive_three_phase",
+    "statistical_thresholds": "Combrisson_and_Jerbi_2015",
+    "generated_from": "saturation_detector.py"
+  },
+  "datasets": {
+    "BNCI2014_001": {
+      "name": "BNCI2014_001",
+      "paradigm": "MotorImagery",
+      "subjects": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "n_classes": 2,
+      "saturation_info": {
+        "detected_saturation_points": {
+          "gaussian": {
+            "saturation_point": 100.0,
+            "performance_at_saturation": 0.7602237654320989,
+            "chance_threshold": 0.56,
+            "is_statistically_significant": false
+          }
+        },
+        "statistical_significance": {}
+      },
+      "intensity_ranges": {
+        "gaussian": [
+          0.0,
+          22.5,
+          45.0,
+          67.5,
+          90.0
+        ]
+      }
+    }
+  },
+  "models": [
+    {
+      "name": "eegnet",
+      "display_name": "Eegnet"
+    },
+    {
+      "name": "reegnet",
+      "display_name": "Reegnet"
+    },
+    {
+      "name": "cnn_ncp",
+      "display_name": "Cnn Ncp"
+    }
+  ],
+  "eval_modes": [
+    "CrossSession",
+    "WithinSession"
+  ],
+  "noise_types": [
+    "gaussian"
+  ],
+  "seeds": [
+    100,
+    200,
+    300,
+    400,
+    500
+  ],
+  "experiment_modes": [
+    {
+      "name": "multirun",
+      "display_name": "Multirun (Test Perturb)",
+      "requires_noise": false,
+      "supports_tuning": true
+    }
+  ],
+  "subject_groups": {
+    "full": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  "experiment_filters": {
+    "skip_combinations": [],
+    "priority_levels": {
+      "high": [
+        {
+          "all_remaining": true
+        }
+      ]
+    }
+  },
+  "output": {
+    "script_dir": "generated_scripts",
+    "results_dir": "evaluation/results",
+    "aggregated_results_file": "all_results.csv",
+    "missing_script_file": "run_missing_multirun_jobs.sh",
+    "python_executable": "C:\\Users\\Kinah\\anaconda3\\envs\\ncp_robustness_proj\\python.exe"
+  }
+}
