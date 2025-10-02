@@ -455,7 +455,7 @@ def _get_metric_columns(metric: str):
     return clean_col, corrupted_col, y_label_map.get(metric, f'Corrupted {metric}')
 
 
-def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting, output_dir='plots', metric: str='roc_auc'):
+def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting, output_dir='plots', metric: str='roc_auc', dataset='BNCI2014_001'):
     """
     Plot individual model performance for test_perturb case.
     
@@ -465,6 +465,7 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
     - noise_type: str, 'dropout' or 'gaussian'
     - tune_setting: bool, True for tuned, False for baseline
     - output_dir: str, directory to save plots
+    - dataset: str, dataset name (affects y-axis limits)
     """
     # Define correct intensity values (from unified_experiment_runner.py)
     # These are the standardized intensity values used by the current experiment runner
@@ -547,7 +548,9 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
         plt.ylabel(y_label, fontsize=12)
         plt.legend(title='Session', fontsize=10, title_fontsize=11)
         plt.grid(True, alpha=0.3)
-        plt.ylim(0, 1)  # Consistent y-axis limits for better comparison
+        # Set y-axis limits based on dataset
+        y_min = 0.4 if dataset == 'BNCI2014_001' else 0
+        plt.ylim(y_min, 1)
         
         # Save plot
         os.makedirs(output_dir, exist_ok=True)
@@ -560,7 +563,7 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
         print(f"Saved {plot_type} plot: {output_file}")
 
 
-def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=None, output_dir='plots', metric: str='roc_auc'):
+def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=None, output_dir='plots', metric: str='roc_auc', dataset='BNCI2014_001'):
     """
     Create master comparison plot overlaying specified models for a given noise type and tune setting.
     
@@ -570,6 +573,7 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
     - tune_setting: bool, True for tuned, False for baseline
     - models: list, specific models to include (if None, uses all available models)
     - output_dir: str, directory to save plots
+    - dataset: str, dataset name (affects y-axis limits)
     """
     # Define correct intensity values (from unified_experiment_runner.py)
     # These are the standardized intensity values used by the current experiment runner
@@ -653,7 +657,9 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
         plt.ylabel(y_label, fontsize=12)
         plt.legend(title='Model', fontsize=10, title_fontsize=11, bbox_to_anchor=(1.05, 1), loc='upper left')
         plt.grid(True, alpha=0.3)
-        plt.ylim(0, 1)  # Consistent y-axis limits for better comparison
+        # Set y-axis limits based on dataset
+        y_min = 0.4 if dataset == 'BNCI2014_001' else 0
+        plt.ylim(y_min, 1)
         
         # Save plot
         os.makedirs(output_dir, exist_ok=True)
@@ -666,7 +672,7 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
         print(f"Saved master {plot_type} plot: {output_file}")
 
 
-def generate_all_test_perturb_plots(df, models=None, output_dir='plots', metrics=('roc_auc','accuracy','precision','recall','f1')):
+def generate_all_test_perturb_plots(df, models=None, output_dir='plots', metrics=('roc_auc','accuracy','precision','recall','f1'), dataset='BNCI2014_001'):
     """
     Generate all test_perturb plots as specified in the requirements.
     
@@ -674,6 +680,7 @@ def generate_all_test_perturb_plots(df, models=None, output_dir='plots', metrics
     - df: DataFrame with all results
     - models: list, specific models to include (if None, uses all available models)
     - output_dir: str, directory to save plots
+    - dataset: str, dataset name (affects y-axis limits)
     """
     # Get unique values
     if models is None:
@@ -693,13 +700,13 @@ def generate_all_test_perturb_plots(df, models=None, output_dir='plots', metrics
         for noise_type in noise_types:
             for tune_setting in tune_settings:
                 for metric in metrics:
-                    plot_test_perturb_individual_model(df, model, noise_type, tune_setting, output_dir, metric)
+                    plot_test_perturb_individual_model(df, model, noise_type, tune_setting, output_dir, metric, dataset)
     
     # Generate master comparison plots for each metric
     for noise_type in noise_types:
         for tune_setting in tune_settings:
             for metric in metrics:
-                plot_test_perturb_master_comparison(df, noise_type, tune_setting, models, output_dir, metric)
+                plot_test_perturb_master_comparison(df, noise_type, tune_setting, models, output_dir, metric, dataset)
     
     print(f"All test_perturb plots generated and saved to {output_dir}")
 
@@ -795,7 +802,9 @@ def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, data
             plt.ylabel(y_label, fontsize=12)
             plt.legend(title='Session', fontsize=10, title_fontsize=11)
             plt.grid(True, alpha=0.3)
-            plt.ylim(0, 1)
+            # Set y-axis limits based on dataset
+            y_min = 0.4 if dataset == 'BNCI2014_001' else 0
+            plt.ylim(y_min, 1)
             
             # Create directory structure
             subject_dir = os.path.join(output_dir, dataset, f'subject_{subject}', noise_type)
@@ -894,7 +903,9 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
         plt.ylabel('Corrupted Score (ROC AUC)', fontsize=12)
         plt.legend(title='Model', fontsize=10, title_fontsize=11, bbox_to_anchor=(1.05, 1), loc='upper left')
         plt.grid(True, alpha=0.3)
-        plt.ylim(0, 1)
+        # Set y-axis limits based on dataset
+        y_min = 0.4 if dataset == 'BNCI2014_001' else 0
+        plt.ylim(y_min, 1)
         
         # Create directory structure
         multisubject_dir = os.path.join(output_dir, dataset, 'multisubject', noise_type)
@@ -947,7 +958,7 @@ def generate_organized_test_perturb_plots(df, models=None, dataset='BNCI2014_001
     print(f"\nAll organized test_perturb plots generated and saved to {output_dir}")
 
 
-def generate_model_subset_plots(df, model_subsets, output_dir='plots'):
+def generate_model_subset_plots(df, model_subsets, output_dir='plots', dataset='BNCI2014_001'):
     """
     Generate plots for different model subsets for easy comparison.
     
@@ -955,18 +966,19 @@ def generate_model_subset_plots(df, model_subsets, output_dir='plots'):
     - df: DataFrame with all results
     - model_subsets: dict, with subset names as keys and model lists as values
     - output_dir: str, directory to save plots
+    - dataset: str, dataset name (affects y-axis limits)
     """
     for subset_name, models in model_subsets.items():
         print(f"\n=== Generating plots for {subset_name} ===")
         subset_output_dir = os.path.join(output_dir, subset_name)
-        generate_all_test_perturb_plots(df, models, subset_output_dir)
+        generate_all_test_perturb_plots(df, models, subset_output_dir, dataset=dataset)
 
 
 def plot_custom_comparison(df, filters=None, x_var='intensity', y_var='corrupted_score', 
                           hue_var='model', style_var=None, col_var=None, row_var=None,
                           plot_type='line', output_dir='plots', output_filename=None,
                           title=None, xlabel=None, ylabel=None, figsize=(12, 8),
-                          include_clean_baseline=True, metric='roc_auc', **kwargs):
+                          include_clean_baseline=True, metric='roc_auc', dataset=None, **kwargs):
     """
     Flexible method to extract and plot specific combinations of data points.
     
@@ -1009,6 +1021,8 @@ def plot_custom_comparison(df, filters=None, x_var='intensity', y_var='corrupted
         For test_perturb mode, include clean baseline at intensity=0
     metric : str, default='roc_auc'
         Metric to use ('roc_auc', 'accuracy', 'precision', 'recall', 'f1')
+    dataset : str, optional
+        Dataset name (affects y-axis limits). If None, inferred from df
     **kwargs : additional keyword arguments
         Passed to seaborn plotting function
         
@@ -1046,6 +1060,16 @@ def plot_custom_comparison(df, filters=None, x_var='intensity', y_var='corrupted
         col_var='session'
     )
     """
+    # Infer dataset if not provided
+    if dataset is None and 'dataset' in df.columns:
+        unique_datasets = df['dataset'].unique()
+        if len(unique_datasets) == 1:
+            dataset = unique_datasets[0]
+        else:
+            dataset = 'BNCI2014_001'  # Default
+    elif dataset is None:
+        dataset = 'BNCI2014_001'  # Default
+    
     # Apply filters
     df_filtered = df.copy()
     filter_summary = []
@@ -1178,7 +1202,9 @@ def plot_custom_comparison(df, filters=None, x_var='intensity', y_var='corrupted
         ax.grid(True, alpha=0.3)
         
         if y_var in ['score', 'corrupted_score', 'clean_score', 'corrupted_roc_auc', 'clean_roc_auc']:
-            ax.set_ylim(0, 1)
+            # Set y-axis limits based on dataset
+            y_min = 0.4 if dataset == 'BNCI2014_001' else 0
+            ax.set_ylim(y_min, 1)
     
     # Save plot
     os.makedirs(output_dir, exist_ok=True)
@@ -1311,7 +1337,7 @@ if __name__ == '__main__':
     
     # Also generate the original plots for backward compatibility
     print("\n=== Generating original plots for backward compatibility ===")
-    generate_all_test_perturb_plots(aggregated_df, models=model_subsets['main_models'], output_dir='./plots/legacy/')
+    generate_all_test_perturb_plots(aggregated_df, models=model_subsets['main_models'], output_dir='./plots/legacy/', dataset=dataset)
     
     # Uncomment to generate plots for all subsets:
     # generate_model_subset_plots(aggregated_df, model_subsets, output_dir='./plots/legacy/')
