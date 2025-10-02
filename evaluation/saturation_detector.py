@@ -256,6 +256,19 @@ class AdaptiveSaturationDetector:
             trained_model, X_test, y_test, noise_type
         )
         
+        # SIMPLIFIED APPROACH: Check if any intensity shows below-chance performance
+        below_chance_intensity = self._find_first_below_chance_intensity(coarse_results, chance_threshold)
+        
+        if below_chance_intensity is not None:
+            print(f"Found below-chance performance at intensity {below_chance_intensity}%, using as saturation point")
+            return self._create_saturation_result_from_coarse(
+                dataset_name, noise_type, below_chance_intensity, chance_threshold, 
+                coarse_results, "simplified_below_chance"
+            )
+        
+        # If no below-chance performance found, use the complex three-phase approach
+        print("No below-chance performance found, using three-phase approach...")
+        
         # Identify rough saturation region
         saturation_region = self._identify_saturation_region(coarse_results, chance_threshold)
         print(f"Saturation region identified: {saturation_region}")
@@ -447,6 +460,69 @@ class AdaptiveSaturationDetector:
         min_saturated = min(saturated_intensities)
         
         return (max_good, min_saturated)
+    
+    def _find_first_below_chance_intensity(self, results: List[Tuple[float, float, float]], 
+                                         chance_threshold: float) -> Optional[float]:
+        """
+        Find the first intensity that shows below-chance performance.
+        
+        Args:
+            results: List of (intensity, mean_performance, std_performance) tuples
+            chance_threshold: Statistical significance threshold for chance-level performance
+            
+        Returns:
+            First intensity with below-chance performance, or None if none found
+        """
+        for intensity, mean_perf, std_perf in results:
+            if mean_perf < chance_threshold:
+                print(f"  Found below-chance performance at {intensity}%: {mean_perf:.3f} < {chance_threshold:.3f}")
+                return intensity
+        
+        print(f"  No below-chance performance found (all performances >= {chance_threshold:.3f})")
+        return None
+    
+    def _create_saturation_result_from_coarse(self, dataset_name: str, noise_type: str,
+                                            intensity: float, chance_threshold: float,
+                                            coarse_results: List[Tuple[float, float, float]],
+                                            method: str) -> SaturationResult:
+        """Create a saturation result from coarse exploration with below-chance performance."""
+        
+        # Find performance at the intensity
+        performance = None
+        performance_std = None
+        for int_val, mean_perf, std_perf in coarse_results:
+            if abs(int_val - intensity) < 0.1:
+                performance = mean_perf
+                performance_std = std_perf
+                break
+        
+        if performance is None:
+            performance = chance_threshold - 0.1  # Default fallback
+            performance_std = 0.1
+        
+        # Calculate confidence interval (95%)
+        n_trials = self.n_trials_coarse
+        confidence_interval = (
+            performance - 1.96 * performance_std / np.sqrt(n_trials),
+            performance + 1.96 * performance_std / np.sqrt(n_trials)
+        )
+        
+        # Check if performance is significantly below chance
+        is_significant = performance < chance_threshold
+        
+        return SaturationResult(
+            noise_type=noise_type,
+            dataset=dataset_name,
+            saturation_point=intensity,
+            confidence_interval=confidence_interval,
+            sample_size=200,  # Approximate
+            chance_threshold=chance_threshold,
+            validation_trials=self.n_trials_coarse,
+            performance_at_saturation=performance,
+            performance_std=performance_std,
+            is_statistically_significant=is_significant,
+            detection_method=method
+        )
     
     def _refined_binary_search_with_trained_model(self, trained_model, X_test, y_test, noise_type,
                                                  saturation_region: Tuple[float, float], 

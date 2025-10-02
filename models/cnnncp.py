@@ -169,13 +169,16 @@ class CNNNCPv3(EEGModuleMixin, nn.Module):
         self.dropout = nn.Dropout(p=drop_prob)
 
         # 5. Temporal downsampler for further reduction:
-        self.temporal_downsampler = nn.Conv1d(
-            in_channels=F2,  # Use F2 instead of hardcoded 16
-            out_channels=F2,
-            kernel_size=temporal_kernel_size,
-            stride=temporal_stride,
-            padding=temporal_kernel_size // 2
-        )
+        if self.use_temporal_downsampler:
+            self.temporal_downsampler = nn.Conv1d(
+                in_channels=F2,  # Use F2 instead of hardcoded 16
+                out_channels=F2,
+                kernel_size=temporal_kernel_size,
+                stride=temporal_stride,
+                padding=temporal_kernel_size // 2
+            )
+        else:
+            self.temporal_downsampler = None
 
         # 6. CfC with proper input size and configurable parameters:
         ncp_input_size = F2  # Use F2 instead of hardcoded 16
@@ -183,7 +186,7 @@ class CNNNCPv3(EEGModuleMixin, nn.Module):
 
         wiring = AutoNCP(
             ncp_hidden_dim, ncp_output_size, sparsity_level=sparsity, seed=seed)
-        self.ncp = CfC(ncp_input_size, wiring, return_sequences=True)  # , mode="pure")
+        self.ncp = CfC(ncp_input_size, wiring, return_sequences=True)
 
         # 7. Separable Conv2D 
         self.sep_depthwise = nn.Conv2d(
@@ -233,7 +236,8 @@ class CNNNCPv3(EEGModuleMixin, nn.Module):
         x = x.contiguous().view(x.shape[0], x.shape[1], num_features)  # [B, T, F2]
         
         # 5. Apply temporal downsampling:
-        x = self.temporal_downsampler(x.permute(0, 2, 1)).permute(0, 2, 1)  # [B, T', F2]
+        if self.temporal_downsampler is not None:
+            x = self.temporal_downsampler(x.permute(0, 2, 1)).permute(0, 2, 1)  # [B, T', F2]
         
         x, _ = self.ncp(x)  # [B, T', H]
         
@@ -262,6 +266,7 @@ class CNNNCPv3(EEGModuleMixin, nn.Module):
                     nn.init.constant_(module.weight, 1)
             if hasattr(module, "bias") and module.bias is not None:
                 nn.init.constant_(module.bias, 0)
+
 
 # Stochastic Depth implementation for regularization
 class StochasticDepth(nn.Module):
@@ -1519,10 +1524,10 @@ def create_cnnncp_classifier(
         n_times,
         n_outputs,
         net_size=26,
-        net_sparsity=0.85,
+        net_sparsity=0.5,
         lr=1e-3,
-        batch_size=16,
-        weight_decay=5e-4,
+        batch_size=12,
+        weight_decay=1e-3,
         classifier_type=3,
         gradient_clip_value=1.0
 ):
