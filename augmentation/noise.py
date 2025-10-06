@@ -561,7 +561,7 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
 
     def __init__(self, noise_type='dropout', intensity=10.0, seed=42, 
     eog_template_path='notebooks/eog_mixing_results/generic_eog_mixing_template.npz', montage_name='standard_1020',
-    artifact_scale_factor=2000.0, use_improved_gaussian=True):
+    artifact_scale_factor=1000.0, use_improved_gaussian=True):
         self.noise_type = noise_type
         self.intensity = intensity
         self.seed = seed
@@ -590,8 +590,8 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
             return self._apply_channel_dropout(X)
         elif self.noise_type == 'gaussian':
             # Note: Reverting for a test on 10/1/2025
-            return self._apply_gaussian_noise(X)
-            # return self._improved_apply_gaussian_noise(X)
+            # return self._apply_gaussian_noise(X)
+            return self._improved_apply_gaussian_noise(X)
         elif self.noise_type == 'eog':
             return self._apply_realistic_eog_noise(X)
         else:
@@ -642,8 +642,10 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         # Calculate overall signal RMS once (assuming consistent units within dataset)
         signal_rms = np.sqrt(np.mean(data**2))
 
-        # Set noise scale to 1.0 * signal_rms
-        noise_scale = 1.0 * signal_rms
+        # Set noise scale to 4.0 * signal_rms
+        noise_scale = 4.0 * signal_rms
+        # Use intensity to gradually ramp up the noise scale
+        noise_scale *= (self.intensity / 100.0)
 
         # Determine number of channels to contaminate per epoch
         n_contam = int(np.round(n_channels * self.intensity / 100.0))

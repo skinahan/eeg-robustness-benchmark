@@ -2,14 +2,14 @@
   {
     "dataset": "BNCI2014_001",
     "noise_type": "gaussian",
-    "saturation_point": 25.0,
-    "performance_at_saturation": 0.5246270576131687,
-    "performance_std": 0.021364966830595414,
+    "saturation_point": 100.0,
+    "performance_at_saturation": 0.6721965020576132,
+    "performance_std": 0.1,
     "chance_threshold": 0.56,
-    "is_significant": true,
-    "confidence_interval_lower": 0.5004503216854602,
-    "confidence_interval_upper": 0.5488037935408773,
-    "detection_method": "simplified_below_chance"
+    "is_significant": false,
+    "confidence_interval_lower": 0.5721965020576132,
+    "confidence_interval_upper": 0.7721965020576131,
+    "detection_method": "coarse_exploration_only"
   },
   {
     "dataset": "BNCI2014_001",
@@ -27,24 +27,24 @@
     "dataset": "BNCI2014_001",
     "noise_type": "eog",
     "saturation_point": 100.0,
-    "performance_at_saturation": 0.8524305555555557,
+    "performance_at_saturation": 0.8980195473251028,
     "performance_std": 0.1,
     "chance_threshold": 0.56,
     "is_significant": false,
-    "confidence_interval_lower": 0.7524305555555557,
-    "confidence_interval_upper": 0.9524305555555557,
+    "confidence_interval_lower": 0.7980195473251028,
+    "confidence_interval_upper": 0.9980195473251028,
     "detection_method": "coarse_exploration_only"
   },
   {
     "dataset": "Lee2019_SSVEP",
     "noise_type": "gaussian",
     "saturation_point": 100.0,
-    "performance_at_saturation": 0.7140740740740741,
+    "performance_at_saturation": 0.9577777777777777,
     "performance_std": 0.1,
     "chance_threshold": 0.3,
     "is_significant": false,
-    "confidence_interval_lower": 0.6140740740740741,
-    "confidence_interval_upper": 0.8140740740740741,
+    "confidence_interval_lower": 0.8577777777777778,
+    "confidence_interval_upper": 1.0577777777777777,
     "detection_method": "coarse_exploration_only"
   },
   {
@@ -63,12 +63,12 @@
     "dataset": "Lee2019_SSVEP",
     "noise_type": "eog",
     "saturation_point": 100.0,
-    "performance_at_saturation": 0.957530864197531,
+    "performance_at_saturation": 0.9654320987654321,
     "performance_std": 0.1,
     "chance_threshold": 0.3,
     "is_significant": false,
-    "confidence_interval_lower": 0.857530864197531,
-    "confidence_interval_upper": 1.057530864197531,
+    "confidence_interval_lower": 0.8654320987654321,
+    "confidence_interval_upper": 1.0654320987654322,
     "detection_method": "coarse_exploration_only"
   }
 ]
