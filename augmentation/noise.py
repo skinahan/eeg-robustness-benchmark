@@ -577,7 +577,7 @@ def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_sta
         template_end = template_start + (valid_end - valid_start)
         
         # Add realistic amplitude variability - real blinks vary significantly in strength
-        amplitude_multiplier = rng.uniform(0.6, 1.2)  # 60% to 220% of baseline
+        amplitude_multiplier = rng.uniform(0.6, 1.6)  # 60% to 160% of baseline
     
         # VEOG: primary blink component with variable amplitude
         veog_tc[valid_start:valid_end] += amplitude_multiplier * blink_template[template_start:template_end]
@@ -840,6 +840,7 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         For test_perturb mode: intensity controls temporal coverage of EOG artifacts (10% = 10% of time covered by artifacts)
         For other modes: intensity controls prevalence (percentage of epochs to contaminate)
         """
+        rng = np.random.RandomState(self.seed)
         n_epochs, n_channels, n_times = data.shape
         
         # Generate channel names based on the number of channels
@@ -859,12 +860,12 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         else:
             # For other modes: intensity controls prevalence, use fixed temporal coverage
             prevalence = int(n_epochs * (self.intensity / 100))
-            temporal_coverage = np.random.choice(np.arange(0.3, 0.9, step=0.1)) # Use 10% temporal coverage for non-test_perturb modes
+            temporal_coverage = rng.uniform(0.3, 0.9) # Use 10% temporal coverage for non-test_perturb modes
         contamination_idxs = np.random.choice(n_epochs, size=prevalence, replace=False)
         
         data_aug = data.copy()
         for i in contamination_idxs:
-            temporal_coverage = np.random.choice(np.arange(0.1, 0.9, step=0.1))
+            temporal_coverage = rng.uniform(0.1, 0.9)
             # Inject realistic EOG artifacts with controlled temporal coverage
             contaminated_epoch = inject_realistic_eog_artifacts_with_coverage(
                 data[i], info, self.eog_template_path, 
