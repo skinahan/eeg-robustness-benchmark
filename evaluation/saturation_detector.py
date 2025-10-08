@@ -167,6 +167,7 @@ class AdaptiveSaturationDetector:
         }
         
         # Noise types to test
+        # self.noise_types = ["eog"]
         self.noise_types = ["gaussian", "dropout", "eog"]
         
         # Phase 1: Coarse exploration parameters
@@ -212,14 +213,26 @@ class AdaptiveSaturationDetector:
             if dataset_name not in self.dataset_configs:
                 print(f"Warning: Dataset {dataset_name} not configured, skipping...")
                 continue
+            
+            # Train model once for this dataset
+            print("Training model on clean data...")
+            try:
+                trained_model, X_test, y_test = self._train_model_once(dataset_name)
+                print(f"Model trained successfully on {len(X_test)} test samples")
+            except Exception as e:
+                print(f"Error training model for {dataset_name}: {e}")
+                continue
                 
             dataset_results = {}
             
+            # Evaluate all noise types using the same trained model
             for noise_type in noise_types:
                 print(f"\n--- Detecting saturation point for {noise_type} noise ---")
                 
                 try:
-                    result = self._detect_single_saturation_point(dataset_name, noise_type)
+                    result = self._detect_single_saturation_point_with_trained_model(
+                        dataset_name, noise_type, trained_model, X_test, y_test
+                    )
                     dataset_results[noise_type] = result
                     
                     # Save intermediate results
@@ -235,8 +248,9 @@ class AdaptiveSaturationDetector:
         self._save_final_results(results)
         return results
     
-    def _detect_single_saturation_point(self, dataset_name: str, noise_type: str) -> SaturationResult:
-        """Detect saturation point for a single dataset-noise combination."""
+    def _detect_single_saturation_point_with_trained_model(self, dataset_name: str, noise_type: str, 
+                                                          trained_model, X_test, y_test) -> SaturationResult:
+        """Detect saturation point for a single dataset-noise combination using a pre-trained model."""
         
         config = self.dataset_configs[dataset_name]
         chance_threshold = StatisticalThresholds.get_chance_threshold(
@@ -245,10 +259,6 @@ class AdaptiveSaturationDetector:
         )
         
         print(f"Chance threshold for {config['n_classes']}-class, ~200 samples: {chance_threshold:.3f}")
-        
-        # Train model once on clean data (like test_perturb mode)
-        print("Training model on clean data...")
-        trained_model, X_test, y_test = self._train_model_once(dataset_name)
         
         # Phase 1: Coarse exploration
         print("Phase 1: Coarse exploration...")

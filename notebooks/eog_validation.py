@@ -461,3 +461,183 @@ print(f"\n=== STEP 1 COMPLETE ===")
 print(f"Successfully learned EOG mixing matrices for {len(subject_results)} subjects")
 print(f"Results saved to: {output_dir}")
 print(f"Next step: Use these mixing matrices to inject realistic EOG artifacts into new EEG data")
+
+# === Step 6: Create comparison visualization ===
+print(f"\n=== CREATING COMPARISON VISUALIZATION ===")
+
+# Import required modules for BNCI2014_001 and EOG injection
+try:
+    from moabb.datasets import BNCI2014_001
+    from moabb.paradigms import MotorImagery
+    import mne
+    from mne.io import RawArray
+    from mne.channels import make_standard_montage
+    from augmentation.noise import inject_realistic_eog_artifacts
+    import os
+    import sys
+    
+    # Add project root to path for imports
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.insert(0, project_root)
+    
+    print("Loading BNCI2014_001 dataset...")
+    
+    # Load BNCI2014_001 dataset
+    dataset = BNCI2014_001()
+    paradigm = MotorImagery(events=["left_hand", "right_hand"], fmin=8, fmax=35, baseline=None)
+    
+    # Get data for subject 1, session 1 (training)
+    subject_id = 1
+    session_id = 0  # First session
+    
+    # Load the data
+    X, y, metadata = paradigm.get_data(dataset, subjects=[subject_id], return_epochs=False)
+    
+    # Get the first trial for visualization
+    trial_idx = 0
+    clean_bnci_data = X[trial_idx]  # Shape: (n_channels, n_times)
+    
+    # Get info object for BNCI2014_001
+    raw_data = dataset._get_single_subject_data(subject_id)[session_id]['train']
+    info = raw_data.info
+    
+    print(f"BNCI2014_001 data shape: {clean_bnci_data.shape}")
+    print(f"Sampling frequency: {info['sfreq']} Hz")
+    
+    # Apply EOG noise injection to BNCI2014_001 data
+    print("Applying EOG noise injection to BNCI2014_001 data...")
+    
+    # Check if generic EOG template exists
+    template_path = "eog_mixing_results/generic_eog_mixing_template.npz"
+    if not os.path.exists(template_path):
+        print(f"Warning: EOG template not found at {template_path}")
+        print("Creating a simple template for demonstration...")
+        
+        # Create a simple template for demonstration
+        n_channels = clean_bnci_data.shape[0]
+        simple_template = {
+            'mixing_matrix': np.random.randn(n_channels, 2) * 0.1,
+            'veog_std': 50e-6,  # 50 µV
+            'heog_std': 30e-6,  # 30 µV
+            'target_rms_median': 20e-6  # 20 µV
+        }
+        
+        # Save temporary template
+        np.savez(template_path, **simple_template)
+        print(f"Created temporary template at {template_path}")
+    
+    # Apply EOG injection
+    contaminated_bnci_data = inject_realistic_eog_artifacts(
+        clean_bnci_data, info, template_path, 
+        intensity=1.0, seed=42, apply_car=True
+    )
+    
+    print(f"EOG injection completed. Contaminated data shape: {contaminated_bnci_data.shape}")
+    
+    # Get synthetic data for comparison (use first subject)
+    if len(subject_results) > 0:
+        first_subject_id = list(subject_results.keys())[0]
+        print(f"Loading synthetic data for subject {first_subject_id}...")
+        
+        # Load synthetic data
+        pure_key = f"sim{first_subject_id}_resampled"
+        cont_key = f"sim{first_subject_id}_con"
+        
+        clean_synthetic_data = pure[pure_key]  # (19, n_times)
+        contaminated_synthetic_data = contaminated[cont_key]  # (19, n_times)
+        
+        # Convert to Volts and apply CAR for consistency
+        clean_synthetic_V, _ = to_volts(clean_synthetic_data)
+        contaminated_synthetic_V, _ = to_volts(contaminated_synthetic_data)
+        
+        clean_synthetic_car = car(clean_synthetic_V)
+        contaminated_synthetic_car = car(contaminated_synthetic_V)
+        
+        print(f"Synthetic data shapes - Clean: {clean_synthetic_car.shape}, Contaminated: {contaminated_synthetic_car.shape}")
+        
+        # Create the comparison plot
+        print("Creating comparison visualization...")
+        
+        # Select a representative channel for visualization (e.g., Cz or Fz)
+        synthetic_channel_idx = 17  # Cz channel in 19-channel montage
+        bnci_channel_idx = 9  # Cz channel in BNCI2014_001 (assuming 22 channels)
+        
+        # Create time axes
+        synthetic_sfreq = 200  # Hz
+        bnci_sfreq = info['sfreq']
+        
+        synthetic_time = np.arange(clean_synthetic_car.shape[1]) / synthetic_sfreq
+        bnci_time = np.arange(clean_bnci_data.shape[1]) / bnci_sfreq
+        
+        # Create the 2x2 subplot
+        fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+        
+        # First column, first row: Clean synthetic waveform
+        axes[0, 0].plot(synthetic_time, clean_synthetic_car[synthetic_channel_idx, :] * 1e6, 'b-', linewidth=1)
+        axes[0, 0].set_title('Synthetic EEG/EOG Dataset\nClean Waveform', fontsize=12, fontweight='bold')
+        axes[0, 0].set_xlabel('Time (s)')
+        axes[0, 0].set_ylabel('Amplitude (µV)')
+        axes[0, 0].grid(True, alpha=0.3)
+        axes[0, 0].set_xlim(0, synthetic_time[-1])
+        
+        # First column, second row: Contaminated synthetic waveform
+        axes[1, 0].plot(synthetic_time, contaminated_synthetic_car[synthetic_channel_idx, :] * 1e6, 'r-', linewidth=1)
+        axes[1, 0].set_title('Synthetic EEG/EOG Dataset\nContaminated Waveform', fontsize=12, fontweight='bold')
+        axes[1, 0].set_xlabel('Time (s)')
+        axes[1, 0].set_ylabel('Amplitude (µV)')
+        axes[1, 0].grid(True, alpha=0.3)
+        axes[1, 0].set_xlim(0, synthetic_time[-1])
+        
+        # Second column, first row: Clean BNCI2014_001 waveform
+        axes[0, 1].plot(bnci_time, clean_bnci_data[bnci_channel_idx, :], 'b-', linewidth=1)
+        axes[0, 1].set_title('BNCI2014_001 Dataset\nClean Waveform', fontsize=12, fontweight='bold')
+        axes[0, 1].set_xlabel('Time (s)')
+        axes[0, 1].set_ylabel('Amplitude (µV)')
+        axes[0, 1].grid(True, alpha=0.3)
+        axes[0, 1].set_xlim(0, bnci_time[-1])
+        
+        # Second column, second row: Contaminated BNCI2014_001 waveform
+        axes[1, 1].plot(bnci_time, contaminated_bnci_data[bnci_channel_idx, :], 'r-', linewidth=1)
+        axes[1, 1].set_title('BNCI2014_001 Dataset\nEOG Noise Injected', fontsize=12, fontweight='bold')
+        axes[1, 1].set_xlabel('Time (s)')
+        axes[1, 1].set_ylabel('Amplitude (µV)')
+        axes[1, 1].grid(True, alpha=0.3)
+        axes[1, 1].set_xlim(0, bnci_time[-1])
+        
+        # Add overall title
+        fig.suptitle('EEG Waveform Comparison: Synthetic vs Real Data\nClean vs EOG Contaminated', 
+                    fontsize=14, fontweight='bold', y=0.95)
+        
+        # Adjust layout and save
+        plt.tight_layout()
+        plt.subplots_adjust(top=0.9)
+        
+        # Save the plot
+        plot_path = output_dir / 'eeg_waveform_comparison.png'
+        plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+        print(f"Comparison plot saved: {plot_path}")
+        
+        # Also save as PDF for high quality
+        plot_pdf_path = output_dir / 'eeg_waveform_comparison.pdf'
+        plt.savefig(plot_pdf_path, bbox_inches='tight')
+        print(f"Comparison plot (PDF) saved: {plot_pdf_path}")
+        
+        plt.show()
+        
+        print(f"\n=== VISUALIZATION COMPLETE ===")
+        print(f"Successfully created comparison plot showing:")
+        print(f"  - Top left: Clean synthetic EEG waveform")
+        print(f"  - Bottom left: Contaminated synthetic EEG waveform")
+        print(f"  - Top right: Clean BNCI2014_001 EEG waveform")
+        print(f"  - Bottom right: BNCI2014_001 with EOG noise injection")
+        print(f"Plots saved to: {output_dir}")
+        
+    else:
+        print("No synthetic data available for comparison")
+        
+except ImportError as e:
+    print(f"Warning: Could not import required modules for visualization: {e}")
+    print("Please ensure moabb, mne, and augmentation modules are available")
+except Exception as e:
+    print(f"Error creating visualization: {e}")
+    print("Continuing without visualization...")

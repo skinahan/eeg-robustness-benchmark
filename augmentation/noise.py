@@ -116,71 +116,91 @@ def interpolate_eog_topography_to_montage(source_montage, target_montage, source
     
     return interpolated_matrix
 
-def generate_realistic_eog_regressors(n_times, sfreq, template_stats, seed=42):
- """
- Generate realistic VEOG and HEOG time courses using blink templates and calibration.
- 
- Parameters
- ----------
- n_times : int
- Number of time points
- sfreq : float
- Sampling frequency in Hz
- template_stats : dict
- Template statistics from load_generic_eog_template()
- seed : int
- Random seed for reproducibility
- 
- Returns
- -------
- tuple
- (veog_tc, heog_tc) - VEOG and HEOG time courses in Volts
- """
- rng = np.random.RandomState(seed)
- 
- # Blink template parameters
- blink_duration_ms = 200
- blink_peak_ms = 80
- blink_frequency = 0.1 # 10% of time contains blinks
- 
- # Convert to samples
- blink_duration = int(blink_duration_ms * sfreq / 1000)
- blink_peak = int(blink_peak_ms * sfreq / 1000)
- 
- # Generate blink template (smooth gaussian-like)
- t = np.arange(blink_duration)
- blink_template = np.exp(-((t - blink_peak) / (0.35 * blink_peak + 1e-9)) ** 2)
- blink_template = blink_template / np.max(blink_template)
- 
- # Place blinks randomly
- n_blinks = int(n_times * blink_frequency)
- blink_starts = rng.choice(n_times - blink_duration, size=n_blinks, replace=False)
- 
- # Initialize time courses
- veog_tc = np.zeros(n_times)
- heog_tc = np.zeros(n_times)
- 
- # Add blinks
- for start in blink_starts:
-    end = min(start + blink_duration, n_times)
-    blink_len = end - start
+def generate_realistic_eog_regressors(n_times, sfreq, template_stats, seed=42, allow_boundary_intersection=True):
+    """
+    Generate realistic VEOG and HEOG time courses using blink templates and calibration.
     
-    # VEOG: primary blink component
-    veog_tc[start:end] += blink_template[:blink_len]
+    Parameters
+    ----------
+    n_times : int
+    Number of time points
+    sfreq : float
+    Sampling frequency in Hz
+    template_stats : dict
+    Template statistics from load_generic_eog_template()
+    seed : int
+    Random seed for reproducibility
+    allow_boundary_intersection : bool
+    If True, allows blinks to start before sample start or end after sample end,
+    creating partial blinks that intersect with sample boundaries for more variability
     
-    # HEOG: smaller lateral component (random direction)
-    lateral_amplitude = 0.2 * rng.uniform(0.5, 1.5) # 20% of VEOG, with variability
-    direction = rng.choice([-1, 1]) # random left/right
-    heog_tc[start:end] += direction * lateral_amplitude * blink_template[:blink_len]
- 
- # Calibrate to match template statistics (realistic EOG artifact strength)
- veog_tc = veog_tc / (np.std(veog_tc) + 1e-12) * template_stats['veog_std']
- heog_tc = heog_tc / (np.std(heog_tc) + 1e-12) * template_stats['heog_std']
- 
- return veog_tc, heog_tc
+    Returns
+    -------
+    tuple
+    (veog_tc, heog_tc) - VEOG and HEOG time courses in Volts
+    """
+    rng = np.random.RandomState(seed)
+    
+    # Blink template parameters
+    blink_duration_ms = 200
+    blink_peak_ms = 80
+    blink_frequency = 0.1 # 10% of time contains blinks
+    
+    # Convert to samples
+    blink_duration = int(blink_duration_ms * sfreq / 1000)
+    blink_peak = int(blink_peak_ms * sfreq / 1000)
+    
+    # Generate blink template (smooth gaussian-like)
+    t = np.arange(blink_duration)
+    blink_template = np.exp(-((t - blink_peak) / (0.35 * blink_peak + 1e-9)) ** 2)
+    blink_template = blink_template / np.max(blink_template)
+    
+    # Place blinks randomly with enhanced variability
+    n_blinks = int(n_times * blink_frequency)
+    
+    if allow_boundary_intersection:
+        # Allow blinks to start before sample start or extend beyond sample end
+        # This creates more realistic variability where blinks can be partial
+        blink_starts = rng.choice(n_times + blink_duration, size=n_blinks, replace=False) - blink_duration
+    else:
+        # Original behavior: blinks must be completely contained within sample
+        blink_starts = rng.choice(n_times - blink_duration, size=n_blinks, replace=False)
+    
+    # Initialize time courses
+    veog_tc = np.zeros(n_times)
+    heog_tc = np.zeros(n_times)
+    
+    # Add blinks with boundary intersection support
+    for start in blink_starts:
+        end = start + blink_duration
+        
+        # Determine the valid range within the sample
+        valid_start = max(0, start)
+        valid_end = min(n_times, end)
+        
+        if valid_start >= valid_end:
+            continue  # Skip if blink is completely outside sample bounds
+            
+        # Calculate template indices for the valid range
+        template_start = valid_start - start
+        template_end = template_start + (valid_end - valid_start)
+        
+        # VEOG: primary blink component
+        veog_tc[valid_start:valid_end] += blink_template[template_start:template_end]
+        
+        # HEOG: smaller lateral component (random direction)
+        lateral_amplitude = 0.2 * rng.uniform(0.5, 1.5) # 20% of VEOG, with variability
+        direction = rng.choice([-1, 1]) # random left/right
+        heog_tc[valid_start:valid_end] += direction * lateral_amplitude * blink_template[template_start:template_end]
+    
+    # Calibrate to match template statistics (realistic EOG artifact strength)
+    veog_tc = veog_tc / (np.std(veog_tc) + 1e-12) * template_stats['veog_std']
+    heog_tc = heog_tc / (np.std(heog_tc) + 1e-12) * template_stats['heog_std']
+    
+    return veog_tc, heog_tc
 
 def inject_realistic_eog_artifacts(data, info, template_path, montage_name='standard_1005', 
- intensity=1.0, seed=42, apply_car=True):
+ intensity=1.0, seed=42, apply_car=True, allow_boundary_intersection=True):
     """
     Inject realistic EOG artifacts using the learned generic mixing template.
     
@@ -255,7 +275,7 @@ def inject_realistic_eog_artifacts(data, info, template_path, montage_name='stan
     n_times = data_volts.shape[1]
     sfreq = info['sfreq']
     veog_tc, heog_tc = generate_realistic_eog_regressors(
-    n_times, sfreq, template, seed=seed
+    n_times, sfreq, template, seed=seed, allow_boundary_intersection=allow_boundary_intersection
     )
     
     # Project EOG artifacts to EEG space
@@ -331,7 +351,7 @@ def to_volts(arr: np.ndarray, verbose: bool = False) -> Tuple[np.ndarray, str]:
     return arr_V, unit
 
 def inject_realistic_eog_artifacts_with_coverage(data, info, template_path, montage_name='standard_1005', 
- temporal_coverage=0.1, seed=42, apply_car=True, artifact_scale_factor=1000.0):
+ temporal_coverage=0.1, seed=42, apply_car=True, artifact_scale_factor=15000.0, allow_boundary_intersection=True):
     """
     Inject realistic EOG artifacts using the learned generic mixing template with controlled temporal coverage.
     
@@ -359,8 +379,8 @@ def inject_realistic_eog_artifacts_with_coverage(data, info, template_path, mont
     apply_car : bool
     Whether to apply CAR before injection (should match training)
     artifact_scale_factor : float
-    Scaling factor to make EOG artifacts more impactful (default: 1000.0)
-    This addresses the issue where original artifacts were too weak to affect model performance
+    Scaling factor to make EOG artifacts more impactful (default: 15000.0)
+    This addresses the units mismatch issue where EOG template values are ~1000x too small
     
     Returns
     -------
@@ -410,7 +430,7 @@ def inject_realistic_eog_artifacts_with_coverage(data, info, template_path, mont
     n_times = data_volts.shape[1]
     sfreq = info['sfreq']
     veog_tc, heog_tc = generate_realistic_eog_regressors_with_coverage(
-        n_times, sfreq, template, temporal_coverage, seed=seed
+        n_times, sfreq, template, temporal_coverage, seed=seed, allow_boundary_intersection=allow_boundary_intersection
     )
     
     # Project EOG artifacts to EEG space
@@ -431,7 +451,7 @@ def inject_realistic_eog_artifacts_with_coverage(data, info, template_path, mont
     
     return contaminated_data
 
-def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_stats, temporal_coverage, seed=42):
+def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_stats, temporal_coverage, seed=42, allow_boundary_intersection=True):
     """
     Generate realistic VEOG and HEOG time courses with controlled temporal coverage.
     
@@ -447,6 +467,9 @@ def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_sta
     Desired fraction of time covered by EOG artifacts (0.0 to 1.0)
     seed : int
     Random seed for reproducibility
+    allow_boundary_intersection : bool
+    If True, allows blinks to start before sample start or end after sample end,
+    creating partial blinks that intersect with sample boundaries for more variability
     
     Returns
     -------
@@ -456,9 +479,9 @@ def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_sta
     rng = np.random.RandomState(seed)
     
     # Blink template parameters - use shorter duration to allow more blinks
-    blink_duration_ms = 100 # Reduced from 200ms to allow more blinks
-    blink_peak_ms = 50 # Reduced from 80ms proportionally
-    
+    blink_duration_ms = np.random.choice(np.arange(100, 300)) # Reduced from 200ms to allow more blinks
+    blink_peak_ms = np.random.choice([50, 100, 150, 200]) # Reduced from 80ms proportionally
+    blink_peak_ms = np.max([blink_peak_ms, int(blink_duration_ms / 2)])
     # Convert to samples
     blink_duration = int(blink_duration_ms * sfreq / 1000)
     blink_peak = int(blink_peak_ms * sfreq / 1000)
@@ -479,41 +502,126 @@ def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_sta
     n_blinks = max(1, target_samples_to_cover // blink_duration)
     
     # Ensure we don't exceed the maximum possible blinks
-    max_possible_blinks = n_times // blink_duration
+    if allow_boundary_intersection:
+        # With boundary intersection, we can have more blinks since they can be partial
+        max_possible_blinks = (n_times + blink_duration) // blink_duration
+    else:
+        # Original behavior: blinks must be completely contained
+        max_possible_blinks = n_times // blink_duration
     n_blinks = min(n_blinks, max_possible_blinks)
     
     # Calculate actual temporal coverage achieved
     actual_coverage = (n_blinks * blink_duration) / n_times
     # print(f"Desired EOG coverage: {temporal_coverage}, Actual coverage: {actual_coverage}")
     
-    # Place blinks to achieve the desired coverage
-    # We'll place them evenly distributed across the time series
+    # Place blinks to achieve the desired coverage with enhanced variability
     if n_blinks == 1:
-    # Single blink in the middle
-        blink_starts = [n_times // 2 - blink_duration // 2]
+        # Single blink in the middle
+        if allow_boundary_intersection:
+            # Allow the blink to be centered but potentially extend beyond boundaries
+            blink_starts = [n_times // 2 - blink_duration // 2]
+        else:
+            # Original behavior: ensure blink is contained
+            blink_starts = [max(0, min(n_times // 2 - blink_duration // 2, n_times - blink_duration))]
     else:
-        # Distribute blinks evenly
-        spacing = n_times // (n_blinks + 1)
-        blink_starts = [spacing * (i + 1) - blink_duration // 2 for i in range(n_blinks)]
-        # Ensure blinks don't go out of bounds
-        blink_starts = [max(0, min(start, n_times - blink_duration)) for start in blink_starts]
+        if allow_boundary_intersection:
+            # Distribute blinks with more variability, allowing boundary intersection
+            # Use a mix of evenly distributed and random positioning
+            n_even = n_blinks // 2
+            n_random = n_blinks - n_even
+            
+            # Evenly distributed blinks
+            even_starts = []
+            if n_even > 0:
+                spacing = n_times // (n_even + 1)
+                even_starts = [spacing * (i + 1) - blink_duration // 2 for i in range(n_even)]
+            
+            # Random blinks that can intersect boundaries
+            random_starts = rng.choice(n_times + blink_duration, size=n_random, replace=False) - blink_duration
+            
+            blink_starts = even_starts + list(random_starts)
+        else:
+            # Original behavior: distribute blinks evenly and ensure they don't go out of bounds
+            spacing = n_times // (n_blinks + 1)
+            blink_starts = [spacing * (i + 1) - blink_duration // 2 for i in range(n_blinks)]
+            blink_starts = [max(0, min(start, n_times - blink_duration)) for start in blink_starts]
         
     # Initialize time courses
     veog_tc = np.zeros(n_times)
     heog_tc = np.zeros(n_times)
     
-    # Add blinks
-    for start in blink_starts:
-        end = min(start + blink_duration, n_times)
-        blink_len = end - start
+    # Add slow eye drift component for more realistic EOG (slow saccades and drifts)
+    # These low-frequency components are common and challenging for models
+    n_drift_components = rng.randint(1, 4)  # 1-3 drift components
+    for _ in range(n_drift_components):
+        drift_freq = rng.uniform(0.3, 2.5)  # 0.3-2.5 Hz drift
+        drift_phase = rng.uniform(0, 2 * np.pi)
+        drift_amplitude = rng.uniform(0.1, 0.25)  # 10-25% of blink amplitude
+        t = np.arange(n_times) / sfreq
+        veog_tc += drift_amplitude * np.sin(2 * np.pi * drift_freq * t + drift_phase)
+        heog_tc += drift_amplitude * 0.7 * np.sin(2 * np.pi * drift_freq * t + drift_phase + rng.uniform(0, np.pi))
     
-    # VEOG: primary blink component
-    veog_tc[start:end] += blink_template[:blink_len]
+    # Add blinks with boundary intersection support
+    for idx, start in enumerate(blink_starts):
+        end = start + blink_duration
+        
+        # Determine the valid range within the sample
+        valid_start = max(0, start)
+        valid_end = min(n_times, end)
+        
+        if valid_start >= valid_end:
+            continue  # Skip if blink is completely outside sample bounds
+            
+        # Calculate template indices for the valid range
+        template_start = valid_start - start
+        template_end = template_start + (valid_end - valid_start)
+        
+        # Add realistic amplitude variability - real blinks vary significantly in strength
+        amplitude_multiplier = rng.uniform(0.6, 1.2)  # 60% to 220% of baseline
     
-    # HEOG: smaller lateral component (random direction)
-    lateral_amplitude = 0.2 * rng.uniform(0.5, 1.5) # 20% of VEOG, with variability
-    direction = rng.choice([-1, 1]) # random left/right
-    heog_tc[start:end] += direction * lateral_amplitude * blink_template[:blink_len]
+        # VEOG: primary blink component with variable amplitude
+        veog_tc[valid_start:valid_end] += amplitude_multiplier * blink_template[template_start:template_end]
+    
+        # HEOG: smaller lateral component (random direction)
+        lateral_amplitude = 0.25 * rng.uniform(0.5, 1.5) # 25% of VEOG, with variability
+        direction = rng.choice([-1, 1]) # random left/right
+        heog_tc[valid_start:valid_end] += direction * amplitude_multiplier * lateral_amplitude * blink_template[template_start:template_end]
+        
+        # Add microsaccades during some blinks (small eye movements that co-occur with blinks)
+        if rng.random() < 0.4:  # 40% of blinks have microsaccades
+            microsaccade_amplitude = rng.uniform(0.08, 0.15)
+            microsaccade_direction = rng.choice([-1, 1])
+            # Microsaccade is brief and occurs during the blink
+            micro_duration = min(int(0.05 * sfreq), valid_end - valid_start)  # 50ms or less
+            micro_start = valid_start + (valid_end - valid_start) // 3
+            micro_end = min(micro_start + micro_duration, valid_end)
+            heog_tc[micro_start:micro_end] += microsaccade_direction * microsaccade_amplitude
+        
+        # # Add blink clusters (multiple blinks in rapid succession) - common when tired/dry eyes
+        if rng.random() < 0.25 and idx < len(blink_starts) - 1:  # 25% chance, not on last blink
+            n_cluster_blinks = rng.choice([1, 2])  # 1-2 additional blinks
+            cluster_spacing = int(rng.uniform(0.25, 0.5) * sfreq)  # 250-500ms between blinks
+            
+            for j in range(n_cluster_blinks):
+                cluster_start = start + (j + 1) * cluster_spacing
+                cluster_end = cluster_start + blink_duration
+                
+                cluster_valid_start = max(0, cluster_start)
+                cluster_valid_end = min(n_times, cluster_end)
+                
+                if cluster_valid_start >= cluster_valid_end or cluster_valid_start >= n_times:
+                    continue
+                
+                cluster_template_start = cluster_valid_start - cluster_start
+                cluster_template_end = cluster_template_start + (cluster_valid_end - cluster_valid_start)
+                
+                # Cluster blinks are often weaker
+                cluster_amplitude = amplitude_multiplier * rng.uniform(0.5, 0.9)
+                veog_tc[cluster_valid_start:cluster_valid_end] += cluster_amplitude * blink_template[cluster_template_start:cluster_template_end]
+                
+                cluster_lateral = 0.25 * rng.uniform(0.5, 1.5)
+                cluster_direction = rng.choice([-1, 1])
+                heog_tc[cluster_valid_start:cluster_valid_end] += cluster_direction * cluster_amplitude * cluster_lateral * blink_template[cluster_template_start:cluster_template_end]
     
     # Calibrate to match template statistics (realistic EOG artifact strength)
     veog_tc = veog_tc / (np.std(veog_tc) + 1e-12) * template_stats['veog_std']
@@ -551,17 +659,22 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
     montage_name : str, optional
     Target montage name for EOG interpolation (default: 'standard_1020').
     artifact_scale_factor : float, optional
-    Scaling factor to make EOG artifacts more impactful (default: 1000.0).
-    This addresses the issue where original artifacts were too weak to affect model performance.
+    Scaling factor to make EOG artifacts more impactful (default: 15000.0).
+    This addresses the units mismatch issue where EOG template values are ~1000x too small.
+    The original EOG signals had RMS ~75 µV, but template shows ~0.07 µV.
     Increase this value to make EOG contamination more severe.
     use_improved_gaussian : bool, optional
     Whether to use the improved magnitude-aware Gaussian noise implementation (default: True).
     If False, uses the original fixed-scaling implementation for backward compatibility.
+    allow_boundary_intersection : bool, optional
+    For EOG noise: whether to allow blinks to start before sample start or end after sample end,
+    creating partial blinks that intersect with sample boundaries for more variability (default: True).
+    This significantly increases the variability of EOG artifacts and makes them more challenging for models.
     """
 
     def __init__(self, noise_type='dropout', intensity=10.0, seed=42, 
     eog_template_path='notebooks/eog_mixing_results/generic_eog_mixing_template.npz', montage_name='standard_1020',
-    artifact_scale_factor=1000.0, use_improved_gaussian=True):
+    artifact_scale_factor=10000.0, use_improved_gaussian=True, allow_boundary_intersection=True):
         self.noise_type = noise_type
         self.intensity = intensity
         self.seed = seed
@@ -569,6 +682,7 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         self.montage_name = montage_name
         self.artifact_scale_factor = artifact_scale_factor
         self.use_improved_gaussian = use_improved_gaussian
+        self.allow_boundary_intersection = allow_boundary_intersection
         
         # Validate parameters
         if noise_type == 'eog' and eog_template_path is None:
@@ -642,8 +756,8 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         # Calculate overall signal RMS once (assuming consistent units within dataset)
         signal_rms = np.sqrt(np.mean(data**2))
 
-        # Set noise scale to 4.0 * signal_rms
-        noise_scale = 4.0 * signal_rms
+        # Set noise scale to 10.0 * signal_rms
+        noise_scale = 10.0 * signal_rms
         # Use intensity to gradually ramp up the noise scale
         noise_scale *= (self.intensity / 100.0)
 
@@ -735,7 +849,7 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         
         # Check if we're in test_perturb mode by looking at the intensity value
         # In test_perturb, intensity should control temporal coverage, not prevalence
-        is_test_perturb_mode = True
+        is_test_perturb_mode = False
         
         if is_test_perturb_mode:
             # For test_perturb: use 100% prevalence, intensity controls temporal coverage
@@ -745,11 +859,12 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         else:
             # For other modes: intensity controls prevalence, use fixed temporal coverage
             prevalence = int(n_epochs * (self.intensity / 100))
-            temporal_coverage = 0.1 # Use 10% temporal coverage for non-test_perturb modes
+            temporal_coverage = np.random.choice(np.arange(0.3, 0.9, step=0.1)) # Use 10% temporal coverage for non-test_perturb modes
         contamination_idxs = np.random.choice(n_epochs, size=prevalence, replace=False)
         
         data_aug = data.copy()
         for i in contamination_idxs:
+            temporal_coverage = np.random.choice(np.arange(0.1, 0.9, step=0.1))
             # Inject realistic EOG artifacts with controlled temporal coverage
             contaminated_epoch = inject_realistic_eog_artifacts_with_coverage(
                 data[i], info, self.eog_template_path, 
@@ -757,7 +872,8 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
                 temporal_coverage=temporal_coverage, # Control temporal coverage
                 seed=self.seed + i, # Different seed for each epoch
                 apply_car=True,
-                artifact_scale_factor=self.artifact_scale_factor # Use the scaling factor
+                artifact_scale_factor=self.artifact_scale_factor, # Use the scaling factor
+                allow_boundary_intersection=self.allow_boundary_intersection # Pass boundary intersection setting
             )
             data_aug[i] = contaminated_epoch
             

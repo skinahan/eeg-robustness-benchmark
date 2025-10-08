@@ -515,6 +515,7 @@ def get_model_architecture_space(model_name):
         "eegnet": eegnet_architecture_space,
         "reegnet": reegnet_architecture_space,
         "cnn_ncp": cnn_ncp_architecture_space,
+        "cnn_ncp_v2": cnn_ncp_architecture_space,
         "cnncfc_v2": improved_cnncfc_architecture_space,  # CNNCfCv2 uses the same space as improved_cnncfc
         "cnncfc_compact": cnncfc_compact_architecture_space,
         "spp_ncp": spp_ncp_architecture_space,
@@ -532,6 +533,7 @@ def get_model_training_space(model_name):
         "eegnet": eegnet_training_space,
         "reegnet": reegnet_training_space,
         "cnn_ncp": cnn_ncp_training_space,
+        "cnn_ncp_v2": cnn_ncp_training_space,
         "cnncfc_v2": improved_cnncfc_training_space,  # CNNCfCv2 uses the same space as improved_cnncfc
         "cnncfc_compact": cnncfc_compact_training_space,
         "spp_ncp": spp_ncp_training_space,

@@ -726,10 +726,10 @@ class CNNNCPv3(EEGModuleMixin, nn.Module):
             ncp_hidden_dim=22,
             cnn_output_dim=16,
             sparsity=0.85,
-            drop_prob=0.25,
+            drop_prob=0.05,
             F1=8,
             D=2,
-            kernel_length=64,
+            kernel_length=128,
             temporal_kernel_size=3,
             temporal_stride=2
     ):
@@ -1654,7 +1654,7 @@ def create_cnnncfc_compact_classifier(n_chans, n_times, n_outputs):
     return classifier
 
 
-def create_cnnncp_classifier(
+def create_cnnncpv2_classifier(
         n_chans,
         n_times,
         n_outputs,
@@ -1700,6 +1700,58 @@ def create_cnnncp_classifier(
         cnn_ncp_net.initialize()
 
     return cnn_ncp_net
+
+
+def create_cnnncp_classifier(
+        n_chans,
+        n_times,
+        n_outputs,
+        net_size=26,
+        net_sparsity=0.5,
+        lr=1e-3,
+        batch_size=12,
+        weight_decay=1e-3,
+        classifier_type=3,
+        gradient_clip_value=1.0
+    ):
+        classifier = CNNNCPv3
+        seed = get_seed()
+        # Use standard cross entropy loss
+        criterion = torch.nn.CrossEntropyLoss
+
+        cnn_ncp_net = EEGClassifier(
+            classifier,
+            criterion=criterion,
+            optimizer=torch.optim.AdamW,
+            optimizer__lr=lr,
+            optimizer__weight_decay=weight_decay,
+            batch_size=batch_size,
+            max_epochs=DEFAULT_MAX_EPOCHS,
+            module__n_chans=n_chans,
+            module__n_times=n_times,
+            module__n_outputs=n_outputs,
+            module__ncp_hidden_dim=net_size,
+            module__sparsity=net_sparsity,
+            train_split=ValidSplit(0.2, stratified=True, random_state=seed),
+            device='cuda' if torch.cuda.is_available() else 'cpu',
+            callbacks=[
+                get_early_stopping_callback(),
+                GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2)
+            ],
+            # verbose=0  # Suppress epoch-level output
+        )
+        if torch.cuda.is_available():
+            cnn_ncp_net.initialize()
+            cnn_ncp_net.module_.cuda()
+            # Only use torch.compile if it's available and compatible
+            try:
+                cnn_ncp_net.module_ = torch.compile(cnn_ncp_net.module_)
+            except Exception as e:
+                print(f"Warning: torch.compile failed, using standard model: {e}")
+        else:
+            cnn_ncp_net.initialize()
+
+        return cnn_ncp_net
 
 
 def create_cnnsmallworld_classifier(

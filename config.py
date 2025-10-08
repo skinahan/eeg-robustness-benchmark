@@ -2,7 +2,11 @@ from moabb.datasets import BNCI2014_001, Lee2019_SSVEP
 from moabb.paradigms import MotorImagery, SSVEP
 from models.eegnet import create_eegnet_classifier
 from models.reegnet import create_reegnet_classifier
-from models.cnnncp import create_cnnncp_classifier, create_cnnncfc_v2_classifier, create_cnnncfc_compact_classifier, create_cnnsmallworld_classifier, create_cnnwiredcfc_classifier, create_cfc_only_classifier, create_ncp_only_classifier
+from models.cnnncp import create_cnnncpv2_classifier, create_cnnncp_classifier
+from models.cnnncp import create_cnnncfc_v2_classifier, create_cnnncfc_compact_classifier
+from models.cnnncp import create_cnnsmallworld_classifier, create_cnnwiredcfc_classifier
+from models.cnnncp import create_cfc_only_classifier, create_ncp_only_classifier
+
 from models.sppncp import create_sppncp_classifier
 
 # Import the integration functions for CNNWiredCfC models
@@ -44,6 +48,7 @@ def get_base_model_registry():
         "eegnet": create_eegnet_classifier,
         "reegnet": create_reegnet_classifier,
         "cnn_ncp": create_cnnncp_classifier,
+        "cnn_ncp_v2": create_cnnncpv2_classifier,
         "cnncfc_v2": create_cnnncfc_v2_classifier,
         "cnncfc_compact": create_cnnncfc_compact_classifier,
         "cnn_smallworld": create_cnnsmallworld_classifier,

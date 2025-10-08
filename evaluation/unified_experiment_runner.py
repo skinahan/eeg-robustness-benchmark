@@ -30,6 +30,7 @@ from sklearn.metrics import roc_auc_score
 from sklearn.base import clone
 from sklearn.model_selection._validation import _fit_and_score
 from sklearn.metrics import get_scorer
+from skorch.callbacks import EarlyStopping
 from tqdm import tqdm
 import shutil
 
@@ -409,24 +410,25 @@ class UnifiedExperimentRunner:
         if self.mode == 'test_perturb':
             clean_score = validation_score
             session = self.current_session
-
-            # Use a set threshold to restart training if clean score indicates underfitting.
-            if clean_score < UNDERFITTING_THRESHOLD:
-                # Disable early stopping
-                print(f"Re-training model without EarlyStopping due to underfitting.")
-                final_model.set_params(**final_params)
-                final_model.callbacks = []
-                final_model.module_.train()
-                start_time = time.time()  
-                final_model.fit(X_train, y_train)
-                training_time = time.time() - start_time
-                final_model.module_.eval()
-                with torch.no_grad():
-                    y_pred_proba = final_model.predict_proba(X_valid)
-                    num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
-                    metrics_retrain = compute_classification_metrics(y_valid, y_pred_proba, num_classes)
-                    new_clean_score = metrics_retrain["roc_auc"]
-                clean_score = max(clean_score, new_clean_score)
+            retrain = False
+            if retrain:
+                # Use a set threshold to restart training if clean score indicates underfitting.
+                if clean_score < UNDERFITTING_THRESHOLD:
+                    # Disable early stopping
+                    print(f"Re-training model without EarlyStopping due to underfitting.")
+                    final_model.set_params(**final_params)
+                    final_model.callbacks = []
+                    final_model.module_.train()
+                    start_time = time.time()  
+                    final_model.fit(X_train, y_train)
+                    training_time = time.time() - start_time
+                    final_model.module_.eval()
+                    with torch.no_grad():
+                        y_pred_proba = final_model.predict_proba(X_valid)
+                        num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+                        metrics_retrain = compute_classification_metrics(y_valid, y_pred_proba, num_classes)
+                        new_clean_score = metrics_retrain["roc_auc"]
+                    clean_score = max(clean_score, new_clean_score)
             # Evaluate on corrupted data
             results.extend(self._evaluate_perturb(final_model, X_valid, y_valid, fold_idx, session, clean_score, training_time))
         else:
@@ -591,6 +593,11 @@ class UnifiedExperimentRunner:
             if clean_score < UNDERFITTING_THRESHOLD:
                 # Disable early stopping
                 print(f"Re-training model without EarlyStopping due to underfitting.")
+                new_callbacks = []
+                for callback in model.callbacks:
+                    if not isinstance(callback, EarlyStopping):
+                        new_callbacks.append(callback)
+                model.callbacks = new_callbacks
                 model.callbacks = []
                 model.module_.train()          
                 start_time = time.time()  
@@ -907,7 +914,8 @@ def main():
     parser.add_argument("--dataset", type=str, default="BNCI2014_001", choices=["BNCI2014_001", "Lee2019_SSVEP"])
     parser.add_argument("--subjects", type=int, nargs="+", required=True)
     parser.add_argument("--mode", type=str, required=True, 
-                       choices=["baseline", "tune", "augment", "perturb", "augment_notune", "perturb_notune", "test_perturb", "multirun", "aggregate_only"])
+                        choices=["test_perturb", "multirun", "aggregate_only"])
+                    #    choices=["baseline", "tune", "augment", "perturb", "augment_notune", "perturb_notune", "test_perturb", "multirun", "aggregate_only"])
     parser.add_argument("--eval_mode", type=str, required=True, 
                        choices=["WithinSession", "CrossSession", "CrossSubject"])
     parser.add_argument("--seed", type=int, default=42)
@@ -955,36 +963,35 @@ def main():
         # Use the specified model instead of iterating through limited_models
         model = args.model
         eval_mode = args.eval_mode
+        seed = args.seed
         for mode in ["test_perturb"]:
-            for seed in [100, 200, 300, 400, 500]:
-                # Run the no-tune versions first, these are fastest
-                if not args.overwrite:
-                    mode_str = mode
-                    if args.tune and mode != "tune":
-                        # Make sure the tuned and non-tuned modes are not mixed when creating output paths.
-                        mode_str = f"{mode_str}_tune"
-                    if check_skip_eval(model, seed, args.subjects, mode_str, args.noise_type, args.intensity, eval_mode, paradigm_name, args.dataset):
-                        continue
-                try:
-                    runner = UnifiedExperimentRunner(
-                        model=model,
-                        dataset=args.dataset,
-                        subjects=args.subjects,
-                        mode=mode,
-                        eval_mode=eval_mode,
-                        seed=seed,
-                        noise_type=args.noise_type,
-                        intensity=args.intensity,
-                        tune=args.tune,
-                        overwrite=args.overwrite
-                    )
-                    results = runner.run_experiment()
-                    print(f"Experiment completed successfully. Results shape: {results.shape}")
-                except Exception as e:
-                    print(f"Experiment failed: {e}")
-                    import traceback
-                    traceback.print_exc()
-                    sys.exit(1)
+            if not args.overwrite:
+                mode_str = mode
+                if args.tune and mode != "tune":
+                    # Make sure the tuned and non-tuned modes are not mixed when creating output paths.
+                    mode_str = f"{mode_str}_tune"
+                if check_skip_eval(model, seed, args.subjects, mode_str, args.noise_type, args.intensity, eval_mode, paradigm_name, args.dataset):
+                    continue
+            try:
+                runner = UnifiedExperimentRunner(
+                    model=model,
+                    dataset=args.dataset,
+                    subjects=args.subjects,
+                    mode=mode,
+                    eval_mode=eval_mode,
+                    seed=seed,
+                    noise_type=args.noise_type,
+                    intensity=args.intensity,
+                    tune=args.tune,
+                    overwrite=args.overwrite
+                )
+                results = runner.run_experiment()
+                print(f"Experiment completed successfully. Results shape: {results.shape}")
+            except Exception as e:
+                print(f"Experiment failed: {e}")
+                import traceback
+                traceback.print_exc()
+                sys.exit(1)
     else:
         # Check if we should skip evaluation
         if not args.overwrite:

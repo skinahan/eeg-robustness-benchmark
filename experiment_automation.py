@@ -422,37 +422,44 @@ class ExperimentAutomation:
         # Define the limited models that will be used in multirun mode
         limited_models = ["eegnet", "reegnet", "cnn_ncp"]
         
+        # Get seeds from config
+        seeds = self.config['seeds']
+        
         required_multirun_jobs = set()
         
         for missing_result in missing_test_perturb_results:
             if missing_result['eval_mode'] == 'CrossSession' or missing_result['eval_mode'] == 'WithinSession':
-                # For CrossSession, each subject needs its own multirun job for each model
+                # For CrossSession, each subject needs its own multirun job for each model and seed
                 for model in limited_models:
-                    job_key = (
-                        missing_result['dataset'],
-                        missing_result['eval_mode'], 
-                        missing_result['subject'],
-                        missing_result['tune'],
-                        model
-                    )
-                    required_multirun_jobs.add(job_key)
+                    for seed in seeds:
+                        job_key = (
+                            missing_result['dataset'],
+                            missing_result['eval_mode'], 
+                            missing_result['subject'],
+                            missing_result['tune'],
+                            model,
+                            seed
+                        )
+                        required_multirun_jobs.add(job_key)
             else:
-                # For Cross-Subject, all subjects are processed together for each model
+                # For Cross-Subject, all subjects are processed together for each model and seed
                 subjects_tuple = tuple(missing_result['subjects'])
                 for model in limited_models:
-                    job_key = (
-                        missing_result['dataset'],
-                        missing_result['eval_mode'],
-                        subjects_tuple,
-                        missing_result['tune'],
-                        model
-                    )
-                    required_multirun_jobs.add(job_key)
+                    for seed in seeds:
+                        job_key = (
+                            missing_result['dataset'],
+                            missing_result['eval_mode'],
+                            subjects_tuple,
+                            missing_result['tune'],
+                            model,
+                            seed
+                        )
+                        required_multirun_jobs.add(job_key)
         
         # Convert to list of multirun job dictionaries
         missing_experiments = []
         for job_key in required_multirun_jobs:
-            dataset, eval_mode, subjects_or_subject, tune, model = job_key
+            dataset, eval_mode, subjects_or_subject, tune, model, seed = job_key
             
             if eval_mode == 'CrossSession' or eval_mode == 'WithinSession':
                 # Single subject for CrossSession
@@ -467,6 +474,7 @@ class ExperimentAutomation:
                 'subjects': subjects,
                 'tune': tune,
                 'model': model,
+                'seed': seed,
                 'mode': 'multirun',  # This will generate test_perturb results
                 'paradigm': next(config['paradigm'] for name, config in self.config['datasets'].items() if name == dataset)
             }
@@ -495,6 +503,10 @@ class ExperimentAutomation:
             print("   By tune flag:")
             for tune, count in missing_df['tune'].value_counts().items():
                 print(f"     - {'tuned' if tune else 'not tuned'}: {count} multirun jobs")
+            
+            print("   By seed:")
+            for seed, count in missing_df['seed'].value_counts().items():
+                print(f"     - seed {seed}: {count} multirun jobs")
         
         return missing_experiments
     
@@ -534,47 +546,76 @@ class ExperimentAutomation:
                 # Handle tuning flag
                 tune_flag = "true" if exp['tune'] else "false"
                 
-                # Get model name
+                # Get model name and seed
                 model = exp['model']
+                seed = exp['seed']
                 
                 # Generate sbatch command with appropriate time limits
-                # Base estimates: CrossSession without tuning ~3 hours
+                # UPDATED: Since multirun now processes one seed at a time, reduce time limits by factor of 5
+                # Base estimates: CrossSession without tuning ~3 hours / 5 = ~36 minutes
                 # WithinSession takes ~5x longer than CrossSession
                 # Tuning adds significant overhead (~20x for CrossSession)
+                # SSVEP (Lee2019) is ~3x slower than Motor Imagery due to:
+                #   - 4 classes vs 2 classes (~2x overhead)
+                #   - Longer time windows (~1.5x overhead)
+                # CLUSTER LIMIT: Maximum time is 7 days
                 
-                if exp['eval_mode'] == 'CrossSession':
-                    if exp['tune']:
-                        # CrossSession with tuning: ~2.5 days
-                        slurm_args = "--time=2-12:00:00 --mem=12G"
+                if exp['dataset'] == 'Lee2019_SSVEP':
+                    # SSVEP-specific timeouts (reduced by factor of 5)
+                    if exp['eval_mode'] == 'CrossSession':
+                        if exp['tune']:
+                            # CrossSession with tuning: ~2.5 days / 5 = ~12 hours
+                            slurm_args = "--time=0-12:00:00 --mem=12G"
+                        else:
+                            # CrossSession without tuning: ~3 hours * 3 / 5 = ~1.8 hours
+                            slurm_args = "--time=0-02:00:00 --mem=12G"
+                            
+                    elif exp['eval_mode'] == 'WithinSession':
+                        if exp['tune']:
+                            # WithinSession with tuning: ~12.5 days / 5 = ~2.5 days
+                            slurm_args = "--time=2-12:00:00 --mem=12G"
+                        else:
+                            # WithinSession without tuning: ~15 hours * 3 / 5 = ~9 hours
+                            slurm_args = "--time=0-10:00:00 --mem=12G"
+                            
                     else:
-                        # CrossSession without tuning: ~3 hours (with buffer)
-                        slurm_args = "--time=0-06:00:00 --mem=12G"
-                        
-                elif exp['eval_mode'] == 'WithinSession':
-                    if exp['tune']:
-                        # WithinSession with tuning: ~5x longer than CrossSession tuning
-                        # 2.5 days * 5 = ~12.5 days (use 14 days for safety)
-                        slurm_args = "--time=7-00:00:00 --mem=12G"
-                    else:
-                        # WithinSession without tuning: ~5x longer than CrossSession
-                        # 3 hours * 5 = 15 hours (with buffer, use 1 day)
-                        slurm_args = "--time=1-00:00:00 --mem=12G"
+                        # Default time limit for other modes (CrossSubject, etc.)
+                        slurm_args = "--time=1-08:00:00 --mem=12G"
                         
                 else:
-                    # Default time limit for other modes (CrossSubject, etc.)
-                    slurm_args = "--time=7-00:00:00 --mem=12G"
+                    # Motor Imagery timeouts (reduced by factor of 5)
+                    if exp['eval_mode'] == 'CrossSession':
+                        if exp['tune']:
+                            # CrossSession with tuning: ~2.5 days / 5 = ~12 hours
+                            slurm_args = "--time=0-12:00:00 --mem=12G"
+                        else:
+                            # CrossSession without tuning: ~3 hours / 5 = ~36 minutes
+                            slurm_args = "--time=0-01:00:00 --mem=12G"
+                            
+                    elif exp['eval_mode'] == 'WithinSession':
+                        if exp['tune']:
+                            # WithinSession with tuning: ~12.5 days / 5 = ~2.5 days
+                            slurm_args = "--time=2-12:00:00 --mem=12G"
+                        else:
+                            # WithinSession without tuning: ~15 hours / 5 = ~3 hours
+                            slurm_args = "--time=0-04:00:00 --mem=12G"
+                            
+                    else:
+                        # Default time limit for other modes (CrossSubject, etc.)
+                        slurm_args = "--time=1-08:00:00 --mem=12G"
                 
-                # Format: sbatch {slurm_args} unified_eval_script.sh {subject} {dataset} {eval_mode} {tune_flag} {model}
-                command = f"sbatch {slurm_args} unified_eval_script.sh {subjects_str} {exp['dataset']} {exp['eval_mode']} {tune_flag} {model}"
+                # Format: sbatch {slurm_args} unified_eval_script.sh {subject} {dataset} {eval_mode} {tune_flag} {model} {seed}
+                command = f"sbatch {slurm_args} unified_eval_script.sh {subjects_str} {exp['dataset']} {exp['eval_mode']} {tune_flag} {model} {seed}"
                 
                 # Write sbatch command
                 f.write(f"# Multirun Job {i}/{len(self.missing_experiments)}\n")
-                f.write(f"# Dataset: {exp['dataset']} | Model: {model} | Eval: {exp['eval_mode']} | Subjects: {exp['subjects']}")
+                f.write(f"# Dataset: {exp['dataset']} | Model: {model} | Eval: {exp['eval_mode']} | Subjects: {exp['subjects']} | Seed: {seed}")
                 if exp['tune']:
                     f.write(" | TUNED")
                 f.write("\n")
+                f.write(f"# Timeout: {slurm_args}\n")
                 f.write(f"# This multirun will generate test_perturb results for model: {model}\n")
-                f.write(f"# This multirun will generate test_perturb results for seeds: 100, 200, 300, 400, 500\n")
+                f.write(f"# This multirun will generate test_perturb results for seed: {seed}\n")
                 f.write(f"# This multirun will generate test_perturb results for all noise types and intensities\n")
                 f.write(f"echo \"Submitting multirun job {i}/{len(self.missing_experiments)}...\"\n")
                 f.write(f"{command}\n")

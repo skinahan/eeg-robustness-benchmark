@@ -15,19 +15,21 @@ DATASET=$2
 EVAL_MODE=$3
 TUNE_FLAG=$4
 MODEL=$5
+SEED=$6
 
 # Note: Time and memory limits are passed as sbatch command line arguments
 # when this script is submitted (e.g., sbatch --time=4-12:00:00 --mem=12G ...)
 
 # Validate required arguments
-if [ -z "$SUBJECTS" ] || [ -z "$DATASET" ] || [ -z "$EVAL_MODE" ] || [ -z "$TUNE_FLAG" ] || [ -z "$MODEL" ]; then
+if [ -z "$SUBJECTS" ] || [ -z "$DATASET" ] || [ -z "$EVAL_MODE" ] || [ -z "$TUNE_FLAG" ] || [ -z "$MODEL" ] || [ -z "$SEED" ]; then
     echo "Error: Missing required arguments"
-    echo "Usage: sbatch unified_eval_script.sh <subjects> <dataset> <eval_mode> <tune_flag> <model>"
+    echo "Usage: sbatch unified_eval_script.sh <subjects> <dataset> <eval_mode> <tune_flag> <model> <seed>"
     echo "  subjects: space-separated list of subject IDs (e.g., '1' or '1 2 3 4 5 6 7 8 9')"
     echo "  dataset: dataset name (e.g., 'BNCI2014_001')"
     echo "  eval_mode: evaluation mode ('CrossSession' or 'WithinSession')"
     echo "  tune_flag: tuning flag ('true' or 'false')"
     echo "  model: model name (e.g., 'eegnet', 'reegnet', 'cnn_ncp')"
+    echo "  seed: random seed (e.g., '100', '200', '300', '400', '500')"
     exit 1
 fi
 
@@ -59,19 +61,20 @@ echo "Model: $MODEL"
 echo "Evaluation Mode: $EVAL_MODE"
 echo "Subjects: $SUBJECTS"
 echo "Tuning: $TUNE_FLAG"
+echo "Seed: $SEED"
 echo "=========================================="
 
 # Run the multirun experiment
-# Note: multirun mode internally handles:
+# Note: multirun mode now processes:
 # - Single model: specified by MODEL parameter
-# - All seeds: 100, 200, 300, 400, 500
+# - Single seed: specified by SEED parameter
 # - All noise types: gaussian, dropout, eog
 # - All intensity levels: 20 steps from 1.0 to 50.0
 python evaluation/unified_experiment_runner.py \
     --model $MODEL \
     --dataset $DATASET \
     --mode multirun \
-    --seed 100 \
+    --seed $SEED \
     $SUBJECTS_ARG \
     --noise_type gaussian \
     --intensity 10.0 \
