@@ -154,14 +154,14 @@ class AdaptiveSaturationDetector:
                 "dataset_class": BNCI2014_001,
                 "paradigm_type": "MotorImagery",
                 "n_classes": 2,
-                "subjects": list(range(1, 2)),  # Use first 2 subjects for speed
+                "subjects": [3],  # Use first 2 subjects for speed
                 "resample": None
             },
             "Lee2019_SSVEP": {
                 "dataset_class": Lee2019_SSVEP,
                 "paradigm_type": "SSVEP", 
                 "n_classes": 4,
-                "subjects": list(range(1, 2)),  # Use first 2 subjects
+                "subjects": [3],  # Use first 2 subjects
                 "resample": None
             }
         }
