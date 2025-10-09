@@ -587,7 +587,7 @@ class ExperimentAutomation:
                     if exp['eval_mode'] == 'CrossSession':
                         if exp['tune']:
                             # CrossSession with tuning: ~2.5 days / 5 = ~12 hours
-                            slurm_args = "--time=0-12:00:00 --mem=12G"
+                            slurm_args = "--time=1-12:00:00 --mem=12G"
                         else:
                             # CrossSession without tuning: ~3 hours / 5 = ~36 minutes
                             slurm_args = "--time=0-01:00:00 --mem=12G"
@@ -595,7 +595,7 @@ class ExperimentAutomation:
                     elif exp['eval_mode'] == 'WithinSession':
                         if exp['tune']:
                             # WithinSession with tuning: ~12.5 days / 5 = ~2.5 days
-                            slurm_args = "--time=2-12:00:00 --mem=12G"
+                            slurm_args = "--time=3-00:00:00 --mem=12G"
                         else:
                             # WithinSession without tuning: ~15 hours / 5 = ~3 hours
                             slurm_args = "--time=0-04:00:00 --mem=12G"

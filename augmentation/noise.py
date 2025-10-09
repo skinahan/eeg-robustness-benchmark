@@ -712,13 +712,15 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
             raise ValueError(f"Unsupported noise type: {self.noise_type}")
 
     def _apply_channel_dropout(self, data):
-        np.random.seed(self.seed)
+        rng = np.random.default_rng(self.seed)
         n_epochs, n_channels, n_times = data.shape
         n_drop = int(n_channels * self.intensity / 100)
+        n_drop = max(1, n_drop) if self.intensity > 0 else 0
+        n_drop = min(n_drop, n_channels)
         data_aug = data.copy()
         for i in range(n_epochs):
-            drop_idxs = np.random.choice(n_channels, size=n_drop, replace=False)
-            data_aug[i, drop_idxs, :] = 0
+            drop_idxs = rng.choice(n_channels, size=n_drop, replace=False)
+            data_aug[i, drop_idxs, :] = 0.0
         return data_aug
 
     def _apply_gaussian_noise(self, data):
@@ -757,7 +759,7 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         signal_rms = np.sqrt(np.mean(data**2))
 
         # Set noise scale to 10.0 * signal_rms
-        noise_scale = 10.0 * signal_rms
+        noise_scale = 4.0 * signal_rms
         # Use intensity to gradually ramp up the noise scale
         noise_scale *= (self.intensity / 100.0)
 

@@ -454,6 +454,26 @@ def _get_metric_columns(metric: str):
     }
     return clean_col, corrupted_col, y_label_map.get(metric, f'Corrupted {metric}')
 
+def _get_metric_columns_legacy(metric: str):
+    """Legacy version that handles old column naming convention"""
+    metric = metric.lower()
+    if metric == 'roc_auc':
+        # For legacy data, use the old column names
+        clean_col = 'clean_score'
+        corrupted_col = 'corrupted_score'
+        return clean_col, corrupted_col, 'Corrupted Score (ROC AUC)'
+    else:
+        # For other metrics, use new naming convention
+        clean_col = f"clean_{metric}"
+        corrupted_col = f"corrupted_{metric}"
+        y_label_map = {
+            'accuracy': 'Corrupted Accuracy',
+            'precision': 'Corrupted Precision',
+            'recall': 'Corrupted Recall',
+            'f1': 'Corrupted F1-score',
+        }
+        return clean_col, corrupted_col, y_label_map.get(metric, f'Corrupted {metric}')
+
 
 def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting, output_dir='plots', metric: str='roc_auc', dataset='BNCI2014_001'):
     """
@@ -488,16 +508,8 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
         print(f"No data found for {model_name}, {noise_type}, tune={tune_setting}")
         return
     
-    # Determine metric columns
-    clean_col, corrupted_col, y_label = _get_metric_columns(metric)
-
-    # Prefer new metric columns; fallback to legacy if necessary
-    fallback_corrupted = 'corrupted_score'
-    fallback_clean = 'clean_score'
-    if corrupted_col not in df_filtered.columns and fallback_corrupted in df_filtered.columns and metric == 'roc_auc':
-        corrupted_col = fallback_corrupted
-    if clean_col not in df_filtered.columns and fallback_clean in df_filtered.columns and metric == 'roc_auc':
-        clean_col = fallback_clean
+    # Use legacy column naming for backward compatibility
+    clean_col, corrupted_col, y_label = _get_metric_columns_legacy(metric)
 
     # Remove rows with missing corrupted metric
     df_filtered = df_filtered.dropna(subset=[corrupted_col])
@@ -599,26 +611,25 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
         print(f"No data found for master plot: {noise_type}, tune={tune_setting}")
         return
     
-    clean_col, corrupted_col, y_label = _get_metric_columns(metric)
-    if corrupted_col not in df_filtered.columns and 'corrupted_score' in df_filtered.columns and metric == 'roc_auc':
-        corrupted_col = 'corrupted_score'
-    if clean_col not in df_filtered.columns and 'clean_score' in df_filtered.columns and metric == 'roc_auc':
-        clean_col = 'clean_score'
+
+    clean_col, corrupted_col, y_label = 'clean_score', 'corrupted_score', 'Corrupted Score (ROC AUC)' #_get_metric_columns_legacy('roc_auc')
+    
+    # Remove rows with missing corrupted_score
     df_filtered = df_filtered.dropna(subset=[corrupted_col])
     
-    # Add clean_score as intensity 0.0 for each model, noise_type, seed, session combination
+    # Add clean_score as intensity 0.0
     clean_data = df_filtered.dropna(subset=[clean_col]).copy()
     if not clean_data.empty:
-        # Get unique clean_score values per model, noise_type, seed, session combination
-        clean_summary = clean_data.groupby(['model', 'noise_type', 'seed', 'session'])[clean_col].first().reset_index()
+        clean_summary = clean_data.groupby(['model', 'noise_type', 'seed', 'session', 'subject'])[clean_col].first().reset_index()
         clean_summary['intensity'] = 0.0
         clean_summary[corrupted_col] = clean_summary[clean_col]
         clean_summary['tune'] = tune_setting
         clean_summary['mode'] = 'test_perturb'
         clean_summary['eval_mode'] = 'CrossSession'
         
-        # Add the clean data to the filtered data
         df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
+    
+    tune_label = "tuned" if tune_setting else "baseline"
     
     # Calculate mean across sessions for each model-intensity combination
     df_mean = df_filtered#.groupby(['model', 'intensity'])#.mean().reset_index()
@@ -696,11 +707,11 @@ def generate_all_test_perturb_plots(df, models=None, output_dir='plots', metrics
     print(f"Noise types: {list(noise_types)}")
     
     # Generate individual model plots for each metric
-    for model in models:
-        for noise_type in noise_types:
-            for tune_setting in tune_settings:
-                for metric in metrics:
-                    plot_test_perturb_individual_model(df, model, noise_type, tune_setting, output_dir, metric, dataset)
+    # for model in models:
+    #     for noise_type in noise_types:
+    #         for tune_setting in tune_settings:
+    #             for metric in metrics:
+    #                 plot_test_perturb_individual_model(df, model, noise_type, tune_setting, output_dir, metric, dataset)
     
     # Generate master comparison plots for each metric
     for noise_type in noise_types:
@@ -742,11 +753,8 @@ def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, data
         print(f"No data found for per-subject plot: {model_name}, {noise_type}, tune={tune_setting}")
         return
     
-    clean_col, corrupted_col, y_label = _get_metric_columns(metric)
-    if corrupted_col not in df_filtered.columns and 'corrupted_score' in df_filtered.columns and metric == 'roc_auc':
-        corrupted_col = 'corrupted_score'
-    if clean_col not in df_filtered.columns and 'clean_score' in df_filtered.columns and metric == 'roc_auc':
-        clean_col = 'clean_score'
+    # Use legacy column naming for backward compatibility
+    clean_col, corrupted_col, y_label = _get_metric_columns_legacy(metric)
     df_filtered = df_filtered.dropna(subset=[corrupted_col])
     
     # Add clean_score as intensity 0.0
@@ -854,15 +862,18 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
         print(f"No data found for multisubject plot: {noise_type}, tune={tune_setting}")
         return
     
+    # Use legacy column naming for backward compatibility
+    clean_col, corrupted_col, y_label = _get_metric_columns_legacy('roc_auc')
+    
     # Remove rows with missing corrupted_score
-    df_filtered = df_filtered.dropna(subset=['corrupted_score'])
+    df_filtered = df_filtered.dropna(subset=[corrupted_col])
     
     # Add clean_score as intensity 0.0
-    clean_data = df_filtered.dropna(subset=['clean_score']).copy()
+    clean_data = df_filtered.dropna(subset=[clean_col]).copy()
     if not clean_data.empty:
-        clean_summary = clean_data.groupby(['model', 'noise_type', 'seed', 'session', 'subject'])['clean_score'].first().reset_index()
+        clean_summary = clean_data.groupby(['model', 'noise_type', 'seed', 'session', 'subject'])[clean_col].first().reset_index()
         clean_summary['intensity'] = 0.0
-        clean_summary['corrupted_score'] = clean_summary['clean_score']
+        clean_summary[corrupted_col] = clean_summary[clean_col]
         clean_summary['tune'] = tune_setting
         clean_summary['mode'] = 'test_perturb'
         clean_summary['eval_mode'] = 'CrossSession'
@@ -879,7 +890,7 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
             sns.barplot(
                 data=df_filtered,
                 x='intensity',
-                y='corrupted_score',
+                y=corrupted_col,
                 hue='model',
                 palette='tab10',
                 errorbar=('ci', 95)
@@ -888,7 +899,7 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
             sns.lineplot(
                 data=df_filtered,
                 x='intensity',
-                y='corrupted_score',
+                y=corrupted_col,
                 hue='model',
                 marker='o',
                 palette='tab10',
@@ -900,7 +911,7 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
         plt.title(f'Multi-Subject Model Comparison - {noise_type.capitalize()} Noise ({tune_label.capitalize()})\nTest Perturb Performance (All Subjects)', 
                  fontsize=14, fontweight='bold')
         plt.xlabel('Noise Intensity (%)', fontsize=12)
-        plt.ylabel('Corrupted Score (ROC AUC)', fontsize=12)
+        plt.ylabel(y_label, fontsize=12)
         plt.legend(title='Model', fontsize=10, title_fontsize=11, bbox_to_anchor=(1.05, 1), loc='upper left')
         plt.grid(True, alpha=0.3)
         # Set y-axis limits based on dataset
@@ -1300,20 +1311,20 @@ if __name__ == '__main__':
     aggregated_df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
     
     # Example usage of custom plotting functions
-    print("\n=== Example: Custom comparison of eegnet and cnn_ncp under EOG noise ===")
-    plot_custom_comparison(
-        aggregated_df,
-        filters={
-            'model': ['eegnet', 'cnn_ncp'],
-            'noise_type': 'eog',
-            'eval_mode': 'CrossSession',
-            'mode': 'test_perturb',
-            'tune': True
-        },
-        hue_var='model',
-        style_var='session',
-        output_filename='eegnet_vs_cnn_ncp_eog_crosssession.png'
-    )
+    # print("\n=== Example: Custom comparison of eegnet and cnn_ncp under EOG noise ===")
+    # plot_custom_comparison(
+    #     aggregated_df,
+    #     filters={
+    #         'model': ['eegnet', 'cnn_ncp'],
+    #         'noise_type': 'eog',
+    #         'eval_mode': 'CrossSession',
+    #         'mode': 'test_perturb',
+    #         'tune': True
+    #     },
+    #     hue_var='model',
+    #     style_var='session',
+    #     output_filename='eegnet_vs_cnn_ncp_eog_crosssession.png'
+    # )
     
     # Define model subsets for comparison
     model_subsets = {
@@ -1325,19 +1336,24 @@ if __name__ == '__main__':
     
     # Determine dataset from the data
     dataset = aggregated_df['dataset'].iloc[0] if 'dataset' in aggregated_df.columns else 'BNCI2014_001'
+
+    legacy_mode = False
+
+    if legacy_mode:
+        # Also generate the original plots for backward compatibility
+        print("\n=== Generating original plots for backward compatibility ===")
+        generate_all_test_perturb_plots(aggregated_df, models=model_subsets['main_models'], output_dir='./plots/legacy/', dataset=dataset, metrics=['score'])
+    else:
+        # Generate organized plots with per-subject breakdowns
+        print("Generating organized plots with per-subject breakdowns...")
+        generate_organized_test_perturb_plots(
+            aggregated_df, 
+            models=model_subsets['main_models'], 
+            dataset=dataset,
+            output_dir='./plots/'
+        )
+        
     
-    # Generate organized plots with per-subject breakdowns
-    print("Generating organized plots with per-subject breakdowns...")
-    generate_organized_test_perturb_plots(
-        aggregated_df, 
-        models=model_subsets['main_models'], 
-        dataset=dataset,
-        output_dir='./plots/'
-    )
-    
-    # Also generate the original plots for backward compatibility
-    print("\n=== Generating original plots for backward compatibility ===")
-    generate_all_test_perturb_plots(aggregated_df, models=model_subsets['main_models'], output_dir='./plots/legacy/', dataset=dataset)
     
     # Uncomment to generate plots for all subsets:
     # generate_model_subset_plots(aggregated_df, model_subsets, output_dir='./plots/legacy/')

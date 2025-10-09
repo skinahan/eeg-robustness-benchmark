@@ -8,11 +8,11 @@ datasets:
     paradigm: "MotorImagery"
     subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9]  # All subjects
     
-  Lee2019_SSVEP:
-    name: "Lee2019_SSVEP"
-    paradigm: "SSVEP"
-    # Subject split 1: 1-27
-    subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+  # Lee2019_SSVEP:
+  #   name: "Lee2019_SSVEP"
+  #   paradigm: "SSVEP"
+  #   # Subject split 1: 1-27
+  #   subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
 
 # Model configurations
 models:
