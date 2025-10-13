@@ -867,7 +867,7 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         
         data_aug = data.copy()
         for i in contamination_idxs:
-            temporal_coverage = rng.uniform(0.1, 0.9)
+            # temporal_coverage = rng.uniform(0.1, 0.9)
             # Inject realistic EOG artifacts with controlled temporal coverage
             contaminated_epoch = inject_realistic_eog_artifacts_with_coverage(
                 data[i], info, self.eog_template_path, 

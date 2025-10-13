@@ -155,6 +155,39 @@ def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
                         else:
                             df['eval_mode'] = 'WithinSessionEvaluation'
 
+                    # Detect whether this is a tuned experiment
+                    # Priority 1: Check if 'tune' column exists in the CSV itself (most reliable)
+                    if 'tune' in df.columns:
+                        # Use the tune column to determine mode
+                        # Get the first value (should be consistent across the CSV)
+                        is_tuned = df['tune'].iloc[0] if len(df) > 0 else False
+                        if is_tuned:
+                            df['mode'] = 'test_perturb_tune'
+                        else:
+                            # Non-tuned: check if this is multirun or test_perturb
+                            if 'mode' not in df.columns or pd.isna(df['mode'].iloc[0]):
+                                if 'multirun' in full_path:
+                                    df['mode'] = 'multirun'
+                                elif 'test_perturb' in full_path or 'test_perturb' in file:
+                                    df['mode'] = 'test_perturb'
+                                else:
+                                    df['mode'] = 'test_perturb'  # Default for non-tuned
+                            # If mode column exists and is not NA, keep the existing mode value
+                    elif 'mode' not in df.columns:
+                        # Priority 2: No 'tune' column, no 'mode' column - infer from path/filename
+                        if 'test_perturb_tune' in full_path or '_tune' in file:
+                            df['mode'] = 'test_perturb_tune'
+                        elif 'test_perturb' in full_path:
+                            df['mode'] = 'test_perturb'
+                        elif 'multirun' in full_path:
+                            df['mode'] = 'multirun'
+                        else:
+                            # Try to infer from filename
+                            if 'test_perturb' in file:
+                                df['mode'] = 'test_perturb'
+                            else:
+                                df['mode'] = 'unknown'
+
                     # Ensure dataset column is set
                     if 'dataset' not in df.columns:
                         df['dataset'] = dataset

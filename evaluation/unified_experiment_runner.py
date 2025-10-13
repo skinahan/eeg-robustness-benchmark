@@ -25,6 +25,7 @@ from typing import List, Dict, Any, Tuple, Optional
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import StratifiedKFold, LeaveOneGroupOut, GroupKFold
+from sklearn.model_selection._split import _BaseKFold
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import roc_auc_score
 from sklearn.base import clone
@@ -46,6 +47,7 @@ from evaluation.two_stage_hp_opt import alternate_two_stage_optuna, run_two_stag
 from utils import create_output_path, create_hdf5_model_path, get_noise_intensities
 from evaluation.experiment_utils import check_skip_eval, log_all_subjects, collect_all_results
 from evaluation.metrics import compute_classification_metrics
+import json
 
 # Import MOABB components
 from moabb.datasets import BNCI2014_001, Lee2019_SSVEP
@@ -59,6 +61,141 @@ try:
     _carbonfootprint = True
 except ImportError:
     _carbonfootprint = False
+
+
+class ThreeFoldSubjectSplit:
+    """
+    Custom cross-validation splitter for CrossSubject evaluation.
+    Splits subjects into 3 folds where 1/3 of subjects are used for evaluation
+    and 2/3 are used for training in each fold.
+    
+    If the number of subjects is not evenly divisible by 3, the remainder
+    subjects are added to the training set in all folds.
+    """
+    
+    def __init__(self):
+        self.n_splits = 3
+    
+    def get_n_splits(self, X=None, y=None, groups=None):
+        return self.n_splits
+    
+    def split(self, X, y=None, groups=None):
+        """
+        Generate train/test indices for 3-fold cross-subject splits.
+        
+        Args:
+            X: Feature data (not used, only for compatibility)
+            y: Target data (not used, only for compatibility)
+            groups: Subject IDs for each sample
+        
+        Yields:
+            train_idx, test_idx: Indices for training and testing sets
+        """
+        if groups is None:
+            raise ValueError("groups parameter is required for ThreeFoldSubjectSplit")
+        
+        # Get unique subjects and their indices
+        unique_subjects = np.unique(groups)
+        n_subjects = len(unique_subjects)
+        
+        # Calculate size of each evaluation group (should be n_subjects // 3)
+        eval_group_size = n_subjects // 3
+        
+        if eval_group_size == 0:
+            raise ValueError(f"Need at least 3 subjects for 3-fold split, got {n_subjects}")
+        
+        # Create 3 folds
+        for fold_idx in range(3):
+            # Determine which subjects go in eval set for this fold
+            eval_start = fold_idx * eval_group_size
+            eval_end = eval_start + eval_group_size
+            
+            eval_subjects = unique_subjects[eval_start:eval_end]
+            train_subjects = np.concatenate([
+                unique_subjects[:eval_start],
+                unique_subjects[eval_end:]
+            ])
+            
+            # Get indices for train and test sets
+            train_mask = np.isin(groups, train_subjects)
+            test_mask = np.isin(groups, eval_subjects)
+            
+            train_idx = np.where(train_mask)[0]
+            test_idx = np.where(test_mask)[0]
+            
+            yield train_idx, test_idx
+
+
+def save_training_history(model, output_path: str, fold_idx: int = None, subject: int = None, session: str = None, mode: str = None):
+    """
+    Save the training history from a fitted model to a JSON file.
+    
+    Args:
+        model: Fitted skorch/braindecode model with history attribute
+        output_path: Base output directory for saving history
+        fold_idx: Current fold index (optional)
+        subject: Current subject ID (optional)
+        session: Current session ID (optional)
+        mode: Experiment mode (optional)
+    """
+    if not hasattr(model, 'history') or model.history is None:
+        print("Warning: Model does not have history attribute or history is None")
+        return
+    
+    if len(model.history) == 0:
+        print("Warning: Model history is empty")
+        return
+    
+    # Create history directory
+    history_dir = os.path.join(output_path, "training_history")
+    os.makedirs(history_dir, exist_ok=True)
+    
+    # Build filename - convert session to string if needed
+    filename_parts = ["history"]
+    if subject is not None:
+        filename_parts.append(f"sub{subject:03d}")
+    if session is not None:
+        filename_parts.append(f"sess{str(session)}")
+    if fold_idx is not None:
+        filename_parts.append(f"fold{fold_idx}")
+    if mode is not None:
+        filename_parts.append(mode)
+    
+    filename = "_".join(filename_parts) + ".json"
+    filepath = os.path.join(history_dir, filename)
+    
+    # Extract history data
+    history_data = []
+    for i, epoch_data in enumerate(model.history):
+        epoch_dict = {
+            'epoch': i + 1,
+        }
+        # Convert epoch data to serializable format
+        for key, value in epoch_data.items():
+            try:
+                # Skip non-serializable items like callbacks
+                if isinstance(value, (int, float, str, bool, type(None))):
+                    epoch_dict[key] = value
+                elif isinstance(value, np.ndarray):
+                    epoch_dict[key] = value.item() if value.size == 1 else value.tolist()
+                elif torch.is_tensor(value):
+                    epoch_dict[key] = value.item() if value.numel() == 1 else value.cpu().tolist()
+                # Try to convert other numeric types
+                elif hasattr(value, '__float__'):
+                    epoch_dict[key] = float(value)
+            except Exception:
+                # Skip items that can't be serialized
+                continue
+        
+        history_data.append(epoch_dict)
+    
+    # Save to JSON
+    try:
+        with open(filepath, 'w') as f:
+            json.dump(history_data, f, indent=2)
+        print(f"Saved training history to {filepath}")
+    except Exception as e:
+        print(f"Warning: Failed to save training history: {e}")
 
 
 class UnifiedExperimentRunner:
@@ -169,6 +306,22 @@ class UnifiedExperimentRunner:
         # Create output directory
         self.output_dir = ""
     
+    def _get_history_output_path(self):
+        """Get the base output path for saving training history."""
+        paradigm_name = "SSVEP" if self.dataset == "Lee2019_SSVEP" else "MotorImagery"
+        mode_str = self.mode
+        if self.tune:
+            mode_str = f"{self.mode}_tune"
+        out_dir = create_output_path(
+            self.model, 
+            self.seed, 
+            self.current_subject, 
+            self.current_session, 
+            mode_str, 
+            session_type=self.eval_mode
+        )
+        return out_dir
+    
     def _determine_data_dimensions(self) -> Tuple[int, int]:
         """Dynamically determine n_chans and sequence length from dataset samples."""
         # Get a small sample to determine dimensions
@@ -267,10 +420,11 @@ class UnifiedExperimentRunner:
                 "split_level": "cross_session"
             }
         elif self.eval_mode == "CrossSubject":
-            # Use LeaveOneGroupOut for cross-subject evaluation
-            cv_splitter = LeaveOneGroupOut()
+            # Use custom 3-fold splitter for cross-subject evaluation
+            cv_splitter = ThreeFoldSubjectSplit()
             cv_metadata = {
-                "cv_type": "LeaveOneGroupOut",
+                "cv_type": "ThreeFoldSubjectSplit",
+                "n_splits": 3,
                 "split_level": "cross_subject"
             }
         else:
@@ -310,7 +464,7 @@ class UnifiedExperimentRunner:
                 'cv_type': cv_metadata['cv_type'],
                 'split_level': cv_metadata['split_level'],
                 'session': session,
-                'subject': self.subjects[0]  # For now, assume single subject or use first subject
+                'subject': self.current_subject  # Use the current subject being evaluated
             })
             
         return all_results
@@ -347,8 +501,8 @@ class UnifiedExperimentRunner:
                 resample=None,  # Will be determined dynamically
                 seed=self.seed,
                 output_root=fold_output_dir,
-                arch_trials=20,
-                train_trials=20,
+                arch_trials=10,
+                train_trials=10,
                 perturbed=False
             )        
 
@@ -396,6 +550,17 @@ class UnifiedExperimentRunner:
         final_model.fit(X_train, y_train)
         training_time = time.time() - start_time
         
+        # Save training history after hyperparameter tuning is complete
+        output_path = self._get_history_output_path()
+        save_training_history(
+            final_model, 
+            output_path, 
+            fold_idx=fold_idx, 
+            subject=self.current_subject,
+            session=str(self.current_session),
+            mode=f"{self.mode}_tuned"
+        )
+        
         # Evaluate on validation set
         start_time = time.time()
         final_model.module_.eval()
@@ -422,6 +587,18 @@ class UnifiedExperimentRunner:
                     start_time = time.time()  
                     final_model.fit(X_train, y_train)
                     training_time = time.time() - start_time
+                    
+                    # Save re-training history
+                    output_path = self._get_history_output_path()
+                    save_training_history(
+                        final_model, 
+                        output_path, 
+                        fold_idx=fold_idx, 
+                        subject=self.current_subject,
+                        session=str(session),
+                        mode=f"{self.mode}_tuned_retrained"
+                    )
+                    
                     final_model.module_.eval()
                     with torch.no_grad():
                         y_pred_proba = final_model.predict_proba(X_valid)
@@ -470,6 +647,17 @@ class UnifiedExperimentRunner:
                 model.fit(X_train, y_train)
         else:
             model.fit(X_train, y_train)
+        
+        # Save training history
+        output_path = self._get_history_output_path()
+        save_training_history(
+            model, 
+            output_path, 
+            fold_idx=fold_idx, 
+            subject=self.current_subject,
+            session=str(self.current_session),
+            mode=self.mode
+        )
         
         # Evaluate
         start_time = time.time()
@@ -568,6 +756,7 @@ class UnifiedExperimentRunner:
             raise ValueError("test_perturb mode requires noise_type and intensity")
         
         n_chans, n_times = self._determine_data_dimensions()
+        set_seeds(self.seed)
         model = self._create_model(n_chans, n_times)
         
         
@@ -576,6 +765,18 @@ class UnifiedExperimentRunner:
         model.module_.train()
         model.fit(X_train, y_train)
         training_time = time.time() - start_time
+        
+        # Save training history
+        self.current_session = str(session)
+        output_path = self._get_history_output_path()
+        save_training_history(
+            model, 
+            output_path, 
+            fold_idx=fold_idx, 
+            subject=self.current_subject,
+            session=str(session),
+            mode=self.mode
+        )
         
         # Evaluate on clean validation data
         start_time = time.time()
@@ -592,17 +793,28 @@ class UnifiedExperimentRunner:
             # Use a set threshold to restart training if clean score indicates underfitting.
             if clean_score < UNDERFITTING_THRESHOLD:
                 # Disable early stopping
-                print(f"Re-training model without EarlyStopping due to underfitting.")
+                print(f"Re-training model without EarlyStopping due to underfitting: {clean_score} < {UNDERFITTING_THRESHOLD}")
                 new_callbacks = []
                 for callback in model.callbacks:
                     if not isinstance(callback, EarlyStopping):
                         new_callbacks.append(callback)
                 model.callbacks = new_callbacks
-                model.callbacks = []
                 model.module_.train()          
                 start_time = time.time()  
                 model.fit(X_train, y_train)
                 training_time = time.time() - start_time
+                
+                # Save re-training history
+                output_path = self._get_history_output_path()
+                save_training_history(
+                    model, 
+                    output_path, 
+                    fold_idx=fold_idx, 
+                    subject=self.current_subject,
+                    session=str(session),
+                    mode=f"{self.mode}_retrained"
+                )
+                
                 model.module_.eval()
                 with torch.no_grad():
                     y_pred_proba = model.predict_proba(X_valid)
@@ -630,9 +842,19 @@ class UnifiedExperimentRunner:
         if self.noise_dict:
             print(f"  Noise: {self.noise_type} (intensity: {self.intensity})")
         print(f"  Tune: {self.tune}")
+
+        mode_str = self.mode
+        if self.tune:
+            mode_str = f"{self.mode}_tune"
+            
+
+        if not self.overwrite:
+            if check_skip_eval(self.model, self.seed, self.subjects, mode_str, self.noise_type, self.intensity, eval_mode=self.eval_mode, dataset=self.dataset):
+                print(f"Skipping evaluation due to existing output files.")
+                return None
         
         all_subject_results = []
-        
+        set_seeds(self.seed)
         if self.eval_mode == "CrossSubject":
             # For CrossSubject, get data from all subjects at once
             X, y, metadata = self.paradigm.get_data(self.dataset_obj, subjects=self.subjects)
@@ -647,9 +869,13 @@ class UnifiedExperimentRunner:
             
             all_results = []
             for fold_idx, (train_idx, valid_idx) in folds:
-                # Get the subject that was left out for this fold
-                left_out_subject = metadata.iloc[valid_idx]['subject'].values[0]
-                session = f"subject_{left_out_subject}"
+                # Get the subjects that are in the evaluation set for this fold
+                eval_subjects = np.unique(metadata.iloc[valid_idx]['subject'].values)
+                eval_subjects_str = ','.join(map(str, sorted(eval_subjects)))
+                session = f"fold_{fold_idx}_eval_subjects_{eval_subjects_str}"
+                
+                # Set current_subject to a representative value (first eval subject)
+                self.current_subject = eval_subjects[0]
                 
                 X_train = X[train_idx]
                 y_train = y_encoded[train_idx]
@@ -658,6 +884,12 @@ class UnifiedExperimentRunner:
                 metadata_train = metadata.iloc[train_idx]
                 
                 fold_results = self._evaluate_cv_fold(X_train, y_train, X_valid, y_valid, fold_idx, cv_metadata, session, metadata_train)
+                
+                # Add eval_subjects information to each result
+                for result in fold_results:
+                    result['eval_subjects'] = eval_subjects_str
+                    result['n_eval_subjects'] = len(eval_subjects)
+                
                 all_results.extend(fold_results)
             
             # Convert results to DataFrame
@@ -724,12 +956,14 @@ class UnifiedExperimentRunner:
                         # We are splitting over X_session and y_session, so we need to adjust the indices accordingly when storing.
                         folds = list(enumerate(cv_splitter.split(X_session, y_session)))
                         for fold_idx, (train_idx, valid_idx) in folds:
+                            # Save unadjusted indices for session_metadata (which is already session-specific)
+                            train_idx_session = train_idx.copy()
                             # Remember that the train and valid indices are relative to X_session and y_session, so we need to add the first_idx to get the correct indices into the original X and y_encoded arrays.
-                            train_idx += first_idx
-                            valid_idx += first_idx
+                            train_idx_global = train_idx + first_idx
+                            valid_idx_global = valid_idx + first_idx
                             # Important note: Always store the 'session' as the session being used for evaluation / validation.
-                            fold_indices.append((fold_idx, (train_idx, valid_idx), session))
-                            fold_metadata.append(session_metadata.iloc[train_idx])
+                            fold_indices.append((fold_idx, (train_idx_global, valid_idx_global), session))
+                            fold_metadata.append(session_metadata.iloc[train_idx_session])
                 elif self.eval_mode == "CrossSubject":
                     groups = metadata['subject'].values
                     folds = list(enumerate(cv_splitter.split(X, y_encoded, groups=groups)))
@@ -739,12 +973,12 @@ class UnifiedExperimentRunner:
                         fold_metadata.append(metadata.iloc[train_idx])
 
                 all_results = []
-                for fold_idx, (train_idx, valid_idx), session in fold_indices:
+                for i, (fold_idx, (train_idx, valid_idx), session) in enumerate(fold_indices):
                     X_train = X[train_idx]
                     y_train = y_encoded[train_idx]
                     X_valid = X[valid_idx]
                     y_valid = y_encoded[valid_idx]
-                    metadata_train = fold_metadata[fold_idx]            
+                    metadata_train = fold_metadata[i]            
                     fold_results = self._evaluate_cv_fold(X_train, y_train, X_valid, y_valid, fold_idx, cv_metadata, session, metadata_train)
                     all_results.extend(fold_results)
                         
@@ -862,10 +1096,9 @@ class UnifiedExperimentRunner:
             results_df = results_df.drop(columns=['fold_idx'])
             return results_df
         elif self.eval_mode == "CrossSubject":
-            # For CrossSubject, simply drop the fold_idx column
-            # Results are already per subject (left-out subject), so no further aggregation needed
-            if 'fold_idx' in results_df.columns:
-                results_df = results_df.drop(columns=['fold_idx'])
+            # For CrossSubject with 3-fold split, keep fold results separate
+            # Each fold represents a different group of evaluation subjects
+            # Don't aggregate - each fold should be its own record
             return results_df
         else:
             return results_df
@@ -946,7 +1179,7 @@ def main():
         if args.tune:
             parser.error(f"Mode {args.mode} requires --tune flag to NOT be set.")
 
-    if args.mode == "test_perturb":
+    if args.mode in ["test_perturb", "multirun"]:
         if not args.noise_type or args.noise_type is None or args.intensity is None:
             # Use default values for test_perturb mode, these are overwritten later anyway.
             args.noise_type = "gaussian"

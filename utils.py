@@ -27,6 +27,8 @@ def create_hdf5_model_path(model, seed, session, mode, session_type='WithinSessi
 def create_output_path(model, seed, subject, session, mode, session_type='WithinSessionEvaluation', paradigm='MotorImagery', dataset='BNCI2014_001', others=[]):
     if not session_type.endswith("Evaluation"):
         session_type = f"{session_type}Evaluation"
+
+    subject_str = f"sub-{int(subject):03d}"
     full_list = [
         "results",
         paradigm,
@@ -34,13 +36,14 @@ def create_output_path(model, seed, subject, session, mode, session_type='Within
         model,
         session_type,
         str(seed),
-        f"sub-{int(subject):03d}",
+        subject_str,
         session,
         mode
     ]
+   
     if len(others) > 0:
         full_list.extend(others)
-
+    full_list = [str(item) for item in full_list]
     return os.path.join(
         "//".join(full_list)
     )
@@ -87,7 +90,7 @@ def get_noise_perturbation_bounds(dataset: str, noise_type: str, saturation_file
         min_intensity = 1.0
         max_intensity = saturation_point
         
-        print(f"[INFO] Using dynamic bounds for {dataset} + {noise_type}: {min_intensity} to {max_intensity} (saturation point: {saturation_point})")
+        # print(f"[INFO] Using dynamic bounds for {dataset} + {noise_type}: {min_intensity} to {max_intensity} (saturation point: {saturation_point})")
         
         return min_intensity, max_intensity
         

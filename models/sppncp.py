@@ -12,7 +12,7 @@ from skorch.callbacks import LRScheduler
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from braindecode import EEGClassifier
 
-from globals import get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS
+from globals import get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS, EEGCLASSIFIER_VERBOSE
 
 
 class SPP_Feature_Extractor(nn.Module):
@@ -144,7 +144,7 @@ def create_sppncp_classifier(
         batch_size=64,
         weight_decay=1e-3
 ):
-    from globals import get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS
+    from globals import get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS, EEGCLASSIFIER_VERBOSE
 
     if net_size <= n_outputs + 2:
         new_net_size = n_outputs + 3
@@ -173,6 +173,7 @@ def create_sppncp_classifier(
             get_early_stopping_callback(),
             LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=30)
         ],
+        verbose=EEGCLASSIFIER_VERBOSE
     )
 
     if torch.cuda.is_available():

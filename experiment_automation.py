@@ -33,13 +33,14 @@ from tqdm import tqdm
 class ExperimentAutomation:
     """Main class for experiment automation."""
     
-    def __init__(self, config_file: str = "experiment_config.yaml", preaggregated_results_file: str = None):
+    def __init__(self, config_file: str = "experiment_config.yaml", preaggregated_results_file: str = None, local: bool = False):
         """Initialize the automation system with configuration."""
         self.config_file = config_file
         self.config = self._load_config()
         self.existing_results = None
         self.missing_experiments = []
         self.preaggregated_results_file = preaggregated_results_file
+        self.local = local
         # Performance optimization caches
         self._cached_noise_intensities = None
         self._cached_existing_signatures = None
@@ -145,7 +146,7 @@ class ExperimentAutomation:
         # Pre-extract values for faster iteration
         dataset_items = list(datasets.items())
         model_names = [model['name'] for model in models]
-        tune_flags = [False, True]
+        tune_flags = [False]#, True]
         
         print(f"[INFO] Generating combinations from:")
         print(f"   - Datasets: {len(dataset_items)}")
@@ -283,6 +284,10 @@ class ExperimentAutomation:
                 existing_signatures = set()
                 
                 for _, row in existing_df.iterrows():
+                    # Determine if this is a tuned experiment (check for '_tune' suffix in mode)
+                    mode_str = str(row.get('mode', ''))
+                    is_tuned = '_tune' in mode_str
+                    
                     # Create signature based on the matching criteria
                     signature_parts = [
                         row.get('dataset', ''),
@@ -291,7 +296,8 @@ class ExperimentAutomation:
                         row.get('seed', ''),
                         row.get('noise_type', ''),
                         str(row.get('intensity', '')),  # Convert to string for consistent comparison
-                        row.get('mode_normalized', '')
+                        row.get('mode_normalized', ''),
+                        str(is_tuned)  # Include tune flag in signature
                     ]
                     
                     # Add subject if present (for CrossSession/WithinSession)
@@ -344,7 +350,8 @@ class ExperimentAutomation:
                         str(expected_result['seed']),
                         expected_result['noise_type'],
                         str(intensity),
-                        'test_perturb'  # Mode is always test_perturb for expected results
+                        'test_perturb',  # Mode is always test_perturb for expected results
+                        str(expected_result['tune'])  # Include tune flag in signature
                     ]
                     
                     # Add subject if present
@@ -363,7 +370,8 @@ class ExperimentAutomation:
                         str(expected_result['seed']),
                         expected_result['noise_type'],
                         str(matching_intensity),
-                        'test_perturb'  # Mode is always test_perturb for expected results
+                        'test_perturb',  # Mode is always test_perturb for expected results
+                        str(expected_result['tune'])  # Include tune flag in signature
                     ]
                     
                     # Add subject if present
@@ -419,42 +427,36 @@ class ExperimentAutomation:
         print("MAPPING TO REQUIRED MULTIRUN JOBS")
         print("="*60)
         
-        # Define the limited models that will be used in multirun mode
-        limited_models = ["eegnet", "reegnet", "cnn_ncp"]
-        
-        # Get seeds from config
-        seeds = self.config['seeds']
-        
         required_multirun_jobs = set()
         
         for missing_result in missing_test_perturb_results:
+            # Only create multirun job for the specific model that has missing results
+            model = missing_result['model']
+            seed = missing_result['seed']
+            
             if missing_result['eval_mode'] == 'CrossSession' or missing_result['eval_mode'] == 'WithinSession':
-                # For CrossSession, each subject needs its own multirun job for each model and seed
-                for model in limited_models:
-                    for seed in seeds:
-                        job_key = (
-                            missing_result['dataset'],
-                            missing_result['eval_mode'], 
-                            missing_result['subject'],
-                            missing_result['tune'],
-                            model,
-                            seed
-                        )
-                        required_multirun_jobs.add(job_key)
+                # For CrossSession, each subject needs its own multirun job for specific model and seed
+                job_key = (
+                    missing_result['dataset'],
+                    missing_result['eval_mode'], 
+                    missing_result['subject'],
+                    missing_result['tune'],
+                    model,
+                    seed
+                )
+                required_multirun_jobs.add(job_key)
             else:
-                # For Cross-Subject, all subjects are processed together for each model and seed
+                # For Cross-Subject, all subjects are processed together for specific model and seed
                 subjects_tuple = tuple(missing_result['subjects'])
-                for model in limited_models:
-                    for seed in seeds:
-                        job_key = (
-                            missing_result['dataset'],
-                            missing_result['eval_mode'],
-                            subjects_tuple,
-                            missing_result['tune'],
-                            model,
-                            seed
-                        )
-                        required_multirun_jobs.add(job_key)
+                job_key = (
+                    missing_result['dataset'],
+                    missing_result['eval_mode'],
+                    subjects_tuple,
+                    missing_result['tune'],
+                    model,
+                    seed
+                )
+                required_multirun_jobs.add(job_key)
         
         # Convert to list of multirun job dictionaries
         missing_experiments = []
@@ -509,6 +511,227 @@ class ExperimentAutomation:
                 print(f"     - seed {seed}: {count} multirun jobs")
         
         return missing_experiments
+    
+    def generate_python_script(self, output_dir: str = None) -> str:
+        """Generate Python script for local execution of missing experiments with parallel processing."""
+        print("\n" + "="*60)
+        print("GENERATING PYTHON EXECUTION SCRIPT")
+        print("="*60)
+        
+        if output_dir is None:
+            output_dir = self.config['output']['script_dir']
+        
+        os.makedirs(output_dir, exist_ok=True)
+        
+        script_file = os.path.join(output_dir, "run_missing_multirun_jobs.py")
+        
+        with open(script_file, 'w') as f:
+            f.write("#!/usr/bin/env python3\n")
+            f.write('"""\n')
+            f.write("Generated Python automation script for local experiment execution\n")
+            f.write(f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"Total missing multirun jobs: {len(self.missing_experiments)}\n")
+            f.write("OPTIMIZED: Runs experiments in parallel\n")
+            f.write('"""\n\n')
+            
+            f.write("import os\n")
+            f.write("import sys\n")
+            f.write("import gc\n")
+            f.write("import torch\n")
+            f.write("import time\n")
+            f.write("from datetime import datetime\n")
+            f.write("from tqdm import tqdm\n")
+            f.write("from concurrent.futures import ProcessPoolExecutor, as_completed\n")
+            f.write("from typing import Dict, Any, Tuple, Optional\n\n")
+            
+            f.write("# Add evaluation directory to path\n")
+            f.write("current_dir = os.path.dirname(os.path.abspath(__file__))\n")
+            f.write("project_root = os.path.dirname(current_dir)\n")
+            f.write("sys.path.insert(0, project_root)\n")
+            f.write("sys.path.insert(0, os.path.join(project_root, 'evaluation'))\n\n")
+            
+            f.write("from evaluation.unified_experiment_runner import UnifiedExperimentRunner\n")
+            f.write("from globals import set_seeds\n\n")
+            
+            f.write("def cleanup_memory():\n")
+            f.write("    \"\"\"Perform aggressive garbage collection and clear CUDA cache.\"\"\"\n")
+            f.write("    gc.collect()\n")
+            f.write("    if torch.cuda.is_available():\n")
+            f.write("        torch.cuda.empty_cache()\n")
+            f.write("        torch.cuda.synchronize()\n\n")
+            
+            # Add the run_single_experiment function for parallel execution
+            f.write("def run_single_experiment(exp_config: Dict[str, Any], job_num: int, total_jobs: int) -> Tuple[int, bool, Optional[str], float]:\n")
+            f.write("    \"\"\"\n")
+            f.write("    Run a single experiment in a separate process.\n")
+            f.write("    \n")
+            f.write("    Args:\n")
+            f.write("        exp_config: Experiment configuration dictionary\n")
+            f.write("        job_num: Job number for logging\n")
+            f.write("        total_jobs: Total number of jobs\n")
+            f.write("        \n")
+            f.write("    Returns:\n")
+            f.write("        Tuple of (job_num, success, error_message, elapsed_time)\n")
+            f.write("    \"\"\"\n")
+            f.write("    job_start_time = time.time()\n")
+            f.write("    \n")
+            f.write("    # Re-import modules in the subprocess (necessary for multiprocessing)\n")
+            f.write("    sys.path.insert(0, project_root)\n")
+            f.write("    sys.path.insert(0, os.path.join(project_root, 'evaluation'))\n")
+            f.write("    from evaluation.unified_experiment_runner import UnifiedExperimentRunner\n")
+            f.write("    from globals import set_seeds\n")
+            f.write("    \n")
+            f.write("    print(f'\\n{\"-\"*60}')\n")
+            f.write("    print(f'Job {job_num}/{total_jobs}')\n")
+            f.write("    print(f'Dataset: {exp_config[\"dataset\"]} | Model: {exp_config[\"model\"]} | '\n")
+            f.write("          f'Eval: {exp_config[\"eval_mode\"]} | Subjects: {exp_config[\"subjects\"]} | '\n")
+            f.write("          f'Seed: {exp_config[\"seed\"]} | Tune: {exp_config[\"tune\"]}')\n")
+            f.write("    print(f'{\"-\"*60}')\n\n")
+            
+            f.write("    # Set seed for reproducibility\n")
+            f.write("    set_seeds(exp_config['seed'])\n\n")
+            
+            f.write("    try:\n")
+            f.write("        # Create and run experiment\n")
+            f.write("        runner = UnifiedExperimentRunner(\n")
+            f.write("            model=exp_config['model'],\n")
+            f.write("            dataset=exp_config['dataset'],\n")
+            f.write("            subjects=exp_config['subjects'],\n")
+            f.write("            mode='test_perturb',\n")
+            f.write("            eval_mode=exp_config['eval_mode'],\n")
+            f.write("            seed=exp_config['seed'],\n")
+            f.write("            noise_type='gaussian',  # multirun handles all noise types\n")
+            f.write("            intensity=10.0,  # multirun handles all intensities\n")
+            f.write("            tune=exp_config['tune'],\n")
+            f.write("            overwrite=False\n")
+            f.write("        )\n\n")
+            
+            f.write("        results = runner.run_experiment()\n")
+            f.write("        job_time = time.time() - job_start_time\n")
+            f.write("        print(f'[SUCCESS] Job {job_num} completed in {job_time/60:.2f} minutes.')\n")
+            f.write("        if results is not None:\n")
+            f.write("            print(f'Results shape: {results.shape}')\n\n")
+            
+            f.write("        # Clean up\n")
+            f.write("        del runner\n")
+            f.write("        if results is not None:\n")
+            f.write("            del results\n")
+            f.write("        cleanup_memory()\n")
+            f.write("        \n")
+            f.write("        return (job_num, True, None, job_time)\n\n")
+            
+            f.write("    except Exception as e:\n")
+            f.write("        job_time = time.time() - job_start_time\n")
+            f.write("        print(f'[ERROR] Job {job_num} failed after {job_time/60:.2f} minutes: {e}')\n")
+            f.write("        import traceback\n")
+            f.write("        error_msg = traceback.format_exc()\n")
+            f.write("        print(error_msg)\n")
+            f.write("        cleanup_memory()\n")
+            f.write("        return (job_num, False, str(e), job_time)\n\n")
+            
+            f.write("def run_experiments():\n")
+            f.write("    \"\"\"Run all missing experiments.\"\"\"\n")
+            f.write(f"    total_jobs = {len(self.missing_experiments)}\n")
+            f.write("    print(f'Starting local experiment execution...')\n")
+            f.write("    print(f'Total multirun jobs to execute: {total_jobs}')\n")
+            f.write("    print(f'Started at: {datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")}')\n\n")
+            
+            f.write("    experiments = [\n")
+            for exp in self.missing_experiments:
+                f.write("        {\n")
+                f.write(f"            'dataset': '{exp['dataset']}',\n")
+                f.write(f"            'eval_mode': '{exp['eval_mode']}',\n")
+                f.write(f"            'subjects': {exp['subjects']},\n")
+                f.write(f"            'tune': {exp['tune']},\n")
+                f.write(f"            'model': '{exp['model']}',\n")
+                f.write(f"            'seed': {exp['seed']},\n")
+                f.write(f"            'paradigm': '{exp['paradigm']}'\n")
+                f.write("        },\n")
+            f.write("    ]\n\n")
+            
+            f.write("    failed_jobs = []\n")
+            f.write("    successful_jobs = 0\n")
+            f.write("    start_time = time.time()\n")
+            f.write("    \n")
+            f.write("    # Sort experiments by model to potentially improve cache efficiency\n")
+            f.write("    experiments.sort(key=lambda x: x['model'])\n")
+            f.write("    \n")
+            f.write("    # Reverse to process in original order\n")
+            f.write("    experiments = list(reversed(experiments))\n")
+            f.write("    \n")
+            f.write("    # Run experiments in parallel with configurable workers\n")
+            f.write("    max_workers = 4\n")
+            f.write("    print(f'\\nRunning experiments with {max_workers} parallel workers...\\n')\n")
+            f.write("    \n")
+            f.write("    with ProcessPoolExecutor(max_workers=max_workers) as executor:\n")
+            f.write("        # Submit all experiments to the executor\n")
+            f.write("        future_to_job = {}\n")
+            f.write("        for i, exp in enumerate(experiments):\n")
+            f.write("            job_num = i + 1\n")
+            f.write("            future = executor.submit(run_single_experiment, exp, job_num, total_jobs)\n")
+            f.write("            future_to_job[future] = (job_num, exp)\n")
+            f.write("        \n")
+            f.write("        # Process completed experiments as they finish\n")
+            f.write("        completed = 0\n")
+            f.write("        with tqdm(total=total_jobs, desc='Overall progress') as pbar:\n")
+            f.write("            for future in as_completed(future_to_job):\n")
+            f.write("                job_num, exp = future_to_job[future]\n")
+            f.write("                completed += 1\n")
+            f.write("                \n")
+            f.write("                try:\n")
+            f.write("                    result_job_num, success, error_msg, elapsed_time = future.result()\n")
+            f.write("                    \n")
+            f.write("                    if success:\n")
+            f.write("                        successful_jobs += 1\n")
+            f.write("                    else:\n")
+            f.write("                        failed_jobs.append((result_job_num, exp, error_msg))\n")
+            f.write("                    \n")
+            f.write("                except Exception as e:\n")
+            f.write("                    print(f'\\n[CRITICAL ERROR] Job {job_num} crashed: {e}')\n")
+            f.write("                    import traceback\n")
+            f.write("                    traceback.print_exc()\n")
+            f.write("                    failed_jobs.append((job_num, exp, str(e)))\n")
+            f.write("                \n")
+            f.write("                pbar.update(1)\n")
+            f.write("                \n")
+            f.write("        # Final cleanup\n")
+            f.write("        cleanup_memory()\n\n")
+            
+            f.write("    # Final summary\n")
+            f.write("    total_time = time.time() - start_time\n")
+            f.write("    print(f'\\n{\"=\"*60}')\n")
+            f.write("    print('EXPERIMENT EXECUTION COMPLETE')\n")
+            f.write("    print(f'{\"=\"*60}')\n")
+            f.write("    print(f'Completed at: {datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")}')\n")
+            f.write("    print(f'Total runtime: {total_time/3600:.2f} hours ({total_time/60:.2f} minutes)')\n")
+            f.write("    print(f'Total jobs: {total_jobs}')\n")
+            f.write("    print(f'Successful: {successful_jobs}')\n")
+            f.write("    print(f'Failed: {len(failed_jobs)}')\n")
+            f.write("    if successful_jobs > 0:\n")
+            f.write("        print(f'Average time per job: {total_time/successful_jobs/60:.2f} minutes')\n\n")
+            
+            f.write("    if failed_jobs:\n")
+            f.write("        print(f'\\nFailed jobs:')\n")
+            f.write("        for job_num, exp, error in failed_jobs:\n")
+            f.write("            print(f'  Job {job_num}: {exp[\"dataset\"]} | {exp[\"model\"]} | '\n")
+            f.write("                  f'{exp[\"eval_mode\"]} | seed={exp[\"seed\"]} - Error: {error}')\n")
+            f.write("        sys.exit(1)\n")
+            f.write("    else:\n")
+            f.write("        print('\\nAll jobs completed successfully!')\n")
+            f.write("        sys.exit(0)\n\n")
+            
+            f.write("if __name__ == '__main__':\n")
+            f.write("    run_experiments()\n")
+        
+        # Make script executable
+        os.chmod(script_file, 0o755)
+        
+        print(f"[OK] Generated Python execution script: {script_file}")
+        print(f"[INFO] Script contains {len(self.missing_experiments)} multirun experiments")
+        print(f"[INFO] Experiments will be run in parallel with 4 workers using ProcessPoolExecutor")
+        print(f"[INFO] Each experiment uses UnifiedExperimentRunner in test_perturb mode")
+        
+        return script_file
     
     def generate_shell_script(self, output_dir: str = None) -> str:
         """Generate shell script with missing multirun sbatch commands."""
@@ -668,8 +891,11 @@ class ExperimentAutomation:
         # Step 2: Identify missing experiments
         self.identify_missing_experiments()
         
-        # Step 3: Generate shell script
-        script_file = self.generate_shell_script(output_dir)
+        # Step 3: Generate script (Python or shell based on local flag)
+        if self.local:
+            script_file = self.generate_python_script(output_dir)
+        else:
+            script_file = self.generate_shell_script(output_dir)
         
         # Step 4: Generate summary report
         report_file = self.generate_summary_report(output_dir)
@@ -678,16 +904,22 @@ class ExperimentAutomation:
         print("AUTOMATION COMPLETE")
         print("="*60)
         print(f"[INFO] Output directory: {output_dir or self.config['output']['script_dir']}")
-        print(f"[INFO] Shell script: {script_file}")
+        print(f"[INFO] Generated script: {script_file}")
         print(f"[INFO] Summary report: {report_file}")
         print(f"[INFO] Missing experiments: {len(self.missing_experiments)}")
         
         if len(self.missing_experiments) > 0:
             print("\n[INFO] Next steps:")
-            print("1. Review the generated shell script")
-            print("2. Run: chmod +x <script_file>")
-            print("3. Execute: ./<script_file>")
-            print("4. Monitor progress and handle any failures")
+            if self.local:
+                print("1. Review the generated Python script")
+                print("2. Run: python <script_file>")
+                print("3. Monitor progress (tqdm will show a progress bar)")
+                print("4. Check for any failed experiments in the output")
+            else:
+                print("1. Review the generated shell script")
+                print("2. Run: chmod +x <script_file>")
+                print("3. Execute: ./<script_file>")
+                print("4. Monitor progress and handle any failures")
         
         return script_file, report_file
 
@@ -705,11 +937,13 @@ def main():
                        help="Only aggregate existing results, don't generate missing experiments")
     parser.add_argument("--missing-only", action="store_true",
                        help="Only identify missing experiments, don't aggregate")
+    parser.add_argument("--local", action="store_true",
+                       help="Generate Python script for local execution instead of sbatch script")
     
     args = parser.parse_args()
     
     # Initialize automation system
-    automation = ExperimentAutomation(args.config, args.preaggregated_results)
+    automation = ExperimentAutomation(args.config, args.preaggregated_results, args.local)
     
     if args.aggregate_only:
         # Only aggregate results (ignore pre-aggregated file for this mode)
@@ -723,6 +957,13 @@ def main():
         else:
             automation.aggregate_existing_results()
         automation.identify_missing_experiments()
+        
+        # Generate script based on local flag
+        if args.local:
+            automation.generate_python_script(args.output_dir)
+        else:
+            automation.generate_shell_script(args.output_dir)
+        
         automation.generate_summary_report(args.output_dir)
     else:
         # Full automation

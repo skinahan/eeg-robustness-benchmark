@@ -29,6 +29,7 @@ def get_seed():
 
 # Centralized EarlyStopping configuration
 # These parameters are designed to prevent underfitting while still preventing overfitting
+# Note: A higher patience value is still cheaper computationally than a full re-train run.
 EARLY_STOPPING_PATIENCE = 20  # Increased from 10 to allow more training
 EARLY_STOPPING_THRESHOLD = 1e-5  # Relaxed from 1e-4 to be less strict
 EARLY_STOPPING_MONITOR = 'valid_loss'  # Monitor validation loss instead of score
@@ -53,3 +54,7 @@ DEFAULT_MAX_EPOCHS = 200  # Increased from 100
 
 # Underfitting detection threshold
 UNDERFITTING_THRESHOLD = 0.70  # Increased from 0.65 to catch more underfitting cases
+
+# EEGClassifier verbose level
+# 0 = silent, 1 = epoch progress bar, 2 = epoch progress + batch info
+EEGCLASSIFIER_VERBOSE = 0  # Set to 0 to suppress epoch-level output

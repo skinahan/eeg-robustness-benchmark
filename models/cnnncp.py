@@ -1,5 +1,5 @@
 from skorch.dataset import ValidSplit
-from globals import set_seeds, get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS
+from globals import set_seeds, get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS, EEGCLASSIFIER_VERBOSE
 from skorch.callbacks import LRScheduler, GradientNormClipping
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from braindecode import EEGClassifier
@@ -723,10 +723,10 @@ class CNNNCPv3(EEGModuleMixin, nn.Module):
             n_chans,
             n_times,
             n_outputs,
-            ncp_hidden_dim=22,
+            ncp_hidden_dim=32,
             cnn_output_dim=16,
             sparsity=0.85,
-            drop_prob=0.05,
+            drop_prob=0.15,
             F1=8,
             D=2,
             kernel_length=128,
@@ -1602,6 +1602,7 @@ def create_cnnncfc_v2_classifier(n_chans, n_times, n_outputs):
             GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2),
             LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=10),
             ],
+        verbose=EEGCLASSIFIER_VERBOSE
     )
 
     if torch.cuda.is_available():
@@ -1643,6 +1644,7 @@ def create_cnnncfc_compact_classifier(n_chans, n_times, n_outputs):
             get_early_stopping_callback(),
             GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2)
             ],
+        verbose=EEGCLASSIFIER_VERBOSE
     )
     
     if torch.cuda.is_available():
@@ -1690,7 +1692,7 @@ def create_cnnncpv2_classifier(
             GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2),
             LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=5),
         ],
-        # verbose=0  # Suppress epoch-level output
+        verbose=EEGCLASSIFIER_VERBOSE
     )
     
     if torch.cuda.is_available():
@@ -1706,11 +1708,11 @@ def create_cnnncp_classifier(
         n_chans,
         n_times,
         n_outputs,
-        net_size=26,
-        net_sparsity=0.5,
-        lr=1e-3,
-        batch_size=12,
-        weight_decay=1e-3,
+        net_size=19,
+        net_sparsity=0.7,
+        lr=1e-4,
+        batch_size=64,
+        weight_decay=5e-4,
         classifier_type=3,
         gradient_clip_value=1.0
     ):
@@ -1738,7 +1740,7 @@ def create_cnnncp_classifier(
                 get_early_stopping_callback(),
                 GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2)
             ],
-            # verbose=0  # Suppress epoch-level output
+            verbose=EEGCLASSIFIER_VERBOSE
         )
         if torch.cuda.is_available():
             cnn_ncp_net.initialize()
@@ -1805,7 +1807,8 @@ def create_cnnsmallworld_classifier(
         module__rewiring_prob=rewiring_prob,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[get_early_stopping_callback()]
+        callbacks=[get_early_stopping_callback()],
+        verbose=EEGCLASSIFIER_VERBOSE
     )
     
     if torch.cuda.is_available():
@@ -1866,6 +1869,7 @@ def create_cnncfc_v2_learnable_classifier(
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
         callbacks=[],
+        verbose=EEGCLASSIFIER_VERBOSE
     )
     
     if torch.cuda.is_available():
@@ -1936,6 +1940,7 @@ def create_cnnsmallworld_learnable_classifier(
         train_split=None,
         device='cuda' if torch.cuda.is_available() else 'cpu',
         callbacks=[],
+        verbose=EEGCLASSIFIER_VERBOSE
     )
     
     if torch.cuda.is_available():
@@ -1999,6 +2004,7 @@ def create_cnnwiredcfc_classifier(
             get_early_stopping_callback(),
             GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2)
             ],
+        verbose=EEGCLASSIFIER_VERBOSE
     )
     
     if torch.cuda.is_available():
@@ -2039,6 +2045,7 @@ def create_ncp_only_classifier(n_chans, n_times, n_outputs, gradient_clip_value=
             get_early_stopping_callback(),
             GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2)
         ],
+        verbose=EEGCLASSIFIER_VERBOSE
     )
     
     if torch.cuda.is_available():
@@ -2077,6 +2084,7 @@ def create_cfc_only_classifier(n_chans, n_times, n_outputs, gradient_clip_value=
             # LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=5),
             GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2)
         ],
+        verbose=EEGCLASSIFIER_VERBOSE
     )
     
     if torch.cuda.is_available():

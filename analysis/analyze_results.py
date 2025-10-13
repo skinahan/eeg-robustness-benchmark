@@ -5,6 +5,65 @@ import matplotlib.pyplot as plt
 import itertools
 import numpy as np
 
+def load_saturation_points(saturation_csv_path='saturation_results/saturation_points_summary.csv'):
+    """
+    Load saturation points from the summary CSV file.
+    
+    Parameters:
+    - saturation_csv_path: Path to the saturation points CSV file
+    
+    Returns:
+    - Dictionary with structure: {dataset: {noise_type: saturation_point}}
+    """
+    try:
+        if not os.path.exists(saturation_csv_path):
+            # Try relative to script location
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            saturation_csv_path = os.path.join(script_dir, '..', saturation_csv_path)
+        
+        df = pd.read_csv(saturation_csv_path)
+        saturation_dict = {}
+        
+        for _, row in df.iterrows():
+            dataset = row['dataset']
+            noise_type = row['noise_type']
+            saturation_point = row['saturation_point']
+            
+            if dataset not in saturation_dict:
+                saturation_dict[dataset] = {}
+            saturation_dict[dataset][noise_type] = saturation_point
+        
+        return saturation_dict
+    except Exception as e:
+        print(f"Warning: Could not load saturation points from {saturation_csv_path}: {e}")
+        print("Using default saturation point of 50.0")
+        return {}
+
+def get_correct_intensities(dataset='BNCI2014_001', noise_type=None, saturation_dict=None, num_points=20):
+    """
+    Get the correct intensity range based on saturation points.
+    
+    Parameters:
+    - dataset: Dataset name
+    - noise_type: Noise type (dropout, gaussian, eog)
+    - saturation_dict: Dictionary of saturation points (if None, will load from file)
+    - num_points: Number of intensity points to generate
+    
+    Returns:
+    - numpy array of intensity values from 1.0 to saturation_point
+    """
+    if saturation_dict is None:
+        saturation_dict = load_saturation_points()
+    
+    # Get saturation point for this dataset and noise type
+    if dataset in saturation_dict and noise_type in saturation_dict[dataset]:
+        saturation_point = saturation_dict[dataset][noise_type]
+    else:
+        print(f"Warning: No saturation point found for {dataset}/{noise_type}, using default 50.0")
+        saturation_point = 50.0
+    
+    return np.linspace(1.0, saturation_point, num_points)
+
 def aggregate_results(input_dir):
     """
     Aggregates CSVs from a specified directory.
@@ -487,10 +546,9 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
     - output_dir: str, directory to save plots
     - dataset: str, dataset name (affects y-axis limits)
     """
-    # Define correct intensity values (from unified_experiment_runner.py)
-    # These are the standardized intensity values used by the current experiment runner
-    # Filters out old/inconsistent intensity values from previous experiment configurations
-    correct_intensities = np.linspace(1.0, 50.0, 20)
+    # Load saturation points and get correct intensity values
+    saturation_dict = load_saturation_points()
+    correct_intensities = get_correct_intensities(dataset=dataset, noise_type=noise_type, saturation_dict=saturation_dict)
     valid_seeds = [100, 200, 300, 400, 500]
     
     # Filter data
@@ -587,10 +645,9 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
     - output_dir: str, directory to save plots
     - dataset: str, dataset name (affects y-axis limits)
     """
-    # Define correct intensity values (from unified_experiment_runner.py)
-    # These are the standardized intensity values used by the current experiment runner
-    # Filters out old/inconsistent intensity values from previous experiment configurations
-    correct_intensities = np.linspace(1.0, 50.0, 20)
+    # Load saturation points and get correct intensity values
+    saturation_dict = load_saturation_points()
+    correct_intensities = get_correct_intensities(dataset=dataset, noise_type=noise_type, saturation_dict=saturation_dict)
     valid_seeds = [100, 200, 300, 400, 500]
     
     # Filter data
@@ -620,14 +677,19 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
     # Add clean_score as intensity 0.0
     clean_data = df_filtered.dropna(subset=[clean_col]).copy()
     if not clean_data.empty:
-        clean_summary = clean_data.groupby(['model', 'noise_type', 'seed', 'session', 'subject'])[clean_col].first().reset_index()
-        clean_summary['intensity'] = 0.0
-        clean_summary[corrupted_col] = clean_summary[clean_col]
-        clean_summary['tune'] = tune_setting
-        clean_summary['mode'] = 'test_perturb'
-        clean_summary['eval_mode'] = 'CrossSession'
+        # Ensure we only get clean data for THIS noise_type
+        clean_data_for_noise = clean_data[clean_data['noise_type'] == noise_type].copy()
         
-        df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
+        if not clean_data_for_noise.empty:
+            clean_summary = clean_data_for_noise.groupby(['model', 'seed', 'session', 'subject'])[clean_col].first().reset_index()
+            clean_summary['intensity'] = 0.0
+            clean_summary[corrupted_col] = clean_summary[clean_col]
+            clean_summary['noise_type'] = noise_type  # Explicitly set noise_type
+            clean_summary['tune'] = tune_setting
+            clean_summary['mode'] = 'test_perturb'
+            clean_summary['eval_mode'] = 'CrossSession'
+            
+            df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
     
     tune_label = "tuned" if tune_setting else "baseline"
     
@@ -734,8 +796,9 @@ def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, data
     - dataset: str, dataset name for directory organization
     - output_dir: str, base directory to save plots
     """
-    # Define correct intensity values
-    correct_intensities = np.linspace(1.0, 50.0, 20)
+    # Load saturation points and get correct intensity values
+    saturation_dict = load_saturation_points()
+    correct_intensities = get_correct_intensities(dataset=dataset, noise_type=noise_type, saturation_dict=saturation_dict)
     valid_seeds = [100, 200, 300, 400, 500]
     
     # Filter data
@@ -760,14 +823,20 @@ def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, data
     # Add clean_score as intensity 0.0
     clean_data = df_filtered.dropna(subset=[clean_col]).copy()
     if not clean_data.empty:
-        clean_summary = clean_data.groupby(['model', 'noise_type', 'seed', 'session', 'subject'])[clean_col].first().reset_index()
-        clean_summary['intensity'] = 0.0
-        clean_summary[corrupted_col] = clean_summary[clean_col]
-        clean_summary['tune'] = tune_setting
-        clean_summary['mode'] = 'test_perturb'
-        clean_summary['eval_mode'] = 'CrossSession'
+        # Ensure we only get clean data for THIS noise_type
+        clean_data_for_noise = clean_data[clean_data['noise_type'] == noise_type].copy()
         
-        df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
+        if not clean_data_for_noise.empty:
+            clean_summary = clean_data_for_noise.groupby(['model', 'seed', 'session', 'subject'])[clean_col].first().reset_index()
+            clean_summary['intensity'] = 0.0
+            clean_summary[corrupted_col] = clean_summary[clean_col]
+            clean_summary['noise_type'] = noise_type  # Explicitly set noise_type
+            clean_summary['model'] = model_name  # Explicitly set model
+            clean_summary['tune'] = tune_setting
+            clean_summary['mode'] = 'test_perturb'
+            clean_summary['eval_mode'] = 'CrossSession'
+            
+            df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
     
     # Get unique subjects
     subjects = sorted(df_filtered['subject'].unique())
@@ -840,13 +909,18 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
     - dataset: str, dataset name for directory organization
     - output_dir: str, base directory to save plots
     """
-    # Define correct intensity values
-    correct_intensities = np.linspace(1.0, 50.0, 20)
+    # Load saturation points and get correct intensity values
+    saturation_dict = load_saturation_points()
+    correct_intensities = get_correct_intensities(dataset=dataset, noise_type=noise_type, saturation_dict=saturation_dict)
     valid_seeds = [100, 200, 300, 400, 500]
-    
+
+    mode_str = 'test_perturb'
+    if tune_setting:
+        mode_str = 'test_perturb_tune'
+
     # Filter data
     df_filtered = df[
-        (df['mode'] == 'test_perturb') &
+        (df['mode'] == mode_str) &
         (df['eval_mode'] == 'CrossSession') &
         (df['noise_type'] == noise_type) &
         (df['tune'] == tune_setting) &
@@ -862,6 +936,11 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
         print(f"No data found for multisubject plot: {noise_type}, tune={tune_setting}")
         return
     
+    # Debug: Print unique noise types in filtered data
+    print(f"[DEBUG] Processing {noise_type}, tune={tune_setting}")
+    print(f"[DEBUG] Unique noise_types in df_filtered: {df_filtered['noise_type'].unique()}")
+    print(f"[DEBUG] Data shape: {df_filtered.shape}")
+    
     # Use legacy column naming for backward compatibility
     clean_col, corrupted_col, y_label = _get_metric_columns_legacy('roc_auc')
     
@@ -871,14 +950,22 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
     # Add clean_score as intensity 0.0
     clean_data = df_filtered.dropna(subset=[clean_col]).copy()
     if not clean_data.empty:
-        clean_summary = clean_data.groupby(['model', 'noise_type', 'seed', 'session', 'subject'])[clean_col].first().reset_index()
-        clean_summary['intensity'] = 0.0
-        clean_summary[corrupted_col] = clean_summary[clean_col]
-        clean_summary['tune'] = tune_setting
-        clean_summary['mode'] = 'test_perturb'
-        clean_summary['eval_mode'] = 'CrossSession'
+        # Ensure we only get clean data for THIS noise_type
+        clean_data_for_noise = clean_data[clean_data['noise_type'] == noise_type].copy()
         
-        df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
+        if not clean_data_for_noise.empty:
+            clean_summary = clean_data_for_noise.groupby(['model', 'seed', 'session', 'subject'])[clean_col].first().reset_index()
+            clean_summary['intensity'] = 0.0
+            clean_summary[corrupted_col] = clean_summary[clean_col]
+            clean_summary['noise_type'] = noise_type  # Explicitly set noise_type
+            clean_summary['tune'] = tune_setting
+            clean_summary['mode'] = mode_str
+            clean_summary['eval_mode'] = 'CrossSession'
+            
+            df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
+            
+            # Debug: Verify noise_type after concat
+            print(f"[DEBUG] After concat, unique noise_types: {df_filtered['noise_type'].unique()}")
     
     tune_label = "tuned" if tune_setting else "baseline"
     
@@ -947,12 +1034,18 @@ def generate_organized_test_perturb_plots(df, models=None, dataset='BNCI2014_001
         models = df[df['mode'] == 'test_perturb']['model'].unique()
     
     noise_types = df[df['mode'] == 'test_perturb']['noise_type'].unique()
-    tune_settings = df[df['mode'] == 'test_perturb']['tune'].unique()
+    tune_settings = [False, True]#df[df['mode'] == 'test_perturb']['tune'].unique()
     
     print(f"Generating organized plots for {len(models)} models, {len(noise_types)} noise types, {len(tune_settings)} tune settings")
     print(f"Models: {list(models)}")
     print(f"Noise types: {list(noise_types)}")
-    
+
+    # Generate multi-subject comparison plots
+    print("\n=== Generating multi-subject comparison plots ===")
+    for noise_type in noise_types:
+        for tune_setting in tune_settings:
+            plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, models, dataset, output_dir)
+
     # Generate per-subject plots for each model
     print("\n=== Generating per-subject plots ===")
     for model in models:
@@ -960,11 +1053,6 @@ def generate_organized_test_perturb_plots(df, models=None, dataset='BNCI2014_001
             for tune_setting in tune_settings:
                 plot_test_perturb_per_subject(df, model, noise_type, tune_setting, dataset, output_dir)
     
-    # Generate multi-subject comparison plots
-    print("\n=== Generating multi-subject comparison plots ===")
-    for noise_type in noise_types:
-        for tune_setting in tune_settings:
-            plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, models, dataset, output_dir)
     
     print(f"\nAll organized test_perturb plots generated and saved to {output_dir}")
 
@@ -1307,7 +1395,8 @@ def extract_custom_data(df, filters=None, columns=None, aggregate=None, group_by
 
 
 if __name__ == '__main__':
-    input_dir = '../sol_results/'
+    #input_dir = '../sol_results/'
+    input_dir = '../results/MotorImagery/BNCI2014_001/'
     aggregated_df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
     
     # Example usage of custom plotting functions
