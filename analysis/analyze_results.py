@@ -647,7 +647,6 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
     """
     # Load saturation points and get correct intensity values
     saturation_dict = load_saturation_points()
-    correct_intensities = get_correct_intensities(dataset=dataset, noise_type=noise_type, saturation_dict=saturation_dict)
     valid_seeds = [100, 200, 300, 400, 500]
     
     # Filter data
@@ -656,8 +655,7 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
         (df['eval_mode'] == 'CrossSession') &
         (df['noise_type'] == noise_type) &
         (df['tune'] == tune_setting) &
-        (df['seed'].isin(valid_seeds)) &
-        (df['intensity'].isin(correct_intensities))
+        (df['seed'].isin(valid_seeds))
     ].copy()
     
     # Filter by specific models if provided
@@ -1395,8 +1393,8 @@ def extract_custom_data(df, filters=None, columns=None, aggregate=None, group_by
 
 
 if __name__ == '__main__':
-    #input_dir = '../sol_results/'
-    input_dir = '../results/MotorImagery/BNCI2014_001/'
+    input_dir = '../sol_results/'
+    #input_dir = '../results/MotorImagery/BNCI2014_001/'
     aggregated_df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
     
     # Example usage of custom plotting functions
@@ -1426,7 +1424,7 @@ if __name__ == '__main__':
     # Determine dataset from the data
     dataset = aggregated_df['dataset'].iloc[0] if 'dataset' in aggregated_df.columns else 'BNCI2014_001'
 
-    legacy_mode = False
+    legacy_mode = True
 
     if legacy_mode:
         # Also generate the original plots for backward compatibility

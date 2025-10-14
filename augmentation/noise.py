@@ -351,7 +351,8 @@ def to_volts(arr: np.ndarray, verbose: bool = False) -> Tuple[np.ndarray, str]:
     return arr_V, unit
 
 def inject_realistic_eog_artifacts_with_coverage(data, info, template_path, montage_name='standard_1005', 
- temporal_coverage=0.1, seed=42, apply_car=True, artifact_scale_factor=15000.0, allow_boundary_intersection=True):
+ temporal_coverage=0.1, seed=42, apply_car=True, artifact_scale_factor=15000.0, allow_boundary_intersection=True,
+ include_slow_drift=True, include_microsaccades=True, include_blink_clusters=True):
     """
     Inject realistic EOG artifacts using the learned generic mixing template with controlled temporal coverage.
     
@@ -381,6 +382,12 @@ def inject_realistic_eog_artifacts_with_coverage(data, info, template_path, mont
     artifact_scale_factor : float
     Scaling factor to make EOG artifacts more impactful (default: 15000.0)
     This addresses the units mismatch issue where EOG template values are ~1000x too small
+    include_slow_drift : bool
+    Whether to include slow eye drift components (0.3-2.5 Hz drifts) (default: True)
+    include_microsaccades : bool
+    Whether to include microsaccades during blinks (default: True)
+    include_blink_clusters : bool
+    Whether to include blink clusters (rapid successive blinks) (default: True)
     
     Returns
     -------
@@ -430,7 +437,9 @@ def inject_realistic_eog_artifacts_with_coverage(data, info, template_path, mont
     n_times = data_volts.shape[1]
     sfreq = info['sfreq']
     veog_tc, heog_tc = generate_realistic_eog_regressors_with_coverage(
-        n_times, sfreq, template, temporal_coverage, seed=seed, allow_boundary_intersection=allow_boundary_intersection
+        n_times, sfreq, template, temporal_coverage, seed=seed, allow_boundary_intersection=allow_boundary_intersection,
+        include_slow_drift=include_slow_drift, include_microsaccades=include_microsaccades, 
+        include_blink_clusters=include_blink_clusters
     )
     
     # Project EOG artifacts to EEG space
@@ -451,7 +460,8 @@ def inject_realistic_eog_artifacts_with_coverage(data, info, template_path, mont
     
     return contaminated_data
 
-def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_stats, temporal_coverage, seed=42, allow_boundary_intersection=True):
+def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_stats, temporal_coverage, seed=42, allow_boundary_intersection=True,
+                                                    include_slow_drift=True, include_microsaccades=True, include_blink_clusters=True):
     """
     Generate realistic VEOG and HEOG time courses with controlled temporal coverage.
     
@@ -470,6 +480,12 @@ def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_sta
     allow_boundary_intersection : bool
     If True, allows blinks to start before sample start or end after sample end,
     creating partial blinks that intersect with sample boundaries for more variability
+    include_slow_drift : bool
+    Whether to include slow eye drift components (0.3-2.5 Hz drifts) (default: True)
+    include_microsaccades : bool
+    Whether to include microsaccades during blinks (default: True)
+    include_blink_clusters : bool
+    Whether to include blink clusters (rapid successive blinks) (default: True)
     
     Returns
     -------
@@ -552,14 +568,15 @@ def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_sta
     
     # Add slow eye drift component for more realistic EOG (slow saccades and drifts)
     # These low-frequency components are common and challenging for models
-    n_drift_components = rng.randint(1, 4)  # 1-3 drift components
-    for _ in range(n_drift_components):
-        drift_freq = rng.uniform(0.3, 2.5)  # 0.3-2.5 Hz drift
-        drift_phase = rng.uniform(0, 2 * np.pi)
-        drift_amplitude = rng.uniform(0.1, 0.25)  # 10-25% of blink amplitude
-        t = np.arange(n_times) / sfreq
-        veog_tc += drift_amplitude * np.sin(2 * np.pi * drift_freq * t + drift_phase)
-        heog_tc += drift_amplitude * 0.7 * np.sin(2 * np.pi * drift_freq * t + drift_phase + rng.uniform(0, np.pi))
+    if include_slow_drift:
+        n_drift_components = rng.randint(1, 4)  # 1-3 drift components
+        for _ in range(n_drift_components):
+            drift_freq = rng.uniform(0.3, 2.5)  # 0.3-2.5 Hz drift
+            drift_phase = rng.uniform(0, 2 * np.pi)
+            drift_amplitude = rng.uniform(0.1, 0.25)  # 10-25% of blink amplitude
+            t = np.arange(n_times) / sfreq
+            veog_tc += drift_amplitude * np.sin(2 * np.pi * drift_freq * t + drift_phase)
+            heog_tc += drift_amplitude * 0.7 * np.sin(2 * np.pi * drift_freq * t + drift_phase + rng.uniform(0, np.pi))
     
     # Add blinks with boundary intersection support
     for idx, start in enumerate(blink_starts):
@@ -588,7 +605,7 @@ def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_sta
         heog_tc[valid_start:valid_end] += direction * amplitude_multiplier * lateral_amplitude * blink_template[template_start:template_end]
         
         # Add microsaccades during some blinks (small eye movements that co-occur with blinks)
-        if rng.random() < 0.4:  # 40% of blinks have microsaccades
+        if include_microsaccades and rng.random() < 0.4:  # 40% of blinks have microsaccades
             microsaccade_amplitude = rng.uniform(0.08, 0.15)
             microsaccade_direction = rng.choice([-1, 1])
             # Microsaccade is brief and occurs during the blink
@@ -598,7 +615,7 @@ def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_sta
             heog_tc[micro_start:micro_end] += microsaccade_direction * microsaccade_amplitude
         
         # # Add blink clusters (multiple blinks in rapid succession) - common when tired/dry eyes
-        if rng.random() < 0.25 and idx < len(blink_starts) - 1:  # 25% chance, not on last blink
+        if include_blink_clusters and rng.random() < 0.25 and idx < len(blink_starts) - 1:  # 25% chance, not on last blink
             n_cluster_blinks = rng.choice([1, 2])  # 1-2 additional blinks
             cluster_spacing = int(rng.uniform(0.25, 0.5) * sfreq)  # 250-500ms between blinks
             
@@ -670,11 +687,18 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
     For EOG noise: whether to allow blinks to start before sample start or end after sample end,
     creating partial blinks that intersect with sample boundaries for more variability (default: True).
     This significantly increases the variability of EOG artifacts and makes them more challenging for models.
+    include_slow_drift : bool, optional
+    For EOG noise: whether to include slow eye drift components (0.3-2.5 Hz drifts) (default: True).
+    include_microsaccades : bool, optional
+    For EOG noise: whether to include microsaccades during blinks (default: True).
+    include_blink_clusters : bool, optional
+    For EOG noise: whether to include blink clusters (rapid successive blinks) (default: True).
     """
 
     def __init__(self, noise_type='dropout', intensity=10.0, seed=42, 
     eog_template_path='notebooks/eog_mixing_results/generic_eog_mixing_template.npz', montage_name='standard_1020',
-    artifact_scale_factor=10000.0, use_improved_gaussian=True, allow_boundary_intersection=True):
+    artifact_scale_factor=10000.0, use_improved_gaussian=True, allow_boundary_intersection=True,
+    include_slow_drift=True, include_microsaccades=True, include_blink_clusters=True):
         self.noise_type = noise_type
         self.intensity = intensity
         self.seed = seed
@@ -683,6 +707,9 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         self.artifact_scale_factor = artifact_scale_factor
         self.use_improved_gaussian = use_improved_gaussian
         self.allow_boundary_intersection = allow_boundary_intersection
+        self.include_slow_drift = include_slow_drift
+        self.include_microsaccades = include_microsaccades
+        self.include_blink_clusters = include_blink_clusters
         
         # Validate parameters
         if noise_type == 'eog' and eog_template_path is None:
@@ -876,7 +903,10 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
                 seed=self.seed + i, # Different seed for each epoch
                 apply_car=True,
                 artifact_scale_factor=self.artifact_scale_factor, # Use the scaling factor
-                allow_boundary_intersection=self.allow_boundary_intersection # Pass boundary intersection setting
+                allow_boundary_intersection=self.allow_boundary_intersection, # Pass boundary intersection setting
+                include_slow_drift=self.include_slow_drift, # Control slow drift
+                include_microsaccades=self.include_microsaccades, # Control microsaccades
+                include_blink_clusters=self.include_blink_clusters # Control blink clusters
             )
             data_aug[i] = contaminated_epoch
             

@@ -801,7 +801,7 @@ class CNNNCPv3(EEGModuleMixin, nn.Module):
 
         wiring = AutoNCP(
             ncp_hidden_dim, ncp_output_size, sparsity_level=sparsity, seed=seed)
-        self.ncp = CfC(ncp_input_size, wiring, return_sequences=True)
+        self.ncp = CfC(ncp_input_size, wiring, return_sequences=True, mixed_memory=True)
 
         # 7. Separable Conv2D 
         self.sep_depthwise = nn.Conv2d(
