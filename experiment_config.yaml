@@ -56,7 +56,7 @@ experiment_modes:
   - name: "multirun"
     display_name: "Multirun (Test Perturb)"
     requires_noise: false  # Handled internally by multirun
-    supports_tuning: false
+    supports_tuning: true
     
 # Random seeds for reproducibility
 seeds:

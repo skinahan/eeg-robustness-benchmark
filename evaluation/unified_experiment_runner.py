@@ -193,7 +193,7 @@ def save_training_history(model, output_path: str, fold_idx: int = None, subject
     try:
         with open(filepath, 'w') as f:
             json.dump(history_data, f, indent=2)
-        print(f"Saved training history to {filepath}")
+        # print(f"Saved training history to {filepath}")
     except Exception as e:
         print(f"Warning: Failed to save training history: {e}")
 
@@ -793,7 +793,7 @@ class UnifiedExperimentRunner:
             # Use a set threshold to restart training if clean score indicates underfitting.
             if clean_score < UNDERFITTING_THRESHOLD:
                 # Disable early stopping
-                print(f"Re-training model without EarlyStopping due to underfitting: {clean_score} < {UNDERFITTING_THRESHOLD}")
+                # print(f"Re-training model without EarlyStopping due to underfitting: {clean_score} < {UNDERFITTING_THRESHOLD}")
                 new_callbacks = []
                 for callback in model.callbacks:
                     if not isinstance(callback, EarlyStopping):
@@ -1052,7 +1052,7 @@ class UnifiedExperimentRunner:
                                                 'eval_mode': self.eval_mode,
                                                 'seed': self.seed,
                                                 'tune': self.tune,
-                                                'noise_type': self.noise_dict['noise_type'] if self.noise_dict else None,
+                                                'noise_type': session_df['noise_type'].iloc[0] if 'noise_type' in session_df.columns else (self.noise_dict['noise_type'] if self.noise_dict else None),
                                                 'intensity': intensity,
                                                 'clean_score': session_df['clean_score'].mean() if 'clean_score' in session_df.columns else 0.0,
                                                 'corrupted_score': session_df['corrupted_score'].mean() if 'corrupted_score' in session_df.columns else 0.0,
@@ -1061,6 +1061,31 @@ class UnifiedExperimentRunner:
                                                 'evaluation_time': session_df['evaluation_time'].mean() if 'evaluation_time' in session_df.columns else 0.0,
                                                 'total_time': session_df['total_time'].mean() if 'total_time' in session_df.columns else 0.0
                                             }
+                                            
+                                            # Add all clean metrics (matching CrossSession)
+                                            if 'clean_roc_auc' in session_df.columns:
+                                                agg_row['clean_roc_auc'] = session_df['clean_roc_auc'].mean()
+                                            if 'clean_accuracy' in session_df.columns:
+                                                agg_row['clean_accuracy'] = session_df['clean_accuracy'].mean()
+                                            if 'clean_precision' in session_df.columns:
+                                                agg_row['clean_precision'] = session_df['clean_precision'].mean()
+                                            if 'clean_recall' in session_df.columns:
+                                                agg_row['clean_recall'] = session_df['clean_recall'].mean()
+                                            if 'clean_f1' in session_df.columns:
+                                                agg_row['clean_f1'] = session_df['clean_f1'].mean()
+                                            
+                                            # Add all corrupted metrics (matching CrossSession)
+                                            if 'corrupted_roc_auc' in session_df.columns:
+                                                agg_row['corrupted_roc_auc'] = session_df['corrupted_roc_auc'].mean()
+                                            if 'corrupted_accuracy' in session_df.columns:
+                                                agg_row['corrupted_accuracy'] = session_df['corrupted_accuracy'].mean()
+                                            if 'corrupted_precision' in session_df.columns:
+                                                agg_row['corrupted_precision'] = session_df['corrupted_precision'].mean()
+                                            if 'corrupted_recall' in session_df.columns:
+                                                agg_row['corrupted_recall'] = session_df['corrupted_recall'].mean()
+                                            if 'corrupted_f1' in session_df.columns:
+                                                agg_row['corrupted_f1'] = session_df['corrupted_f1'].mean()
+                                            
                                             agg_results.append(agg_row)
                 else:
                     # Regular modes: calculate fold score means for '0train' and '1test' separately
@@ -1079,6 +1104,34 @@ class UnifiedExperimentRunner:
                                 'seed': self.seed,
                                 'tune': self.tune
                             }
+                            
+                            # Add all validation metrics (matching CrossSession)
+                            if 'validation_roc_auc' in session_df.columns:
+                                agg_row['validation_roc_auc'] = session_df['validation_roc_auc'].mean()
+                            if 'validation_accuracy' in session_df.columns:
+                                agg_row['validation_accuracy'] = session_df['validation_accuracy'].mean()
+                            if 'validation_precision' in session_df.columns:
+                                agg_row['validation_precision'] = session_df['validation_precision'].mean()
+                            if 'validation_recall' in session_df.columns:
+                                agg_row['validation_recall'] = session_df['validation_recall'].mean()
+                            if 'validation_f1' in session_df.columns:
+                                agg_row['validation_f1'] = session_df['validation_f1'].mean()
+                            
+                            # Add timing and sample info
+                            if 'training_time' in session_df.columns:
+                                agg_row['training_time'] = session_df['training_time'].mean()
+                            if 'evaluation_time' in session_df.columns:
+                                agg_row['evaluation_time'] = session_df['evaluation_time'].mean()
+                            if 'total_time' in session_df.columns:
+                                agg_row['total_time'] = session_df['total_time'].mean()
+                            if 'train_samples' in session_df.columns:
+                                agg_row['train_samples'] = session_df['train_samples'].mean()
+                            if 'valid_samples' in session_df.columns:
+                                agg_row['valid_samples'] = session_df['valid_samples'].mean()
+                            
+                            # Add best validation score if tuning
+                            if 'best_validation_score' in session_df.columns:
+                                agg_row['best_validation_score'] = session_df['best_validation_score'].mean()
                             
                             # Add noise information if applicable
                             if self.noise_dict:

@@ -370,6 +370,21 @@ def cnncfc_compact_training_space(trial, prefix):
         ),
     }
 
+def diva_ncp_architecture_space(trial, prefix):
+    return {
+        f"{prefix}module__ncp_hidden_dim": trial.suggest_int(
+            f"{prefix}module__ncp_hidden_dim", 16, 128
+        ),
+    }
+
+def diva_ncp_training_space(trial, prefix):
+    return {
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(
+            f"{prefix}optimizer__lr", 1e-6, 1e-2
+        ),
+    }
+    
+
 
 def cnn_smallworld_architecture_space(trial, prefix):
     """Architecture parameter space for CNNSmallWorld model."""
