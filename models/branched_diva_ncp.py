@@ -13,18 +13,41 @@ from models.cnnncp import _MultiScaleTemporalBlock1D, _SNRGate
 from torch.nn.utils.parametrizations import spectral_norm
 import numpy as np
 
-# The CfC Model with a residual connection surrounding the recurrent layer.
-# This model gets a high non-contaminated score, but is particularly vulnerable to Gaussian noise.
-class DIVANCP(EEGModuleMixin, nn.Module):
+
+class TemporalAttnPool(nn.Module):
     """
-    CNN-NCP optimized for robustness to additive Gaussian noise.
+    Lightweight attention pooling over a time axis.
+    Inputs:  x [B, T, C]
+    Output:  z [B, C]
+    """
+    def __init__(self, dim):
+        super().__init__()
+        self.query = nn.Parameter(torch.randn(dim))
+        self.proj = nn.Linear(dim, dim, bias=False)
 
-    Architectural differences vs your CNNNCPv3:
-      • Proper anti-aliasing temporal downsampling (AvgPool 1xP with stride P).
-      • Multi-Scale Temporal Block (dilated depthwise-separable Conv1D) to integrate over time without blowing params.
-      • SNR Gate (SE-style on mean & log-variance) to shrink noisy channels/bands.
-      • Careful shape handling and comments at every step.
+    def forward(self, x):
+        # [B, T, C]
+        q = self.query  # [C]
+        k = torch.tanh(self.proj(x))  # [B, T, C]
+        # attention scores over T
+        att = torch.einsum("btc,c->bt", k, q) / (x.size(-1) ** 0.5)  # [B, T]
+        w = torch.softmax(att, dim=1).unsqueeze(-1)                  # [B, T, 1]
+        z = (w * x).sum(dim=1)                                       # [B, C]
+        return z
 
+
+class BranchedDIVANCP(EEGModuleMixin, nn.Module):
+    """
+    Hybrid model combining DIVANCP's front-end with branched recurrent processing.
+    
+    Architecture:
+      1. DIVANCP front-end: CNN + Multi-scale temporal + SNR gate + temporal downsampler
+      2. Branched recurrent processing: Split into bins, parallel CfC per bin
+      3. Weighted residual connections (DIVANCP-style) at bin level
+      4. Attention pooling within bins
+      5. Fusion across bins
+      6. Classification head
+    
     Input:  x: (B, C=n_chans, T=n_times)
     Output: logits: (B, n_outputs)
     """
@@ -48,7 +71,12 @@ class DIVANCP(EEGModuleMixin, nn.Module):
         # --- NCP/CfC core ---
         ncp_hidden_dim: int = 22,
         sparsity: float = 0.85,
-        ncp_output_size: int = None,  # if None, defaults to F1
+        ncp_output_size: int = None,  # if None, defaults to F2 for residual compatibility
+        # --- Binning params ---
+        bin_len: int = 32,            # number of timesteps per bin AFTER downsampling
+        bin_stride: int = 30,         # step between bin starts; set < bin_len for overlap
+        fusion: str = "mean",         # "attn" or "mean"
+        mixed_memory: bool = False,
         # --- SNR gate ---
         snr_reduction: int = 4,
         # --- Normalization ---
@@ -65,6 +93,7 @@ class DIVANCP(EEGModuleMixin, nn.Module):
         )
         seed = get_seed()
         rng = np.random.default_rng(seed)
+        
         # Derived dims
         self.F1 = F1
         self.F2 = F1 * D
@@ -72,12 +101,16 @@ class DIVANCP(EEGModuleMixin, nn.Module):
         self.pool_time = pool_time
         self.temporal_stride = temporal_stride
         self.temporal_kernel_size = temporal_kernel_size
+        self.bin_len = bin_len
+        self.bin_stride = bin_stride
+        self.fusion = fusion.lower()
+        assert self.fusion in {"attn", "mean"}
 
         # -------------------------
-        # 1) TEMPORAL CONV (time-only): (B,1,C,T) -> (B,F1,C,T)
-        #    - Learns band-limited temporal filters per channel.
-        #    - Spectral norm (optional) to avoid amplifying HF noise.
+        # DIVANCP FRONT-END: Layers before recurrent compartment
         # -------------------------
+        
+        # 1) TEMPORAL CONV (time-only): (B,1,C,T) -> (B,F1,C,T)
         conv1 = nn.Conv2d(
             in_channels=1,
             out_channels=self.F1,
@@ -90,10 +123,7 @@ class DIVANCP(EEGModuleMixin, nn.Module):
         self.bn1 = nn.BatchNorm2d(self.F1, momentum=bn_momentum, eps=bn_eps)
         self.act = nn.ELU()
 
-        # -------------------------
         # 2) DEPTHWISE SPATIAL CONV: (B,F1,C,T) -> (B,F2=F1*D,1,T)
-        #    - Learns spatial filters (virtual sensors), averaging out uncorrelated channel noise.
-        # -------------------------
         self.depthwise_conv = nn.Conv2d(
             in_channels=self.F1,
             out_channels=self.F2,
@@ -105,37 +135,23 @@ class DIVANCP(EEGModuleMixin, nn.Module):
         )
         self.bn2 = nn.BatchNorm2d(self.F2, momentum=bn_momentum, eps=bn_eps)
 
-        # -------------------------
         # 3) ANTI-ALIAS TEMPORAL DOWNSAMPLE: (B,F2,1,T) -> (B,F2,1,T1)
-        #    - AveragePool over time is an effective low-pass before stride.
-        # -------------------------
         assert self.pool_time >= 1
         self.avgpool = nn.AvgPool2d(kernel_size=(1, self.pool_time),
                                     stride=(1, self.pool_time))
 
-        # -------------------------
         # 4) DROPOUT (regularization)
-        # -------------------------
         self.dropout1 = nn.Dropout(p=drop_prob)
 
-        # -------------------------
-        # Switch to 1D temporal processing on shape (B, F2, T1)
         # 5) MULTI-SCALE TEMPORAL BLOCK (noise-stable integration)
-        # -------------------------
         self.ms_block = _MultiScaleTemporalBlock1D(
             channels=self.F2, kernels=ms_kernels, dilations=ms_dilations
         )
 
-        # -------------------------
-        # 6) SNR GATE (SE-style on mean & logvar): (B,F2,T1)->(B,F2,T1)
-        #     - Shrinks channels with low SNR (Gaussian noise ↑ variance).
-        # -------------------------
+        # 6) SNR GATE (SE-style on mean & logvar)
         self.snr_gate = _SNRGate(channels=self.F2, reduction=snr_reduction)
 
-        # -------------------------
-        # 7) TEMPORAL DOWNSAMPLER (Conv1D) to shorten sequence for CfC:
-        #     (B,F2,T1) -> (B,F2,T2)
-        # -------------------------
+        # 7) TEMPORAL DOWNSAMPLER (Conv1D) to shorten sequence for CfC
         if self.temporal_kernel_size is None:
             self.temporal_kernel_size = 3
         if self.temporal_stride is None:
@@ -151,45 +167,67 @@ class DIVANCP(EEGModuleMixin, nn.Module):
         )
 
         # -------------------------
-        # 8) CfC/NCP RECURRENT CORE:
-        #     Input size = F2; Output size = ncp_output_size (default F1).
-        #     return_sequences=True -> (B, T2, H)
+        # BRANCHED RECURRENT COMPARTMENT
         # -------------------------
+        
+        # Set ncp_output_size to F2 by default for residual compatibility
         if ncp_output_size is None:
             ncp_output_size = self.F2
+        self.ncp_output_size = ncp_output_size
 
+        # CfC/NCP cell for per-bin processing
         wiring = AutoNCP(ncp_hidden_dim, ncp_output_size,
                          sparsity_level=sparsity, seed=seed)
-        self.ncp = CfC(self.F2, wiring, return_sequences=True)
+        self.ncp = CfC(
+            input_size=self.F2,
+            units=wiring,
+            return_sequences=True,   # we pool over time afterward
+            mixed_memory=mixed_memory,
+            mode="pure" # experiment, see if pure solution approximation works at this scale
+        )
+
+        # Weighted residual parameter
+        self.weight_residual = nn.Parameter(torch.from_numpy(rng.uniform(0.0, 1.0, (1,))).float())
+
+        # Pool within each bin (across its timesteps)
+        self.intra_bin_pool = TemporalAttnPool(dim=ncp_output_size)
+
+        # Fusion across bins (restore context)
+        if self.fusion == "attn":
+            self.bin_fusion = TemporalAttnPool(dim=ncp_output_size)  # pool over bins
+        else:
+            self.bin_fusion = None  # mean over bins
 
         # -------------------------
-        # 9) SEPARABLE CONV2D HEAD on (B,H,T2,1) for light smoothing
+        # CLASSIFICATION HEAD
         # -------------------------
-        self.sep_depthwise = nn.Conv2d(
-            in_channels=ncp_output_size,
-            out_channels=ncp_output_size,
-            kernel_size=(3, 1),
-            stride=(1, 1),
-            padding=(1, 0),
-            groups=ncp_output_size,  # depthwise
-            bias=False
-        )
-        self.sep_pointwise = nn.Conv2d(
-            in_channels=ncp_output_size,
-            out_channels=ncp_output_size,
-            kernel_size=(1, 1),
-            bias=False
-        )
-        self.bn3 = nn.BatchNorm2d(ncp_output_size, momentum=bn_momentum, eps=bn_eps)
-
-        self.dropout2 = nn.Dropout(p=drop_prob)
-        self.global_pool = nn.AdaptiveAvgPool2d((1, 1))
+        
+        # Light head before logits
+        self.head_norm = nn.LayerNorm(ncp_output_size)
+        self.head_drop = nn.Dropout(p=drop_prob)
         self.fc = nn.Linear(ncp_output_size, n_outputs)
 
-        # 10. Initialize the residual connection weight
-        self.weight_residual = nn.Parameter(torch.from_numpy(rng.uniform(0.1, 0.9, (1,))).float())
-
         self._glorot_weight_zero_bias()
+
+    def _chunk_time(self, x_feat):
+        """
+        Chunk features into temporal bins.
+
+        Input:
+          x_feat: [B, F, T]  (post-downsample features)
+        Returns:
+          x_bins: [B, NB, L, F]
+          NB: number of bins; L: bin_len
+        """
+        B, F, T = x_feat.shape
+        # Unfold along time: -> [B, F, NB, L]
+        x_unf = x_feat.unfold(dimension=2, size=self.bin_len, step=self.bin_stride)
+        NB = x_unf.shape[2]
+        L  = x_unf.shape[3]
+        # Reorder to [B, NB, L, F]
+        x_bins = x_unf.permute(0, 2, 3, 1).contiguous()
+        assert x_bins.shape == (B, NB, L, F), f"Chunk shape mismatch: {x_bins.shape}"
+        return x_bins
 
     def forward(self, x):
         """
@@ -197,6 +235,10 @@ class DIVANCP(EEGModuleMixin, nn.Module):
         """
         B, C, T = x.shape
 
+        # -------------------------
+        # DIVANCP FRONT-END
+        # -------------------------
+        
         # (1) Temporal conv across time only
         x = x.unsqueeze(1)                                 # (B, 1, C, T)
         x = self.conv1(x)                                  # (B, F1, C, T)
@@ -228,33 +270,54 @@ class DIVANCP(EEGModuleMixin, nn.Module):
         x = self.temporal_downsampler(x)                   # (B, F2, T2)
         T2 = x.shape[-1]
 
-        # Prepare for CfC: (B, T2, F2)
-        x = x.transpose(1, 2).contiguous()                 # (B, T2, F2)
-
-        # (8) CfC/NCP recurrent core
-         # 7. CfC processing with residual connection:
-        residual = x  # Store the input for residual connection
-        x, _ = self.ncp(x)  # (B, T2, H)
+        # -------------------------
+        # BRANCHED RECURRENT COMPARTMENT
+        # -------------------------
         
-        # Instead of a straightforward sum,
-        # Use a learned weighted combination of the two.
-        x = (x * (1 - self.weight_residual)) + (residual * self.weight_residual)
+        # Chunk into bins
+        x_bins = self._chunk_time(x)                       # [B, NB, L, F2]
+        Bins = x_bins.size(1)
+        L = x_bins.size(2)
+        F2_ = x_bins.size(3)
+        assert F2_ == self.F2
 
-        # Head expects (B, H, T2, 1)
-        x = x.transpose(1, 2).unsqueeze(3)                 # (B, H, T2, 1)
+        # Merge batch and bins to run CfC in parallel
+        x_bins = x_bins.reshape(B * Bins, L, self.F2)     # [B*NB, L, F2]
 
-        # (9) Separable Conv2D head + BN + ELU + Dropout
-        x = self.sep_depthwise(x)                          # (B, H, T2, 1)
-        x = self.sep_pointwise(x)                          # (B, H, T2, 1)
-        x = self.bn3(x)
-        x = self.act(x)
-        x = self.dropout2(x)
+        # Store residual for weighted connection
+        residual = x_bins                                  # [B*NB, L, F2]
 
-        # Global pooling and classification
-        x = self.global_pool(x)                            # (B, H, 1, 1)
-        x = x.view(x.shape[0], -1)                         # (B, H)
-        x = self.fc(x)                                     # (B, n_outputs)
-        return x
+        # CfC over each bin (return sequences)
+        x_seq, _ = self.ncp(x_bins)                        # [B*NB, L, H]
+        H = x_seq.size(-1)
+
+        # Apply weighted residual connection (DIVANCP-style)
+        # Note: This only works if H == F2, which we ensure by default
+        if H == self.F2:
+            x_seq = (x_seq * (1 - self.weight_residual)) + (residual * self.weight_residual)
+        else:
+            # If dimensions don't match, skip residual (shouldn't happen with default settings)
+            pass
+
+        # Intra-bin attention pool -> per-bin summary
+        z_per_bin = self.intra_bin_pool(x_seq)             # [B*NB, H]
+        z_per_bin = z_per_bin.view(B, Bins, H)             # [B, NB, H]
+
+        # Fuse across bins
+        if self.fusion == "attn":
+            z = self.bin_fusion(z_per_bin)                 # [B, H]  (attn over NB)
+        else:
+            z = z_per_bin.mean(dim=1)                      # [B, H]  (mean over NB)
+
+        # -------------------------
+        # CLASSIFICATION HEAD
+        # -------------------------
+        
+        z = self.head_norm(z)
+        z = self.head_drop(z)
+        logits = self.fc(z)                                # [B, n_outputs]
+        
+        return logits
 
     def _glorot_weight_zero_bias(self):
         for module in self.modules():
@@ -268,23 +331,23 @@ class DIVANCP(EEGModuleMixin, nn.Module):
                 nn.init.constant_(module.bias, 0.0)
 
 
-def create_diva_ncp_classifier(n_chans, n_times, n_outputs):
-    """Create the official CNNCfCv2 classifier."""
+def create_branched_diva_ncp_classifier(n_chans, n_times, n_outputs):
+    """Create the BranchedDIVANCP classifier."""
     seed = get_seed()
     gradient_clip_value = 1.0
     classifier = EEGClassifier(
-        DIVANCP,
+        BranchedDIVANCP,
         criterion=torch.nn.CrossEntropyLoss,
         optimizer=torch.optim.AdamW,
         optimizer__lr=1e-3,
         optimizer__weight_decay=0,
-        batch_size=32,
+        batch_size=64,
         max_epochs=DEFAULT_MAX_EPOCHS,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
         module__ncp_hidden_dim=32,
-        module__drop_prob=0.5,
+        module__drop_prob=0.25,
         module__F1=8,
         module__D=2,
         module__kernel_length=125,
@@ -295,8 +358,8 @@ def create_diva_ncp_classifier(n_chans, n_times, n_outputs):
         callbacks=[
             get_early_stopping_callback(),
             GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2),
-            # LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=10),
-            ],
+            LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=10),
+        ],
         verbose=EEGCLASSIFIER_VERBOSE
     )
 
@@ -307,3 +370,4 @@ def create_diva_ncp_classifier(n_chans, n_times, n_outputs):
         classifier.initialize()
 
     return classifier
+

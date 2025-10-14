@@ -55,16 +55,16 @@ class CNNNCP_BranchedBins(EEGModuleMixin, nn.Module):
         n_times,
         n_outputs,
         # Front-end CNN params
-        F1=8, D=2, kernel_length=128,
+        F1=8, D=2, kernel_length=125,
         temporal_pool=4, temporal_pool_stride=4,
         drop_prob=0.15,
         # Temporal downsampler (post-CNN)
         temporal_kernel_size=3, temporal_stride=2,
         # CfC / NCP params
-        ncp_hidden_dim=32, ncp_out_dim=32, sparsity=0.85, mixed_memory=True,
+        ncp_hidden_dim=36, ncp_out_dim=8, sparsity=0.7, mixed_memory=True,
         # Binning params
         bin_len=64,            # number of timesteps per bin AFTER downsampling
-        bin_stride=64,         # step between bin starts; set < bin_len for overlap
+        bin_stride=48,         # step between bin starts; set < bin_len for overlap
         fusion="attn",         # "attn" or "mean"
         # Other
         seed=None,
@@ -142,7 +142,7 @@ class CNNNCP_BranchedBins(EEGModuleMixin, nn.Module):
         wiring = AutoNCP(ncp_hidden_dim, ncp_out_dim, sparsity_level=sparsity, seed=seed)
         self.ncp = CfC(
             input_size=F2,
-            wiring=wiring,
+            units=wiring,
             return_sequences=True,   # we pool over time afterward
             mixed_memory=mixed_memory,
         )
@@ -174,9 +174,11 @@ class CNNNCP_BranchedBins(EEGModuleMixin, nn.Module):
     # ---------
     def _glorot_weight_zero_bias(self):
         for module in self.modules():
-            if hasattr(module, "weight"):
+            if hasattr(module, "weight") and module.weight is not None:
                 if "BatchNorm" not in module.__class__.__name__:
-                    nn.init.xavier_uniform_(module.weight, gain=1.0)
+                    # Xavier initialization only works for tensors with 2+ dimensions
+                    if module.weight.ndim >= 2:
+                        nn.init.xavier_uniform_(module.weight, gain=1.0)
                 else:
                     nn.init.constant_(module.weight, 1.0)
             if hasattr(module, "bias") and module.bias is not None:
@@ -274,8 +276,8 @@ def create_cnnncp_branched_bins_classifier(
     lr=1e-3,
     weight_decay=1e-3,
     batch_size=64,
-    net_size=16,
-    net_sparsity=0.4,
+    net_size=12,
+    net_sparsity=0.8,
     gradient_clip_value=1.0,
     **kwargs
 ):
