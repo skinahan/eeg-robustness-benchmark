@@ -7,7 +7,7 @@ from models.branched_ncp import create_cnnncp_branched_bins_classifier
 from models.cnnncp import create_cnnncfc_v2_classifier, create_cnnncfc_compact_classifier
 from models.cnnncp import create_cnnsmallworld_classifier, create_cnnwiredcfc_classifier
 from models.cnnncp import create_cfc_only_classifier, create_ncp_only_classifier
-
+from models.diva_ncp import create_diva_ncp_classifier
 from models.sppncp import create_sppncp_classifier
 
 # Import the integration functions for CNNWiredCfC models
@@ -52,6 +52,7 @@ def get_base_model_registry():
         "cnn_ncp_v2": create_cnnncpv2_classifier,
         "cnn_ncp_branched_bins": create_cnnncp_branched_bins_classifier,
         "cnncfc_v2": create_cnnncfc_v2_classifier,
+        "diva_ncp": create_diva_ncp_classifier,
         "cnncfc_compact": create_cnnncfc_compact_classifier,
         "cnn_smallworld": create_cnnsmallworld_classifier,
 
