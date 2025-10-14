@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Generated Python automation script for local experiment execution
-Generated on: 2025-10-13 14:59:27
+Generated on: 2025-10-13 21:14:31
 Total missing multirun jobs: 135
 OPTIMIZED: Runs experiments in parallel
 """
@@ -112,106 +112,34 @@ def run_experiments():
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [1],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
+            'tune': True,
             'model': 'eegnet',
-            'seed': 500,
+            'seed': 100,
             'paradigm': 'MotorImagery'
         },
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
+            'subjects': [8],
+            'tune': True,
             'model': 'reegnet',
             'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
             'paradigm': 'MotorImagery'
         },
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [4],
-            'tune': False,
+            'tune': True,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 500,
             'paradigm': 'MotorImagery'
         },
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [9],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
+            'tune': True,
             'model': 'reegnet',
             'seed': 100,
             'paradigm': 'MotorImagery'
@@ -219,8 +147,35 @@ def run_experiments():
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
+            'subjects': [6],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
             'model': 'eegnet',
             'seed': 200,
             'paradigm': 'MotorImagery'
@@ -229,97 +184,25 @@ def run_experiments():
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [1],
-            'tune': False,
+            'tune': True,
             'model': 'cnn_ncp',
-            'seed': 200,
+            'seed': 400,
             'paradigm': 'MotorImagery'
         },
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
+            'subjects': [6],
+            'tune': True,
             'model': 'eegnet',
-            'seed': 400,
+            'seed': 100,
             'paradigm': 'MotorImagery'
         },
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [2],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
+            'tune': True,
             'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'MotorImagery'
@@ -328,25 +211,34 @@ def run_experiments():
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [3],
-            'tune': False,
+            'tune': True,
             'model': 'cnn_ncp',
-            'seed': 500,
+            'seed': 400,
             'paradigm': 'MotorImagery'
         },
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
+            'subjects': [2],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
             'paradigm': 'MotorImagery'
         },
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
+            'subjects': [6],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
             'model': 'reegnet',
             'seed': 200,
             'paradigm': 'MotorImagery'
@@ -355,7 +247,16 @@ def run_experiments():
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [2],
-            'tune': False,
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
             'model': 'cnn_ncp',
             'seed': 400,
             'paradigm': 'MotorImagery'
@@ -363,458 +264,8 @@ def run_experiments():
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
             'subjects': [5],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
+            'tune': True,
             'model': 'cnn_ncp',
             'seed': 300,
             'paradigm': 'MotorImagery'
@@ -823,70 +274,16 @@ def run_experiments():
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [3],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
+            'tune': True,
             'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
+            'seed': 500,
             'paradigm': 'MotorImagery'
         },
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [9],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
+            'tune': True,
             'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'MotorImagery'
@@ -895,8 +292,125 @@ def run_experiments():
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [1],
-            'tune': False,
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
             'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'reegnet',
             'seed': 500,
             'paradigm': 'MotorImagery'
         },
@@ -904,16 +418,79 @@ def run_experiments():
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [8],
-            'tune': False,
+            'tune': True,
             'model': 'cnn_ncp',
-            'seed': 200,
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
             'paradigm': 'MotorImagery'
         },
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [1],
-            'tune': False,
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
             'model': 'eegnet',
             'seed': 100,
             'paradigm': 'MotorImagery'
@@ -922,16 +499,43 @@ def run_experiments():
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [9],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
             'paradigm': 'MotorImagery'
         },
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [6],
-            'tune': False,
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
             'model': 'eegnet',
             'seed': 400,
             'paradigm': 'MotorImagery'
@@ -939,17 +543,35 @@ def run_experiments():
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'cnn_ncp',
+            'subjects': [4],
+            'tune': True,
+            'model': 'eegnet',
             'seed': 200,
             'paradigm': 'MotorImagery'
         },
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
+            'subjects': [8],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
             'model': 'eegnet',
             'seed': 500,
             'paradigm': 'MotorImagery'
@@ -958,7 +580,79 @@ def run_experiments():
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [1],
-            'tune': False,
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
             'model': 'reegnet',
             'seed': 300,
             'paradigm': 'MotorImagery'
@@ -966,8 +660,386 @@ def run_experiments():
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
             'subjects': [3],
-            'tune': False,
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
             'model': 'reegnet',
             'seed': 500,
             'paradigm': 'MotorImagery'
@@ -976,26 +1048,17 @@ def run_experiments():
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [5],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'MotorImagery'
         },
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [1],
-            'tune': False,
-            'model': 'cnn_ncp',
+            'tune': True,
+            'model': 'reegnet',
             'seed': 400,
             'paradigm': 'MotorImagery'
         },
@@ -1003,53 +1066,8 @@ def run_experiments():
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [6],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'eegnet',
+            'tune': True,
+            'model': 'cnn_ncp',
             'seed': 200,
             'paradigm': 'MotorImagery'
         },
@@ -1057,61 +1075,7 @@ def run_experiments():
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [5],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
+            'tune': True,
             'model': 'reegnet',
             'seed': 100,
             'paradigm': 'MotorImagery'
@@ -1119,117 +1083,27 @@ def run_experiments():
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
+            'subjects': [2],
+            'tune': True,
             'model': 'reegnet',
-            'seed': 300,
+            'seed': 100,
             'paradigm': 'MotorImagery'
         },
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [5],
-            'tune': False,
+            'tune': True,
             'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
+            'seed': 100,
             'paradigm': 'MotorImagery'
         },
         {
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [7],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
+            'tune': True,
             'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'eegnet',
             'seed': 500,
             'paradigm': 'MotorImagery'
         },
@@ -1237,43 +1111,7 @@ def run_experiments():
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [4],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
+            'tune': True,
             'model': 'cnn_ncp',
             'seed': 300,
             'paradigm': 'MotorImagery'
@@ -1282,35 +1120,8 @@ def run_experiments():
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [1],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'eegnet',
+            'tune': True,
+            'model': 'reegnet',
             'seed': 500,
             'paradigm': 'MotorImagery'
         },
@@ -1318,9 +1129,198 @@ def run_experiments():
             'dataset': 'BNCI2014_001',
             'eval_mode': 'WithinSession',
             'subjects': [7],
-            'tune': False,
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
             'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'eegnet',
             'seed': 300,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'MotorImagery'
+        },
+        {
+            'dataset': 'BNCI2014_001',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
             'paradigm': 'MotorImagery'
         },
     ]
