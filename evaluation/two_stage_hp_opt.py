@@ -519,7 +519,8 @@ def get_model_architecture_space(model_name):
         "cnncfc_v2": improved_cnncfc_architecture_space,  # CNNCfCv2 uses the same space as improved_cnncfc
         "cnncfc_compact": cnncfc_compact_architecture_space,
         "spp_ncp": spp_ncp_architecture_space,
-        "cnn_smallworld": cnn_smallworld_architecture_space
+        "cnn_smallworld": cnn_smallworld_architecture_space,
+        "cnn_ncp_branched_bins": cnn_ncp_branched_bins_architecture_space,
     }
     return architecture_registry[model_name]
 
@@ -537,7 +538,8 @@ def get_model_training_space(model_name):
         "cnncfc_v2": improved_cnncfc_training_space,  # CNNCfCv2 uses the same space as improved_cnncfc
         "cnncfc_compact": cnncfc_compact_training_space,
         "spp_ncp": spp_ncp_training_space,
-        "cnn_smallworld": cnn_smallworld_training_space
+        "cnn_smallworld": cnn_smallworld_training_space,
+        "cnn_ncp_branched_bins": cnn_ncp_branched_bins_training_space,
     }
     return training_registry[model_name]
 
@@ -617,6 +619,20 @@ def improved_cnncfc_training_space(trial, prefix):
         ),
     }
 
+
+def cnn_ncp_branched_bins_architecture_space(trial, prefix):
+    return {
+        f"{prefix}module__ncp_hidden_dim": trial.suggest_int(f"{prefix}module__ncp_hidden_dim", 19, 128),
+        f"{prefix}module__sparsity": trial.suggest_float(f"{prefix}module__sparsity", 0.2, 0.9),
+    }
+
+def cnn_ncp_branched_bins_training_space(trial, prefix):
+    return {
+        f"{prefix}module__drop_prob": trial.suggest_float(f"{prefix}module__drop_prob", 0.1, 0.5),
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(f"{prefix}optimizer__lr", 1e-6, 1e-2),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(f"{prefix}optimizer__weight_decay", 1e-6, 1e-2),
+        f"{prefix}batch_size": trial.suggest_categorical(f"{prefix}batch_size", [4, 8, 16, 32, 64]),
+    }
 
 def cnn_ncp_architecture_space(trial, prefix):
     return {
