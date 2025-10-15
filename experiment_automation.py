@@ -146,7 +146,7 @@ class ExperimentAutomation:
         # Pre-extract values for faster iteration
         dataset_items = list(datasets.items())
         model_names = [model['name'] for model in models]
-        tune_flags = [True]
+        tune_flags = [False]
         
         print(f"[INFO] Generating combinations from:")
         print(f"   - Datasets: {len(dataset_items)}")
