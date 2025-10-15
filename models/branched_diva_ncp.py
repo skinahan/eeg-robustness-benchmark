@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from skorch.dataset import ValidSplit
 from globals import set_seeds, get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS, EEGCLASSIFIER_VERBOSE
 from skorch.callbacks import LRScheduler, GradientNormClipping
-from torch.optim.lr_scheduler import ReduceLROnPlateau
+from torch.optim.lr_scheduler import ReduceLROnPlateau, ExponentialLR
 from braindecode import EEGClassifier
 from braindecode.models.base import EEGModuleMixin
 from ncps.torch import CfC
@@ -73,10 +73,10 @@ class BranchedDIVANCP(EEGModuleMixin, nn.Module):
         sparsity: float = 0.85,
         ncp_output_size: int = None,  # if None, defaults to F2 for residual compatibility
         # --- Binning params ---
-        bin_len: int = 32,            # number of timesteps per bin AFTER downsampling
-        bin_stride: int = 30,         # step between bin starts; set < bin_len for overlap
-        fusion: str = "mean",         # "attn" or "mean"
-        mixed_memory: bool = False,
+        bin_len: int = 48,            # number of timesteps per bin AFTER downsampling
+        bin_stride: int = 44,         # step between bin starts; set < bin_len for overlap
+        fusion: str = "attn",         # "attn" or "mean"
+        mixed_memory: bool = True,
         # --- SNR gate ---
         snr_reduction: int = 4,
         # --- Normalization ---
@@ -182,8 +182,7 @@ class BranchedDIVANCP(EEGModuleMixin, nn.Module):
             input_size=self.F2,
             units=wiring,
             return_sequences=True,   # we pool over time afterward
-            mixed_memory=mixed_memory,
-            mode="pure" # experiment, see if pure solution approximation works at this scale
+            mixed_memory=mixed_memory
         )
 
         # Weighted residual parameter
@@ -339,15 +338,15 @@ def create_branched_diva_ncp_classifier(n_chans, n_times, n_outputs):
         BranchedDIVANCP,
         criterion=torch.nn.CrossEntropyLoss,
         optimizer=torch.optim.AdamW,
-        optimizer__lr=1e-3,
-        optimizer__weight_decay=0,
+        optimizer__lr=1e-2,
+        optimizer__weight_decay=0,#1e-4,
         batch_size=64,
         max_epochs=DEFAULT_MAX_EPOCHS,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
         module__ncp_hidden_dim=32,
-        module__drop_prob=0.25,
+        module__drop_prob=0.5,
         module__F1=8,
         module__D=2,
         module__kernel_length=125,
@@ -358,7 +357,7 @@ def create_branched_diva_ncp_classifier(n_chans, n_times, n_outputs):
         callbacks=[
             get_early_stopping_callback(),
             GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2),
-            LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=10),
+            LRScheduler(policy=ExponentialLR, gamma=0.97),
         ],
         verbose=EEGCLASSIFIER_VERBOSE
     )

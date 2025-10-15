@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from skorch.dataset import ValidSplit
 from globals import set_seeds, get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS, EEGCLASSIFIER_VERBOSE
 from skorch.callbacks import LRScheduler, GradientNormClipping
-from torch.optim.lr_scheduler import ReduceLROnPlateau
+from torch.optim.lr_scheduler import ReduceLROnPlateau, ExponentialLR
 from braindecode import EEGClassifier
 from braindecode.models.base import EEGModuleMixin
 from ncps.torch import CfC
@@ -13,18 +13,8 @@ from models.cnnncp import _MultiScaleTemporalBlock1D, _SNRGate
 from torch.nn.utils.parametrizations import spectral_norm
 import numpy as np
 
-# The CfC Model with a residual connection surrounding the recurrent layer.
-# This model gets a high non-contaminated score, but is particularly vulnerable to Gaussian noise.
 class DIVANCP(EEGModuleMixin, nn.Module):
     """
-    CNN-NCP optimized for robustness to additive Gaussian noise.
-
-    Architectural differences vs your CNNNCPv3:
-      • Proper anti-aliasing temporal downsampling (AvgPool 1xP with stride P).
-      • Multi-Scale Temporal Block (dilated depthwise-separable Conv1D) to integrate over time without blowing params.
-      • SNR Gate (SE-style on mean & log-variance) to shrink noisy channels/bands.
-      • Careful shape handling and comments at every step.
-
     Input:  x: (B, C=n_chans, T=n_times)
     Output: logits: (B, n_outputs)
     """
@@ -47,7 +37,7 @@ class DIVANCP(EEGModuleMixin, nn.Module):
         temporal_stride: int = 2,
         # --- NCP/CfC core ---
         ncp_hidden_dim: int = 22,
-        sparsity: float = 0.85,
+        sparsity: float = 0.75,
         ncp_output_size: int = None,  # if None, defaults to F1
         # --- SNR gate ---
         snr_reduction: int = 4,
@@ -152,7 +142,7 @@ class DIVANCP(EEGModuleMixin, nn.Module):
 
         # -------------------------
         # 8) CfC/NCP RECURRENT CORE:
-        #     Input size = F2; Output size = ncp_output_size (default F1).
+        #     Input size = F2; Output size = ncp_output_size (default F2).
         #     return_sequences=True -> (B, T2, H)
         # -------------------------
         if ncp_output_size is None:
@@ -276,14 +266,14 @@ def create_diva_ncp_classifier(n_chans, n_times, n_outputs):
         DIVANCP,
         criterion=torch.nn.CrossEntropyLoss,
         optimizer=torch.optim.AdamW,
-        optimizer__lr=1e-3,
+        optimizer__lr=1e-3, # TODO: This should be 1e-2 for consistency with the branched variant...
         optimizer__weight_decay=0,
         batch_size=32,
         max_epochs=DEFAULT_MAX_EPOCHS,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
-        module__ncp_hidden_dim=32,
+        module__ncp_hidden_dim=19,
         module__drop_prob=0.5,
         module__F1=8,
         module__D=2,
@@ -295,6 +285,7 @@ def create_diva_ncp_classifier(n_chans, n_times, n_outputs):
         callbacks=[
             get_early_stopping_callback(),
             GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2),
+            # LRScheduler(policy=ExponentialLR, gamma=0.97),
             # LRScheduler(policy=ReduceLROnPlateau, monitor='valid_loss', patience=10),
             ],
         verbose=EEGCLASSIFIER_VERBOSE
