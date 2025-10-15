@@ -16,19 +16,21 @@ datasets:
 
 # Model configurations
 models:
-  - name: "eegnet"
-    display_name: "EEGNet"
+  # - name: "eegnet"
+  #   display_name: "EEGNet"
     
-  - name: "reegnet"
-    display_name: "REEGNet"
+  # - name: "reegnet"
+  #   display_name: "REEGNet"
     
-  - name: "cnn_ncp"
-    display_name: "CNN-NCP"
+  # - name: "cnn_ncp"
+  #   display_name: "CNN-NCP"
+  - name: "branched_diva_ncp"
+    display_name: "Branched DIVA-NCP"
     
 # Evaluation modes
 eval_modes:
-  #- "CrossSession"
-  - "WithinSession"
+  - "CrossSession"
+  #- "WithinSession"
   # - "CrossSubject"
 
 noise_types:
@@ -56,7 +58,7 @@ experiment_modes:
   - name: "multirun"
     display_name: "Multirun (Test Perturb)"
     requires_noise: false  # Handled internally by multirun
-    supports_tuning: true
+    supports_tuning: false
     
 # Random seeds for reproducibility
 seeds:

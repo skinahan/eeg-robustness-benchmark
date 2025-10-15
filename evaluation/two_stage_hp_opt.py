@@ -217,7 +217,8 @@ def run_optuna_stage(
     os.makedirs(output_dir, exist_ok=True)
 
     study = optuna.create_study(direction="maximize")
-
+    # Set Optuna's logging level to WARNING (only show warnings and errors)
+    optuna.logging.set_verbosity(optuna.logging.WARNING)
     study.optimize(objective, n_trials=n_trials, show_progress_bar=True)
 
     study_path = os.path.join(output_dir, "optuna_study.pkl")
@@ -291,7 +292,7 @@ def alternate_optuna_stage(
     os.makedirs(output_dir, exist_ok=True)
 
     study = optuna.create_study(direction="maximize")
-
+    optuna.logging.set_verbosity(optuna.logging.WARNING)
     study.optimize(objective, n_trials=n_trials)
 
     study_path = os.path.join(output_dir, "optuna_study.pkl")
@@ -381,6 +382,137 @@ def diva_ncp_training_space(trial, prefix):
     return {
         f"{prefix}optimizer__lr": trial.suggest_loguniform(
             f"{prefix}optimizer__lr", 1e-6, 1e-2
+        ),
+    }
+
+def branched_diva_ncp_architecture_space(trial, prefix):
+    """Architecture parameter space for BranchedDIVANCP model."""
+    return {
+        # NCP parameters
+        f"{prefix}module__ncp_hidden_dim": trial.suggest_int(
+            f"{prefix}module__ncp_hidden_dim", 16, 128
+        ),
+        f"{prefix}module__sparsity": trial.suggest_float(
+            f"{prefix}module__sparsity", 0.2, 0.9
+        ),
+        # CNN parameters
+        f"{prefix}module__F1": trial.suggest_categorical(
+            f"{prefix}module__F1", [4, 8, 12, 16]
+        ),
+        f"{prefix}module__D": trial.suggest_categorical(
+            f"{prefix}module__D", [1, 2, 4]
+        ),
+        f"{prefix}module__kernel_length": trial.suggest_int(
+            f"{prefix}module__kernel_length", 64, 256, step=32
+        ),
+        # Temporal processing
+        f"{prefix}module__temporal_kernel_size": trial.suggest_categorical(
+            f"{prefix}module__temporal_kernel_size", [3, 5, 7]
+        ),
+        f"{prefix}module__temporal_stride": trial.suggest_categorical(
+            f"{prefix}module__temporal_stride", [2, 4, 6, 8]
+        ),
+        # Binning parameters
+        f"{prefix}module__bin_len": trial.suggest_int(
+            f"{prefix}module__bin_len", 32, 128, step=16
+        ),
+        f"{prefix}module__bin_stride": trial.suggest_int(
+            f"{prefix}module__bin_stride", 24, 96, step=12
+        ),
+        f"{prefix}module__fusion": trial.suggest_categorical(
+            f"{prefix}module__fusion", ["attn", "mean"]
+        ),
+    }
+
+def branched_diva_ncp_training_space(trial, prefix):
+    """Training parameter space for BranchedDIVANCP model."""
+    return {
+        f"{prefix}module__drop_prob": trial.suggest_float(
+            f"{prefix}module__drop_prob", 0.1, 0.5
+        ),
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(
+            f"{prefix}optimizer__lr", 1e-6, 1e-2
+        ),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
+            f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
+        ),
+        f"{prefix}batch_size": trial.suggest_categorical(
+            f"{prefix}batch_size", [4, 8, 16, 32, 64]
+        ),
+    }
+
+
+def diva_full_architecture_space(trial, prefix):
+    """Architecture parameter space for DIVAInspiredEEG (diva_full) model."""
+    return {
+        # CNN front-end parameters
+        f"{prefix}module__F1": trial.suggest_categorical(
+            f"{prefix}module__F1", [4, 8, 12, 16]
+        ),
+        f"{prefix}module__D": trial.suggest_categorical(
+            f"{prefix}module__D", [1, 2, 4]
+        ),
+        f"{prefix}module__kernel_length": trial.suggest_int(
+            f"{prefix}module__kernel_length", 64, 256, step=32
+        ),
+        
+        # NCP/CfC parameters
+        f"{prefix}module__ncp_hidden_dim": trial.suggest_int(
+            f"{prefix}module__ncp_hidden_dim", 16, 128
+        ),
+        f"{prefix}module__sparsity": trial.suggest_float(
+            f"{prefix}module__sparsity", 0.2, 0.9
+        ),
+        
+        # Temporal processing
+        f"{prefix}module__temporal_kernel_size": trial.suggest_categorical(
+            f"{prefix}module__temporal_kernel_size", [3, 5, 7]
+        ),
+        f"{prefix}module__temporal_stride": trial.suggest_categorical(
+            f"{prefix}module__temporal_stride", [2, 4, 6, 8]
+        ),
+        
+        # DIVA-specific switches
+        f"{prefix}module__use_ms_block": trial.suggest_categorical(
+            f"{prefix}module__use_ms_block", [True, False]
+        ),
+        f"{prefix}module__use_snr_gate": trial.suggest_categorical(
+            f"{prefix}module__use_snr_gate", [True, False]
+        ),
+        f"{prefix}module__use_forward_model": trial.suggest_categorical(
+            f"{prefix}module__use_forward_model", [True, False]
+        ),
+        f"{prefix}module__use_feedback_controller": trial.suggest_categorical(
+            f"{prefix}module__use_feedback_controller", [True, False]
+        ),
+        f"{prefix}module__use_delay": trial.suggest_categorical(
+            f"{prefix}module__use_delay", [True, False]
+        ),
+        f"{prefix}module__use_uncertainty_mixer": trial.suggest_categorical(
+            f"{prefix}module__use_uncertainty_mixer", [True, False]
+        ),
+        
+        # Feedback controller parameters
+        f"{prefix}module__feedback_hidden": trial.suggest_int(
+            f"{prefix}module__feedback_hidden", 32, 128, step=16
+        ),
+    }
+
+
+def diva_full_training_space(trial, prefix):
+    """Training parameter space for DIVAInspiredEEG (diva_full) model."""
+    return {
+        f"{prefix}module__drop_prob": trial.suggest_float(
+            f"{prefix}module__drop_prob", 0.1, 0.5
+        ),
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(
+            f"{prefix}optimizer__lr", 1e-6, 1e-2
+        ),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
+            f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
+        ),
+        f"{prefix}batch_size": trial.suggest_categorical(
+            f"{prefix}batch_size", [4, 8, 16, 32, 64]
         ),
     }
     
@@ -535,7 +667,10 @@ def get_model_architecture_space(model_name):
         "cnncfc_compact": cnncfc_compact_architecture_space,
         "spp_ncp": spp_ncp_architecture_space,
         "cnn_smallworld": cnn_smallworld_architecture_space,
-        "cnn_ncp_branched_bins": cnn_ncp_branched_bins_architecture_space,
+        "cnn_ncp_branch": cnn_ncp_branched_bins_architecture_space,
+        "diva_ncp": diva_ncp_architecture_space,
+        "branched_diva_ncp": branched_diva_ncp_architecture_space,
+        "diva_full": diva_full_architecture_space,
     }
     return architecture_registry[model_name]
 
@@ -554,7 +689,10 @@ def get_model_training_space(model_name):
         "cnncfc_compact": cnncfc_compact_training_space,
         "spp_ncp": spp_ncp_training_space,
         "cnn_smallworld": cnn_smallworld_training_space,
-        "cnn_ncp_branched_bins": cnn_ncp_branched_bins_training_space,
+        "cnn_ncp_branch": cnn_ncp_branched_bins_training_space,
+        "diva_ncp": diva_ncp_training_space,
+        "branched_diva_ncp": branched_diva_ncp_training_space,
+        "diva_full": diva_full_training_space,
     }
     return training_registry[model_name]
 
@@ -1033,7 +1171,7 @@ def multi_objective_optuna_stage(
         )
     else:
         study = optuna.create_study(direction="maximize")
-
+    optuna.logging.set_verbosity(optuna.logging.WARNING)
     study.optimize(objective, n_trials=n_trials)
 
     # Save study
