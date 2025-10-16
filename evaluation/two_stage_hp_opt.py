@@ -20,7 +20,7 @@ from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, Conc
 
 
 def format_params(param_block, prefix):
-    module_params = ['F1', 'D', 'kernel_length', 'lstm_hidden_size','ncp_hidden_dim', 'sparsity', 'temporal_kernel_size', 'temporal_stride', 'drop_prob', 'n_modules', 'rewiring_prob', 'max_seq_length']
+    module_params = ['F1', 'D', 'kernel_length', 'lstm_hidden_size', 'lstm_hidden_dim', 'lstm_num_layers', 'lstm_dropout', 'ncp_hidden_dim', 'sparsity', 'temporal_kernel_size', 'temporal_stride', 'drop_prob', 'n_modules', 'rewiring_prob', 'max_seq_length', 'bin_len', 'bin_stride', 'fusion']
     optimizer_params = ['lr', 'weight_decay']
     module_prefix = f"{prefix}module__"
     optim_prefix = f"{prefix}optimizer__"
@@ -442,6 +442,145 @@ def branched_diva_ncp_training_space(trial, prefix):
     }
 
 
+def branched_lstm_architecture_space(trial, prefix):
+    """Architecture parameter space for BranchedLSTM model."""
+    return {
+        # LSTM parameters (lstm_hidden_dim is now used for recurrent_output_size)
+        f"{prefix}module__lstm_hidden_dim": trial.suggest_int(
+            f"{prefix}module__lstm_hidden_dim", 16, 128
+        ),
+        f"{prefix}module__lstm_num_layers": trial.suggest_int(
+            f"{prefix}module__lstm_num_layers", 1, 3
+        ),
+        f"{prefix}module__lstm_dropout": trial.suggest_float(
+            f"{prefix}module__lstm_dropout", 0.0, 0.3
+        ),
+        # CNN parameters
+        f"{prefix}module__F1": trial.suggest_categorical(
+            f"{prefix}module__F1", [4, 8, 12, 16]
+        ),
+        f"{prefix}module__D": trial.suggest_categorical(
+            f"{prefix}module__D", [1, 2, 4]
+        ),
+        f"{prefix}module__kernel_length": trial.suggest_int(
+            f"{prefix}module__kernel_length", 64, 256, step=32
+        ),
+        # Temporal processing
+        f"{prefix}module__temporal_kernel_size": trial.suggest_categorical(
+            f"{prefix}module__temporal_kernel_size", [3, 5, 7]
+        ),
+        f"{prefix}module__temporal_stride": trial.suggest_categorical(
+            f"{prefix}module__temporal_stride", [2, 4, 6, 8]
+        ),
+        # Binning parameters
+        f"{prefix}module__bin_len": trial.suggest_int(
+            f"{prefix}module__bin_len", 32, 128, step=16
+        ),
+        f"{prefix}module__bin_stride": trial.suggest_int(
+            f"{prefix}module__bin_stride", 24, 96, step=12
+        ),
+        f"{prefix}module__fusion": trial.suggest_categorical(
+            f"{prefix}module__fusion", ["attn", "mean"]
+        ),
+    }
+
+
+def branched_lstm_training_space(trial, prefix):
+    """Training parameter space for BranchedLSTM model."""
+    return {
+        f"{prefix}module__drop_prob": trial.suggest_float(
+            f"{prefix}module__drop_prob", 0.1, 0.5
+        ),
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(
+            f"{prefix}optimizer__lr", 1e-6, 1e-2
+        ),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
+            f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
+        ),
+        f"{prefix}batch_size": trial.suggest_categorical(
+            f"{prefix}batch_size", [4, 8, 16, 32, 64]
+        ),
+    }
+
+
+def branched_wiredcfc_architecture_space(trial, prefix):
+    """Architecture parameter space for BranchedWiredCfC model."""
+    return {
+        # CfC core parameters
+        f"{prefix}module__recurrent_output_size": trial.suggest_int(
+            f"{prefix}module__recurrent_output_size", 16, 64
+        ),
+        f"{prefix}module__drop_prob": trial.suggest_float(
+            f"{prefix}module__drop_prob", 0.1, 0.5
+        ),
+        
+        # CNN feature extraction parameters
+        f"{prefix}module__F1": trial.suggest_categorical(
+            f"{prefix}module__F1", [4, 8, 12, 16]
+        ),
+        f"{prefix}module__D": trial.suggest_categorical(
+            f"{prefix}module__D", [1, 2, 4]
+        ),
+        f"{prefix}module__kernel_length": trial.suggest_int(
+            f"{prefix}module__kernel_length", 64, 256, step=32
+        ),
+        
+        # Temporal processing parameters
+        f"{prefix}module__temporal_kernel_size": trial.suggest_categorical(
+            f"{prefix}module__temporal_kernel_size", [3, 5, 7]
+        ),
+        f"{prefix}module__temporal_stride": trial.suggest_categorical(
+            f"{prefix}module__temporal_stride", [2, 4, 6, 8]
+        ),
+        
+        # Binning parameters
+        f"{prefix}module__bin_len": trial.suggest_int(
+            f"{prefix}module__bin_len", 32, 128, step=16
+        ),
+        f"{prefix}module__bin_stride": trial.suggest_int(
+            f"{prefix}module__bin_stride", 24, 96, step=12
+        ),
+        f"{prefix}module__fusion": trial.suggest_categorical(
+            f"{prefix}module__fusion", ["attn", "mean"]
+        ),
+        
+        # CfC-specific parameters
+        f"{prefix}module__mixed_memory": trial.suggest_categorical(
+            f"{prefix}module__mixed_memory", [True, False]
+        ),
+        f"{prefix}module__mode": trial.suggest_categorical(
+            f"{prefix}module__mode", ["default", "pure", "no_gate"]
+        ),
+        f"{prefix}module__activation": trial.suggest_categorical(
+            f"{prefix}module__activation", ["lecun_tanh", "silu", "relu", "tanh", "gelu"]
+        ),
+        f"{prefix}module__backbone_units": trial.suggest_int(
+            f"{prefix}module__backbone_units", 64, 256
+        ),
+        f"{prefix}module__backbone_layers": trial.suggest_int(
+            f"{prefix}module__backbone_layers", 1, 3
+        ),
+        f"{prefix}module__backbone_dropout": trial.suggest_float(
+            f"{prefix}module__backbone_dropout", 0.0, 0.5
+        ),
+    }
+
+
+def branched_wiredcfc_training_space(trial, prefix):
+    """Training parameter space for BranchedWiredCfC model."""
+    return {
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(
+            f"{prefix}optimizer__lr", 1e-6, 1e-2
+        ),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
+            f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
+        ),
+        f"{prefix}batch_size": trial.suggest_categorical(
+            f"{prefix}batch_size", [4, 8, 16, 32, 64]
+        ),
+    }
+
+
 def diva_full_architecture_space(trial, prefix):
     """Architecture parameter space for DIVAInspiredEEG (diva_full) model."""
     return {
@@ -658,6 +797,10 @@ def get_model_architecture_space(model_name):
     if model_name.startswith("wiredcfc_arch"):
         return cnn_wiredcfc_architecture_space
     
+    # Check if this is a branched_wiredcfc architecture model
+    if model_name.startswith("branched_wiredcfc_arch"):
+        return branched_wiredcfc_architecture_space
+    
     architecture_registry = {
         "eegnet": eegnet_architecture_space,
         "reegnet": reegnet_architecture_space,
@@ -670,6 +813,8 @@ def get_model_architecture_space(model_name):
         "cnn_ncp_branch": cnn_ncp_branched_bins_architecture_space,
         "diva_ncp": diva_ncp_architecture_space,
         "branched_diva_ncp": branched_diva_ncp_architecture_space,
+        "branched_lstm": branched_lstm_architecture_space,
+        "branched_wiredcfc": branched_wiredcfc_architecture_space,
         "diva_full": diva_full_architecture_space,
     }
     return architecture_registry[model_name]
@@ -679,6 +824,10 @@ def get_model_training_space(model_name):
     # Check if this is a wiredcfc architecture model
     if model_name.startswith("wiredcfc_arch"):
         return cnn_wiredcfc_training_space
+    
+    # Check if this is a branched_wiredcfc architecture model
+    if model_name.startswith("branched_wiredcfc_arch"):
+        return branched_wiredcfc_training_space
     
     training_registry = {
         "eegnet": eegnet_training_space,
@@ -692,6 +841,8 @@ def get_model_training_space(model_name):
         "cnn_ncp_branch": cnn_ncp_branched_bins_training_space,
         "diva_ncp": diva_ncp_training_space,
         "branched_diva_ncp": branched_diva_ncp_training_space,
+        "branched_lstm": branched_lstm_training_space,
+        "branched_wiredcfc": branched_wiredcfc_training_space,
         "diva_full": diva_full_training_space,
     }
     return training_registry[model_name]
@@ -1431,6 +1582,10 @@ def get_adaptive_model_architecture_space(model_name):
     if model_name.startswith("wiredcfc_arch"):
         return adaptive_cnn_wiredcfc_architecture_space
     
+    # Check if this is a branched_wiredcfc architecture model
+    if model_name.startswith("branched_wiredcfc_arch"):
+        return branched_wiredcfc_architecture_space  # Use standard space for now
+    
     adaptive_registry = {
         "improved_cnncfc": adaptive_improved_cnncfc_architecture_space,
         # Add other models as needed
@@ -1443,6 +1598,10 @@ def get_adaptive_model_training_space(model_name):
     # Check if this is a wiredcfc architecture model
     if model_name.startswith("wiredcfc_arch"):
         return adaptive_cnn_wiredcfc_training_space
+    
+    # Check if this is a branched_wiredcfc architecture model
+    if model_name.startswith("branched_wiredcfc_arch"):
+        return branched_wiredcfc_training_space  # Use standard space for now
     
     adaptive_registry = {
         "improved_cnncfc": adaptive_improved_cnncfc_training_space,

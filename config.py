@@ -9,6 +9,8 @@ from models.cnnncp import create_cnnsmallworld_classifier, create_cnnwiredcfc_cl
 from models.cnnncp import create_cfc_only_classifier, create_ncp_only_classifier
 from models.diva_ncp import create_diva_ncp_classifier
 from models.branched_diva_ncp import create_branched_diva_ncp_classifier
+from models.branched_lstm import create_branched_lstm_classifier
+from models.branched_wiredcfc import create_branched_wiredcfc_classifier
 from models.diva_full import create_diva_full_classifier
 from models.sppncp import create_sppncp_classifier
 
@@ -44,6 +46,9 @@ DEFAULT_SEED = 42
 # Module-level registry for CNNWiredCfC architectures
 _wiredcfc_architecture_registry = {}
 
+# Module-level registry for BranchedWiredCfC architectures
+_branched_wiredcfc_architecture_registry = {}
+
 # Base model registry without CNNWiredCfC architectures
 def get_base_model_registry():
     """Get the base model registry with standard models."""
@@ -56,6 +61,8 @@ def get_base_model_registry():
         "cnncfc_v2": create_cnnncfc_v2_classifier,
         "diva_ncp": create_diva_ncp_classifier,
         "branched_diva_ncp": create_branched_diva_ncp_classifier,
+        "branched_lstm": create_branched_lstm_classifier,
+        "branched_wiredcfc": create_branched_wiredcfc_classifier,
         "diva_full": create_diva_full_classifier,
         "cnncfc_compact": create_cnnncfc_compact_classifier,
         "cnn_smallworld": create_cnnsmallworld_classifier,
@@ -132,14 +139,22 @@ def list_wiredcfc_architectures():
     return list(_wiredcfc_architecture_registry.keys())
 
 def get_model_registry():
-    """Get the complete model registry including dynamic CNNWiredCfC architectures."""
+    """Get the complete model registry including dynamic CNNWiredCfC and BranchedWiredCfC architectures."""
     # Start with base models
     registry = get_base_model_registry()
     print("Retrieved model registry: ")
     print(registry.keys())
+    
     # Add dynamic CNNWiredCfC architectures
     for name, info in _wiredcfc_architecture_registry.items():
         registry[name] = info['factory']
+    
+    # Add dynamic BranchedWiredCfC architectures
+    for name, info in _branched_wiredcfc_architecture_registry.items():
+        # Create a factory function that uses the registered wiring
+        def create_branched_wiredcfc_with_wiring(wiring=info['wiring'], **kwargs):
+            return create_branched_wiredcfc_classifier(wiring=wiring, **kwargs)
+        registry[name] = create_branched_wiredcfc_with_wiring
     
     return registry
 
@@ -175,7 +190,7 @@ def load_architectures_from_directory(architectures_dir="outputs/architectures",
     for i, json_file in enumerate(json_files):
         # Generate architecture name
         architecture_name = f"{prefix}{i+1}"
-        
+        print(f"Adding architecture {architecture_name} from {json_file}")
         # Add to registry
         if add_wiredcfc_architecture(architecture_name, str(json_file)):
             loaded_architectures.append(architecture_name)
@@ -187,6 +202,122 @@ def clear_wiredcfc_architectures():
     """Clear all registered CNNWiredCfC architectures."""
     _wiredcfc_architecture_registry.clear()
     print("Cleared all CNNWiredCfC architectures")
+
+# BranchedWiredCfC architecture management functions
+def add_branched_wiredcfc_architecture(architecture_name, wiring):
+    """
+    Add a new BranchedWiredCfC architecture to the registry.
+    
+    Args:
+        architecture_name: Name for the architecture (e.g., "branched_wiredcfc_arch1")
+        wiring: ArbitraryWiring instance or path to architecture file
+    
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        # If wiring is a string, treat it as a file path and load the architecture
+        if isinstance(wiring, str):
+            from architecture_refinement.arbitrary_wiring import load_architecture_from_file
+            wiring = load_architecture_from_file(wiring)
+        
+        # Add to the architecture registry
+        _branched_wiredcfc_architecture_registry[architecture_name] = {
+            'wiring': wiring,
+            'file_path': getattr(wiring, 'file_path', None)
+        }
+        
+        print(f"Successfully added {architecture_name}")
+        return True
+        
+    except Exception as e:
+        print(f"Failed to add {architecture_name}: {e}")
+        return False
+
+def remove_branched_wiredcfc_architecture(architecture_name):
+    """
+    Remove a BranchedWiredCfC architecture from the registry.
+    
+    Args:
+        architecture_name: Name of the architecture to remove
+    
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        if architecture_name in _branched_wiredcfc_architecture_registry:
+            del _branched_wiredcfc_architecture_registry[architecture_name]
+            print(f"Successfully removed {architecture_name}")
+            return True
+        else:
+            print(f"WARNING: Architecture {architecture_name} not found in registry")
+            return False
+        
+    except Exception as e:
+        print(f"Failed to remove {architecture_name}: {e}")
+        return False
+
+def list_branched_wiredcfc_architectures():
+    """List all registered BranchedWiredCfC architectures."""
+    if not _branched_wiredcfc_architecture_registry:
+        print("No BranchedWiredCfC architectures registered")
+        return []
+    
+    print("Registered BranchedWiredCfC architectures:")
+    for name, info in _branched_wiredcfc_architecture_registry.items():
+        file_path = info.get('file_path', 'Direct wiring object')
+        print(f" {name}: {file_path}")
+    
+    return list(_branched_wiredcfc_architecture_registry.keys())
+
+def get_branched_wiredcfc_architecture_registry():
+    """Get the registry of BranchedWiredCfC models with optimized architectures."""
+    return _branched_wiredcfc_architecture_registry
+
+def clear_branched_wiredcfc_architectures():
+    """Clear all registered BranchedWiredCfC architectures."""
+    _branched_wiredcfc_architecture_registry.clear()
+    print("Cleared all BranchedWiredCfC architectures")
+
+def load_branched_wiredcfc_architectures_from_directory(architectures_dir="outputs/architectures", prefix="branched_wiredcfc_arch"):
+    """
+    Automatically load all BranchedWiredCfC architecture files from a directory.
+    
+    Args:
+        architectures_dir: Directory containing architecture JSON files
+        prefix: Prefix for architecture names
+    
+    Returns:
+        List of successfully loaded architecture names
+    """
+    import os
+    from pathlib import Path
+    
+    arch_path = Path(architectures_dir)
+    if not arch_path.exists():
+        print(f"Architectures directory not found: {architectures_dir}")
+        return []
+    
+    # Find all JSON files
+    json_files = list(arch_path.glob("*.json"))
+    if not json_files:
+        print(f"No JSON files found in {architectures_dir}")
+        return []
+    
+    print(f"Found {len(json_files)} architecture files in {architectures_dir}")
+    
+    loaded_architectures = []
+    
+    for i, json_file in enumerate(json_files):
+        # Generate architecture name
+        architecture_name = f"{prefix}{i+1}"
+        
+        # Add to registry
+        if add_branched_wiredcfc_architecture(architecture_name, str(json_file)):
+            loaded_architectures.append(architecture_name)
+    
+    print(f"Successfully loaded {len(loaded_architectures)} BranchedWiredCfC architectures")
+    return loaded_architectures
 
 # Initialize with some default architectures if they exist
 def initialize_default_architectures():
@@ -215,6 +346,7 @@ try:
     import os
     # initialize_default_architectures()
     load_architectures_from_directory()
+    load_branched_wiredcfc_architectures_from_directory()
 except Exception as e:
     print(f"WARNING: Could not initialize default architectures: {e}")
 

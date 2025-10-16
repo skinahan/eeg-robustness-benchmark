@@ -155,7 +155,7 @@ class DIVAInspiredEEG(EEGModuleMixin, nn.Module):
 
         # --- Uncertainty-aware mixing ---
         use_uncertainty_mixer: bool = True,  # [E]
-        init_residual_weight: float = 0.5,   # used only if mixer is disabled
+        init_residual_weight: float = 0.0,   # used only if mixer is disabled
 
         # --- Norm/Eps ---
         bn_momentum: float = 0.01,
@@ -188,7 +188,7 @@ class DIVAInspiredEEG(EEGModuleMixin, nn.Module):
         self.temporal_kernel_size = temporal_kernel_size or 3
         self.temporal_stride = temporal_stride or 2
 
-        act = nn.ELU()
+        act = nn.GELU()
 
         # ---------- [A] Sensory Front-End ----------
         # (1) Temporal conv across time (B,1,C,T)->(B,F1,C,T)
@@ -230,7 +230,7 @@ class DIVAInspiredEEG(EEGModuleMixin, nn.Module):
             proj_size=ncp_output_size, 
             return_sequences=return_sequences, 
             mixed_memory=True, 
-            activation="silu",
+            activation="gelu",
             # mode='pure'
         )
         
@@ -259,13 +259,11 @@ class DIVAInspiredEEG(EEGModuleMixin, nn.Module):
                 nn.Conv1d(feedback_hidden, ncp_output_size, 1, bias=False),
             )
 
-        # ---------- [E] Uncertainty-aware Mixer (optional) ----------
+
+        
         if self.use_uncertainty_mixer:
             self.var_head_res = VarianceHead1D(ncp_output_size)
             self.var_head_rec = VarianceHead1D(ncp_output_size)
-        else:
-            # Fallback: learned static scalar in [0,1] that weights residual path
-            self.weight_residual = nn.Parameter(torch.tensor(float(init_residual_weight)).clamp(0.0,1.0))
 
         # ---------- [F] Classifier Head ----------
         self.smooth_head = SeparableConvTimeHead(ncp_output_size)
@@ -278,6 +276,11 @@ class DIVAInspiredEEG(EEGModuleMixin, nn.Module):
         self.last_aux_losses = {}
 
         self._init_weights()
+        
+        if not self.use_uncertainty_mixer:
+            # Fallback: learned static scalar in [0,1] that weights residual path
+            self.weight_residual = nn.Parameter(torch.tensor(float(init_residual_weight)).clamp(0.0,1.0))
+
 
     # ---- Initialization ----
     def _init_weights(self):
@@ -305,9 +308,11 @@ class DIVAInspiredEEG(EEGModuleMixin, nn.Module):
         # [A] Sensory Front-End
         z = x.unsqueeze(1)                               # (B,1,C,T)
         z = self.conv_time(z)                            # (B,F1,C,T)
-        z = self.bn1(z); z = self.act(z)
+        z = self.bn1(z); 
+        z = self.act(z)
         z = self.depth_spatial(z)                        # (B,F2,1,T)
-        z = self.bn2(z); z = self.act(z)
+        z = self.bn2(z); 
+        z = self.act(z)
         z = self.pool(z)                                 # (B,F2,1,T1)
         z = self.drop1(z)
         z = z.squeeze(2)                                 # (B,F2,T1)
@@ -370,10 +375,11 @@ class DIVAInspiredEEG(EEGModuleMixin, nn.Module):
             prec_res = torch.exp(-logv_res)
             prec_rec = torch.exp(-logv_rec)
             alpha = prec_rec / (prec_res + prec_rec + 1e-6)  # (B,H,T2) in [0,1]
+
             z_fused = alpha * z_corr + (1.0 - alpha) * z_res
         else:
             w = torch.clamp(self.weight_residual, 0.0, 1.0)
-            z_fused = (1.0 - w) * z_corr + w * z_res
+            z_fused = ((1.0 - w) * z_corr) + (w * z_res)
 
         # [F] Classifier Head
         z_out = self.smooth_head(z_fused)                  # (B,H,T2)
@@ -398,14 +404,14 @@ def create_diva_full_classifier(n_chans, n_times, n_outputs):
         DIVAInspiredEEG,
         criterion=torch.nn.CrossEntropyLoss,
         optimizer=torch.optim.AdamW,
-        optimizer__lr=1e-3,
+        optimizer__lr=1e-2,
         optimizer__weight_decay=0,
         batch_size=64,
         max_epochs=DEFAULT_MAX_EPOCHS,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,
-        module__ncp_hidden_dim=8,
+        module__ncp_hidden_dim=64,
         module__drop_prob=0.5,
         module__F1=8,
         module__D=2,
@@ -417,13 +423,13 @@ def create_diva_full_classifier(n_chans, n_times, n_outputs):
         module__use_forward_model=True,
         module__use_feedback_controller=True,
         module__use_delay=True,
-        module__use_uncertainty_mixer=True,
+        module__use_uncertainty_mixer=False,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
         callbacks=[
             get_early_stopping_callback(),
             GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2),
-            LRScheduler(policy=ExponentialLR, gamma=0.99),
+            LRScheduler(policy=ExponentialLR, gamma=0.97),
         ],
         verbose=EEGCLASSIFIER_VERBOSE
     )

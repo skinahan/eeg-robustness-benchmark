@@ -494,10 +494,9 @@ def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_sta
     """
     rng = np.random.RandomState(seed)
     
-    # Blink template parameters - use shorter duration to allow more blinks
-    blink_duration_ms = np.random.choice(np.arange(100, 300)) # Reduced from 200ms to allow more blinks
-    blink_peak_ms = np.random.choice([50, 100, 150, 200]) # Reduced from 80ms proportionally
-    blink_peak_ms = np.max([blink_peak_ms, int(blink_duration_ms / 2)])
+    # Blink template parameters - use fixed duration for consistent behavior across intensities
+    blink_duration_ms = 200  # Fixed duration for consistent temporal coverage calculation
+    blink_peak_ms = 80  # Fixed peak position for consistent blink shape
     # Convert to samples
     blink_duration = int(blink_duration_ms * sfreq / 1000)
     blink_peak = int(blink_peak_ms * sfreq / 1000)
@@ -568,15 +567,29 @@ def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_sta
     
     # Add slow eye drift component for more realistic EOG (slow saccades and drifts)
     # These low-frequency components are common and challenging for models
-    if include_slow_drift:
-        n_drift_components = rng.randint(1, 4)  # 1-3 drift components
+    # FIXED: Make slow drift respect temporal coverage parameter
+    if include_slow_drift and temporal_coverage > 0.2:  # Only add drift if significant coverage
+        n_drift_components = rng.randint(1, 3)  # 1-2 drift components
         for _ in range(n_drift_components):
             drift_freq = rng.uniform(0.3, 2.5)  # 0.3-2.5 Hz drift
             drift_phase = rng.uniform(0, 2 * np.pi)
-            drift_amplitude = rng.uniform(0.1, 0.25)  # 10-25% of blink amplitude
-            t = np.arange(n_times) / sfreq
-            veog_tc += drift_amplitude * np.sin(2 * np.pi * drift_freq * t + drift_phase)
-            heog_tc += drift_amplitude * 0.7 * np.sin(2 * np.pi * drift_freq * t + drift_phase + rng.uniform(0, np.pi))
+            drift_amplitude = rng.uniform(0.1, 0.25) * temporal_coverage  # Scale with temporal coverage
+            
+            # Only add drift during the covered time periods
+            # Handle boundary case when temporal_coverage = 1.0
+            if temporal_coverage >= 1.0:
+                drift_start = 0
+                drift_end = n_times
+            else:
+                drift_start = rng.randint(0, int(n_times * (1 - temporal_coverage)))
+                drift_end = drift_start + int(n_times * temporal_coverage)
+            
+            t = np.arange(drift_end - drift_start) / sfreq
+            drift_veog = drift_amplitude * np.sin(2 * np.pi * drift_freq * t + drift_phase)
+            drift_heog = drift_amplitude * 0.7 * np.sin(2 * np.pi * drift_freq * t + drift_phase + rng.uniform(0, np.pi))
+            
+            veog_tc[drift_start:drift_end] += drift_veog
+            heog_tc[drift_start:drift_end] += drift_heog
     
     # Add blinks with boundary intersection support
     for idx, start in enumerate(blink_starts):
@@ -644,6 +657,12 @@ def generate_realistic_eog_regressors_with_coverage(n_times, sfreq, template_sta
     veog_tc = veog_tc / (np.std(veog_tc) + 1e-12) * template_stats['veog_std']
     heog_tc = heog_tc / (np.std(heog_tc) + 1e-12) * template_stats['heog_std']
     
+    # Apply temporal coverage scaling to maintain intensity effect
+    # Higher temporal coverage should result in stronger overall contamination
+    coverage_amplitude_multiplier = 1.0 + (temporal_coverage - 0.1) * 2.0  # Scale from 0.8 to 2.8 as coverage goes from 0.1 to 1.0
+    veog_tc *= coverage_amplitude_multiplier
+    heog_tc *= coverage_amplitude_multiplier
+    
     return veog_tc, heog_tc
 
 # === Enhanced EEGNoiseAugmentor Class ===
@@ -652,23 +671,23 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
     """
     Enhanced EEG noise augmentation transformer for MOABB pipelines.
 
-    Supports four noise types:
+    Supports five noise types:
     - 'dropout': Randomly zero out a percentage of EEG channels.
     - 'gaussian': Add Gaussian noise with magnitude-aware scaling.
     - 'eog': Add realistic EOG artifacts using learned template.
     - 'realistic_eog': Add realistic EOG artifacts using learned template (legacy).
+    - 'spike': Add transient spike artifacts with configurable intensity and duration.
 
     Parameters
     ----------
     noise_type : str
-    One of ['dropout', 'gaussian', 'eog', 'realistic_eog'].
+    One of ['dropout', 'gaussian', 'eog', 'realistic_eog', 'spike'].
     intensity : float
     Noise severity/intensity. Meaning depends on noise_type and mode:
     - For 'dropout': percentage of channels to drop (0-100).
     - For 'gaussian': noise-to-signal ratio as percentage (10.0 = 10% noise relative to signal RMS).
-    - For 'eog': 
-    * In test_perturb mode: temporal coverage of EOG artifacts (10% = 10% of the time covered by artifacts)
-    * In other modes: percentage of epochs to contaminate (0-100)
+    - For 'eog': temporal coverage of EOG artifacts (10% = 10% of the time covered by artifacts)
+    - For 'spike': temporal coverage of spike artifacts (10% = 10% of the time covered by spikes)
     seed : int
     Random seed for reproducibility.
     eog_template_path : str, optional
@@ -735,6 +754,8 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
             return self._improved_apply_gaussian_noise(X)
         elif self.noise_type == 'eog':
             return self._apply_realistic_eog_noise(X)
+        elif self.noise_type == 'spike':
+            return self._apply_spike_noise(X)
         else:
             raise ValueError(f"Unsupported noise type: {self.noise_type}")
 
@@ -877,19 +898,12 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         info = mne.create_info(ch_names=ch_names, sfreq=250, ch_types=['eeg'] * n_channels)
         info.set_montage(self.montage_name)
         
-        # Check if we're in test_perturb mode by looking at the intensity value
-        # In test_perturb, intensity should control temporal coverage, not prevalence
-        is_test_perturb_mode = False
-        
-        if is_test_perturb_mode:
-            # For test_perturb: use 100% prevalence, intensity controls temporal coverage
-            prevalence = n_epochs # Contaminate all epochs
-            # Convert intensity to temporal coverage (10% -> 0.1, 90% -> 0.9)
-            temporal_coverage = self.intensity / 100.0
-        else:
-            # For other modes: intensity controls prevalence, use fixed temporal coverage
-            prevalence = int(n_epochs * (self.intensity / 100))
-            temporal_coverage = rng.uniform(0.3, 0.9) # Use 10% temporal coverage for non-test_perturb modes
+        # FIXED: Always use intensity to control temporal coverage for consistent behavior
+        # This makes EOG behave like true transient artifacts regardless of mode
+        prevalence = n_epochs  # Always contaminate all epochs
+        # Convert intensity to temporal coverage (1% -> 0.01, 100% -> 1.0)
+        # Use a more gradual scaling for better control
+        temporal_coverage = min(1.0, self.intensity / 100.0)
         contamination_idxs = np.random.choice(n_epochs, size=prevalence, replace=False)
         
         data_aug = data.copy()
@@ -910,6 +924,51 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
             )
             data_aug[i] = contaminated_epoch
             
+        return data_aug
+
+    def _apply_spike_noise(self, data):
+        """
+        Apply transient spike artifacts with configurable intensity and duration.
+        
+        intensity controls temporal coverage of spike artifacts (10% = 10% of time covered by spikes)
+        """
+        rng = np.random.RandomState(self.seed)
+        n_epochs, n_channels, n_times = data.shape
+        
+        # Convert intensity to temporal coverage (1% -> 0.01, 100% -> 1.0)
+        temporal_coverage = min(1.0, self.intensity / 100.0)
+        
+        data_aug = data.copy()
+        for i in range(n_epochs):
+            # Calculate how many spikes we need to achieve the desired temporal coverage
+            spike_duration = rng.choice([5, 10, 15, 20])  # 5-20 samples per spike
+            target_samples_to_cover = int(n_times * temporal_coverage)
+            n_spikes = max(1, target_samples_to_cover // spike_duration)
+            n_spikes = min(n_spikes, n_times // spike_duration)  # Don't exceed bounds
+            
+            # Generate spike locations
+            spike_starts = rng.choice(n_times - spike_duration, size=n_spikes, replace=False)
+            
+            # Apply spikes to random channels
+            for spike_start in spike_starts:
+                spike_end = spike_start + spike_duration
+                # Random channel selection (could be all channels or subset)
+                affected_channels = rng.choice(n_channels, size=rng.randint(1, n_channels//2 + 1), replace=False)
+                
+                # Generate spike amplitude relative to signal
+                signal_rms = np.sqrt(np.mean(data[i, affected_channels, spike_start:spike_end] ** 2))
+                spike_amplitude = rng.uniform(2.0, 8.0) * signal_rms  # 2-8x signal RMS
+                
+                # Create spike shape (sharp rise, exponential decay)
+                spike_shape = np.zeros(spike_duration)
+                peak_idx = spike_duration // 4  # Peak at 1/4 through spike
+                spike_shape[:peak_idx] = np.linspace(0, 1, peak_idx)  # Sharp rise
+                spike_shape[peak_idx:] = np.exp(-np.linspace(0, 3, spike_duration - peak_idx))  # Exponential decay
+                
+                # Apply spike to affected channels
+                for ch in affected_channels:
+                    data_aug[i, ch, spike_start:spike_end] += spike_amplitude * spike_shape
+        
         return data_aug
 
 # Creates an augmented sample for every sample in the set X

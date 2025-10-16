@@ -57,4 +57,4 @@ UNDERFITTING_THRESHOLD = 0.70  # Increased from 0.65 to catch more underfitting 
 
 # EEGClassifier verbose level
 # 0 = silent, 1 = epoch progress bar, 2 = epoch progress + batch info
-EEGCLASSIFIER_VERBOSE = 0  # Set to 0 to suppress epoch-level output
+EEGCLASSIFIER_VERBOSE = 2  # Set to 0 to suppress epoch-level output
