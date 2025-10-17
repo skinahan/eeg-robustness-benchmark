@@ -6,6 +6,7 @@ to reduce code duplication and improve maintainability.
 """
 
 import os
+import json
 import pandas as pd
 from typing import List, Dict, Any
 from sklearn.preprocessing import LabelEncoder
@@ -21,15 +22,54 @@ def extract_model_params(model) -> Dict[str, Any]:
     return {}
 
 
-def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity, eval_mode='CrossSession', paradigm='MotorImagery', dataset='BNCI2014_001'):
+def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity, eval_mode='CrossSession', paradigm='MotorImagery', dataset='BNCI2014_001', cache_manager=None, config=None, tuned=False):
 
     if not eval_mode.endswith("Evaluation"):
         eval_mode = f"{eval_mode}Evaluation"
 
-    """Check if evaluation should be skipped based on existing output files."""
+    """Check if evaluation should be skipped based on existing output files and model cache."""
     existing_output_paths = []
     expected_output_paths = []
     
+    # Check if we should skip based on model cache (for non-noise modes)
+    if cache_manager is not None and config is not None and noise_type is None:
+        all_models_cached = True
+        for subj in subject_list:
+            sessions_to_check = ['0train', '1test']
+            for session in sessions_to_check:
+                # Check if checkpoint files exist and config matches
+                checkpoint_path = cache_manager._get_cache_path(
+                    dataset, model_name, seed, int(subj), session, eval_mode, tuned, "best"
+                )
+                config_path = cache_manager._get_config_path(checkpoint_path)
+                
+                if not checkpoint_path.exists() or not config_path.exists():
+                    all_models_cached = False
+                    break
+                
+                # Check config hash
+                try:
+                    with open(config_path, 'r') as f:
+                        config_data = json.load(f)
+                    cached_hash = config_data.get('config_hash', '')
+                    expected_hash = cache_manager._generate_config_hash(config)
+                    
+                    if cached_hash != expected_hash:
+                        all_models_cached = False
+                        break
+                except Exception:
+                    all_models_cached = False
+                    break
+            
+            if not all_models_cached:
+                break
+        
+        if all_models_cached:
+            print(f"All required models are cached with matching configuration, checking output files...")
+        else:
+            print(f"Some models are not cached or have configuration mismatches, will retrain...")
+    
+    # Check existing output files
     for subj in subject_list:
         sessions_to_check = ['0train', '1test']
                         

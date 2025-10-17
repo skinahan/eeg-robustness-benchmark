@@ -47,6 +47,8 @@ from evaluation.two_stage_hp_opt import alternate_two_stage_optuna, run_two_stag
 from utils import create_output_path, create_hdf5_model_path, get_noise_intensities
 from evaluation.experiment_utils import check_skip_eval, log_all_subjects, collect_all_results
 from evaluation.metrics import compute_classification_metrics
+from evaluation.model_cache_manager import ModelCacheManager
+from evaluation.periodic_checkpoint_callback import create_periodic_checkpoint_callback, create_model_cache_callback
 import json
 
 # Import MOABB components
@@ -230,6 +232,9 @@ class UnifiedExperimentRunner:
         self.current_subject = -1
         self.current_session = -1
         
+        # Initialize model cache manager
+        self.cache_manager = ModelCacheManager(cache_root="model_cache", check_interval=10)
+        
         # Validate noise parameters for noise-aware modes
         noise_requiring_modes = ["augment", "perturb", "augment_notune", "perturb_notune"]
         if mode in noise_requiring_modes and (not noise_type or intensity is None):
@@ -336,8 +341,8 @@ class UnifiedExperimentRunner:
         
         return n_chans, n_times
     
-    def _create_model(self, n_chans: int, n_times: int, n_outputs: int = None):
-        """Create model instance with proper dimensions."""
+    def _create_model(self, n_chans: int, n_times: int, n_outputs: int = None, try_cache: bool = True):
+        """Create model instance with proper dimensions and optional caching."""
         # Determine number of outputs based on dataset
         if n_outputs is None:
             if self.dataset == "Lee2019_SSVEP":
@@ -345,13 +350,66 @@ class UnifiedExperimentRunner:
             else:
                 n_outputs = 2  # MotorImagery has 2 classes
         
+        # Try to load from cache first (only for non-noise modes and when try_cache=True)
+        if try_cache and not self.noise_dict and self.current_subject != -1 and self.current_session != -1:
+            cached_model, config_matches = self.cache_manager.load_model(
+                model_class=self.model_fn,
+                config={'n_chans': n_chans, 'n_times': n_times, 'n_outputs': n_outputs},
+                dataset=self.dataset,
+                model_name=self.model,
+                seed=self.seed,
+                subject=self.current_subject,
+                session=str(self.current_session),
+                eval_mode=self.eval_mode,
+                tuned=self.tune,
+                checkpoint_type="best"  # Use best checkpoint for perturbation experiments
+            )
+            
+            if cached_model is not None and config_matches:
+                print(f"Loaded cached model for {self.model} subject {self.current_subject} session {self.current_session}")
+                return cached_model
+            elif cached_model is not None and not config_matches:
+                print(f"Model configuration changed, will retrain for {self.model} subject {self.current_subject} session {self.current_session}")
+        
+        # Create new model
         model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
         assert(model is not None)
         # Set common model parameters
-        # model.train_split = None
         model.max_epochs = DEFAULT_MAX_EPOCHS
 
-        # model.callbacks = []
+        # Add caching callbacks
+        if not self.noise_dict and self.current_subject != -1 and self.current_session != -1:
+            if self.tune:
+                # For tuned models, use periodic checkpoint callback
+                cache_callback = create_periodic_checkpoint_callback(
+                    cache_manager=self.cache_manager,
+                    dataset=self.dataset,
+                    model_name=self.model,
+                    seed=self.seed,
+                    subject=self.current_subject,
+                    session=str(self.current_session),
+                    eval_mode=self.eval_mode,
+                    tuned=True,
+                    check_interval=1  # Check every epoch for best model
+                )
+            else:
+                # For baseline models, use simple cache callback
+                cache_callback = create_model_cache_callback(
+                    cache_manager=self.cache_manager,
+                    dataset=self.dataset,
+                    model_name=self.model,
+                    seed=self.seed,
+                    subject=self.current_subject,
+                    session=str(self.current_session),
+                    eval_mode=self.eval_mode,
+                    tuned=False
+                )
+            
+            # Add to existing callbacks
+            if not hasattr(model, 'callbacks') or model.callbacks is None:
+                model.callbacks = []
+            model.callbacks.append(cache_callback)
+
         model.initialize()
         return model
     
@@ -636,17 +694,24 @@ class UnifiedExperimentRunner:
         """Evaluate model without hyperparameter tuning."""
         n_chans, n_times = self._determine_data_dimensions()
         model = self._create_model(n_chans, n_times)
-        model.module_.train()
-        # Apply noise if applicable
-        if self.noise_dict and self.mode in ['augment', 'augment_notune']:
-            # For augmentation modes, apply to training data
-            if hasattr(model, 'concat_and_augment'):
-                X_train, y_train, groups = model.concat_and_augment(X_train, y_train)
-                model.fit(X_train, y_train)
+        
+        # Check if model was loaded from cache
+        model_was_cached = hasattr(model, '_was_cached') and model._was_cached
+        
+        if not model_was_cached:
+            model.module_.train()
+            # Apply noise if applicable
+            if self.noise_dict and self.mode in ['augment', 'augment_notune']:
+                # For augmentation modes, apply to training data
+                if hasattr(model, 'concat_and_augment'):
+                    X_train, y_train, groups = model.concat_and_augment(X_train, y_train)
+                    model.fit(X_train, y_train)
+                else:
+                    model.fit(X_train, y_train)
             else:
                 model.fit(X_train, y_train)
         else:
-            model.fit(X_train, y_train)
+            print(f"Using cached model, skipping training for {self.model} subject {self.current_subject} session {self.current_session}")
         
         # Save training history
         output_path = self._get_history_output_path()

@@ -922,8 +922,8 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
         (df['eval_mode'] == 'CrossSession') &
         (df['noise_type'] == noise_type) &
         (df['tune'] == tune_setting) &
-        (df['seed'].isin(valid_seeds)) &
-        (df['intensity'].isin(correct_intensities))
+        (df['seed'].isin(valid_seeds)) #&
+        #(df['intensity'].isin(correct_intensities))
     ].copy()
     
     # Filter by specific models if provided
@@ -1393,8 +1393,8 @@ def extract_custom_data(df, filters=None, columns=None, aggregate=None, group_by
 
 
 if __name__ == '__main__':
-    input_dir = '../sol_results/'
-    #input_dir = '../results/MotorImagery/BNCI2014_001/'
+    #input_dir = '../sol_results/'
+    input_dir = '../results/MotorImagery/BNCI2014_001/'
     aggregated_df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
     
     # Example usage of custom plotting functions
@@ -1415,7 +1415,7 @@ if __name__ == '__main__':
     
     # Define model subsets for comparison
     model_subsets = {
-        'main_models': ['eegnet', 'reegnet', 'cnn_ncp'],
+        'main_models': ['branched_diva_ncp', 'eegnet', 'reegnet', 'cnn_ncp'],
         # 'cfc_models': ['cnncfc_compact', 'cnncfc_v2'],
         # 'wired_models': ['wiredcfc_arch1', 'wiredcfc_arch2', 'wiredcfc_arch3'],
         'all_models': None  # Will use all available models
@@ -1424,7 +1424,7 @@ if __name__ == '__main__':
     # Determine dataset from the data
     dataset = aggregated_df['dataset'].iloc[0] if 'dataset' in aggregated_df.columns else 'BNCI2014_001'
 
-    legacy_mode = True
+    legacy_mode = False
 
     if legacy_mode:
         # Also generate the original plots for backward compatibility

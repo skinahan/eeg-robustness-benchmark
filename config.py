@@ -19,6 +19,19 @@ from architecture_refinement.integrate_with_evaluation import create_model_facto
 
 # Centralized experiment configuration
 
+# Global verbose flag for controlling print output
+VERBOSE = False
+
+def set_verbose(verbose):
+    """Set the global verbose flag."""
+    global VERBOSE
+    VERBOSE = verbose
+
+def verbose_print(*args, **kwargs):
+    """Print only if verbose mode is enabled."""
+    if VERBOSE:
+        print(*args, **kwargs)
+
 # Dataset and paradigm defaults
 default_subjects = None # or list(range(1, 10)) for debugging
 DEFAULT_DATASET = BNCI2014_001
@@ -96,11 +109,11 @@ def add_wiredcfc_architecture(architecture_name, architecture_file_path):
             'file_path': architecture_file_path
         }
         
-        print(f"Successfully added {architecture_name} from {architecture_file_path}")
+        # verbose_print(f"Successfully added {architecture_name} from {architecture_file_path}")
         return True
         
     except Exception as e:
-        print(f"Failed to add {architecture_name}: {e}")
+        verbose_print(f"Failed to add {architecture_name}: {e}")
         return False
 
 def remove_wiredcfc_architecture(architecture_name):
@@ -116,25 +129,25 @@ def remove_wiredcfc_architecture(architecture_name):
     try:
         if architecture_name in _wiredcfc_architecture_registry:
             del _wiredcfc_architecture_registry[architecture_name]
-            print(f"Successfully removed {architecture_name}")
+            verbose_print(f"Successfully removed {architecture_name}")
             return True
         else:
-            print(f"WARNING: Architecture {architecture_name} not found in registry")
+            verbose_print(f"WARNING: Architecture {architecture_name} not found in registry")
             return False
         
     except Exception as e:
-        print(f"Failed to remove {architecture_name}: {e}")
+        verbose_print(f"Failed to remove {architecture_name}: {e}")
         return False
 
 def list_wiredcfc_architectures():
     """List all registered CNNWiredCfC architectures."""
     if not _wiredcfc_architecture_registry:
-        print("No CNNWiredCfC architectures registered")
+        verbose_print("No CNNWiredCfC architectures registered")
         return []
     
-    print("Registered CNNWiredCfC architectures:")
+    verbose_print("Registered CNNWiredCfC architectures:")
     for name, info in _wiredcfc_architecture_registry.items():
-        print(f" {name}: {info['file_path']}")
+        verbose_print(f" {name}: {info['file_path']}")
     
     return list(_wiredcfc_architecture_registry.keys())
 
@@ -142,8 +155,8 @@ def get_model_registry():
     """Get the complete model registry including dynamic CNNWiredCfC and BranchedWiredCfC architectures."""
     # Start with base models
     registry = get_base_model_registry()
-    print("Retrieved model registry: ")
-    print(registry.keys())
+    # verbose_print("Retrieved model registry: ")
+    # verbose_print(registry.keys())
     
     # Add dynamic CNNWiredCfC architectures
     for name, info in _wiredcfc_architecture_registry.items():
@@ -174,34 +187,34 @@ def load_architectures_from_directory(architectures_dir="outputs/architectures",
     
     arch_path = Path(architectures_dir)
     if not arch_path.exists():
-        print(f"Architectures directory not found: {architectures_dir}")
+        verbose_print(f"Architectures directory not found: {architectures_dir}")
         return []
     
     # Find all JSON files
     json_files = list(arch_path.glob("*.json"))
     if not json_files:
-        print(f"No JSON files found in {architectures_dir}")
+        verbose_print(f"No JSON files found in {architectures_dir}")
         return []
     
-    print(f"Found {len(json_files)} architecture files in {architectures_dir}")
+    # verbose_print(f"Found {len(json_files)} architecture files in {architectures_dir}")
     
     loaded_architectures = []
     
     for i, json_file in enumerate(json_files):
         # Generate architecture name
         architecture_name = f"{prefix}{i+1}"
-        print(f"Adding architecture {architecture_name} from {json_file}")
+        verbose_print(f"Adding architecture {architecture_name} from {json_file}")
         # Add to registry
         if add_wiredcfc_architecture(architecture_name, str(json_file)):
             loaded_architectures.append(architecture_name)
     
-    print(f"Successfully loaded {len(loaded_architectures)} architectures")
+    verbose_print(f"Successfully loaded {len(loaded_architectures)} architectures")
     return loaded_architectures
 
 def clear_wiredcfc_architectures():
     """Clear all registered CNNWiredCfC architectures."""
     _wiredcfc_architecture_registry.clear()
-    print("Cleared all CNNWiredCfC architectures")
+    verbose_print("Cleared all CNNWiredCfC architectures")
 
 # BranchedWiredCfC architecture management functions
 def add_branched_wiredcfc_architecture(architecture_name, wiring):
@@ -227,11 +240,11 @@ def add_branched_wiredcfc_architecture(architecture_name, wiring):
             'file_path': getattr(wiring, 'file_path', None)
         }
         
-        print(f"Successfully added {architecture_name}")
+        # verbose_print(f"Successfully added {architecture_name}")
         return True
         
     except Exception as e:
-        print(f"Failed to add {architecture_name}: {e}")
+        verbose_print(f"Failed to add {architecture_name}: {e}")
         return False
 
 def remove_branched_wiredcfc_architecture(architecture_name):
@@ -247,26 +260,26 @@ def remove_branched_wiredcfc_architecture(architecture_name):
     try:
         if architecture_name in _branched_wiredcfc_architecture_registry:
             del _branched_wiredcfc_architecture_registry[architecture_name]
-            print(f"Successfully removed {architecture_name}")
+            verbose_print(f"Successfully removed {architecture_name}")
             return True
         else:
-            print(f"WARNING: Architecture {architecture_name} not found in registry")
+            verbose_print(f"WARNING: Architecture {architecture_name} not found in registry")
             return False
         
     except Exception as e:
-        print(f"Failed to remove {architecture_name}: {e}")
+        verbose_print(f"Failed to remove {architecture_name}: {e}")
         return False
 
 def list_branched_wiredcfc_architectures():
     """List all registered BranchedWiredCfC architectures."""
     if not _branched_wiredcfc_architecture_registry:
-        print("No BranchedWiredCfC architectures registered")
+        verbose_print("No BranchedWiredCfC architectures registered")
         return []
     
-    print("Registered BranchedWiredCfC architectures:")
+    verbose_print("Registered BranchedWiredCfC architectures:")
     for name, info in _branched_wiredcfc_architecture_registry.items():
         file_path = info.get('file_path', 'Direct wiring object')
-        print(f" {name}: {file_path}")
+        verbose_print(f" {name}: {file_path}")
     
     return list(_branched_wiredcfc_architecture_registry.keys())
 
@@ -277,7 +290,7 @@ def get_branched_wiredcfc_architecture_registry():
 def clear_branched_wiredcfc_architectures():
     """Clear all registered BranchedWiredCfC architectures."""
     _branched_wiredcfc_architecture_registry.clear()
-    print("Cleared all BranchedWiredCfC architectures")
+    verbose_print("Cleared all BranchedWiredCfC architectures")
 
 def load_branched_wiredcfc_architectures_from_directory(architectures_dir="outputs/architectures", prefix="branched_wiredcfc_arch"):
     """
@@ -295,16 +308,16 @@ def load_branched_wiredcfc_architectures_from_directory(architectures_dir="outpu
     
     arch_path = Path(architectures_dir)
     if not arch_path.exists():
-        print(f"Architectures directory not found: {architectures_dir}")
+        verbose_print(f"Architectures directory not found: {architectures_dir}")
         return []
     
     # Find all JSON files
     json_files = list(arch_path.glob("*.json"))
     if not json_files:
-        print(f"No JSON files found in {architectures_dir}")
+        verbose_print(f"No JSON files found in {architectures_dir}")
         return []
     
-    print(f"Found {len(json_files)} architecture files in {architectures_dir}")
+    # verbose_print(f"Found {len(json_files)} architecture files in {architectures_dir}")
     
     loaded_architectures = []
     
@@ -316,7 +329,7 @@ def load_branched_wiredcfc_architectures_from_directory(architectures_dir="outpu
         if add_branched_wiredcfc_architecture(architecture_name, str(json_file)):
             loaded_architectures.append(architecture_name)
     
-    print(f"Successfully loaded {len(loaded_architectures)} BranchedWiredCfC architectures")
+    # verbose_print(f"Successfully loaded {len(loaded_architectures)} BranchedWiredCfC architectures")
     return loaded_architectures
 
 # Initialize with some default architectures if they exist
@@ -337,9 +350,9 @@ def initialize_default_architectures():
                 loaded_count += 1
     
     if loaded_count > 0:
-        print(f"Initialized {loaded_count} default architectures")
+        verbose_print(f"Initialized {loaded_count} default architectures")
     else:
-        print("WARNING: No default architectures found, use load_architectures_from_directory() to load them")
+        verbose_print("WARNING: No default architectures found, use load_architectures_from_directory() to load them")
 
 # Try to initialize default architectures
 try:
@@ -348,7 +361,7 @@ try:
     load_architectures_from_directory()
     load_branched_wiredcfc_architectures_from_directory()
 except Exception as e:
-    print(f"WARNING: Could not initialize default architectures: {e}")
+    verbose_print(f"WARNING: Could not initialize default architectures: {e}")
 
 def get_paradigm(resample=None, dataset="BNCI2014_001"):
     """Get the appropriate paradigm based on dataset."""
