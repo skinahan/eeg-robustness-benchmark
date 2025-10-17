@@ -47,6 +47,7 @@ from config import get_paradigm, MODEL_REGISTRY
 from globals import set_seeds, get_seed, UNDERFITTING_THRESHOLD
 from sklearn.metrics import get_scorer
 from evaluation.metrics import compute_classification_metrics
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, balanced_accuracy_score
 
 @dataclass
 class SaturationResult:
@@ -168,7 +169,7 @@ class AdaptiveSaturationDetector:
         
         # Noise types to test
         # self.noise_types = ["eog"]
-        self.noise_types = ["gaussian", "dropout", "eog"]
+        self.noise_types = ["gaussian", "dropout", "eog", "spike"]
         
         # Phase 1: Coarse exploration parameters
         self.coarse_intensities = [0, 25, 50, 75, 100]
@@ -184,6 +185,10 @@ class AdaptiveSaturationDetector:
         # Saturation detection parameters
         self.saturation_margin = 0.05  # 5% margin above chance level
         self.min_intensity_step = 5.0  # Minimum step size for binary search
+        
+        # Debugging parameters
+        self.debug_mode = False
+        self.debug_output_dir = self.output_dir / "debug_output"
         
     def detect_saturation_points(self, 
                                 datasets: List[str] = None,
@@ -247,6 +252,352 @@ class AdaptiveSaturationDetector:
         # Save final results
         self._save_final_results(results)
         return results
+    
+    def debug_lee2019_evaluation(self, dataset_name: str = "Lee2019_SSVEP", 
+                                subject_id: int = 1, noise_type: str = "gaussian", 
+                                intensity: float = 10.0) -> None:
+        """
+        Comprehensive debugging of Lee2019 SSVEP evaluation pipeline.
+        
+        This method investigates potential issues causing suspiciously high results:
+        1. Class distribution analysis
+        2. Signal characteristics per class
+        3. Per-class performance analysis
+        4. Noise application verification
+        5. Evaluation methodology issues
+        """
+        print("=" * 80)
+        print("COMPREHENSIVE LEE2019 SSVEP DEBUGGING")
+        print("=" * 80)
+        
+        # Enable debug mode
+        self.debug_mode = True
+        self.debug_output_dir.mkdir(exist_ok=True)
+        
+        # Load data
+        print(f"\n1. LOADING DATA (Dataset: {dataset_name}, Subject: {subject_id})")
+        print("-" * 60)
+        
+        config = self.dataset_configs[dataset_name]
+        dataset = config["dataset_class"]()
+        dataset.subject_list = [subject_id]
+        
+        paradigm = get_paradigm(resample=None, dataset=dataset_name)
+        X, y, metadata = paradigm.get_data(dataset, subjects=[subject_id])
+        
+        # Encode labels
+        from sklearn.preprocessing import LabelEncoder
+        y_encoded = LabelEncoder().fit_transform(y)
+        
+        print(f"Data shape: {X.shape}")
+        print(f"Original labels: {np.unique(y)}")
+        print(f"Encoded labels: {np.unique(y_encoded)}")
+        print(f"Class distribution: {np.bincount(y_encoded)}")
+        
+        # Check class balance
+        class_counts = np.bincount(y_encoded)
+        if len(class_counts) > 1:
+            imbalance_ratio = np.max(class_counts) / np.min(class_counts)
+            print(f"Class imbalance ratio: {imbalance_ratio:.3f}")
+            if imbalance_ratio > 1.2:
+                print("⚠️  WARNING: Class imbalance detected!")
+            else:
+                print("✅ Classes are well balanced")
+        
+        # Analyze signal characteristics
+        print(f"\n2. SIGNAL CHARACTERISTICS ANALYSIS")
+        print("-" * 60)
+        
+        overall_power = np.mean(X**2)
+        overall_std = np.std(X)
+        print(f"Overall signal power: {overall_power:.6f}")
+        print(f"Overall signal std: {overall_std:.6f}")
+        
+        # Per-class signal analysis
+        class_names = ['12.0Hz', '5.45Hz', '6.67Hz', '8.57Hz']
+        print(f"\nPer-class signal characteristics:")
+        class_powers = []
+        for i, class_name in enumerate(class_names):
+            class_mask = y_encoded == i
+            if class_mask.sum() > 0:
+                X_class = X[class_mask]
+                class_power = np.mean(X_class**2)
+                class_std = np.std(X_class)
+                class_powers.append(class_power)
+                print(f"  {class_name}: power={class_power:.6f}, std={class_std:.6f} ({class_mask.sum()} samples)")
+        
+        # Check for trivial separability
+        if len(class_powers) > 1:
+            power_ratio = max(class_powers) / min(class_powers)
+            print(f"\nPower ratio between classes: {power_ratio:.3f}")
+            if power_ratio > 10:
+                print("⚠️  WARNING: Classes have very different power levels!")
+                print("   Classification might be trivial based on signal power.")
+            else:
+                print("✅ Classes have similar power levels - good for fair evaluation.")
+        
+        # Train model and evaluate
+        print(f"\n3. MODEL TRAINING AND EVALUATION")
+        print("-" * 60)
+        
+        # Split data like test_perturb does
+        if 'session' in metadata.columns:
+            train_mask = metadata['session'] == '0train'
+            test_mask = metadata['session'] != '0train'
+            
+            if train_mask.sum() > 0 and test_mask.sum() > 0:
+                X_train = X[train_mask]
+                y_train = y_encoded[train_mask]
+                X_test = X[test_mask]
+                y_test = y_encoded[test_mask]
+                print(f"Session-based split: {len(X_train)} train, {len(X_test)} test")
+            else:
+                print("⚠️  WARNING: No session split found, using random split")
+                from sklearn.model_selection import train_test_split
+                X_train, X_test, y_train, y_test = train_test_split(
+                    X, y_encoded, test_size=0.3, random_state=self.base_seed, stratify=y_encoded
+                )
+        else:
+            print("⚠️  WARNING: No session info, using random split")
+            from sklearn.model_selection import train_test_split
+            X_train, X_test, y_train, y_test = train_test_split(
+                X, y_encoded, test_size=0.3, random_state=self.base_seed, stratify=y_encoded
+            )
+        
+        # Create and train model
+        n_chans = X_train.shape[1]
+        n_times = X_train.shape[2]
+        n_outputs = config["n_classes"]
+        
+        model = create_eegnet_classifier(n_chans, n_times, n_outputs, seed=self.base_seed)
+        model.max_epochs = 200
+        model.initialize()
+        
+        print("Training model...")
+        model.module_.train()
+        model.fit(X_train, y_train)
+        
+        # Evaluate on clean test data
+        print("\nEvaluating on clean test data...")
+        model.module_.eval()
+        import torch
+        
+        with torch.no_grad():
+            y_pred_proba = model.predict_proba(X_test)
+            y_pred = np.argmax(y_pred_proba, axis=1)
+            
+            # Calculate metrics
+            accuracy = accuracy_score(y_test, y_pred)
+            balanced_acc = balanced_accuracy_score(y_test, y_pred)
+            metrics_clean = compute_classification_metrics(y_test, y_pred_proba, n_outputs)
+            clean_auc = metrics_clean["roc_auc"]
+        
+        print(f"Clean test performance:")
+        print(f"  Accuracy: {accuracy:.3f}")
+        print(f"  Balanced Accuracy: {balanced_acc:.3f}")
+        print(f"  ROC-AUC: {clean_auc:.3f}")
+        
+        if accuracy > 0.95:
+            print("⚠️  WARNING: Accuracy > 95% - suspiciously high!")
+        
+        if abs(accuracy - balanced_acc) > 0.05:
+            print("⚠️  WARNING: Large difference between accuracy and balanced accuracy!")
+        
+        # Per-class performance analysis
+        print(f"\nPer-class performance on clean data:")
+        print(classification_report(y_test, y_pred, target_names=class_names))
+        
+        print(f"\nConfusion matrix (clean data):")
+        cm = confusion_matrix(y_test, y_pred)
+        print(cm)
+        
+        # Noise application test
+        print(f"\n4. NOISE APPLICATION TEST (Type: {noise_type}, Intensity: {intensity}%)")
+        print("-" * 60)
+        
+        # Create noise augmentor
+        augmentor = EEGNoiseAugmentor(noise_type=noise_type, intensity=intensity, seed=self.base_seed)
+        
+        # Apply noise to test data
+        print("Applying noise to test data...")
+        original_test_power = np.mean(X_test**2)
+        original_test_std = np.std(X_test)
+        
+        X_test_noisy = augmentor.transform(X_test)
+        
+        noisy_test_power = np.mean(X_test_noisy**2)
+        noisy_test_std = np.std(X_test_noisy)
+        
+        print(f"Signal power analysis:")
+        print(f"  Original power: {original_test_power:.6f}")
+        print(f"  Noisy power: {noisy_test_power:.6f}")
+        print(f"  Power ratio: {noisy_test_power/original_test_power:.3f}")
+        print(f"  Std ratio: {noisy_test_std/original_test_std:.3f}")
+        
+        if abs(noisy_test_power - original_test_power) < 1e-10:
+            print("⚠️  WARNING: Signal power unchanged - noise may not be applied!")
+        else:
+            print("✅ Noise successfully applied - signal changed")
+        
+        # Evaluate on noisy data
+        print("\nEvaluating on noisy test data...")
+        with torch.no_grad():
+            y_pred_proba_noisy = model.predict_proba(X_test_noisy)
+            y_pred_noisy = np.argmax(y_pred_proba_noisy, axis=1)
+            
+            # Calculate metrics
+            noisy_accuracy = accuracy_score(y_test, y_pred_noisy)
+            noisy_balanced_acc = balanced_accuracy_score(y_test, y_pred_noisy)
+            metrics_noisy = compute_classification_metrics(y_test, y_pred_proba_noisy, n_outputs)
+            noisy_auc = metrics_noisy["roc_auc"]
+        
+        print(f"Noisy test performance:")
+        print(f"  Accuracy: {noisy_accuracy:.3f}")
+        print(f"  Balanced Accuracy: {noisy_balanced_acc:.3f}")
+        print(f"  ROC-AUC: {noisy_auc:.3f}")
+        
+        performance_drop = (accuracy - noisy_accuracy) / accuracy * 100
+        print(f"  Performance drop: {performance_drop:.1f}%")
+        
+        if noisy_accuracy > 0.9:
+            print("⚠️  WARNING: Still very high performance with noise!")
+        
+        if performance_drop < 10:
+            print("⚠️  WARNING: Very small performance drop - noise may not be effective!")
+        
+        # Per-class performance under noise
+        print(f"\nPer-class performance under noise:")
+        print(classification_report(y_test, y_pred_noisy, target_names=class_names))
+        
+        print(f"\nConfusion matrix (noisy data):")
+        cm_noisy = confusion_matrix(y_test, y_pred_noisy)
+        print(cm_noisy)
+        
+        # Cross-validation consistency check
+        print(f"\n5. CROSS-VALIDATION CONSISTENCY CHECK")
+        print("-" * 60)
+        
+        from sklearn.model_selection import StratifiedKFold
+        cv = StratifiedKFold(n_splits=3, shuffle=True, random_state=self.base_seed)
+        
+        fold_scores = []
+        fold_accuracies = []
+        
+        for i, (train_idx, valid_idx) in enumerate(cv.split(X, y_encoded)):
+            print(f"\nFold {i}:")
+            print(f"  Train size: {len(train_idx)}, Valid size: {len(valid_idx)}")
+            
+            # Check class distribution in fold
+            train_classes = np.bincount(y_encoded[train_idx])
+            valid_classes = np.bincount(y_encoded[valid_idx])
+            print(f"  Train class distribution: {train_classes}")
+            print(f"  Valid class distribution: {valid_classes}")
+            
+            # Train model on fold
+            X_train_fold = X[train_idx]
+            y_train_fold = y_encoded[train_idx]
+            
+            model_fold = create_eegnet_classifier(n_chans, n_times, n_outputs, seed=self.base_seed + i)
+            model_fold.max_epochs = 200
+            model_fold.initialize()
+            model_fold.module_.train()
+            model_fold.fit(X_train_fold, y_train_fold)
+            
+            # Evaluate on validation set
+            X_valid_fold = X[valid_idx]
+            y_valid_fold = y_encoded[valid_idx]
+            
+            # Test with noise
+            X_valid_fold_noisy = augmentor.transform(X_valid_fold)
+            
+            model_fold.module_.eval()
+            with torch.no_grad():
+                y_pred_proba_fold = model_fold.predict_proba(X_valid_fold_noisy)
+                y_pred_fold = np.argmax(y_pred_proba_fold, axis=1)
+                
+                fold_acc = accuracy_score(y_valid_fold, y_pred_fold)
+                fold_auc = compute_classification_metrics(y_valid_fold, y_pred_proba_fold, n_outputs)["roc_auc"]
+                
+                print(f"  Fold accuracy: {fold_acc:.3f}")
+                print(f"  Fold ROC-AUC: {fold_auc:.3f}")
+                
+                fold_scores.append(fold_auc)
+                fold_accuracies.append(fold_acc)
+        
+        # Overall CV analysis
+        print(f"\nOverall CV Results:")
+        print(f"  Mean ROC-AUC: {np.mean(fold_scores):.3f} ± {np.std(fold_scores):.3f}")
+        print(f"  Mean Accuracy: {np.mean(fold_accuracies):.3f} ± {np.std(fold_accuracies):.3f}")
+        print(f"  Score range: {np.min(fold_scores):.3f} - {np.max(fold_scores):.3f}")
+        
+        if np.std(fold_scores) > 0.1:
+            print("⚠️  WARNING: High variance across CV folds!")
+        
+        # Summary and recommendations
+        print(f"\n6. SUMMARY AND RECOMMENDATIONS")
+        print("=" * 80)
+        
+        issues_found = []
+        
+        if accuracy > 0.95:
+            issues_found.append("Accuracy > 95% - suspiciously high")
+        
+        if abs(accuracy - balanced_acc) > 0.05:
+            issues_found.append("Large accuracy vs balanced accuracy difference")
+        
+        if noisy_accuracy > 0.9:
+            issues_found.append("High performance even with noise")
+        
+        if performance_drop < 10:
+            issues_found.append("Very small performance drop with noise")
+        
+        if len(class_powers) > 1 and max(class_powers) / min(class_powers) > 10:
+            issues_found.append("Classes have very different power levels")
+        
+        if np.std(fold_scores) > 0.1:
+            issues_found.append("High variance across CV folds")
+        
+        if issues_found:
+            print("⚠️  ISSUES IDENTIFIED:")
+            for i, issue in enumerate(issues_found, 1):
+                print(f"  {i}. {issue}")
+        else:
+            print("✅ No major issues identified in the evaluation pipeline")
+        
+        print(f"\nRecommendations:")
+        print("1. Verify noise application is working correctly")
+        print("2. Check if SSVEP patterns are too distinctive")
+        print("3. Compare with expected SSVEP baselines (70-90% clean accuracy)")
+        print("4. Consider using balanced accuracy instead of raw accuracy")
+        print("5. Add per-class performance tracking in main evaluation")
+        
+        # Save debug results
+        debug_results = {
+            "dataset": dataset_name,
+            "subject": subject_id,
+            "noise_type": noise_type,
+            "intensity": intensity,
+            "clean_accuracy": float(accuracy),
+            "clean_balanced_accuracy": float(balanced_acc),
+            "clean_roc_auc": float(clean_auc),
+            "noisy_accuracy": float(noisy_accuracy),
+            "noisy_balanced_accuracy": float(noisy_balanced_acc),
+            "noisy_roc_auc": float(noisy_auc),
+            "performance_drop_percent": float(performance_drop),
+            "power_ratio": float(noisy_test_power/original_test_power),
+            "cv_mean_auc": float(np.mean(fold_scores)),
+            "cv_std_auc": float(np.std(fold_scores)),
+            "issues_found": issues_found,
+            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+        }
+        
+        debug_file = self.debug_output_dir / f"debug_{dataset_name}_sub{subject_id}_{noise_type}_{intensity}.json"
+        with open(debug_file, 'w') as f:
+            json.dump(debug_results, f, indent=2)
+        
+        print(f"\nDebug results saved to: {debug_file}")
+        
+        return debug_results
     
     def _detect_single_saturation_point_with_trained_model(self, dataset_name: str, noise_type: str, 
                                                           trained_model, X_test, y_test) -> SaturationResult:
@@ -757,6 +1108,33 @@ def main():
     
     print("\nSaturation point detection completed!")
     return results
+
+def debug_main():
+    """Main function to run Lee2019 SSVEP debugging."""
+    
+    print("Lee2019 SSVEP Evaluation Pipeline Debugging")
+    print("Investigating suspiciously high results under noise perturbation")
+    print("="*80)
+    
+    # Initialize detector
+    detector = AdaptiveSaturationDetector(
+        model_name="eegnet",
+        base_seed=100,
+        output_dir="saturation_results"
+    )
+    
+    # Run comprehensive debugging
+    debug_results = detector.debug_lee2019_evaluation(
+        dataset_name="Lee2019_SSVEP",
+        subject_id=1,
+        noise_type="gaussian",
+        intensity=10.0
+    )
+    
+    print("\nLee2019 SSVEP debugging completed!")
+    print("Check the debug output directory for detailed results.")
+    
+    return debug_results
 
 if __name__ == "__main__":
     results = main()

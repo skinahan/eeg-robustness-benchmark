@@ -1,0 +1,15 @@
+{
+  "noise_type": "spike",
+  "dataset": "BNCI2014_001",
+  "saturation_point": 100.0,
+  "confidence_interval": [
+    0.6044110082304527,
+    0.8044110082304526
+  ],
+  "chance_threshold": 0.56,
+  "performance_at_saturation": 0.7044110082304527,
+  "performance_std": 0.1,
+  "is_statistically_significant": false,
+  "detection_method": "coarse_exploration_only",
+  "timestamp": "2025-10-17 12:56:46"
+}

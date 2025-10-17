@@ -749,7 +749,7 @@ class UnifiedExperimentRunner:
         }
     
     def _evaluate_perturb(self, trained_model, X_valid, y_valid, fold_idx, session, clean_score, training_time):        
-        noise_types = ['eog', 'gaussian', 'dropout']
+        noise_types = ['eog', 'gaussian', 'dropout', 'spike']
 
         results = []
         trained_model.module_.eval()
@@ -1270,7 +1270,7 @@ def main():
     parser.add_argument("--eval_mode", type=str, required=True, 
                        choices=["WithinSession", "CrossSession", "CrossSubject"])
     parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument("--noise_type", type=str, choices=["dropout", "gaussian", "eog"], default=None)
+    parser.add_argument("--noise_type", type=str, choices=["dropout", "gaussian", "eog", "spike"], default=None)
     parser.add_argument("--intensity", type=float, default=None)
     parser.add_argument("--tune", action="store_true")
     parser.add_argument("--overwrite", action="store_true")

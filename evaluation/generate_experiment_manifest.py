@@ -31,12 +31,13 @@ class ExperimentManifestGenerator:
         self.datasets = ["BNCI2014_001"]
         self.eval_modes = ["WithinSession", "CrossSession"]
         self.modes = ["baseline", "tune", "augment", "perturb", "augment_notune", "perturb_notune", "test_perturb"]
-        self.noise_types = ["dropout", "gaussian", "eog"]
+        self.noise_types = ["dropout", "gaussian", "eog", "spike"]
         self.notune_modes = ["baseline", "augment_notune", "perturb_notune", "test_perturb"]
         self.intensities = {
             "dropout": [0.1, 0.2, 0.3, 0.4, 0.5],
             "gaussian": [0.03, 0.05, 0.08, 0.1, 0.15, 0.2, 0.25, 0.3],
-            "eog": [0.1, 0.2, 0.3, 0.4, 0.5]
+            "eog": [0.1, 0.2, 0.3, 0.4, 0.5],
+            "spike": [0.1, 0.2, 0.3, 0.4, 0.5]
         }
         self.seeds = [100, 200, 300, 400, 500]  # Multiple seeds for robustness
         self.subjects = [1, 2, 3, 4, 5, 6, 7, 8, 9]

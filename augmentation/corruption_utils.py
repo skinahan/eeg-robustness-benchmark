@@ -46,6 +46,11 @@ class CorruptionPlan:
                 'intensities': [10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0],
                 'description': 'Simulated EOG artifacts with scaling factor',
                 'params': {}
+            },
+            'spike': {
+                'intensities': [10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0],
+                'description': 'Transient spike artifacts with temporal coverage scaling (10% = 10% of time covered by spikes)',
+                'params': {}
             }
         }
         

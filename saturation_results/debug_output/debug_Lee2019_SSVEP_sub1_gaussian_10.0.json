@@ -1,0 +1,20 @@
+{
+  "dataset": "Lee2019_SSVEP",
+  "subject": 1,
+  "noise_type": "gaussian",
+  "intensity": 10.0,
+  "clean_accuracy": 0.85,
+  "clean_balanced_accuracy": 0.8500000000000001,
+  "clean_roc_auc": 0.9648148148148148,
+  "noisy_accuracy": 0.85,
+  "noisy_balanced_accuracy": 0.8500000000000001,
+  "noisy_roc_auc": 0.9651851851851851,
+  "performance_drop_percent": 0.0,
+  "power_ratio": 1.015505125061871,
+  "cv_mean_auc": 0.976906512605042,
+  "cv_std_auc": 0.0025937934835421573,
+  "issues_found": [
+    "Very small performance drop with noise"
+  ],
+  "timestamp": "2025-10-17 12:37:14"
+}

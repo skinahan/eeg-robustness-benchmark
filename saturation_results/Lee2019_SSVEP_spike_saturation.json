@@ -1,15 +1,15 @@
 {
-  "noise_type": "dropout",
+  "noise_type": "spike",
   "dataset": "Lee2019_SSVEP",
   "saturation_point": 100.0,
   "confidence_interval": [
-    0.4,
-    0.6
+    0.8875308641975309,
+    1.087530864197531
   ],
   "chance_threshold": 0.3,
-  "performance_at_saturation": 0.5,
+  "performance_at_saturation": 0.9875308641975309,
   "performance_std": 0.1,
   "is_statistically_significant": false,
   "detection_method": "coarse_exploration_only",
-  "timestamp": "2025-10-17 12:58:18"
+  "timestamp": "2025-10-17 12:59:02"
 }

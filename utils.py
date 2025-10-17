@@ -55,7 +55,7 @@ def get_noise_perturbation_bounds(dataset: str, noise_type: str, saturation_file
     
     Args:
         dataset: Dataset name (e.g., 'BNCI2014_001', 'Lee2019_SSVEP')
-        noise_type: Type of noise ('gaussian', 'dropout', 'eog')
+        noise_type: Type of noise ('gaussian', 'dropout', 'eog', 'spike')
         saturation_file: Path to saturation results CSV file
         
     Returns:
@@ -108,7 +108,7 @@ def get_noise_intensities(dataset: str, noise_type: str, num_steps: int = 20, sa
     
     Args:
         dataset: Dataset name (e.g., 'BNCI2014_001', 'Lee2019_SSVEP')
-        noise_type: Type of noise ('gaussian', 'dropout', 'eog')
+        noise_type: Type of noise ('gaussian', 'dropout', 'eog', 'spike')
         num_steps: Number of intensity steps
         saturation_file: Path to saturation results CSV file
         
