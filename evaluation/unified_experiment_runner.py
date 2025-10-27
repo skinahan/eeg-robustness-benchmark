@@ -1369,7 +1369,7 @@ def main():
             
             # Aggregate results if requested
             if args.aggregate:
-                collect_all_results(paradigm='MotorImagery', dataset=args.dataset)
+                collect_all_results(paradigm=paradigm_name, dataset=args.dataset)
                 
         except Exception as e:
             print(f"Experiment failed: {e}")

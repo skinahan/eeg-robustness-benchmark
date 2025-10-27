@@ -186,8 +186,15 @@ def aggregate_results(input_dir):
         combined_df.drop(columns=['time', 'samples', 'channels', 'n_sessions', 'pipeline'], inplace=True,
                          errors='ignore')
 
-        # Set 'dataset' column to 'BNCI2014_001' for all rows
-        combined_df['dataset'] = 'BNCI2014_001'
+        # Set 'dataset' column if not already present
+        if 'dataset' not in combined_df.columns:
+            # Try to infer dataset from directory structure
+            if 'BNCI2014_001' in input_dir:
+                combined_df['dataset'] = 'BNCI2014_001'
+            elif 'Lee2019_SSVEP' in input_dir:
+                combined_df['dataset'] = 'Lee2019_SSVEP'
+            else:
+                combined_df['dataset'] = 'BNCI2014_001'  # Default
 
         return combined_df
     else:
@@ -1393,9 +1400,22 @@ def extract_custom_data(df, filters=None, columns=None, aggregate=None, group_by
 
 
 if __name__ == '__main__':
-    #input_dir = '../sol_results/'
-    input_dir = '../results/MotorImagery/BNCI2014_001/'
-    aggregated_df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
+    # Try to load from either dataset
+    # First try MotorImagery/BNCI2014_001
+    motor_imagery_path = '../results/MotorImagery/BNCI2014_001/all_results.csv'
+    # Then try SSVEP/Lee2019_SSVEP
+    ssvep_path = '../results/SSVEP/Lee2019_SSVEP/all_results.csv'
+    
+    if os.path.exists(motor_imagery_path):
+        input_dir = '../results/MotorImagery/BNCI2014_001/'
+        aggregated_df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
+    elif os.path.exists(ssvep_path):
+        input_dir = '../results/SSVEP/Lee2019_SSVEP/'
+        aggregated_df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
+    else:
+        # Default to MotorImagery if neither exists
+        input_dir = '../results/MotorImagery/BNCI2014_001/'
+        aggregated_df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
     
     # Example usage of custom plotting functions
     # print("\n=== Example: Custom comparison of eegnet and cnn_ncp under EOG noise ===")
