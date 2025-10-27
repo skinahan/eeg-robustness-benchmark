@@ -223,6 +223,12 @@ def apply_corruption(x: np.ndarray, family: str, intensity: float,
         from .noise import EEGNoiseAugmentor
         augmentor = EEGNoiseAugmentor(noise_type='eog', intensity=intensity, seed=seed)
         x_corrupted = augmentor.transform(x)
+        
+    elif family == 'spike':
+        # Transient spike artifacts using existing EEGNoiseAugmentor
+        from .noise import EEGNoiseAugmentor
+        augmentor = EEGNoiseAugmentor(noise_type='spike', intensity=intensity, seed=seed)
+        x_corrupted = augmentor.transform(x)
             
     else:
         raise ValueError(f"Unknown corruption family: {family}")

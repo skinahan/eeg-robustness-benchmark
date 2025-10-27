@@ -456,7 +456,7 @@ def cnn_ncp_plots(aggregated_df):
 def run_comparative_plots(aggregated_df):
     modes = ['augment', 'perturb']
     sessions = ['0train', '1test']
-    noise_types = ['gaussian', 'dropout', 'eog']
+    noise_types = ['gaussian', 'dropout', 'eog', 'spike']
     for mode in modes:
         for session in sessions:
             for noise in noise_types:
@@ -467,7 +467,7 @@ def run_completion_report(output_dir, aggregated_df):
     # Define the combinations we want to check for
     models = ["eegnet", "reegnet", "cnnncp"]
     seeds = [100, 200, 300, 400, 500]
-    noise_types = ["dropout", "gaussian", "eog"]
+    noise_types = ["dropout", "gaussian", "eog", "spike"]
     noise_levels = list(range(10, 100, 10))
 
     # Create all possible combinations
