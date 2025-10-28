@@ -70,22 +70,53 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
             print(f"Some models are not cached or have configuration mismatches, will retrain...")
     
     # Check existing output files
-    for subj in subject_list:
-        sessions_to_check = ['0train', '1test']
-                        
-        for session in sessions_to_check:
-            # Determine paradigm and dataset for path creation
-            out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
+    if eval_mode == 'CrossSubjectEvaluation':
+        # For CrossSubject, check for 3 fold-based output files
+        # We need to generate expected fold sessions based on subject_list
+        # For a 3-fold split, each fold uses 1/3 of subjects as eval
+        n_subjects = len(subject_list)
+        fold_size = n_subjects // 3
+        
+        # Generate expected fold sessions
+        for fold_idx in range(3):
+            eval_start = fold_idx * fold_size
+            eval_end = eval_start + fold_size
+            eval_subjects = subject_list[eval_start:eval_end]
+            eval_subjects_str = ','.join(map(str, sorted(eval_subjects)))
+            session = f"fold_{fold_idx}_eval_subjects_{eval_subjects_str}"
+            
+            # Use first eval subject as representative for path
+            representative_subject = eval_subjects[0] if eval_subjects else subject_list[0]
+            
+            out_dir = create_output_path(model_name, seed, int(representative_subject), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
             if noise_type is not None and intensity is not None:
                 filename_suffix = f"_{noise_type}_{intensity}"
             else:
                 filename_suffix = ""
             out_file = os.path.join(out_dir,
-                                    f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
+                                    f"{model_name}_{mode}{filename_suffix}_{session}_seed{seed}.csv")
             if os.path.exists(out_file):
                 existing_output_paths.append(out_file)
             else:
                 expected_output_paths.append(out_file)
+    else:
+        # Original logic for WithinSession and CrossSession
+        for subj in subject_list:
+            sessions_to_check = ['0train', '1test']
+                            
+            for session in sessions_to_check:
+                # Determine paradigm and dataset for path creation
+                out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
+                if noise_type is not None and intensity is not None:
+                    filename_suffix = f"_{noise_type}_{intensity}"
+                else:
+                    filename_suffix = ""
+                out_file = os.path.join(out_dir,
+                                        f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
+                if os.path.exists(out_file):
+                    existing_output_paths.append(out_file)
+                else:
+                    expected_output_paths.append(out_file)
 
     if len(expected_output_paths) == 0:
         print(f"Skipping analysis, file(s) exist:")
@@ -97,21 +128,51 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
 
 def log_all_subjects(results, subject_list, model_name, mode, noise_type, intensity, seed, eval_mode='CrossSession', paradigm='MotorImagery', dataset='BNCI2014_001'):
     """Log results for all subjects to individual CSV files."""
-    for subj in subject_list:        
-        subject_df = results[results['subject'] == int(subj)]
-        for session in subject_df['session'].unique():
-            session_df = subject_df[subject_df['session'] == session]
-            out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
+    # Handle CrossSubject mode differently - results are organized by folds, not individual subjects
+    if eval_mode == 'CrossSubjectEvaluation':
+        # For CrossSubject, iterate over unique fold sessions
+        for session in results['session'].unique():
+            session_df = results[results['session'] == session]
+            
+            # Extract fold information from session string (e.g., "fold_0_eval_subjects_1,2,3")
+            if 'fold_' in session and 'eval_subjects' in session:
+                # Get the representative subject (first eval subject) for file path
+                representative_subject = session_df['subject'].iloc[0] if 'subject' in session_df.columns else subject_list[0]
+            else:
+                # Fallback if session format is unexpected
+                representative_subject = session_df['subject'].iloc[0] if 'subject' in session_df.columns else subject_list[0]
+            
+            out_dir = create_output_path(model_name, seed, int(representative_subject), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
             os.makedirs(out_dir, exist_ok=True)
+            
             if noise_type is not None and intensity is not None:
                 filename_suffix = f"_{noise_type}_{intensity}" 
             else:
                 filename_suffix = ""
-
+            
+            # For CrossSubject, session format is "fold_X_eval_subjects_Y"
             out_file = os.path.join(out_dir,
-                                    f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
+                                    f"{model_name}_{mode}{filename_suffix}_{session}_seed{seed}.csv")
+            
             session_df.to_csv(out_file, index=False)
             print(f"Saved: {out_file}")
+    else:
+        # Original logic for WithinSession and CrossSession modes
+        for subj in subject_list:        
+            subject_df = results[results['subject'] == int(subj)]
+            for session in subject_df['session'].unique():
+                session_df = subject_df[subject_df['session'] == session]
+                out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
+                os.makedirs(out_dir, exist_ok=True)
+                if noise_type is not None and intensity is not None:
+                    filename_suffix = f"_{noise_type}_{intensity}" 
+                else:
+                    filename_suffix = ""
+
+                out_file = os.path.join(out_dir,
+                                        f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
+                session_df.to_csv(out_file, index=False)
+                print(f"Saved: {out_file}")
 
 
 def two_stage_opt(dataset, subj, paradigm, model_name, model_fn, seed, mode, resample):

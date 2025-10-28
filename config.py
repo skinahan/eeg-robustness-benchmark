@@ -1,5 +1,5 @@
-from moabb.datasets import BNCI2014_001, Lee2019_SSVEP
-from moabb.paradigms import MotorImagery, SSVEP
+from moabb.datasets import BNCI2014_001, Lee2019_SSVEP, BI2015a
+from moabb.paradigms import MotorImagery, SSVEP, P300
 from models.eegnet import create_eegnet_classifier
 from models.reegnet import create_reegnet_classifier
 from models.cnnncp import create_cnnncpv2_classifier, create_cnnncp_classifier
@@ -363,14 +363,53 @@ try:
 except Exception as e:
     verbose_print(f"WARNING: Could not initialize default architectures: {e}")
 
+def get_dataset_sampling_rate(dataset="BNCI2014_001"):
+    """
+    Get the appropriate sampling rate (Hz) for a given dataset.
+    
+    Args:
+        dataset: Dataset name ("BNCI2014_001", "Lee2019_SSVEP", "BI2015a")
+    
+    Returns:
+        Sampling rate in Hz (float)
+    """
+    dataset_rates = {
+        "BNCI2014_001": 250.0,      # MOABB provides this dataset at 250 Hz
+        "Lee2019_SSVEP": 1000.0,    # Native sampling rate is 1000 Hz
+        "BI2015a": 250.0             # Typical ERP datasets are 250 Hz, verify with actual data
+    }
+    return dataset_rates.get(dataset, 250.0)  # Default to 250 Hz if unknown
+
 def get_paradigm(resample=None, dataset="BNCI2014_001"):
-    """Get the appropriate paradigm based on dataset."""
+    """
+    Get the appropriate paradigm based on dataset.
+    
+    Args:
+        resample: Target sampling rate in Hz. If None, uses dataset-specific default.
+        dataset: Dataset name
+    
+    Returns:
+        Configured paradigm instance
+    """
+    # If resample not specified, use dataset-specific default
+    if resample is None:
+        resample = get_dataset_sampling_rate(dataset)
+    
     if dataset == "Lee2019_SSVEP":
         return SSVEP(
             n_classes=4,
             tmin=0.0,
             tmax=4.0,
             baseline=None,
+            resample=resample
+        )
+    elif dataset == "BI2015a":
+        return P300(
+            fmin=1,
+            fmax=24,
+            tmin=0.0,
+            tmax=1.0,
+            baseline=(None, 0),
             resample=resample
         )
     else:  # Default to MotorImagery for BNCI2014_001
