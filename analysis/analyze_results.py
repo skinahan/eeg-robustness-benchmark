@@ -39,6 +39,7 @@ def load_saturation_points(saturation_csv_path='saturation_results/saturation_po
         print("Using default saturation point of 50.0")
         return {}
 
+
 def get_correct_intensities(dataset='BNCI2014_001', noise_type=None, saturation_dict=None, num_points=20):
     """
     Get the correct intensity range based on saturation points.
@@ -63,6 +64,7 @@ def get_correct_intensities(dataset='BNCI2014_001', noise_type=None, saturation_
         saturation_point = 50.0
     
     return np.linspace(1.0, saturation_point, num_points)
+
 
 def aggregate_results(input_dir):
     """
@@ -106,7 +108,6 @@ def aggregate_results(input_dir):
     }
 
     aggregated_dfs = []
-    listDir = os.listdir(input_dir)
     for file in os.listdir(input_dir):
 
         if file.endswith(".csv"):
@@ -201,9 +202,6 @@ def aggregate_results(input_dir):
         print("No .csv files found in the provided directory.")
         return None
 
-import seaborn as sns
-import matplotlib.pyplot as plt
-import os
 
 def plot_comparative_noise_performance(aggregated_df, noise_type, session_type, run_mode='augment', output_dir='plots'):
     """
@@ -316,6 +314,7 @@ def plot_noise_performance(aggregated_df, model_name, noise_type, session_type, 
 
     print(f"Plot saved to {output_file}")
 
+
 def plot_dropout_test_performance(aggregated_df, model_name):
     """
     Wrapper for plotting dropout noise performance on the test set for a given model.
@@ -326,6 +325,7 @@ def plot_dropout_test_performance(aggregated_df, model_name):
         noise_type='dropout',
         session_type='1test'
     )
+
 
 def plot_dropout_train_performance(aggregated_df, model_name):
     """
@@ -338,6 +338,7 @@ def plot_dropout_train_performance(aggregated_df, model_name):
         session_type='0train'
     )
 
+
 def plot_gaussian_test_performance(aggregated_df, model_name):
     """
     Wrapper for plotting gaussian noise performance on the test set for a given model.
@@ -348,6 +349,7 @@ def plot_gaussian_test_performance(aggregated_df, model_name):
         noise_type='gaussian',
         session_type='1test'
     )
+
 
 def plot_gaussian_train_performance(aggregated_df, model_name):
     """
@@ -360,6 +362,7 @@ def plot_gaussian_train_performance(aggregated_df, model_name):
         session_type='0train'
     )
 
+
 def plot_eog_test_performance(aggregated_df, model_name):
     """
     Wrapper for plotting eog noise performance on the test set for a given model.
@@ -371,6 +374,7 @@ def plot_eog_test_performance(aggregated_df, model_name):
         session_type='1test'
     )
 
+
 def plot_eog_train_performance(aggregated_df, model_name):
     """
     Wrapper for plotting eog noise performance on the train set for a given model.
@@ -381,6 +385,7 @@ def plot_eog_train_performance(aggregated_df, model_name):
         noise_type='eog',
         session_type='0train'
     )
+
 
 def plot_per_subject_roc_auc(
         df,
@@ -430,6 +435,7 @@ def plot_per_subject_roc_auc(
     plt.close()
     print(f"Plot saved to {out_file}")
 
+
 def model_plots(aggregated_df, model_name):
     plot_dropout_train_performance(aggregated_df, model_name)
     plot_dropout_test_performance(aggregated_df, model_name)
@@ -443,15 +449,19 @@ def model_plots(aggregated_df, model_name):
     plot_per_subject_roc_auc(aggregated_df, model_name=model_name, tuned=False)
     plot_per_subject_roc_auc(aggregated_df, model_name=model_name, tuned=True)
 
+
 def eegnet_plots(aggregated_df):
     model_plots(aggregated_df, 'eegnet')
+
 
 def reegnet_plots(aggregated_df):
     model_plots(aggregated_df, 'reegnet')
 
+
 def cnn_ncp_plots(aggregated_df):
     # model_plots(aggregated_df, 'cnn_ncp')
     model_plots(aggregated_df, 'CNN_NCP_RESAMPLE')
+
 
 def run_comparative_plots(aggregated_df):
     modes = ['augment', 'perturb']
@@ -462,6 +472,7 @@ def run_comparative_plots(aggregated_df):
             for noise in noise_types:
                 plot_comparative_noise_performance(aggregated_df, noise_type=noise, session_type=session, run_mode=mode,
                                                    output_dir='./plots/')
+
 
 def run_completion_report(output_dir, aggregated_df):
     # Define the combinations we want to check for
@@ -505,6 +516,7 @@ def run_completion_report(output_dir, aggregated_df):
     # Also save to disk
     summary_df.to_csv(os.path.join(output_dir, "experiment_completion_report.csv"), index=False)
 
+
 def _get_metric_columns(metric: str):
     metric = metric.lower()
     clean_col = f"clean_{metric}" if metric != 'roc_auc' else 'clean_roc_auc'
@@ -519,6 +531,7 @@ def _get_metric_columns(metric: str):
         'f1': 'Corrupted F1-score',
     }
     return clean_col, corrupted_col, y_label_map.get(metric, f'Corrupted {metric}')
+
 
 def _get_metric_columns_legacy(metric: str):
     """Legacy version that handles old column naming convention"""
@@ -696,11 +709,6 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
             
             df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
     
-    tune_label = "tuned" if tune_setting else "baseline"
-    
-    # Calculate mean across sessions for each model-intensity combination
-    df_mean = df_filtered#.groupby(['model', 'intensity'])#.mean().reset_index()
-    
     tune_label = "Tuned" if tune_setting else "Baseline"
     
     # Create both bar and line plots
@@ -709,7 +717,7 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
         
         if plot_type == 'bar':
             sns.barplot(
-                data=df_mean,
+                data=df_filtered,
                 x='intensity',
                 y=corrupted_col,
                 hue='model',
@@ -718,7 +726,7 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
             )
         else:
             sns.lineplot(
-                data=df_mean,
+                data=df_filtered,
                 x='intensity',
                 y=corrupted_col,
                 hue='model',
@@ -1417,25 +1425,10 @@ if __name__ == '__main__':
         input_dir = '../results/MotorImagery/BNCI2014_001/'
         aggregated_df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
     
-    # Example usage of custom plotting functions
-    # print("\n=== Example: Custom comparison of eegnet and cnn_ncp under EOG noise ===")
-    # plot_custom_comparison(
-    #     aggregated_df,
-    #     filters={
-    #         'model': ['eegnet', 'cnn_ncp'],
-    #         'noise_type': 'eog',
-    #         'eval_mode': 'CrossSession',
-    #         'mode': 'test_perturb',
-    #         'tune': True
-    #     },
-    #     hue_var='model',
-    #     style_var='session',
-    #     output_filename='eegnet_vs_cnn_ncp_eog_crosssession.png'
-    # )
     
     # Define model subsets for comparison
     model_subsets = {
-        'main_models': ['branched_diva_ncp', 'eegnet', 'reegnet', 'cnn_ncp'],
+        'main_models': ['eegnet', 'reegnet', 'cnn_ncp'],
         # 'cfc_models': ['cnncfc_compact', 'cnncfc_v2'],
         # 'wired_models': ['wiredcfc_arch1', 'wiredcfc_arch2', 'wiredcfc_arch3'],
         'all_models': None  # Will use all available models
@@ -1459,17 +1452,3 @@ if __name__ == '__main__':
             dataset=dataset,
             output_dir='./plots/'
         )
-        
-    
-    
-    # Uncomment to generate plots for all subsets:
-    # generate_model_subset_plots(aggregated_df, model_subsets, output_dir='./plots/legacy/')
-    
-    # Legacy code (commented out)
-    # run_completion_report(input_dir, aggregated_df)
-    # run_comparative_plots(aggregated_df)
-    # eegnet_plots(aggregated_df)
-    # reegnet_plots(aggregated_df)
-    # cnn_ncp_plots(aggregated_df)
-    # model_plots(aggregated_df, 'cnncfc_v2')
-
