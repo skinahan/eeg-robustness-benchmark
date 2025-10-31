@@ -194,6 +194,8 @@ def aggregate_results(input_dir):
                 combined_df['dataset'] = 'BNCI2014_001'
             elif 'Lee2019_SSVEP' in input_dir:
                 combined_df['dataset'] = 'Lee2019_SSVEP'
+            elif 'BI2015a' in input_dir:
+                combined_df['dataset'] = 'BI2015a'
             else:
                 combined_df['dataset'] = 'BNCI2014_001'  # Default
 
@@ -554,7 +556,7 @@ def _get_metric_columns_legacy(metric: str):
         return clean_col, corrupted_col, y_label_map.get(metric, f'Corrupted {metric}')
 
 
-def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting, output_dir='plots', metric: str='roc_auc', dataset='BNCI2014_001'):
+def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting, output_dir='plots', metric: str='roc_auc', dataset='BNCI2014_001', eval_mode=None):
     """
     Plot individual model performance for test_perturb case.
     
@@ -565,16 +567,29 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
     - tune_setting: bool, True for tuned, False for baseline
     - output_dir: str, directory to save plots
     - dataset: str, dataset name (affects y-axis limits)
+    - eval_mode: str, evaluation mode ('CrossSession', 'WithinSession', 'CrossSubject'). If None, uses all available.
     """
     # Load saturation points and get correct intensity values
     saturation_dict = load_saturation_points()
     correct_intensities = get_correct_intensities(dataset=dataset, noise_type=noise_type, saturation_dict=saturation_dict)
     valid_seeds = [100, 200, 300, 400, 500]
     
+    # Auto-detect eval_mode if not provided
+    if eval_mode is None:
+        available_modes = df[df['mode'] == 'test_perturb']['eval_mode'].unique()
+        if len(available_modes) == 1:
+            eval_mode = available_modes[0]
+        else:
+            eval_mode = 'CrossSession'  # Default
+    
+    # Normalize eval_mode format
+    if not eval_mode.endswith('Evaluation'):
+        eval_mode = f"{eval_mode}Evaluation"
+    
     # Filter data
     df_filtered = df[
         (df['mode'] == 'test_perturb') &
-        (df['eval_mode'] == 'CrossSession') &
+        (df['eval_mode'] == eval_mode) &
         (df['model'] == model_name) &
         (df['noise_type'] == noise_type) &
         (df['tune'] == tune_setting) &
@@ -601,7 +616,7 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
         clean_summary[corrupted_col] = clean_summary[clean_col]
         clean_summary['tune'] = tune_setting
         clean_summary['mode'] = 'test_perturb'
-        clean_summary['eval_mode'] = 'CrossSession'
+        clean_summary['eval_mode'] = eval_mode
         
         # Add the clean data to the filtered data
         df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
@@ -644,7 +659,9 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
         
         # Save plot
         os.makedirs(output_dir, exist_ok=True)
-        filename = f"{model_name}_{noise_type}_{metric}_{'tuned' if tune_setting else 'baseline'}_{plot_type}_test_perturb.png"
+        # Include eval_mode in filename to distinguish plots
+        eval_mode_short = eval_mode.replace('Evaluation', '')
+        filename = f"{model_name}_{noise_type}_{metric}_{'tuned' if tune_setting else 'baseline'}_{plot_type}_test_perturb_{eval_mode_short}.png"
         output_file = os.path.join(output_dir, filename)
         plt.tight_layout()
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
@@ -653,7 +670,7 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
         print(f"Saved {plot_type} plot: {output_file}")
 
 
-def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=None, output_dir='plots', metric: str='roc_auc', dataset='BNCI2014_001'):
+def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=None, output_dir='plots', metric: str='roc_auc', dataset='BNCI2014_001', eval_mode=None):
     """
     Create master comparison plot overlaying specified models for a given noise type and tune setting.
     
@@ -664,15 +681,28 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
     - models: list, specific models to include (if None, uses all available models)
     - output_dir: str, directory to save plots
     - dataset: str, dataset name (affects y-axis limits)
+    - eval_mode: str, evaluation mode ('CrossSession', 'WithinSession', 'CrossSubject'). If None, uses all available.
     """
     # Load saturation points and get correct intensity values
     saturation_dict = load_saturation_points()
     valid_seeds = [100, 200, 300, 400, 500]
     
+    # Auto-detect eval_mode if not provided
+    if eval_mode is None:
+        available_modes = df[df['mode'] == 'test_perturb']['eval_mode'].unique()
+        if len(available_modes) == 1:
+            eval_mode = available_modes[0]
+        else:
+            eval_mode = 'CrossSession'  # Default
+    
+    # Normalize eval_mode format
+    if not eval_mode.endswith('Evaluation'):
+        eval_mode = f"{eval_mode}Evaluation"
+    
     # Filter data
     df_filtered = df[
         (df['mode'] == 'test_perturb') &
-        (df['eval_mode'] == 'CrossSession') &
+        (df['eval_mode'] == eval_mode) &
         (df['noise_type'] == noise_type) &
         (df['tune'] == tune_setting) &
         (df['seed'].isin(valid_seeds))
@@ -705,7 +735,7 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
             clean_summary['noise_type'] = noise_type  # Explicitly set noise_type
             clean_summary['tune'] = tune_setting
             clean_summary['mode'] = 'test_perturb'
-            clean_summary['eval_mode'] = 'CrossSession'
+            clean_summary['eval_mode'] = eval_mode
             
             df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
     
@@ -749,7 +779,9 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
         
         # Save plot
         os.makedirs(output_dir, exist_ok=True)
-        filename = f"master_comparison_{noise_type}_{metric}_{'tuned' if tune_setting else 'baseline'}_{plot_type}_test_perturb.png"
+        # Include eval_mode in filename
+        eval_mode_short = eval_mode.replace('Evaluation', '')
+        filename = f"master_comparison_{noise_type}_{metric}_{'tuned' if tune_setting else 'baseline'}_{plot_type}_test_perturb_{eval_mode_short}.png"
         output_file = os.path.join(output_dir, filename)
         plt.tight_layout()
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
@@ -1178,7 +1210,17 @@ def plot_custom_comparison(df, filters=None, x_var='intensity', y_var='corrupted
         if len(unique_datasets) == 1:
             dataset = unique_datasets[0]
         else:
-            dataset = 'BNCI2014_001'  # Default
+            # Default based on paradigm in df if available
+            if 'paradigm' in df.columns and len(df) > 0:
+                paradigm = df['paradigm'].iloc[0]
+                if paradigm == 'SSVEP':
+                    dataset = 'Lee2019_SSVEP'
+                elif paradigm == 'ERP':
+                    dataset = 'BI2015a'
+                else:
+                    dataset = 'BNCI2014_001'
+            else:
+                dataset = 'BNCI2014_001'  # Default
     elif dataset is None:
         dataset = 'BNCI2014_001'  # Default
     
@@ -1410,6 +1452,7 @@ def extract_custom_data(df, filters=None, columns=None, aggregate=None, group_by
 if __name__ == '__main__':
     # Try to load from either dataset
     # First try MotorImagery/BNCI2014_001
+
     motor_imagery_path = '../results/MotorImagery/BNCI2014_001/all_results.csv'
     # Then try SSVEP/Lee2019_SSVEP
     ssvep_path = '../results/SSVEP/Lee2019_SSVEP/all_results.csv'

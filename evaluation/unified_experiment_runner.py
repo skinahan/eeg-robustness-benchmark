@@ -40,7 +40,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.insert(0, project_root)
 
-from config import MODEL_REGISTRY, get_paradigm
+from config import MODEL_REGISTRY, get_paradigm, get_dataset_sampling_rate
 from globals import set_seeds, DEFAULT_MAX_EPOCHS, UNDERFITTING_THRESHOLD
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
 from evaluation.two_stage_hp_opt import alternate_two_stage_optuna, run_two_stage_optuna, format_params, get_all_model_params
@@ -52,7 +52,7 @@ from evaluation.periodic_checkpoint_callback import create_periodic_checkpoint_c
 import json
 
 # Import MOABB components
-from moabb.datasets import BNCI2014_001, Lee2019_SSVEP
+from moabb.datasets import BNCI2014_001, Lee2019_SSVEP, BI2015a
 from moabb.evaluations import WithinSessionEvaluation, CrossSessionEvaluation
 from moabb.evaluations.utils import create_save_path, save_model_cv, save_model_list
 from mne.epochs import BaseEpochs
@@ -272,6 +272,10 @@ class UnifiedExperimentRunner:
             self.dataset_obj = Lee2019_SSVEP()
             self.dataset_obj.subject_list = self.subjects
             self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
+        elif self.dataset == "BI2015a":
+            self.dataset_obj = BI2015a()
+            self.dataset_obj.subject_list = self.subjects
+            self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
         else:
             raise ValueError(f"Unsupported dataset: {self.dataset}")
     
@@ -289,7 +293,12 @@ class UnifiedExperimentRunner:
         
         # Create unique HDF5 path
         unique_id = uuid.uuid4().hex[:8]
-        paradigm_name = "SSVEP" if self.dataset == "Lee2019_SSVEP" else "MotorImagery"
+        if self.dataset == "Lee2019_SSVEP":
+            paradigm_name = "SSVEP"
+        elif self.dataset == "BI2015a":
+            paradigm_name = "ERP"
+        else:
+            paradigm_name = "MotorImagery"
         self.hdf5_path = create_hdf5_model_path(
             self.model, 
             self.seed, 
@@ -313,7 +322,12 @@ class UnifiedExperimentRunner:
     
     def _get_history_output_path(self):
         """Get the base output path for saving training history."""
-        paradigm_name = "SSVEP" if self.dataset == "Lee2019_SSVEP" else "MotorImagery"
+        if self.dataset == "Lee2019_SSVEP":
+            paradigm_name = "SSVEP"
+        elif self.dataset == "BI2015a":
+            paradigm_name = "ERP"
+        else:
+            paradigm_name = "MotorImagery"
         mode_str = self.mode
         if self.tune:
             mode_str = f"{self.mode}_tune"
@@ -347,6 +361,8 @@ class UnifiedExperimentRunner:
         if n_outputs is None:
             if self.dataset == "Lee2019_SSVEP":
                 n_outputs = 4  # SSVEP has 4 classes
+            elif self.dataset == "BI2015a":
+                n_outputs = 2  # P300 ERP has 2 classes (target vs non-target)
             else:
                 n_outputs = 2  # MotorImagery has 2 classes
         
@@ -421,7 +437,10 @@ class UnifiedExperimentRunner:
         if self.mode in ['perturb', 'perturb_notune']:
             def wrapped_model_fn(n_chans, n_times, n_outputs=None):
                 if n_outputs is None:
-                    n_outputs = 4 if self.dataset == "Lee2019_SSVEP" else 2
+                    if self.dataset == "Lee2019_SSVEP":
+                        n_outputs = 4
+                    else:
+                        n_outputs = 2  # MotorImagery and BI2015a (P300) both have 2 classes
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
                 base_model.max_epochs = 200
                 return TrainOnlyNoiseClassifier(
@@ -433,7 +452,10 @@ class UnifiedExperimentRunner:
         elif self.mode in ['augment', 'augment_notune']:
             def wrapped_model_fn(n_chans, n_times, n_outputs=None):
                 if n_outputs is None:
-                    n_outputs = 4 if self.dataset == "Lee2019_SSVEP" else 2
+                    if self.dataset == "Lee2019_SSVEP":
+                        n_outputs = 4
+                    else:
+                        n_outputs = 2  # MotorImagery and BI2015a (P300) both have 2 classes
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
                 base_model.max_epochs = 200
                 return ConcatenatedNoiseAugmenter(
@@ -445,7 +467,10 @@ class UnifiedExperimentRunner:
         elif self.mode == 'test_perturb':
             def wrapped_model_fn(n_chans, n_times, n_outputs=None):
                 if n_outputs is None:
-                    n_outputs = 4 if self.dataset == "Lee2019_SSVEP" else 2
+                    if self.dataset == "Lee2019_SSVEP":
+                        n_outputs = 4
+                    else:
+                        n_outputs = 2  # MotorImagery and BI2015a (P300) both have 2 classes
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
                 base_model.max_epochs = 200
                 return base_model
@@ -532,6 +557,9 @@ class UnifiedExperimentRunner:
         fold_output_dir = os.path.join(out_dir, f"Optuna/fold_{fold_idx}")
         os.makedirs(fold_output_dir, exist_ok=True)
 
+        # Get dataset-specific sampling rate
+        resample_rate = get_dataset_sampling_rate(self.dataset)
+        
         # Determine if we should use noise-aware optimization
         if self.noise_dict and self.mode in ['augment', 'perturb']:
             best_params, best_score = alternate_two_stage_optuna(
@@ -542,7 +570,7 @@ class UnifiedExperimentRunner:
                 metadata=metadata_train,  # Use actual training metadata
                 mode=self.mode,
                 noise_dict=self.noise_dict,
-                resample=None,  # Will be determined dynamically
+                resample=resample_rate,
                 seed=self.seed,
                 output_root=fold_output_dir,
                 arch_trials=20,
@@ -556,7 +584,7 @@ class UnifiedExperimentRunner:
                 X=X_train,
                 y=y_train,
                 metadata=metadata_train,  # Use actual training metadata
-                resample=None,  # Will be determined dynamically
+                resample=resample_rate,
                 seed=self.seed,
                 output_root=fold_output_dir,
                 arch_trials=10,
@@ -1242,7 +1270,12 @@ class UnifiedExperimentRunner:
             mode_str = f"{self.mode}_tune"
 
         # Determine paradigm for log_all_subjects
-        paradigm_name = "SSVEP" if self.dataset == "Lee2019_SSVEP" else "MotorImagery"
+        if self.dataset == "Lee2019_SSVEP":
+            paradigm_name = "SSVEP"
+        elif self.dataset == "BI2015a":
+            paradigm_name = "ERP"
+        else:
+            paradigm_name = "MotorImagery"
         
         log_all_subjects(
             results=results_df,
@@ -1262,7 +1295,7 @@ def main():
     """Main entry point for the unified experiment runner."""
     parser = argparse.ArgumentParser(description="Unified EEG Experiment Runner")
     parser.add_argument("--model", type=str, required=True, choices=list(MODEL_REGISTRY.keys()))
-    parser.add_argument("--dataset", type=str, default="BNCI2014_001", choices=["BNCI2014_001", "Lee2019_SSVEP"])
+    parser.add_argument("--dataset", type=str, default="BNCI2014_001", choices=["BNCI2014_001", "Lee2019_SSVEP", "BI2015a"])
     parser.add_argument("--subjects", type=int, nargs="+", required=True)
     parser.add_argument("--mode", type=str, required=True, 
                         choices=["test_perturb", "multirun", "aggregate_only"])
@@ -1278,9 +1311,12 @@ def main():
     
     args = parser.parse_args()
 
-    paradigm_name = "MotorImagery"
     if args.dataset == "Lee2019_SSVEP":
         paradigm_name = "SSVEP"
+    elif args.dataset == "BI2015a":
+        paradigm_name = "ERP"
+    else:
+        paradigm_name = "MotorImagery"
 
     if args.mode == "aggregate_only":
         collect_all_results(paradigm=paradigm_name, dataset=args.dataset)

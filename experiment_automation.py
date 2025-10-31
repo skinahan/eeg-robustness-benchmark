@@ -257,7 +257,11 @@ class ExperimentAutomation:
                            expected_result['noise_type'])
                 if combo_key not in missing_combinations:
                     missing_combinations[combo_key] = []
-                missing_combinations[combo_key].append(expected_result.get('subject', 'no_subject'))
+                # For CrossSubject, track subjects tuple; for others, track subject
+                if 'subjects' in expected_result:
+                    missing_combinations[combo_key].append(f"subjects_{expected_result['subjects']}")
+                else:
+                    missing_combinations[combo_key].append(expected_result.get('subject', 'no_subject'))
         else:
             # Convert expected results to DataFrame for vectorized operations
             print("[INFO] Converting expected results to DataFrame for efficient comparison...")
@@ -300,8 +304,20 @@ class ExperimentAutomation:
                         str(is_tuned)  # Include tune flag in signature
                     ]
                     
-                    # Add subject if present (for CrossSession/WithinSession)
-                    if 'subject' in row and pd.notna(row['subject']):
+                    # Add subject/eval_subjects for signature
+                    # For CrossSubject, use eval_subjects if available; otherwise use subject
+                    eval_mode_normalized = str(row.get('eval_mode_normalized', ''))
+                    if eval_mode_normalized == 'CrossSubject':
+                        # For CrossSubject, use eval_subjects or session to identify the fold
+                        if 'eval_subjects' in row and pd.notna(row['eval_subjects']):
+                            signature_parts.append(f"eval_subjects_{row['eval_subjects']}")
+                        elif 'session' in row and pd.notna(row['session']) and 'eval_subjects' in str(row['session']):
+                            # Extract eval_subjects from session string like "fold_0_eval_subjects_1,2,3"
+                            signature_parts.append(f"session_{row['session']}")
+                        else:
+                            signature_parts.append('no_subject')
+                    elif 'subject' in row and pd.notna(row['subject']):
+                        # For CrossSession/WithinSession, use subject
                         signature_parts.append(str(row['subject']))
                     else:
                         signature_parts.append('no_subject')
@@ -340,6 +356,7 @@ class ExperimentAutomation:
                 # Create signature for expected result with floating-point tolerance for intensity
                 intensity = expected_result['intensity']
                 matching_intensity = intensity_mapping[intensity]
+                eval_mode = expected_result['eval_mode']  # Extract eval_mode once for this iteration
                 
                 if matching_intensity is None:
                     # This intensity doesn't exist in the data at all
@@ -354,8 +371,18 @@ class ExperimentAutomation:
                         str(expected_result['tune'])  # Include tune flag in signature
                     ]
                     
-                    # Add subject if present
-                    if 'subject' in expected_result:
+                    # Add subject/eval_subjects for signature
+                    # For CrossSubject, expected results have 'subjects' (all subjects)
+                    if eval_mode == 'CrossSubject':
+                        # For CrossSubject, we match based on all subjects (since it's a fold-based evaluation)
+                        # Use 'subjects' field to create signature
+                        if 'subjects' in expected_result:
+                            subjects_tuple = tuple(sorted(expected_result['subjects']))
+                            signature_parts.append(f"subjects_{subjects_tuple}")
+                        else:
+                            signature_parts.append('no_subject')
+                    elif 'subject' in expected_result:
+                        # For CrossSession/WithinSession, use subject
                         signature_parts.append(str(expected_result['subject']))
                     else:
                         signature_parts.append('no_subject')
@@ -374,17 +401,57 @@ class ExperimentAutomation:
                         str(expected_result['tune'])  # Include tune flag in signature
                     ]
                     
-                    # Add subject if present
-                    if 'subject' in expected_result:
+                    # Add subject/eval_subjects for signature
+                    # For CrossSubject, expected results have 'subjects' (all subjects)
+                    if eval_mode == 'CrossSubject':
+                        # For CrossSubject, we match based on all subjects (since it's a fold-based evaluation)
+                        # Use 'subjects' field to create signature
+                        if 'subjects' in expected_result:
+                            subjects_tuple = tuple(sorted(expected_result['subjects']))
+                            signature_parts.append(f"subjects_{subjects_tuple}")
+                        else:
+                            signature_parts.append('no_subject')
+                    elif 'subject' in expected_result:
+                        # For CrossSession/WithinSession, use subject
                         signature_parts.append(str(expected_result['subject']))
                     else:
                         signature_parts.append('no_subject')
                         
                     signature = '|'.join(str(part) for part in signature_parts)
                 
-                # Check if this signature exists in our set
-                if signature not in existing_signatures:
-                    missing_test_perturb_results.append(expected_result)
+                # For CrossSubject, check if we have results for ANY fold (more lenient matching)
+                # Since each fold generates separate results, we check if at least one fold exists
+                if eval_mode == 'CrossSubject':
+                    # For CrossSubject, check if any result exists with matching criteria and any eval_subjects
+                    signature_found = False
+                    if 'subjects' in expected_result:
+                        expected_subjects = set(expected_result['subjects'])
+                        # Check all existing signatures for matching CrossSubject results
+                        for existing_sig in existing_signatures:
+                            sig_parts = existing_sig.split('|')
+                            if len(sig_parts) >= 9:  # Ensure we have all parts
+                                # Check if base signature matches (dataset, model, eval_mode, seed, noise_type, intensity, mode, tune)
+                                base_match = (
+                                    sig_parts[0] == expected_result['dataset'] and
+                                    sig_parts[1] == expected_result['model'] and
+                                    sig_parts[2] == eval_mode and
+                                    sig_parts[3] == str(expected_result['seed']) and
+                                    sig_parts[4] == expected_result['noise_type'] and
+                                    (sig_parts[5] == str(intensity) or sig_parts[5] == str(matching_intensity)) and
+                                    sig_parts[6] == 'test_perturb' and
+                                    sig_parts[7] == str(expected_result['tune'])
+                                )
+                                if base_match:
+                                    # Check if eval_subjects from existing result is a subset of expected subjects
+                                    if sig_parts[8].startswith('eval_subjects_'):
+                                        eval_subjects_str = sig_parts[8].replace('eval_subjects_', '')
+                                        existing_eval_subjects = set(int(s) for s in eval_subjects_str.split(',') if s.isdigit())
+                                        if existing_eval_subjects.issubset(expected_subjects):
+                                            signature_found = True
+                                            break
+                    
+                    if not signature_found:
+                        missing_test_perturb_results.append(expected_result)
                     
                     # Track missing combinations for diagnostics
                     combo_key = (expected_result['dataset'], expected_result['model'], 
@@ -392,7 +459,24 @@ class ExperimentAutomation:
                                expected_result['noise_type'])
                     if combo_key not in missing_combinations:
                         missing_combinations[combo_key] = []
-                    missing_combinations[combo_key].append(expected_result.get('subject', 'no_subject'))
+                    # For CrossSubject, track subjects tuple; for others, track subject
+                    if 'subjects' in expected_result:
+                        missing_combinations[combo_key].append(f"subjects_{expected_result['subjects']}")
+                    else:
+                        missing_combinations[combo_key].append(expected_result.get('subject', 'no_subject'))
+                else:
+                    # For non-CrossSubject modes, use exact signature matching
+                    if signature not in existing_signatures:
+                        missing_test_perturb_results.append(expected_result)
+                        
+                        # Track missing combinations for diagnostics
+                        combo_key = (expected_result['dataset'], expected_result['model'], 
+                                   expected_result['eval_mode'], expected_result['seed'],
+                                   expected_result['noise_type'])
+                        if combo_key not in missing_combinations:
+                            missing_combinations[combo_key] = []
+                        # Track subject for non-CrossSubject modes
+                        missing_combinations[combo_key].append(expected_result.get('subject', 'no_subject'))
         
         print(f"[OK] Found {len(missing_test_perturb_results)} missing test_perturb results out of {len(self.expected_test_perturb_results)} total expected")
         

@@ -172,6 +172,8 @@ def run_optuna_stage(
 
     param_prefix = "base_pipeline__" if perturbed else ""
     if resample is None:
+        # Default to 250 Hz (common for MotorImagery and ERP datasets)
+        # Note: Lee2019_SSVEP uses 1000 Hz, so resample should be provided explicitly
         resample = 250.0
 
     check_time = False
@@ -264,6 +266,8 @@ def alternate_optuna_stage(
         raise ValueError("Too few training samples for session 0.")
     param_prefix = "base_pipeline__" if (mode == "perturb") or (mode == "augment") else ""
     if resample is None:
+        # Default to 250 Hz (common for MotorImagery and ERP datasets)
+        # Note: Lee2019_SSVEP uses 1000 Hz, so resample should be provided explicitly
         resample = 250.0
     model = model_fn(n_chans=22, n_times=int(resample * 4), n_outputs=2)
     def objective(trial):
