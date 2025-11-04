@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p general 
+#SBATCH -p public 
 #SBATCH -q public
 #SBATCH -G 1
 #SBATCH -c 1
