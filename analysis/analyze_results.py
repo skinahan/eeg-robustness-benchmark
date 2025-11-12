@@ -1450,25 +1450,28 @@ def extract_custom_data(df, filters=None, columns=None, aggregate=None, group_by
 
 
 if __name__ == '__main__':
-    # Try to load from either dataset
-    # First try MotorImagery/BNCI2014_001
+    dataset_configs = [
+        {
+            'label': 'MotorImagery/BNCI2014_001',
+            'input_dir': '../results/MotorImagery/BNCI2014_001/',
+            'csv_path': '../results/MotorImagery/BNCI2014_001/all_results.csv'
+        },
+        {
+            'label': 'SSVEP/Lee2019_SSVEP',
+            'input_dir': '../results/SSVEP/Lee2019_SSVEP/',
+            'csv_path': '../results/SSVEP/Lee2019_SSVEP/all_results.csv'
+        }
+    ]
 
-    motor_imagery_path = '../results/MotorImagery/BNCI2014_001/all_results.csv'
-    # Then try SSVEP/Lee2019_SSVEP
-    ssvep_path = '../results/SSVEP/Lee2019_SSVEP/all_results.csv'
-    
-    if os.path.exists(motor_imagery_path):
-        input_dir = '../results/MotorImagery/BNCI2014_001/'
-        aggregated_df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
-    elif os.path.exists(ssvep_path):
-        input_dir = '../results/SSVEP/Lee2019_SSVEP/'
-        aggregated_df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
-    else:
-        # Default to MotorImagery if neither exists
-        input_dir = '../results/MotorImagery/BNCI2014_001/'
-        aggregated_df = pd.read_csv(os.path.join(input_dir, 'all_results.csv'))
-    
-    
+    available_datasets = []
+    for config in dataset_configs:
+        if os.path.exists(config['csv_path']):
+            aggregated_df = pd.read_csv(config['csv_path'])
+            available_datasets.append((config, aggregated_df))
+
+    if not available_datasets:
+        raise FileNotFoundError("No aggregated results found for the expected datasets.")
+
     # Define model subsets for comparison
     model_subsets = {
         'main_models': ['eegnet', 'reegnet', 'cnn_ncp'],
@@ -1476,22 +1479,31 @@ if __name__ == '__main__':
         # 'wired_models': ['wiredcfc_arch1', 'wiredcfc_arch2', 'wiredcfc_arch3'],
         'all_models': None  # Will use all available models
     }
-    
-    # Determine dataset from the data
-    dataset = aggregated_df['dataset'].iloc[0] if 'dataset' in aggregated_df.columns else 'BNCI2014_001'
 
     legacy_mode = False
 
-    if legacy_mode:
-        # Also generate the original plots for backward compatibility
-        print("\n=== Generating original plots for backward compatibility ===")
-        generate_all_test_perturb_plots(aggregated_df, models=model_subsets['main_models'], output_dir='./plots/legacy/', dataset=dataset, metrics=['score'])
-    else:
-        # Generate organized plots with per-subject breakdowns
-        print("Generating organized plots with per-subject breakdowns...")
-        generate_organized_test_perturb_plots(
-            aggregated_df, 
-            models=model_subsets['main_models'], 
-            dataset=dataset,
-            output_dir='./plots/'
-        )
+    for config, aggregated_df in available_datasets:
+        dataset_name = aggregated_df['dataset'].iloc[0] if 'dataset' in aggregated_df.columns else os.path.basename(os.path.normpath(config['input_dir']))
+        print(f"\n=== Processing dataset: {dataset_name} ({config['label']}) ===")
+
+        if legacy_mode:
+            # Also generate the original plots for backward compatibility
+            output_dir = os.path.join('./plots/legacy/', dataset_name)
+            print("Generating original plots for backward compatibility...")
+            generate_all_test_perturb_plots(
+                aggregated_df,
+                models=model_subsets['main_models'],
+                output_dir=output_dir,
+                dataset=dataset_name,
+                metrics=['score']
+            )
+        else:
+            # Generate organized plots with per-subject breakdowns
+            output_dir = os.path.join('./plots/', dataset_name)
+            print("Generating organized plots with per-subject breakdowns...")
+            generate_organized_test_perturb_plots(
+                aggregated_df,
+                models=model_subsets['main_models'],
+                dataset=dataset_name,
+                output_dir=output_dir
+            )
