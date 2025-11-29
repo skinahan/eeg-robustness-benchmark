@@ -22,7 +22,7 @@ def extract_model_params(model) -> Dict[str, Any]:
     return {}
 
 
-def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity, eval_mode='CrossSession', paradigm='MotorImagery', dataset='BNCI2014_001', cache_manager=None, config=None, tuned=False):
+def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity, eval_mode='CrossSession', paradigm='MotorImagery', dataset='BNCI2014_001', cache_manager=None, config=None, tuned=False, paradigm_obj=None, dataset_obj=None):
 
     if not eval_mode.endswith("Evaluation"):
         eval_mode = f"{eval_mode}Evaluation"
@@ -31,11 +31,25 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
     existing_output_paths = []
     expected_output_paths = []
     
+    # Dynamically get session names from the dataset if available
+    sessions_to_check = None
+    if paradigm_obj is not None and dataset_obj is not None and len(subject_list) > 0:
+        try:
+            # Load data for first subject to get actual session names
+            X_sample, y_sample, metadata_sample = paradigm_obj.get_data(dataset_obj, subjects=[subject_list[0]])
+            if 'session' in metadata_sample.columns:
+                sessions_to_check = sorted(metadata_sample['session'].unique().tolist())
+        except Exception as e:
+            print(f"Warning: Could not load sample data to get sessions: {e}")
+    
+    # Fallback to default sessions if we couldn't get them dynamically
+    if sessions_to_check is None:
+        sessions_to_check = ['0train', '1test']
+    
     # Check if we should skip based on model cache (for non-noise modes)
     if cache_manager is not None and config is not None and noise_type is None:
         all_models_cached = True
         for subj in subject_list:
-            sessions_to_check = ['0train', '1test']
             for session in sessions_to_check:
                 # Check if checkpoint files exist and config matches
                 checkpoint_path = cache_manager._get_cache_path(
@@ -101,9 +115,8 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
                 expected_output_paths.append(out_file)
     else:
         # Original logic for WithinSession and CrossSession
+        # sessions_to_check was already determined above
         for subj in subject_list:
-            sessions_to_check = ['0train', '1test']
-                            
             for session in sessions_to_check:
                 # Determine paradigm and dataset for path creation
                 out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
@@ -216,7 +229,7 @@ def two_stage_opt(dataset, subj, paradigm, model_name, model_fn, seed, mode, res
 
 def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
     """Aggregate all CSV results from the results directory."""
-    root = os.path.join("results", paradigm, dataset)
+    root = os.path.join("sol_results", paradigm, dataset)
     all_dfs = []
     noise_types = ['gaussian', 'eog', 'dropout', 'spike']
     intensities = [str(x*10.0) for x in range(1, 10)]
