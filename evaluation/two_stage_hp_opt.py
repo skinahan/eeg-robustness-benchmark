@@ -252,7 +252,8 @@ def alternate_optuna_stage(
         resample=250.0,
         n_trials=25,
         seed=42,
-        output_root="optuna_results"
+        output_root="optuna_results",
+        dataset=None
 ):
     noise_type = noise_dict["noise_type"]
     intensity = noise_dict["intensity"]
@@ -274,8 +275,10 @@ def alternate_optuna_stage(
         # Sample hyperparameters
         params = param_space_fn(trial, param_prefix)
         params[f"{param_prefix}train_split"] = None
-        from globals import DEFAULT_MAX_EPOCHS
-        params[f"{param_prefix}max_epochs"] = DEFAULT_MAX_EPOCHS  # Fixed reasonable value
+        from globals import get_max_epochs_for_dataset, DEFAULT_MAX_EPOCHS
+        # Use dataset-specific max_epochs if dataset is provided, otherwise use default
+        max_epochs = get_max_epochs_for_dataset(dataset) if dataset else DEFAULT_MAX_EPOCHS
+        params[f"{param_prefix}max_epochs"] = max_epochs
         params[f"{param_prefix}verbose"] = 0
         params[f"{param_prefix}callbacks"] = []
 
@@ -1030,7 +1033,8 @@ def alternate_two_stage_optuna(
         noise_dict,
         output_root="optuna_results",
         arch_trials=10,
-        train_trials=10
+        train_trials=10,
+        dataset=None
 ):
     noise_type = noise_dict["noise_type"]
     intensity = noise_dict["intensity"]
@@ -1050,7 +1054,8 @@ def alternate_two_stage_optuna(
         resample=resample,
         n_trials=arch_trials,
         seed=seed,
-        output_root=output_root
+        output_root=output_root,
+        dataset=dataset
     )
 
     print("\n[Stage 2] Training Optimization")
@@ -1076,7 +1081,8 @@ def alternate_two_stage_optuna(
         resample=resample,
         n_trials=train_trials,
         seed=seed,
-        output_root=output_root
+        output_root=output_root,
+        dataset=dataset
     )
     for k, v in arch_params.items():
         final_params[k] = v
@@ -1095,7 +1101,8 @@ def run_two_stage_optuna(
         output_root="optuna_results",
         arch_trials=10,
         train_trials=10,
-        perturbed=False
+        perturbed=False,
+        dataset=None
 ):
     print("\n[Stage 1] Architecture Search")
     arch_param_space_fn = get_model_architecture_space(model_name)
