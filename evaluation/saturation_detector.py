@@ -1112,9 +1112,9 @@ class AdaptiveSaturationDetector:
             json.dump(result_dict, f, indent=2)
     
     def _save_final_results(self, results: Dict[str, Dict[str, SaturationResult]]):
-        """Save final results summary."""
+        """Save final results summary, merging with existing results if present."""
         
-        # Create summary DataFrame
+        # Create summary DataFrame from new results
         summary_data = []
         for dataset, noise_results in results.items():
             for noise_type, result in noise_results.items():
@@ -1131,10 +1131,30 @@ class AdaptiveSaturationDetector:
                     "detection_method": result.detection_method
                 })
         
-        summary_df = pd.DataFrame(summary_data)
+        new_summary_df = pd.DataFrame(summary_data)
+        
+        # Load existing results if they exist
+        csv_path = self.output_dir / "saturation_points_summary.csv"
+        if csv_path.exists():
+            print(f"\nLoading existing results from {csv_path}")
+            existing_df = pd.read_csv(csv_path)
+            print(f"  Found {len(existing_df)} existing entries")
+            
+            # Merge: remove existing entries that match new results (by dataset+noise_type)
+            # and append new results
+            merge_keys = ["dataset", "noise_type"]
+            existing_df = existing_df[~existing_df.set_index(merge_keys).index.isin(
+                new_summary_df.set_index(merge_keys).index
+            )]
+            
+            # Combine existing (filtered) and new results
+            summary_df = pd.concat([existing_df, new_summary_df], ignore_index=True)
+            print(f"  Merged results: {len(existing_df)} existing + {len(new_summary_df)} new = {len(summary_df)} total")
+        else:
+            print(f"\nNo existing results found, creating new file")
+            summary_df = new_summary_df
         
         # Save CSV
-        csv_path = self.output_dir / "saturation_points_summary.csv"
         summary_df.to_csv(csv_path, index=False)
         
         # Save JSON

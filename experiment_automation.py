@@ -985,18 +985,21 @@ class ExperimentAutomation:
                         
                 else:
                     # Motor Imagery timeouts (reduced by factor of 5)
+                    # UPDATED: Increased timeouts for TUNED jobs based on observed timeout failures
                     if exp['eval_mode'] == 'CrossSession':
                         if exp['tune']:
-                            # CrossSession with tuning: ~2.5 days / 5 = ~12 hours
-                            slurm_args = "--time=1-12:00:00 --mem=12G"
+                            # CrossSession with tuning: Increased from 36h to 3 days due to timeout failures
+                            # Original estimate was ~2.5 days / 5 = ~12 hours, but actual runtime is longer
+                            slurm_args = "--time=3-00:00:00 --mem=12G"
                         else:
                             # CrossSession without tuning: ~3 hours / 5 = ~36 minutes
                             slurm_args = "--time=0-01:00:00 --mem=12G"
                             
                     elif exp['eval_mode'] == 'WithinSession':
                         if exp['tune']:
-                            # WithinSession with tuning: ~12.5 days / 5 = ~2.5 days
-                            slurm_args = "--time=3-00:00:00 --mem=12G"
+                            # WithinSession with tuning: Increased from 3 days to 5 days due to timeout failures
+                            # Original estimate was ~12.5 days / 5 = ~2.5 days, but actual runtime is longer
+                            slurm_args = "--time=5-00:00:00 --mem=12G"
                         else:
                             # WithinSession without tuning: ~15 hours / 5 = ~3 hours
                             slurm_args = "--time=0-04:00:00 --mem=12G"

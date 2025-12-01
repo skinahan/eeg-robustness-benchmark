@@ -229,14 +229,14 @@ def two_stage_opt(dataset, subj, paradigm, model_name, model_fn, seed, mode, res
 
 def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
     """Aggregate all CSV results from the results directory."""
-    root = os.path.join("sol_results", paradigm, dataset)
+    root = os.path.join("results", paradigm, dataset)
     all_dfs = []
     noise_types = ['gaussian', 'eog', 'dropout', 'spike']
     intensities = [str(x*10.0) for x in range(1, 10)]
     
     for dirpath, _, filenames in os.walk(root):
         for file in filenames:
-            if file.endswith(".csv") and not file.startswith("all_results"):
+            if file.endswith(".csv"): # and not file.startswith("all_results"):
                 full_path = os.path.join(dirpath, file)
                 print(full_path)
                 try:

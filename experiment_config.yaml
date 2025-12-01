@@ -11,7 +11,6 @@ datasets:
   Lee2019_SSVEP:
     name: "Lee2019_SSVEP"
     paradigm: "SSVEP"
-    # Subject split 1: 1-27
     subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54]
 
   BI2015a:
@@ -30,11 +29,27 @@ models:
     
    - name: "cnn_ncp"
      display_name: "CNN-NCP"
+  
+  #  - name: "branched_wiredcfc_arch1"
+  #    display_name: "Branched WiredCfC Arch 1"
+    
+  #  - name: "branched_wiredcfc_arch2"
+  #    display_name: "Branched WiredCfC Arch 2"
+  
+  #  - name: "branched_wiredcfc_arch3"
+  #    display_name: "Branched WiredCfC Arch 3"
+  
+  #  - name: "branched_wiredcfc_arch4"
+  #    display_name: "Branched WiredCfC Arch 4"
+  
+  #  - name: "branched_wiredcfc_arch5"
+  #    display_name: "Branched WiredCfC Arch 5"
+  
     
 # Evaluation modes
 eval_modes:
-  # - "CrossSession"
-  #- "WithinSession"
+  - "CrossSession"
+  - "WithinSession"
   - "CrossSubject"
 
 noise_types:

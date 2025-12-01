@@ -1,15 +1,15 @@
 {
-  "noise_type": "spike",
-  "dataset": "BNCI2014_001",
+  "noise_type": "eog",
+  "dataset": "BI2015a",
   "saturation_point": 100.0,
   "confidence_interval": [
-    0.5451260288065845,
-    0.7451260288065844
+    0.4,
+    0.6
   ],
   "chance_threshold": 0.56,
-  "performance_at_saturation": 0.6451260288065844,
+  "performance_at_saturation": 0.5,
   "performance_std": 0.1,
   "is_statistically_significant": false,
   "detection_method": "coarse_exploration_only",
-  "timestamp": "2025-11-29 19:25:45"
+  "timestamp": "2025-11-29 19:24:59"
 }

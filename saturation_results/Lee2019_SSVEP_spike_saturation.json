@@ -3,13 +3,13 @@
   "dataset": "Lee2019_SSVEP",
   "saturation_point": 100.0,
   "confidence_interval": [
-    0.8875308641975309,
-    1.087530864197531
+    0.8662222222222222,
+    1.0662222222222222
   ],
   "chance_threshold": 0.3,
-  "performance_at_saturation": 0.9875308641975309,
+  "performance_at_saturation": 0.9662222222222222,
   "performance_std": 0.1,
   "is_statistically_significant": false,
   "detection_method": "coarse_exploration_only",
-  "timestamp": "2025-10-17 12:59:02"
+  "timestamp": "2025-11-29 19:29:54"
 }
