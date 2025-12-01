@@ -52,9 +52,23 @@ def get_early_stopping_callback():
 # Default max_epochs - increased to allow more training time
 DEFAULT_MAX_EPOCHS = 200  # Increased from 100
 
+def get_max_epochs_for_dataset(dataset: str) -> int:
+    """
+    Get dataset-specific max_epochs setting.
+    
+    Args:
+        dataset: Dataset name (e.g., "Lee2019_SSVEP", "BI2015a", "BNCI2014_001")
+    
+    Returns:
+        int: Max epochs for the dataset (100 for Lee2019_SSVEP and BI2015a, 200 otherwise)
+    """
+    if dataset in ["Lee2019_SSVEP", "BI2015a"]:
+        return 100
+    return DEFAULT_MAX_EPOCHS
+
 # Underfitting detection threshold
 UNDERFITTING_THRESHOLD = 0.70  # Increased from 0.65 to catch more underfitting cases
 
 # EEGClassifier verbose level
 # 0 = silent, 1 = epoch progress bar, 2 = epoch progress + batch info
-EEGCLASSIFIER_VERBOSE = 0  # Set to 0 to suppress epoch-level output
+EEGCLASSIFIER_VERBOSE = 2  # Set to 0 to suppress epoch-level output
