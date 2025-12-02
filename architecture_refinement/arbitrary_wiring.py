@@ -100,7 +100,20 @@ class WsFlexHiddenWiring(Wiring):
 
                  seed: int = 17,
                  dtype: Any = np.float32):
-        super().__init__(units=input_size + hidden_graph.shape[0] + output_size)
+        # Determine hidden size before base init (supports ndarray or networkx)
+        try:
+            if hasattr(hidden_graph, "shape") and hidden_graph.shape and len(hidden_graph.shape) == 2:
+                _hidden_size_init = int(hidden_graph.shape[0])
+            elif nx is not None and isinstance(hidden_graph, (nx.Graph, nx.DiGraph)):
+                _hidden_size_init = int(len(hidden_graph.nodes()))
+            else:
+                arr = np.asarray(hidden_graph)
+                _hidden_size_init = int(arr.shape[0])
+        except Exception:
+            arr = np.asarray(hidden_graph)
+            _hidden_size_init = int(arr.shape[0])
+
+        super().__init__(units=input_size + _hidden_size_init + output_size)
         self.input_size = input_size
         self.hidden_graph = hidden_graph
         self.output_size = output_size
