@@ -249,7 +249,7 @@ def inject_realistic_eog_artifacts(data, info, template_path, montage_name='stan
     current_montage = info.get_montage()
     if current_montage is None:
         # Set default montage if none exists
-        info.set_montage(montage_name)
+        info.set_montage(montage_name, on_missing='warn')
         current_montage = info.get_montage()
     
     # Determine if interpolation is needed
@@ -409,7 +409,7 @@ def inject_realistic_eog_artifacts_with_coverage(data, info, template_path, mont
     current_montage = info.get_montage()
     if current_montage is None:
     # Set default montage if none exists
-        info.set_montage(montage_name)
+        info.set_montage(montage_name, on_missing='warn')
         current_montage = info.get_montage()
     
     # Determine if interpolation is needed
@@ -867,6 +867,17 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
             'CP3', 'CP1', 'CPz', 'CP2', 'CP4',
             'P1', 'Pz', 'P2', 'POz'
             ]
+        elif n_channels == 32:
+            # BI2015a dataset (32 EEG channels following standard_1020 system)
+            return [
+            'Fp1', 'Fp2', 'AFz', 'F7', 'F3', 'F4', 'F8',
+            'FC5', 'FC1', 'FC2', 'FC6',
+            'T7', 'C3', 'Cz', 'C4', 'T8',
+            'CP5', 'CP1', 'CP2', 'CP6',
+            'P7', 'P3', 'Pz', 'P4', 'P8',
+            'PO7', 'O1', 'Oz', 'O2', 'PO8',
+            'PO9', 'PO10'
+            ]
         elif n_channels == 62:
             # Lee2019_SSVEP dataset (62 EEG channels following 10-20 system)
             return [
@@ -896,7 +907,7 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         # Generate channel names based on the number of channels
         ch_names = self._generate_channel_names(n_channels)
         info = mne.create_info(ch_names=ch_names, sfreq=250, ch_types=['eeg'] * n_channels)
-        info.set_montage(self.montage_name)
+        info.set_montage(self.montage_name, on_missing='warn')
         
         # FIXED: Always use intensity to control temporal coverage for consistent behavior
         # This makes EOG behave like true transient artifacts regardless of mode

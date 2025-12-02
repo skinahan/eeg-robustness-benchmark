@@ -582,14 +582,18 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
         else:
             eval_mode = 'CrossSession'  # Default
     
-    # Normalize eval_mode format
-    if not eval_mode.endswith('Evaluation'):
-        eval_mode = f"{eval_mode}Evaluation"
+    # Store original eval_mode for filtering (dataframe has values without "Evaluation" suffix)
+    eval_mode_for_filter = eval_mode
+    # Normalize eval_mode format for display/directory naming
+    if eval_mode_for_filter.endswith('Evaluation'):
+        eval_mode_short = eval_mode_for_filter.replace('Evaluation', '')
+    else:
+        eval_mode_short = eval_mode_for_filter
     
-    # Filter data
+    # Filter data using original eval_mode value
     df_filtered = df[
         (df['mode'] == 'test_perturb') &
-        (df['eval_mode'] == eval_mode) &
+        (df['eval_mode'] == eval_mode_for_filter) &
         (df['model'] == model_name) &
         (df['noise_type'] == noise_type) &
         (df['tune'] == tune_setting) &
@@ -598,7 +602,7 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
     ].copy()
     
     if df_filtered.empty:
-        print(f"No data found for {model_name}, {noise_type}, tune={tune_setting}")
+        print(f"No data found for {model_name}, {noise_type}, tune={tune_setting}, eval_mode={eval_mode_for_filter}")
         return
     
     # Use legacy column naming for backward compatibility
@@ -616,7 +620,7 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
         clean_summary[corrupted_col] = clean_summary[clean_col]
         clean_summary['tune'] = tune_setting
         clean_summary['mode'] = 'test_perturb'
-        clean_summary['eval_mode'] = eval_mode
+        clean_summary['eval_mode'] = eval_mode_for_filter
         
         # Add the clean data to the filtered data
         df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
@@ -647,7 +651,7 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
                 errorbar=('ci', 95)
             )
         
-        plt.title(f'{model_name} - {noise_type.capitalize()} Noise ({tune_label})\nTest Perturb Performance', 
+        plt.title(f'{dataset} | {model_name} | {noise_type.capitalize()} Noise | {tune_label} | {eval_mode_short}', 
                  fontsize=14, fontweight='bold')
         plt.xlabel('Noise Intensity (%)', fontsize=12)
         plt.ylabel(y_label, fontsize=12)
@@ -657,12 +661,12 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
         y_min = 0.4 if dataset == 'BNCI2014_001' else 0
         plt.ylim(y_min, 1)
         
-        # Save plot
-        os.makedirs(output_dir, exist_ok=True)
+        # Save plot to eval_mode-specific directory
+        eval_mode_dir = os.path.join(output_dir, dataset, eval_mode_short) if dataset else output_dir
+        os.makedirs(eval_mode_dir, exist_ok=True)
         # Include eval_mode in filename to distinguish plots
-        eval_mode_short = eval_mode.replace('Evaluation', '')
-        filename = f"{model_name}_{noise_type}_{metric}_{'tuned' if tune_setting else 'baseline'}_{plot_type}_test_perturb_{eval_mode_short}.png"
-        output_file = os.path.join(output_dir, filename)
+        filename = f"{model_name}_{noise_type}_{metric}_{'tuned' if tune_setting else 'baseline'}_{plot_type}_test_perturb.png"
+        output_file = os.path.join(eval_mode_dir, filename)
         plt.tight_layout()
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
         plt.close()
@@ -695,14 +699,18 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
         else:
             eval_mode = 'CrossSession'  # Default
     
-    # Normalize eval_mode format
-    if not eval_mode.endswith('Evaluation'):
-        eval_mode = f"{eval_mode}Evaluation"
+    # Store original eval_mode for filtering (dataframe has values without "Evaluation" suffix)
+    eval_mode_for_filter = eval_mode
+    # Normalize eval_mode format for display/directory naming
+    if eval_mode_for_filter.endswith('Evaluation'):
+        eval_mode_short = eval_mode_for_filter.replace('Evaluation', '')
+    else:
+        eval_mode_short = eval_mode_for_filter
     
-    # Filter data
+    # Filter data using original eval_mode value
     df_filtered = df[
         (df['mode'] == 'test_perturb') &
-        (df['eval_mode'] == eval_mode) &
+        (df['eval_mode'] == eval_mode_for_filter) &
         (df['noise_type'] == noise_type) &
         (df['tune'] == tune_setting) &
         (df['seed'].isin(valid_seeds))
@@ -713,7 +721,7 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
         df_filtered = df_filtered[df_filtered['model'].isin(models)]
     
     if df_filtered.empty:
-        print(f"No data found for master plot: {noise_type}, tune={tune_setting}")
+        print(f"No data found for master plot: {noise_type}, tune={tune_setting}, eval_mode={eval_mode_for_filter}")
         return
     
 
@@ -735,7 +743,7 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
             clean_summary['noise_type'] = noise_type  # Explicitly set noise_type
             clean_summary['tune'] = tune_setting
             clean_summary['mode'] = 'test_perturb'
-            clean_summary['eval_mode'] = eval_mode
+            clean_summary['eval_mode'] = eval_mode_for_filter
             
             df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
     
@@ -767,7 +775,7 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
                 errorbar=('ci', 95)
             )
         
-        plt.title(f'Model Comparison - {noise_type.capitalize()} Noise ({tune_label})\nTest Perturb Performance (Mean Across Sessions)', 
+        plt.title(f'{dataset} | Model Comparison | {noise_type.capitalize()} Noise | {tune_label} | {eval_mode_short}', 
                  fontsize=14, fontweight='bold')
         plt.xlabel('Noise Intensity (%)', fontsize=12)
         plt.ylabel(y_label, fontsize=12)
@@ -777,12 +785,12 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
         y_min = 0.4 if dataset == 'BNCI2014_001' else 0
         plt.ylim(y_min, 1)
         
-        # Save plot
-        os.makedirs(output_dir, exist_ok=True)
+        # Save plot to eval_mode-specific directory
+        eval_mode_dir = os.path.join(output_dir, dataset, eval_mode_short) if dataset else output_dir
+        os.makedirs(eval_mode_dir, exist_ok=True)
         # Include eval_mode in filename
-        eval_mode_short = eval_mode.replace('Evaluation', '')
-        filename = f"master_comparison_{noise_type}_{metric}_{'tuned' if tune_setting else 'baseline'}_{plot_type}_test_perturb_{eval_mode_short}.png"
-        output_file = os.path.join(output_dir, filename)
+        filename = f"master_comparison_{noise_type}_{metric}_{'tuned' if tune_setting else 'baseline'}_{plot_type}_test_perturb.png"
+        output_file = os.path.join(eval_mode_dir, filename)
         plt.tight_layout()
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
         plt.close()
@@ -793,6 +801,7 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
 def generate_all_test_perturb_plots(df, models=None, output_dir='plots', metrics=('roc_auc','accuracy','precision','recall','f1'), dataset='BNCI2014_001'):
     """
     Generate all test_perturb plots as specified in the requirements.
+    Creates separate plots for each eval_mode (CrossSession, WithinSession, CrossSubject).
     
     Parameters:
     - df: DataFrame with all results
@@ -809,27 +818,35 @@ def generate_all_test_perturb_plots(df, models=None, output_dir='plots', metrics
     noise_types = df[df['mode'] == 'test_perturb']['noise_type'].unique()
     tune_settings = df[df['mode'] == 'test_perturb']['tune'].unique()
     
-    print(f"Generating plots for {len(models)} models, {len(noise_types)} noise types, 2 tune settings")
+    # Get available eval_modes (use original values from dataframe)
+    available_eval_modes = df[df['mode'] == 'test_perturb']['eval_mode'].unique()
+    eval_modes = sorted(set(available_eval_modes))  # Remove duplicates and sort
+    
+    print(f"Generating plots for {len(models)} models, {len(noise_types)} noise types, {len(tune_settings)} tune settings, {len(eval_modes)} eval modes")
     print(f"Models: {list(models)}")
     print(f"Noise types: {list(noise_types)}")
+    print(f"Eval modes: {eval_modes}")
     
-    # Generate individual model plots for each metric
-    # for model in models:
-    #     for noise_type in noise_types:
-    #         for tune_setting in tune_settings:
-    #             for metric in metrics:
-    #                 plot_test_perturb_individual_model(df, model, noise_type, tune_setting, output_dir, metric, dataset)
+    # Generate individual model plots for each metric and eval_mode
+    # for eval_mode in eval_modes:
+    #     for model in models:
+    #         for noise_type in noise_types:
+    #             for tune_setting in tune_settings:
+    #                 for metric in metrics:
+    #                     plot_test_perturb_individual_model(df, model, noise_type, tune_setting, output_dir, metric, dataset, eval_mode=eval_mode)
     
-    # Generate master comparison plots for each metric
-    for noise_type in noise_types:
-        for tune_setting in tune_settings:
-            for metric in metrics:
-                plot_test_perturb_master_comparison(df, noise_type, tune_setting, models, output_dir, metric, dataset)
+    # Generate master comparison plots for each metric and eval_mode
+    for eval_mode in eval_modes:
+        print(f"\n--- Processing {eval_mode} evaluation mode ---")
+        for noise_type in noise_types:
+            for tune_setting in tune_settings:
+                for metric in metrics:
+                    plot_test_perturb_master_comparison(df, noise_type, tune_setting, models, output_dir, metric, dataset, eval_mode=eval_mode)
     
-    print(f"All test_perturb plots generated and saved to {output_dir}")
+    print(f"\nAll test_perturb plots generated and saved to {output_dir}")
 
 
-def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, dataset='BNCI2014_001', output_dir='plots', metric: str='roc_auc'):
+def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, dataset='BNCI2014_001', output_dir='plots', metric: str='roc_auc', eval_mode=None):
     """
     Create per-subject plots for test_perturb results.
     
@@ -840,16 +857,33 @@ def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, data
     - tune_setting: bool, True for tuned, False for baseline
     - dataset: str, dataset name for directory organization
     - output_dir: str, base directory to save plots
+    - eval_mode: str, evaluation mode ('CrossSession', 'WithinSession', 'CrossSubject'). If None, uses all available.
     """
     # Load saturation points and get correct intensity values
     saturation_dict = load_saturation_points()
     correct_intensities = get_correct_intensities(dataset=dataset, noise_type=noise_type, saturation_dict=saturation_dict)
     valid_seeds = [100, 200, 300, 400, 500]
     
-    # Filter data
+    # Auto-detect eval_mode if not provided
+    if eval_mode is None:
+        available_modes = df[df['mode'] == 'test_perturb']['eval_mode'].unique()
+        if len(available_modes) == 1:
+            eval_mode = available_modes[0]
+        else:
+            eval_mode = 'CrossSession'  # Default
+    
+    # Store original eval_mode for filtering (dataframe has values without "Evaluation" suffix)
+    eval_mode_for_filter = eval_mode
+    # Normalize eval_mode format for display/directory naming
+    if eval_mode_for_filter.endswith('Evaluation'):
+        eval_mode_short = eval_mode_for_filter.replace('Evaluation', '')
+    else:
+        eval_mode_short = eval_mode_for_filter
+    
+    # Filter data using original eval_mode value
     df_filtered = df[
         (df['mode'] == 'test_perturb') &
-        (df['eval_mode'] == 'CrossSession') &
+        (df['eval_mode'] == eval_mode_for_filter) &
         (df['model'] == model_name) &
         (df['noise_type'] == noise_type) &
         (df['tune'] == tune_setting) &
@@ -858,7 +892,7 @@ def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, data
     ].copy()
     
     if df_filtered.empty:
-        print(f"No data found for per-subject plot: {model_name}, {noise_type}, tune={tune_setting}")
+        print(f"No data found for per-subject plot: {model_name}, {noise_type}, tune={tune_setting}, eval_mode={eval_mode_for_filter}")
         return
     
     # Use legacy column naming for backward compatibility
@@ -879,7 +913,7 @@ def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, data
             clean_summary['model'] = model_name  # Explicitly set model
             clean_summary['tune'] = tune_setting
             clean_summary['mode'] = 'test_perturb'
-            clean_summary['eval_mode'] = 'CrossSession'
+            clean_summary['eval_mode'] = eval_mode_for_filter
             
             df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
     
@@ -918,7 +952,7 @@ def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, data
                     errorbar=('ci', 95)
                 )
             
-            plt.title(f'{model_name} - Subject {subject} - {noise_type.capitalize()} Noise ({tune_label.capitalize()})\nTest Perturb Performance', 
+            plt.title(f'{dataset} | {model_name} | Subject {subject} | {noise_type.capitalize()} Noise | {tune_label.capitalize()} | {eval_mode_short}', 
                      fontsize=14, fontweight='bold')
             plt.xlabel('Noise Intensity (%)', fontsize=12)
             plt.ylabel(y_label, fontsize=12)
@@ -928,8 +962,8 @@ def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, data
             y_min = 0.4 if dataset == 'BNCI2014_001' else 0
             plt.ylim(y_min, 1)
             
-            # Create directory structure
-            subject_dir = os.path.join(output_dir, dataset, f'subject_{subject}', noise_type)
+            # Create directory structure with eval_mode
+            subject_dir = os.path.join(output_dir, dataset, eval_mode_short, f'subject_{subject}', noise_type)
             os.makedirs(subject_dir, exist_ok=True)
             
             # Save plot
@@ -942,7 +976,7 @@ def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, data
             print(f"Saved per-subject {plot_type} plot: {output_file}")
 
 
-def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, models=None, dataset='BNCI2014_001', output_dir='plots'):
+def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, models=None, dataset='BNCI2014_001', output_dir='plots', eval_mode=None):
     """
     Create multi-subject comparison plots for test_perturb results.
     
@@ -953,20 +987,37 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
     - models: list, specific models to include (if None, uses all available models)
     - dataset: str, dataset name for directory organization
     - output_dir: str, base directory to save plots
+    - eval_mode: str, evaluation mode ('CrossSession', 'WithinSession', 'CrossSubject'). If None, uses all available.
     """
     # Load saturation points and get correct intensity values
     saturation_dict = load_saturation_points()
     correct_intensities = get_correct_intensities(dataset=dataset, noise_type=noise_type, saturation_dict=saturation_dict)
     valid_seeds = [100, 200, 300, 400, 500]
 
+    # Auto-detect eval_mode if not provided
+    if eval_mode is None:
+        available_modes = df[df['mode'] == 'test_perturb']['eval_mode'].unique()
+        if len(available_modes) == 1:
+            eval_mode = available_modes[0]
+        else:
+            eval_mode = 'CrossSession'  # Default
+    
+    # Store original eval_mode for filtering (dataframe has values without "Evaluation" suffix)
+    eval_mode_for_filter = eval_mode
+    # Normalize eval_mode format for display/directory naming
+    if eval_mode_for_filter.endswith('Evaluation'):
+        eval_mode_short = eval_mode_for_filter.replace('Evaluation', '')
+    else:
+        eval_mode_short = eval_mode_for_filter
+
     mode_str = 'test_perturb'
     if tune_setting:
         mode_str = 'test_perturb_tune'
 
-    # Filter data
+    # Filter data using original eval_mode value
     df_filtered = df[
         (df['mode'] == mode_str) &
-        (df['eval_mode'] == 'CrossSession') &
+        (df['eval_mode'] == eval_mode_for_filter) &
         (df['noise_type'] == noise_type) &
         (df['tune'] == tune_setting) &
         (df['seed'].isin(valid_seeds)) #&
@@ -978,11 +1029,11 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
         df_filtered = df_filtered[df_filtered['model'].isin(models)]
     
     if df_filtered.empty:
-        print(f"No data found for multisubject plot: {noise_type}, tune={tune_setting}")
+        print(f"No data found for multisubject plot: {noise_type}, tune={tune_setting}, eval_mode={eval_mode}")
         return
     
     # Debug: Print unique noise types in filtered data
-    print(f"[DEBUG] Processing {noise_type}, tune={tune_setting}")
+    print(f"[DEBUG] Processing {noise_type}, tune={tune_setting}, eval_mode={eval_mode}")
     print(f"[DEBUG] Unique noise_types in df_filtered: {df_filtered['noise_type'].unique()}")
     print(f"[DEBUG] Data shape: {df_filtered.shape}")
     
@@ -1005,7 +1056,7 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
             clean_summary['noise_type'] = noise_type  # Explicitly set noise_type
             clean_summary['tune'] = tune_setting
             clean_summary['mode'] = mode_str
-            clean_summary['eval_mode'] = 'CrossSession'
+            clean_summary['eval_mode'] = eval_mode_for_filter
             
             df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
             
@@ -1040,7 +1091,7 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
                 errorbar=('ci', 95)
             )
         
-        plt.title(f'Multi-Subject Model Comparison - {noise_type.capitalize()} Noise ({tune_label.capitalize()})\nTest Perturb Performance (All Subjects)', 
+        plt.title(f'{dataset} | Multi-Subject Model Comparison | {noise_type.capitalize()} Noise | {tune_label.capitalize()} | {eval_mode_short}', 
                  fontsize=14, fontweight='bold')
         plt.xlabel('Noise Intensity (%)', fontsize=12)
         plt.ylabel(y_label, fontsize=12)
@@ -1050,8 +1101,8 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
         y_min = 0.4 if dataset == 'BNCI2014_001' else 0
         plt.ylim(y_min, 1)
         
-        # Create directory structure
-        multisubject_dir = os.path.join(output_dir, dataset, 'multisubject', noise_type)
+        # Create directory structure with eval_mode
+        multisubject_dir = os.path.join(output_dir, dataset, eval_mode_short, 'multisubject', noise_type)
         os.makedirs(multisubject_dir, exist_ok=True)
         
         # Save plot
@@ -1067,6 +1118,7 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
 def generate_organized_test_perturb_plots(df, models=None, dataset='BNCI2014_001', output_dir='plots'):
     """
     Generate all test_perturb plots with organized directory structure.
+    Creates separate plots for each eval_mode (CrossSession, WithinSession, CrossSubject).
     
     Parameters:
     - df: DataFrame with all results
@@ -1081,22 +1133,32 @@ def generate_organized_test_perturb_plots(df, models=None, dataset='BNCI2014_001
     noise_types = df[df['mode'] == 'test_perturb']['noise_type'].unique()
     tune_settings = [False, True]#df[df['mode'] == 'test_perturb']['tune'].unique()
     
-    print(f"Generating organized plots for {len(models)} models, {len(noise_types)} noise types, {len(tune_settings)} tune settings")
+    # Get available eval_modes (use original values from dataframe)
+    available_eval_modes = df[df['mode'] == 'test_perturb']['eval_mode'].unique()
+    eval_modes = sorted(set(available_eval_modes))  # Remove duplicates and sort
+    
+    print(f"Generating organized plots for {len(models)} models, {len(noise_types)} noise types, {len(tune_settings)} tune settings, {len(eval_modes)} eval modes")
     print(f"Models: {list(models)}")
     print(f"Noise types: {list(noise_types)}")
+    print(f"Eval modes: {eval_modes}")
 
-    # Generate multi-subject comparison plots
+    # Generate multi-subject comparison plots for each eval_mode
     print("\n=== Generating multi-subject comparison plots ===")
-    for noise_type in noise_types:
-        for tune_setting in tune_settings:
-            plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, models, dataset, output_dir)
-
-    # Generate per-subject plots for each model
-    print("\n=== Generating per-subject plots ===")
-    for model in models:
+    for eval_mode in eval_modes:
+        print(f"\n--- Processing {eval_mode} evaluation mode ---")
         for noise_type in noise_types:
             for tune_setting in tune_settings:
-                plot_test_perturb_per_subject(df, model, noise_type, tune_setting, dataset, output_dir)
+                plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, models, dataset, output_dir, eval_mode=eval_mode)
+
+    # Generate per-subject plots for each model and eval_mode
+    # print("\n=== Generating per-subject plots ===")
+    # for eval_mode in eval_modes:
+    #     eval_mode_short = eval_mode.replace('Evaluation', '')
+    #     print(f"\n--- Processing {eval_mode_short} evaluation mode ---")
+    #     for model in models:
+    #         for noise_type in noise_types:
+    #             for tune_setting in tune_settings:
+    #                 plot_test_perturb_per_subject(df, model, noise_type, tune_setting, dataset, output_dir, eval_mode=eval_mode)
     
     
     print(f"\nAll organized test_perturb plots generated and saved to {output_dir}")
@@ -1450,16 +1512,23 @@ def extract_custom_data(df, filters=None, columns=None, aggregate=None, group_by
 
 
 if __name__ == '__main__':
+
+    results_dir = '../sol_results/'
     dataset_configs = [
         {
             'label': 'MotorImagery/BNCI2014_001',
-            'input_dir': '../results/MotorImagery/BNCI2014_001/',
-            'csv_path': '../results/MotorImagery/BNCI2014_001/all_results.csv'
+            'input_dir': os.path.join(results_dir, 'MotorImagery/BNCI2014_001/'),
+            'csv_path': os.path.join(results_dir, 'MotorImagery/BNCI2014_001/all_results.csv')
         },
         {
             'label': 'SSVEP/Lee2019_SSVEP',
-            'input_dir': '../results/SSVEP/Lee2019_SSVEP/',
-            'csv_path': '../results/SSVEP/Lee2019_SSVEP/all_results.csv'
+            'input_dir': os.path.join(results_dir, 'SSVEP/Lee2019_SSVEP/'),
+            'csv_path': os.path.join(results_dir, 'SSVEP/Lee2019_SSVEP/all_results.csv')
+        },
+        {
+            'label': 'ERP/BI2015a',
+            'input_dir': os.path.join(results_dir, 'ERP/BI2015a/'),
+            'csv_path': os.path.join(results_dir, 'ERP/BI2015a/all_results.csv')
         }
     ]
 
@@ -1499,7 +1568,7 @@ if __name__ == '__main__':
             )
         else:
             # Generate organized plots with per-subject breakdowns
-            output_dir = os.path.join('./plots/', dataset_name)
+            output_dir = './plots/'
             print("Generating organized plots with per-subject breakdowns...")
             generate_organized_test_perturb_plots(
                 aggregated_df,

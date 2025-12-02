@@ -41,7 +41,7 @@ project_root = os.path.dirname(current_dir)
 sys.path.insert(0, project_root)
 
 from config import MODEL_REGISTRY, get_paradigm, get_dataset_sampling_rate
-from globals import set_seeds, DEFAULT_MAX_EPOCHS, UNDERFITTING_THRESHOLD
+from globals import set_seeds, DEFAULT_MAX_EPOCHS, UNDERFITTING_THRESHOLD, get_max_epochs_for_dataset
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
 from evaluation.two_stage_hp_opt import alternate_two_stage_optuna, run_two_stage_optuna, format_params, get_all_model_params
 from utils import create_output_path, create_hdf5_model_path, get_noise_intensities
@@ -200,6 +200,28 @@ def save_training_history(model, output_path: str, fold_idx: int = None, subject
         print(f"Warning: Failed to save training history: {e}")
 
 
+def _verify_and_log_max_epochs(model, dataset: str, training_context: str = ""):
+    """
+    Verify and log the max_epochs setting before training starts.
+    
+    Args:
+        model: The model to check
+        dataset: Dataset name for verification
+        training_context: Optional context string for logging (e.g., "fold 1", "retraining")
+    """
+    expected_epochs = get_max_epochs_for_dataset(dataset)
+    actual_epochs = getattr(model, 'max_epochs', None)
+    
+    context_str = f" ({training_context})" if training_context else ""
+    
+    if actual_epochs is None:
+        print(f"WARNING: Model has no max_epochs attribute{context_str}")
+    elif actual_epochs != expected_epochs:
+        print(f"WARNING: max_epochs mismatch{context_str}: expected {expected_epochs} for {dataset}, but model has {actual_epochs}")
+    else:
+        print(f"Training with max_epochs={actual_epochs} for dataset {dataset}{context_str}")
+
+
 class UnifiedExperimentRunner:
     """
     Unified experiment runner that handles all experiment modes and evaluation types.
@@ -299,10 +321,27 @@ class UnifiedExperimentRunner:
             paradigm_name = "ERP"
         else:
             paradigm_name = "MotorImagery"
+        
+        # Get the first session from the dataset dynamically (for path naming)
+        # Default to '0train' if we can't determine sessions
+        default_session = '0train'
+        session_for_path = default_session
+        if self.paradigm is not None and self.dataset_obj is not None and len(self.subjects) > 0:
+            try:
+                # Load data for first subject to get actual session names
+                X_sample, y_sample, metadata_sample = self.paradigm.get_data(self.dataset_obj, subjects=[self.subjects[0]])
+                if 'session' in metadata_sample.columns:
+                    sessions = sorted(metadata_sample['session'].unique().tolist())
+                    if len(sessions) > 0:
+                        session_for_path = sessions[0]
+            except Exception as e:
+                # If we can't load data, use default
+                pass
+        
         self.hdf5_path = create_hdf5_model_path(
             self.model, 
             self.seed, 
-            '0train', 
+            session_for_path, 
             self.mode, 
             session_type=session_type,
             paradigm=paradigm_name,
@@ -390,8 +429,8 @@ class UnifiedExperimentRunner:
         # Create new model
         model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
         assert(model is not None)
-        # Set common model parameters
-        model.max_epochs = DEFAULT_MAX_EPOCHS
+        # Set common model parameters with dataset-specific max_epochs
+        model.max_epochs = get_max_epochs_for_dataset(self.dataset)
 
         # Add caching callbacks
         if not self.noise_dict and self.current_subject != -1 and self.current_session != -1:
@@ -442,7 +481,7 @@ class UnifiedExperimentRunner:
                     else:
                         n_outputs = 2  # MotorImagery and BI2015a (P300) both have 2 classes
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
-                base_model.max_epochs = 200
+                base_model.max_epochs = get_max_epochs_for_dataset(self.dataset)
                 return TrainOnlyNoiseClassifier(
                     base_pipeline=base_model,
                     noise_type=self.noise_dict["noise_type"],
@@ -457,7 +496,7 @@ class UnifiedExperimentRunner:
                     else:
                         n_outputs = 2  # MotorImagery and BI2015a (P300) both have 2 classes
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
-                base_model.max_epochs = 200
+                base_model.max_epochs = get_max_epochs_for_dataset(self.dataset)
                 return ConcatenatedNoiseAugmenter(
                     base_pipeline=base_model,
                     noise_type=self.noise_dict["noise_type"],
@@ -472,7 +511,7 @@ class UnifiedExperimentRunner:
                     else:
                         n_outputs = 2  # MotorImagery and BI2015a (P300) both have 2 classes
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
-                base_model.max_epochs = 200
+                base_model.max_epochs = get_max_epochs_for_dataset(self.dataset)
                 return base_model
         else:
             return self.model_fn
@@ -574,7 +613,8 @@ class UnifiedExperimentRunner:
                 seed=self.seed,
                 output_root=fold_output_dir,
                 arch_trials=20,
-                train_trials=20
+                train_trials=20,
+                dataset=self.dataset
             )
         else:
             # Mode is tune (no noise)
@@ -589,7 +629,8 @@ class UnifiedExperimentRunner:
                 output_root=fold_output_dir,
                 arch_trials=10,
                 train_trials=10,
-                perturbed=False
+                perturbed=False,
+                dataset=self.dataset
             )        
 
         final_params = {}
@@ -629,10 +670,13 @@ class UnifiedExperimentRunner:
         n_chans, n_times = self._determine_data_dimensions()
         final_model = self._create_model(n_chans, n_times)
         final_params['verbose'] = 0
+        # Ensure max_epochs is set correctly for this dataset
+        final_params['max_epochs'] = get_max_epochs_for_dataset(self.dataset)
         final_model.set_params(**final_params)
         # Train on full training set
         start_time = time.time()
         final_model.module_.train()
+        _verify_and_log_max_epochs(final_model, self.dataset, f"fold {fold_idx} (tuned)")
         final_model.fit(X_train, y_train)
         training_time = time.time() - start_time
         
@@ -669,8 +713,11 @@ class UnifiedExperimentRunner:
                     print(f"Re-training model without EarlyStopping due to underfitting.")
                     final_model.set_params(**final_params)
                     final_model.callbacks = []
+                    # Ensure max_epochs is still correct after removing early stopping
+                    final_model.max_epochs = get_max_epochs_for_dataset(self.dataset)
                     final_model.module_.train()
-                    start_time = time.time()  
+                    start_time = time.time()
+                    _verify_and_log_max_epochs(final_model, self.dataset, f"fold {fold_idx} (tuned, retraining)")
                     final_model.fit(X_train, y_train)
                     training_time = time.time() - start_time
                     
@@ -728,6 +775,7 @@ class UnifiedExperimentRunner:
         
         if not model_was_cached:
             model.module_.train()
+            _verify_and_log_max_epochs(model, self.dataset, f"fold {fold_idx}")
             # Apply noise if applicable
             if self.noise_dict and self.mode in ['augment', 'augment_notune']:
                 # For augmentation modes, apply to training data
@@ -856,6 +904,7 @@ class UnifiedExperimentRunner:
         # Train on clean data
         start_time = time.time()
         model.module_.train()
+        _verify_and_log_max_epochs(model, self.dataset, f"fold {fold_idx}, session {session}")
         model.fit(X_train, y_train)
         training_time = time.time() - start_time
         
@@ -892,8 +941,11 @@ class UnifiedExperimentRunner:
                     if not isinstance(callback, EarlyStopping):
                         new_callbacks.append(callback)
                 model.callbacks = new_callbacks
-                model.module_.train()          
-                start_time = time.time()  
+                # Ensure max_epochs is still correct after removing early stopping
+                model.max_epochs = get_max_epochs_for_dataset(self.dataset)
+                model.module_.train()
+                start_time = time.time()
+                _verify_and_log_max_epochs(model, self.dataset, f"fold {fold_idx}, session {session} (retraining)")
                 model.fit(X_train, y_train)
                 training_time = time.time() - start_time
                 
@@ -942,7 +994,7 @@ class UnifiedExperimentRunner:
             
 
         if not self.overwrite:
-            if check_skip_eval(self.model, self.seed, self.subjects, mode_str, self.noise_type, self.intensity, eval_mode=self.eval_mode, dataset=self.dataset):
+            if check_skip_eval(self.model, self.seed, self.subjects, mode_str, self.noise_type, self.intensity, eval_mode=self.eval_mode, dataset=self.dataset, paradigm_obj=self.paradigm, dataset_obj=self.dataset_obj):
                 print(f"Skipping evaluation due to existing output files.")
                 return None
         
@@ -1351,13 +1403,31 @@ def main():
         model = args.model
         eval_mode = args.eval_mode
         seed = args.seed
+        
+        # Create temporary paradigm and dataset objects for check_skip_eval
+        temp_paradigm = None
+        temp_dataset_obj = None
+        try:
+            if args.dataset == "BNCI2014_001":
+                temp_dataset_obj = BNCI2014_001()
+                temp_dataset_obj.subject_list = args.subjects
+            elif args.dataset == "Lee2019_SSVEP":
+                temp_dataset_obj = Lee2019_SSVEP()
+                temp_dataset_obj.subject_list = args.subjects
+            elif args.dataset == "BI2015a":
+                temp_dataset_obj = BI2015a()
+                temp_dataset_obj.subject_list = args.subjects
+            temp_paradigm = get_paradigm(resample=None, dataset=args.dataset)
+        except Exception as e:
+            print(f"Warning: Could not create temporary dataset/paradigm for session detection: {e}")
+        
         for mode in ["test_perturb"]:
             if not args.overwrite:
                 mode_str = mode
                 if args.tune and mode != "tune":
                     # Make sure the tuned and non-tuned modes are not mixed when creating output paths.
                     mode_str = f"{mode_str}_tune"
-                if check_skip_eval(model, seed, args.subjects, mode_str, args.noise_type, args.intensity, eval_mode, paradigm_name, args.dataset):
+                if check_skip_eval(model, seed, args.subjects, mode_str, args.noise_type, args.intensity, eval_mode, paradigm_name, args.dataset, paradigm_obj=temp_paradigm, dataset_obj=temp_dataset_obj):
                     continue
             try:
                 runner = UnifiedExperimentRunner(
@@ -1381,8 +1451,25 @@ def main():
                 sys.exit(1)
     else:
         # Check if we should skip evaluation
+        # Create temporary paradigm and dataset objects for check_skip_eval
+        temp_paradigm = None
+        temp_dataset_obj = None
+        try:
+            if args.dataset == "BNCI2014_001":
+                temp_dataset_obj = BNCI2014_001()
+                temp_dataset_obj.subject_list = args.subjects
+            elif args.dataset == "Lee2019_SSVEP":
+                temp_dataset_obj = Lee2019_SSVEP()
+                temp_dataset_obj.subject_list = args.subjects
+            elif args.dataset == "BI2015a":
+                temp_dataset_obj = BI2015a()
+                temp_dataset_obj.subject_list = args.subjects
+            temp_paradigm = get_paradigm(resample=None, dataset=args.dataset)
+        except Exception as e:
+            print(f"Warning: Could not create temporary dataset/paradigm for session detection: {e}")
+        
         if not args.overwrite:
-            if check_skip_eval(args.model, args.seed, args.subjects, args.mode, args.noise_type, args.intensity, args.eval_mode, paradigm_name, args.dataset):
+            if check_skip_eval(args.model, args.seed, args.subjects, args.mode, args.noise_type, args.intensity, args.eval_mode, paradigm_name, args.dataset, paradigm_obj=temp_paradigm, dataset_obj=temp_dataset_obj):
                 sys.exit(0)
         
         try:

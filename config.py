@@ -376,7 +376,7 @@ def get_dataset_sampling_rate(dataset="BNCI2014_001"):
     dataset_rates = {
         "BNCI2014_001": 250.0,      # MOABB provides this dataset at 250 Hz
         "Lee2019_SSVEP": 1000.0,    # Native sampling rate is 1000 Hz
-        "BI2015a": 250.0             # Typical ERP datasets are 250 Hz, verify with actual data
+        "BI2015a": 512.0             # Typical ERP datasets are 250 Hz, verify with actual data
     }
     return dataset_rates.get(dataset, 250.0)  # Default to 250 Hz if unknown
 
@@ -409,7 +409,7 @@ def get_paradigm(resample=None, dataset="BNCI2014_001"):
             fmax=24,
             tmin=0.0,
             tmax=1.0,
-            baseline=(None, 0),
+            baseline=None,  # Use None instead of (None, 0) to avoid the TypeError
             resample=resample
         )
     else:  # Default to MotorImagery for BNCI2014_001

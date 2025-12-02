@@ -39,12 +39,12 @@ project_root = os.path.dirname(current_dir)
 sys.path.insert(0, project_root)
 
 from moabb.datasets import BNCI2014_001, Lee2019_SSVEP, BI2015a
-from moabb.paradigms import MotorImagery, SSVEP
+from moabb.paradigms import MotorImagery, SSVEP, P300
 from models.eegnet import create_eegnet_classifier
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor
 from evaluation.unified_experiment_runner import UnifiedExperimentRunner
 from config import get_paradigm, MODEL_REGISTRY
-from globals import set_seeds, get_seed, UNDERFITTING_THRESHOLD
+from globals import set_seeds, get_seed, UNDERFITTING_THRESHOLD, get_max_epochs_for_dataset
 from sklearn.metrics import get_scorer
 from evaluation.metrics import compute_classification_metrics
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, balanced_accuracy_score
@@ -164,6 +164,13 @@ class AdaptiveSaturationDetector:
                 "n_classes": 4,
                 "subjects": [3],  # Use first 2 subjects
                 "resample": None
+            },
+            "BI2015a": {
+                "dataset_class": BI2015a,
+                "paradigm_type": "ERP",
+                "n_classes": 2,
+                "subjects": [3],  # Use first few subjects for speed
+                "resample": None
             }
         }
         
@@ -225,7 +232,15 @@ class AdaptiveSaturationDetector:
                 trained_model, X_test, y_test = self._train_model_once(dataset_name)
                 print(f"Model trained successfully on {len(X_test)} test samples")
             except Exception as e:
-                print(f"Error training model for {dataset_name}: {e}")
+                print(f"\n{'='*60}")
+                print(f"ERROR: Failed to train model for {dataset_name}")
+                print(f"{'='*60}")
+                print(f"Error type: {type(e).__name__}")
+                print(f"Error message: {str(e)}")
+                print(f"\nFull traceback:")
+                import traceback
+                traceback.print_exc()
+                print(f"{'='*60}\n")
                 continue
                 
             dataset_results = {}
@@ -370,7 +385,8 @@ class AdaptiveSaturationDetector:
         n_outputs = config["n_classes"]
         
         model = create_eegnet_classifier(n_chans, n_times, n_outputs, seed=self.base_seed)
-        model.max_epochs = 200
+        model.max_epochs = get_max_epochs_for_dataset(dataset_name)
+        print(f"Training model with max_epochs={model.max_epochs} for dataset {dataset_name}")
         model.initialize()
         
         print("Training model...")
@@ -498,7 +514,7 @@ class AdaptiveSaturationDetector:
             y_train_fold = y_encoded[train_idx]
             
             model_fold = create_eegnet_classifier(n_chans, n_times, n_outputs, seed=self.base_seed + i)
-            model_fold.max_epochs = 200
+            model_fold.max_epochs = get_max_epochs_for_dataset(dataset_name)
             model_fold.initialize()
             model_fold.module_.train()
             model_fold.fit(X_train_fold, y_train_fold)
@@ -659,54 +675,101 @@ class AdaptiveSaturationDetector:
     def _train_model_once(self, dataset_name: str):
         """Train model once on clean data (like test_perturb mode)."""
         
+        print(f"  [DEBUG] Starting _train_model_once for {dataset_name}")
         config = self.dataset_configs[dataset_name]
+        print(f"  [DEBUG] Config loaded: {config.keys()}")
+        print(f"  [DEBUG] base_seed: {self.base_seed} (type: {type(self.base_seed)})")
         
         # Set random seed
+        print(f"  [DEBUG] Setting seeds...")
         set_seeds(self.base_seed)
         
         # Load dataset and paradigm using the exact same pattern as test_perturb
+        print(f"  [DEBUG] Creating dataset instance...")
         dataset = config["dataset_class"]()
-        dataset.subject_list = [config["subjects"][0]]
+        subject_id = config["subjects"][0]
+        print(f"  [DEBUG] Using subject: {subject_id}")
+        dataset.subject_list = [subject_id]
         
+        print(f"  [DEBUG] Getting paradigm...")
         paradigm = get_paradigm(resample=None, dataset=dataset_name)
+        print(f"  [DEBUG] Paradigm type: {type(paradigm)}")
         
         # Load data using the same pattern as test_perturb
-        X, y, metadata = paradigm.get_data(dataset, subjects=[config["subjects"][0]])
+        print(f"  [DEBUG] Loading data for subject {subject_id}...")
+        X, y, metadata = paradigm.get_data(dataset, subjects=[subject_id])
+        print(f"  [DEBUG] Data loaded - X shape: {X.shape}, y shape: {y.shape}, metadata columns: {metadata.columns.tolist()}")
         
         # CRITICAL: Encode labels the same way as test_perturb
         from sklearn.preprocessing import LabelEncoder
         y_encoded = LabelEncoder().fit_transform(y)
         
         # Use session-based splitting like test_perturb does
+        print(f"  [DEBUG] Checking session information...")
         if 'session' in metadata.columns:
+            print(f"  [DEBUG] Found session column. Unique sessions: {sorted(metadata['session'].unique())}")
+            # Check if dataset uses '0train' session naming (BNCI2014_001, Lee2019_SSVEP)
             train_mask = metadata['session'] == '0train'
             test_mask = metadata['session'] != '0train'
+            print(f"  [DEBUG] '0train' session found: {train_mask.sum()} samples")
+            print(f"  [DEBUG] Other sessions found: {test_mask.sum()} samples")
             
             if train_mask.sum() > 0 and test_mask.sum() > 0:
+                # Standard session-based split (BNCI2014_001, Lee2019_SSVEP)
+                print(f"  [DEBUG] Using standard '0train' session split")
                 X_train = X[train_mask]
                 y_train = y_encoded[train_mask]
                 X_test = X[test_mask]
                 y_test = y_encoded[test_mask]
             else:
-                # Fallback: use simple split
-                from sklearn.model_selection import train_test_split
-                X_train, X_test, y_train, y_test = train_test_split(
-                    X, y_encoded, test_size=0.3, random_state=self.base_seed, stratify=y_encoded
-                )
+                # For datasets like BI2015a with multiple sessions, use LeaveOneGroupOut
+                # Use 2 sessions for training, 1 session for testing
+                print(f"  [DEBUG] '0train' not found, using LeaveOneGroupOut for multi-session dataset")
+                from sklearn.model_selection import LeaveOneGroupOut
+                groups = metadata['session'].values
+                print(f"  [DEBUG] Session groups: {sorted(set(groups))}")
+                logo = LeaveOneGroupOut()
+                splits = list(logo.split(X, y_encoded, groups=groups))
+                print(f"  [DEBUG] LeaveOneGroupOut created {len(splits)} splits")
+                
+                if len(splits) > 0:
+                    # Use the first split (test on first session, train on others)
+                    train_idx, test_idx = splits[0]
+                    X_train = X[train_idx]
+                    y_train = y_encoded[train_idx]
+                    X_test = X[test_idx]
+                    y_test = y_encoded[test_idx]
+                    print(f"  [DEBUG] Using LeaveOneGroupOut: training on {len(train_idx)} samples, testing on {len(test_idx)} samples")
+                else:
+                    # Fallback: use simple split
+                    print(f"  [DEBUG] No splits found, using train_test_split fallback")
+                    from sklearn.model_selection import train_test_split
+                    X_train, X_test, y_train, y_test = train_test_split(
+                        X, y_encoded, test_size=0.3, random_state=self.base_seed, stratify=y_encoded
+                    )
         else:
             # No session info, use simple split
+            print(f"  [DEBUG] No session column found, using train_test_split")
             from sklearn.model_selection import train_test_split
             X_train, X_test, y_train, y_test = train_test_split(
                 X, y_encoded, test_size=0.3, random_state=self.base_seed, stratify=y_encoded
             )
         
+        print(f"  [DEBUG] Data split complete - X_train: {X_train.shape}, X_test: {X_test.shape}")
+        
         # Create model using the same pattern as test_perturb
+        print(f"  [DEBUG] Creating model...")
+        print(f"  [DEBUG] X_train shape: {X_train.shape}")
         n_chans = X_train.shape[1]
         n_times = X_train.shape[2]
         n_outputs = config["n_classes"]
+        print(f"  [DEBUG] Model params - n_chans: {n_chans}, n_times: {n_times}, n_outputs: {n_outputs}")
+        print(f"  [DEBUG] base_seed for model creation: {self.base_seed} (type: {type(self.base_seed)})")
         
         model = create_eegnet_classifier(n_chans, n_times, n_outputs, seed=self.base_seed)
-        model.max_epochs = 200  # Same as test_perturb
+        print(f"  [DEBUG] Model created successfully")
+        model.max_epochs = get_max_epochs_for_dataset(dataset_name)
+        print(f"  [DEBUG] Training with max_epochs={model.max_epochs} for dataset {dataset_name}")
         model.initialize()
         
         # Train on clean data (same as test_perturb)
@@ -1049,9 +1112,9 @@ class AdaptiveSaturationDetector:
             json.dump(result_dict, f, indent=2)
     
     def _save_final_results(self, results: Dict[str, Dict[str, SaturationResult]]):
-        """Save final results summary."""
+        """Save final results summary, merging with existing results if present."""
         
-        # Create summary DataFrame
+        # Create summary DataFrame from new results
         summary_data = []
         for dataset, noise_results in results.items():
             for noise_type, result in noise_results.items():
@@ -1068,10 +1131,30 @@ class AdaptiveSaturationDetector:
                     "detection_method": result.detection_method
                 })
         
-        summary_df = pd.DataFrame(summary_data)
+        new_summary_df = pd.DataFrame(summary_data)
+        
+        # Load existing results if they exist
+        csv_path = self.output_dir / "saturation_points_summary.csv"
+        if csv_path.exists():
+            print(f"\nLoading existing results from {csv_path}")
+            existing_df = pd.read_csv(csv_path)
+            print(f"  Found {len(existing_df)} existing entries")
+            
+            # Merge: remove existing entries that match new results (by dataset+noise_type)
+            # and append new results
+            merge_keys = ["dataset", "noise_type"]
+            existing_df = existing_df[~existing_df.set_index(merge_keys).index.isin(
+                new_summary_df.set_index(merge_keys).index
+            )]
+            
+            # Combine existing (filtered) and new results
+            summary_df = pd.concat([existing_df, new_summary_df], ignore_index=True)
+            print(f"  Merged results: {len(existing_df)} existing + {len(new_summary_df)} new = {len(summary_df)} total")
+        else:
+            print(f"\nNo existing results found, creating new file")
+            summary_df = new_summary_df
         
         # Save CSV
-        csv_path = self.output_dir / "saturation_points_summary.csv"
         summary_df.to_csv(csv_path, index=False)
         
         # Save JSON
