@@ -431,7 +431,7 @@ class ArbitraryWiring(Wiring):
         
         # Check for any negative weights (which shouldn't exist in our architecture search)
         if np.any(self.wiring_matrix < 0):
-            self.logger.warning("Found negative weights in wiring matrix - converting to absolute values")
+            # self.logger.warning("Found negative weights in wiring matrix - converting to absolute values")
             self.wiring_matrix = np.abs(self.wiring_matrix)
     
     def _build_wiring_from_matrix(self):
