@@ -35,7 +35,8 @@ class PeriodicCheckpointCallback(Callback):
                  tuned: bool = False,
                  check_interval: int = 1,
                  monitor: str = 'valid_loss',
-                 mode: str = 'min'):
+                 mode: str = 'min',
+                 fold_idx: Optional[int] = None):
         """
         Initialize the periodic checkpoint callback.
         
@@ -51,6 +52,7 @@ class PeriodicCheckpointCallback(Callback):
             check_interval: How often (in epochs) to check for best model (default: 1)
             monitor: Metric to monitor (default: 'valid_loss')
             mode: 'min' for loss (lower is better), 'max' for accuracy (higher is better)
+            fold_idx: Fold index (required for WithinSession to prevent data leakage)
         """
         self.cache_manager = cache_manager
         self.dataset = dataset
@@ -63,6 +65,7 @@ class PeriodicCheckpointCallback(Callback):
         self.check_interval = check_interval
         self.monitor = monitor
         self.mode = mode
+        self.fold_idx = fold_idx
         
         self.logger = logging.getLogger(__name__)
         self.best_score = float('inf') if mode == 'min' else float('-inf')
@@ -112,7 +115,8 @@ class PeriodicCheckpointCallback(Callback):
                     tuned=self.tuned,
                     validation_loss=current_score,
                     epoch=current_epoch,
-                    checkpoint_type="best"
+                    checkpoint_type="best",
+                    fold_idx=self.fold_idx
                 )
                 
                 if saved:
@@ -147,7 +151,8 @@ class PeriodicCheckpointCallback(Callback):
                 tuned=self.tuned,
                 validation_loss=final_validation_loss,
                 epoch=final_epoch,
-                checkpoint_type="final"
+                checkpoint_type="final",
+                fold_idx=self.fold_idx
             )
             
             if saved:
@@ -167,11 +172,11 @@ class PeriodicCheckpointCallback(Callback):
             # Check if we have both best and final checkpoints
             best_path = self.cache_manager._get_cache_path(
                 self.dataset, self.model_name, self.seed, self.subject, 
-                self.session, self.eval_mode, self.tuned, "best"
+                self.session, self.eval_mode, self.tuned, "best", self.fold_idx
             )
             final_path = self.cache_manager._get_cache_path(
                 self.dataset, self.model_name, self.seed, self.subject, 
-                self.session, self.eval_mode, self.tuned, "final"
+                self.session, self.eval_mode, self.tuned, "final", self.fold_idx
             )
             
             if best_path.exists() and final_path.exists():
@@ -212,7 +217,8 @@ class ModelCacheCallback(Callback):
                  subject: int,
                  session: str,
                  eval_mode: str,
-                 tuned: bool = False):
+                 tuned: bool = False,
+                 fold_idx: Optional[int] = None):
         """
         Initialize the model cache callback.
         
@@ -225,6 +231,7 @@ class ModelCacheCallback(Callback):
             session: Session identifier
             eval_mode: Evaluation mode
             tuned: Whether this is a tuned model
+            fold_idx: Fold index (required for WithinSession to prevent data leakage)
         """
         self.cache_manager = cache_manager
         self.dataset = dataset
@@ -234,6 +241,7 @@ class ModelCacheCallback(Callback):
         self.session = session
         self.eval_mode = eval_mode
         self.tuned = tuned
+        self.fold_idx = fold_idx
         
         self.logger = logging.getLogger(__name__)
     
@@ -261,7 +269,8 @@ class ModelCacheCallback(Callback):
                 eval_mode=self.eval_mode,
                 tuned=self.tuned,
                 validation_loss=validation_loss,
-                epoch=net.history[-1]['epoch'] if net.history else None
+                epoch=net.history[-1]['epoch'] if net.history else None,
+                fold_idx=self.fold_idx
             )
             
             if saved:
@@ -281,7 +290,8 @@ def create_periodic_checkpoint_callback(cache_manager: ModelCacheManager,
                                       session: str,
                                       eval_mode: str,
                                       tuned: bool = False,
-                                      check_interval: int = 1) -> PeriodicCheckpointCallback:
+                                      check_interval: int = 1,
+                                      fold_idx: Optional[int] = None) -> PeriodicCheckpointCallback:
     """Factory function to create a periodic checkpoint callback."""
     return PeriodicCheckpointCallback(
         cache_manager=cache_manager,
@@ -292,7 +302,8 @@ def create_periodic_checkpoint_callback(cache_manager: ModelCacheManager,
         session=session,
         eval_mode=eval_mode,
         tuned=tuned,
-        check_interval=check_interval
+        check_interval=check_interval,
+        fold_idx=fold_idx
     )
 
 
@@ -303,7 +314,8 @@ def create_model_cache_callback(cache_manager: ModelCacheManager,
                               subject: int,
                               session: str,
                               eval_mode: str,
-                              tuned: bool = False) -> ModelCacheCallback:
+                              tuned: bool = False,
+                              fold_idx: Optional[int] = None) -> ModelCacheCallback:
     """Factory function to create a model cache callback."""
     return ModelCacheCallback(
         cache_manager=cache_manager,
@@ -313,5 +325,6 @@ def create_model_cache_callback(cache_manager: ModelCacheManager,
         subject=subject,
         session=session,
         eval_mode=eval_mode,
-        tuned=tuned
+        tuned=tuned,
+        fold_idx=fold_idx
     )

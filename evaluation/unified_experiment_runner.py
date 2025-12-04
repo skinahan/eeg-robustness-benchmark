@@ -394,8 +394,17 @@ class UnifiedExperimentRunner:
         
         return n_chans, n_times
     
-    def _create_model(self, n_chans: int, n_times: int, n_outputs: int = None, try_cache: bool = True):
-        """Create model instance with proper dimensions and optional caching."""
+    def _create_model(self, n_chans: int, n_times: int, n_outputs: int = None, try_cache: bool = True, fold_idx: Optional[int] = None):
+        """
+        Create model instance with proper dimensions and optional caching.
+        
+        Args:
+            n_chans: Number of channels
+            n_times: Number of time points
+            n_outputs: Number of output classes (auto-detected if None)
+            try_cache: Whether to try loading from cache
+            fold_idx: Fold index (required for WithinSession to prevent data leakage)
+        """
         # Determine number of outputs based on dataset
         if n_outputs is None:
             if self.dataset == "Lee2019_SSVEP":
@@ -407,21 +416,40 @@ class UnifiedExperimentRunner:
         
         # Try to load from cache first (only for non-noise modes and when try_cache=True)
         if try_cache and not self.noise_dict and self.current_subject != -1 and self.current_session != -1:
-            cached_model, config_matches = self.cache_manager.load_model(
-                model_class=self.model_fn,
-                config={'n_chans': n_chans, 'n_times': n_times, 'n_outputs': n_outputs},
-                dataset=self.dataset,
-                model_name=self.model,
-                seed=self.seed,
-                subject=self.current_subject,
-                session=str(self.current_session),
-                eval_mode=self.eval_mode,
-                tuned=self.tune,
-                checkpoint_type="best"  # Use best checkpoint for perturbation experiments
-            )
+            # For tuned models, try "best" first (saved during training), then "final" as fallback
+            # For baseline models, use "final" (only checkpoint type saved by ModelCacheCallback)
+            # Note: The cache manager uses lenient config comparison, so the minimal config here
+            # (n_chans, n_times, n_outputs) will match saved configs that include additional
+            # params like max_epochs and verbose (which are excluded from hash comparison)
+            # 
+            # IMPORTANT: For WithinSession, fold_idx is included in cache key to prevent
+            # data leakage between different folds of the same session.
+            checkpoint_types_to_try = ["best", "final"] if self.tune else ["final"]
+            
+            cached_model = None
+            config_matches = False
+            
+            for checkpoint_type in checkpoint_types_to_try:
+                cached_model, config_matches = self.cache_manager.load_model(
+                    model_class=self.model_fn,
+                    config={'n_chans': n_chans, 'n_times': n_times, 'n_outputs': n_outputs},
+                    dataset=self.dataset,
+                    model_name=self.model,
+                    seed=self.seed,
+                    subject=self.current_subject,
+                    session=str(self.current_session),
+                    eval_mode=self.eval_mode,
+                    tuned=self.tune,
+                    checkpoint_type=checkpoint_type,
+                    fold_idx=fold_idx  # Critical for WithinSession to prevent fold mixing
+                )
+                
+                if cached_model is not None and config_matches:
+                    break  # Successfully loaded, no need to try other checkpoint types
             
             if cached_model is not None and config_matches:
-                print(f"Loaded cached model for {self.model} subject {self.current_subject} session {self.current_session}")
+                print(f"Loaded cached model for {self.model} subject {self.current_subject} session {self.current_session}" + 
+                      (f" fold {fold_idx}" if fold_idx is not None else ""))
                 return cached_model
             elif cached_model is not None and not config_matches:
                 print(f"Model configuration changed, will retrain for {self.model} subject {self.current_subject} session {self.current_session}")
@@ -434,6 +462,9 @@ class UnifiedExperimentRunner:
 
         # Add caching callbacks
         if not self.noise_dict and self.current_subject != -1 and self.current_session != -1:
+            # For WithinSession, pass fold_idx to prevent data leakage between folds
+            fold_idx_for_callback = fold_idx if self.eval_mode == "WithinSession" else None
+            
             if self.tune:
                 # For tuned models, use periodic checkpoint callback
                 cache_callback = create_periodic_checkpoint_callback(
@@ -445,7 +476,8 @@ class UnifiedExperimentRunner:
                     session=str(self.current_session),
                     eval_mode=self.eval_mode,
                     tuned=True,
-                    check_interval=1  # Check every epoch for best model
+                    check_interval=1,  # Check every epoch for best model
+                    fold_idx=fold_idx_for_callback
                 )
             else:
                 # For baseline models, use simple cache callback
@@ -457,7 +489,8 @@ class UnifiedExperimentRunner:
                     subject=self.current_subject,
                     session=str(self.current_session),
                     eval_mode=self.eval_mode,
-                    tuned=False
+                    tuned=False,
+                    fold_idx=fold_idx_for_callback
                 )
             
             # Add to existing callbacks
@@ -565,12 +598,19 @@ class UnifiedExperimentRunner:
         session: str,
         metadata_train: pd.DataFrame
     ) -> Dict[str, Any]:
-        """Evaluate a single CV fold."""
+        """
+        Evaluate a single CV fold.
+        
+        IMPORTANT: Sets current_session before creating model to ensure proper cache key generation.
+        For WithinSession, fold_idx is passed to prevent data leakage between folds.
+        """
         all_results = []
+        
+        # Set current_session BEFORE creating model (critical for cache key generation)
+        self.current_session = session
         
         if self.tune:
             # Apply two-stage hyperparameter optimization on X_train before evaluation on X_valid.
-            self.current_session = session
             all_results.extend(self._run_hyperparameter_optimization(X_train, y_train, X_valid, y_valid, fold_idx, metadata_train))
         else:
             if self.mode == 'test_perturb':
@@ -766,9 +806,16 @@ class UnifiedExperimentRunner:
         y_valid: np.ndarray,
         fold_idx: int
     ) -> Dict[str, Any]:
-        """Evaluate model without hyperparameter tuning."""
+        """
+        Evaluate model without hyperparameter tuning.
+        
+        IMPORTANT: current_session must be set before calling this method (done in _evaluate_cv_fold).
+        fold_idx is passed to _create_model to ensure proper cache key for WithinSession.
+        """
         n_chans, n_times = self._determine_data_dimensions()
-        model = self._create_model(n_chans, n_times)
+        # Pass fold_idx for WithinSession to prevent data leakage between folds
+        fold_idx_for_cache = fold_idx if self.eval_mode == "WithinSession" else None
+        model = self._create_model(n_chans, n_times, fold_idx=fold_idx_for_cache)
         
         # Check if model was loaded from cache
         model_was_cached = hasattr(model, '_was_cached') and model._was_cached

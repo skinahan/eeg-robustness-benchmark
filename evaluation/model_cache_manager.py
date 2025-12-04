@@ -8,6 +8,15 @@ This module provides a comprehensive model caching system that:
 3. Validates model configurations before loading
 4. Supports periodic checkpoint saving during training
 5. Handles cache invalidation when hyperparameters change
+6. Prevents data leakage by including fold_idx in cache keys for WithinSession
+
+IMPORTANT DATA LEAKAGE PREVENTION:
+- CrossSession: session parameter represents the VALIDATION session. A model cached
+  for validation session "0train" was trained on "1test" (and vice versa).
+- WithinSession: fold_idx is REQUIRED and included in cache key to prevent mixing
+  models from different folds of the same session.
+- CrossSubject: session parameter includes fold info (e.g., "fold_0_eval_subjects_1,2,3")
+  which uniquely identifies the training configuration.
 """
 
 import os
@@ -51,13 +60,41 @@ class ModelCacheManager:
                        session: str, 
                        eval_mode: str,
                        tuned: bool = False,
-                       checkpoint_type: str = "final") -> Path:
-        """Get the cache path for a specific model configuration."""
+                       checkpoint_type: str = "final",
+                       fold_idx: Optional[int] = None) -> Path:
+        """
+        Get the cache path for a specific model configuration.
+        
+        Args:
+            dataset: Dataset name
+            model: Model name
+            seed: Random seed
+            subject: Subject ID
+            session: Session identifier - meaning depends on eval_mode:
+                - CrossSession: validation/test session (model was trained on other session(s))
+                - WithinSession: session being evaluated (model trained on other folds of same session)
+                - CrossSubject: fold identifier like "fold_0_eval_subjects_1,2,3"
+            eval_mode: Evaluation mode (WithinSession, CrossSession, CrossSubject)
+            tuned: Whether this is a tuned model
+            checkpoint_type: Type of checkpoint ("best" or "final")
+            fold_idx: Fold index (required for WithinSession to prevent fold mixing)
+        
+        Returns:
+            Path to the cache file
+        """
         tuned_suffix = "_tuned" if tuned else "_baseline"
         type_suffix = f"_{checkpoint_type}" if checkpoint_type != "final" else ""
+        
+        # For WithinSession, include fold_idx in cache key to prevent data leakage
+        # between different folds of the same session
+        if eval_mode == "WithinSession" and fold_idx is not None:
+            session_key = f"{session}_fold{fold_idx}"
+        else:
+            session_key = session
+        
         cache_dir = self.cache_root / dataset / model / f"seed_{seed}" / f"subject_{subject:03d}" / eval_mode
         cache_dir.mkdir(parents=True, exist_ok=True)
-        return cache_dir / f"session_{session}{tuned_suffix}{type_suffix}.pt"
+        return cache_dir / f"session_{session_key}{tuned_suffix}{type_suffix}.pt"
     
     def _get_config_path(self, checkpoint_path: Path) -> Path:
         """Get the configuration file path for a checkpoint."""
@@ -76,8 +113,14 @@ class ModelCacheManager:
         """
         Extract architectural and training parameters that affect model performance.
         Includes both architectural parameters and training hyperparameters.
+        
+        Excludes parameters that don't affect model compatibility:
+        - verbose: purely a logging parameter
         """
         relevant_params = {}
+        
+        # Parameters to exclude from hash (don't affect model compatibility)
+        exclude_params = ['verbose']
         
         # Define architectural parameter patterns
         arch_patterns = [
@@ -93,10 +136,14 @@ class ModelCacheManager:
             'learning_rate', 'lr', 'batch_size', 'optimizer', 'weight_decay',
             'momentum', 'beta1', 'beta2', 'eps', 'max_epochs', 'patience',
             'threshold', 'monitor', 'load_best', 'scheduler', 'step_size',
-            'gamma', 'min_lr', 'factor', 'verbose', 'train_split'
+            'gamma', 'min_lr', 'factor', 'train_split'
         ]
         
         for key, value in config.items():
+            # Skip excluded parameters
+            if key.lower() in exclude_params:
+                continue
+            
             # Check if this is an architectural parameter
             if any(pattern in key.lower() for pattern in arch_patterns):
                 relevant_params[key] = value
@@ -124,7 +171,8 @@ class ModelCacheManager:
                    tuned: bool = False,
                    validation_loss: Optional[float] = None,
                    epoch: Optional[int] = None,
-                   checkpoint_type: str = "final") -> bool:
+                   checkpoint_type: str = "final",
+                   fold_idx: Optional[int] = None) -> bool:
         """
         Save a model checkpoint with configuration validation.
         
@@ -145,7 +193,7 @@ class ModelCacheManager:
         Returns:
             bool: True if model was saved, False if skipped
         """
-        checkpoint_path = self._get_cache_path(dataset, model_name, seed, subject, session, eval_mode, tuned, checkpoint_type)
+        checkpoint_path = self._get_cache_path(dataset, model_name, seed, subject, session, eval_mode, tuned, checkpoint_type, fold_idx)
         config_path = self._get_config_path(checkpoint_path)
         
         # Generate configuration hash
@@ -178,7 +226,7 @@ class ModelCacheManager:
                 else:
                     self.logger.warning(f"Model configuration has changed, will overwrite existing {checkpoint_type} checkpoint")
                     # Clean up old checkpoints when config changes
-                    self._cleanup_old_checkpoints(dataset, model_name, seed, subject, session, eval_mode, tuned)
+                    self._cleanup_old_checkpoints(dataset, model_name, seed, subject, session, eval_mode, tuned, fold_idx)
             except Exception as e:
                 self.logger.warning(f"Could not read existing config: {e}, will overwrite")
         
@@ -199,6 +247,7 @@ class ModelCacheManager:
                 'eval_mode': eval_mode,
                 'tuned': tuned,
                 'checkpoint_type': checkpoint_type,
+                'fold_idx': fold_idx,
                 'saved_at': datetime.now().isoformat(),
                 'validation_loss': validation_loss,
                 'epoch': epoch
@@ -215,12 +264,12 @@ class ModelCacheManager:
             return False
     
     def _cleanup_old_checkpoints(self, dataset: str, model_name: str, seed: int, 
-                                subject: int, session: str, eval_mode: str, tuned: bool):
+                                subject: int, session: str, eval_mode: str, tuned: bool, fold_idx: Optional[int] = None):
         """Clean up old checkpoints when configuration changes."""
         try:
             # Remove both best and final checkpoints
             for checkpoint_type in ["best", "final"]:
-                checkpoint_path = self._get_cache_path(dataset, model_name, seed, subject, session, eval_mode, tuned, checkpoint_type)
+                checkpoint_path = self._get_cache_path(dataset, model_name, seed, subject, session, eval_mode, tuned, checkpoint_type, fold_idx)
                 config_path = self._get_config_path(checkpoint_path)
                 
                 if checkpoint_path.exists():
@@ -244,7 +293,8 @@ class ModelCacheManager:
                    session: str, 
                    eval_mode: str,
                    tuned: bool = False,
-                   checkpoint_type: str = "best") -> Tuple[Optional[Any], bool]:
+                   checkpoint_type: str = "best",
+                   fold_idx: Optional[int] = None) -> Tuple[Optional[Any], bool]:
         """
         Load a model checkpoint with configuration validation.
         
@@ -263,7 +313,7 @@ class ModelCacheManager:
         Returns:
             Tuple of (loaded_model, config_matches)
         """
-        checkpoint_path = self._get_cache_path(dataset, model_name, seed, subject, session, eval_mode, tuned, checkpoint_type)
+        checkpoint_path = self._get_cache_path(dataset, model_name, seed, subject, session, eval_mode, tuned, checkpoint_type, fold_idx)
         config_path = self._get_config_path(checkpoint_path)
         
         if not checkpoint_path.exists() or not config_path.exists():
@@ -276,13 +326,33 @@ class ModelCacheManager:
                 config_data = json.load(f)
             
             # Validate configuration
-            expected_hash = self._generate_config_hash(config)
-            cached_hash = config_data.get('config_hash', '')
+            # Use a more lenient comparison: only compare parameters present in the load config
+            # This handles cases where saved config has extra params (like max_epochs, verbose)
+            # that aren't in the minimal load config
+            load_config_params = self._extract_architectural_params(config)
+            cached_config = config_data.get('config', {})
+            cached_config_params = self._extract_architectural_params(cached_config)
             
-            if expected_hash != cached_hash:
+            # Only compare parameters that are in the load config
+            # This allows saved configs with extra params to still match
+            config_matches = True
+            for key, value in load_config_params.items():
+                if key not in cached_config_params:
+                    config_matches = False
+                    break
+                if cached_config_params[key] != value:
+                    config_matches = False
+                    break
+            
+            if not config_matches:
+                # Fall back to hash comparison for detailed logging
+                expected_hash = self._generate_config_hash(config)
+                cached_hash = config_data.get('config_hash', '')
                 self.logger.warning(f"Model configuration mismatch, cannot load cached model")
                 self.logger.debug(f"Expected hash: {expected_hash}")
                 self.logger.debug(f"Cached hash: {cached_hash}")
+                self.logger.debug(f"Load config params: {list(load_config_params.keys())}")
+                self.logger.debug(f"Cached config params: {list(cached_config_params.keys())}")
                 return None, False
             
             # Load model - only use architectural parameters for model creation
