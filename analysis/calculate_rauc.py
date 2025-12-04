@@ -19,6 +19,7 @@ Usage:
 import os
 import pandas as pd
 import numpy as np
+import json
 from typing import Dict, List, Tuple, Optional
 import warnings
 
@@ -271,7 +272,79 @@ def calculate_rauc_summary(
     return results_df
 
 
-def format_rauc_table(results_df: pd.DataFrame) -> pd.DataFrame:
+def calculate_normalized_rauc(
+    df: pd.DataFrame,
+    dataset: str,
+    saturation_dict: Optional[Dict] = None,
+    group_by_cols: Optional[List[str]] = None
+) -> pd.DataFrame:
+    """
+    Calculate normalized RAUC (RAUC divided by max intensity) for easier interpretation.
+    
+    Normalized RAUC represents the average relative performance drop across the intensity range.
+    This makes it easier to compare across different intensity ranges.
+    
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        Full results dataframe with test_perturb results
+    dataset : str
+        Dataset name
+    saturation_dict : dict, optional
+        Dictionary of saturation points for determining max intensity
+    group_by_cols : list, optional
+        Additional columns to group by
+    
+    Returns:
+    --------
+    pd.DataFrame
+        Summary table with normalized RAUC values
+    """
+    if saturation_dict is None:
+        saturation_dict = load_saturation_points()
+    
+    # Calculate regular RAUC first
+    rauc_df = calculate_rauc_summary(df, dataset, saturation_dict, group_by_cols)
+    
+    if rauc_df.empty:
+        return pd.DataFrame()
+    
+    # Get max intensity for each noise type
+    normalized_results = []
+    
+    for _, row in rauc_df.iterrows():
+        noise_type = row['noise_type']
+        
+        # Get max intensity from saturation point
+        if dataset in saturation_dict and noise_type in saturation_dict[dataset]:
+            max_intensity = saturation_dict[dataset][noise_type]
+        else:
+            # Try to infer from data
+            df_filtered = df[
+                (df['dataset'] == dataset) &
+                (df['noise_type'] == noise_type) &
+                (df['mode'].str.contains('test_perturb', na=False))
+            ]
+            if 'intensity' in df_filtered.columns:
+                max_intensity = df_filtered['intensity'].max()
+            else:
+                max_intensity = 50.0  # Default
+        
+        # Normalize RAUC by max intensity
+        # This gives average relative drop (interpretable as percentage)
+        normalized_rauc = row['rauc_mean'] / max_intensity if max_intensity > 0 else np.nan
+        normalized_std = row['rauc_std'] / max_intensity if max_intensity > 0 else np.nan
+        
+        result_row = row.to_dict()
+        result_row['normalized_rauc_mean'] = normalized_rauc
+        result_row['normalized_rauc_std'] = normalized_std
+        result_row['max_intensity'] = max_intensity
+        normalized_results.append(result_row)
+    
+    return pd.DataFrame(normalized_results)
+
+
+def format_rauc_table(results_df: pd.DataFrame, include_normalized: bool = True) -> pd.DataFrame:
     """
     Format RAUC results table with mean +/- std dev in readable format.
     
@@ -279,11 +352,13 @@ def format_rauc_table(results_df: pd.DataFrame) -> pd.DataFrame:
     -----------
     results_df : pd.DataFrame
         Results dataframe from calculate_rauc_summary
+    include_normalized : bool
+        If True and normalized columns exist, include normalized RAUC interpretation
     
     Returns:
     --------
     pd.DataFrame
-        Formatted table with 'rauc_mean_std' column
+        Formatted table with 'rauc_mean_std' column and optionally normalized metrics
     """
     formatted_df = results_df.copy()
     
@@ -292,6 +367,15 @@ def format_rauc_table(results_df: pd.DataFrame) -> pd.DataFrame:
         lambda row: f"{row['rauc_mean']:.4f} ± {row['rauc_std']:.4f}",
         axis=1
     )
+    
+    # Add normalized RAUC if available
+    if include_normalized and 'normalized_rauc_mean' in formatted_df.columns:
+        formatted_df['normalized_rauc_mean_std'] = formatted_df.apply(
+            lambda row: f"{row['normalized_rauc_mean']:.4f} ± {row['normalized_rauc_std']:.4f}",
+            axis=1
+        )
+        # Add interpretation: normalized RAUC as percentage
+        formatted_df['avg_relative_drop_pct'] = formatted_df['normalized_rauc_mean'] * 100
     
     # Capitalize noise_type and eval_mode for better readability
     if 'noise_type' in formatted_df.columns:
@@ -306,8 +390,13 @@ def format_rauc_table(results_df: pd.DataFrame) -> pd.DataFrame:
     # Reorder columns for better readability
     col_order = [
         'dataset', 'model', 'noise_type', 'eval_mode', 'tune',
-        'rauc_mean', 'rauc_std', 'rauc_mean_std', 'n_samples'
+        'rauc_mean', 'rauc_std', 'rauc_mean_std'
     ]
+    
+    if include_normalized and 'normalized_rauc_mean' in formatted_df.columns:
+        col_order.extend(['normalized_rauc_mean', 'normalized_rauc_std', 'normalized_rauc_mean_std', 'avg_relative_drop_pct', 'max_intensity'])
+    
+    col_order.append('n_samples')
     formatted_df = formatted_df[[col for col in col_order if col in formatted_df.columns]]
     
     return formatted_df
@@ -350,7 +439,7 @@ def create_rauc_pivot_table(
 def generate_rauc_report(
     results_dir: str = '../sol_results/',
     output_dir: str = './analysis/rauc_results/',
-    output_format: str = 'both'  # 'csv', 'excel', or 'both'
+    output_format: str = 'both'  # 'csv', 'excel', 'json', or 'all'
 ) -> pd.DataFrame:
     """
     Generate RAUC report for all datasets.
@@ -362,7 +451,12 @@ def generate_rauc_report(
     output_dir : str
         Directory to save output files
     output_format : str
-        Output format: 'csv', 'excel', or 'both'
+        Output format: 'csv', 'excel', 'json', 'both', or 'all'
+        - 'csv': Save only CSV file (always saved regardless of format)
+        - 'excel': Save CSV and Excel files
+        - 'json': Save CSV and JSON files
+        - 'both': Save CSV and Excel files (default)
+        - 'all': Save CSV, Excel, and JSON files
     
     Returns:
     --------
@@ -412,6 +506,20 @@ def generate_rauc_report(
         rauc_summary = calculate_rauc_summary(df, dataset, saturation_dict)
         
         if not rauc_summary.empty:
+            # Add normalized RAUC for easier interpretation
+            try:
+                normalized_rauc = calculate_normalized_rauc(df, dataset, saturation_dict)
+                if not normalized_rauc.empty:
+                    # Merge normalized metrics
+                    rauc_summary = rauc_summary.merge(
+                        normalized_rauc[['dataset', 'model', 'noise_type', 'eval_mode', 'tune', 
+                                         'normalized_rauc_mean', 'normalized_rauc_std', 'max_intensity']],
+                        on=['dataset', 'model', 'noise_type', 'eval_mode', 'tune'],
+                        how='left'
+                    )
+            except Exception as e:
+                print(f"Warning: Could not calculate normalized RAUC: {e}")
+            
             all_results.append(rauc_summary)
             print(f"Calculated RAUC for {len(rauc_summary)} combinations")
         else:
@@ -433,13 +541,19 @@ def generate_rauc_report(
     
     # Save results
     os.makedirs(output_dir, exist_ok=True)
+    saved_files = []
     
-    if output_format in ['csv', 'both']:
-        csv_path = os.path.join(output_dir, 'rauc_summary.csv')
+    # Always save CSV as the base format
+    csv_path = os.path.join(output_dir, 'rauc_summary.csv')
+    try:
         formatted_results.to_csv(csv_path, index=False)
+        saved_files.append(csv_path)
         print(f"\nSaved CSV to: {csv_path}")
+    except Exception as e:
+        print(f"Error saving CSV file: {e}")
     
-    if output_format in ['excel', 'both']:
+    # Save Excel if requested
+    if output_format in ['excel', 'both', 'all']:
         try:
             excel_path = os.path.join(output_dir, 'rauc_summary.xlsx')
             with pd.ExcelWriter(excel_path, engine='openpyxl') as writer:
@@ -467,20 +581,34 @@ def generate_rauc_report(
                 except Exception as e:
                     print(f"Warning: Could not create pivot tables: {e}")
             
+            saved_files.append(excel_path)
             print(f"Saved Excel to: {excel_path}")
         except ImportError:
             print("Warning: openpyxl not installed. Skipping Excel export. Install with: pip install openpyxl")
-            if output_format == 'excel':
-                print("Falling back to CSV export.")
-                csv_path = os.path.join(output_dir, 'rauc_summary.csv')
-                formatted_results.to_csv(csv_path, index=False)
-                print(f"Saved CSV to: {csv_path}")
         except Exception as e:
             print(f"Warning: Could not save Excel file: {e}")
-            print("Falling back to CSV export.")
-            csv_path = os.path.join(output_dir, 'rauc_summary.csv')
-            formatted_results.to_csv(csv_path, index=False)
-            print(f"Saved CSV to: {csv_path}")
+    
+    # Save JSON if requested
+    if output_format in ['json', 'all']:
+        try:
+            json_path = os.path.join(output_dir, 'rauc_summary.json')
+            # Convert DataFrame to records format for JSON
+            json_data = formatted_results.to_dict(orient='records')
+            with open(json_path, 'w') as f:
+                json.dump(json_data, f, indent=2, default=str)
+            saved_files.append(json_path)
+            print(f"Saved JSON to: {json_path}")
+        except Exception as e:
+            print(f"Warning: Could not save JSON file: {e}")
+    
+    # Print summary of saved files
+    if saved_files:
+        print(f"\n=== Files Saved ({len(saved_files)}) ===")
+        for file_path in saved_files:
+            file_size = os.path.getsize(file_path) / 1024  # Size in KB
+            print(f"  - {os.path.basename(file_path)} ({file_size:.2f} KB)")
+    else:
+        print("\nWarning: No files were saved successfully!")
     
     # Print summary
     print(f"\n=== RAUC Summary ===")
