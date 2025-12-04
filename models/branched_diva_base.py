@@ -246,8 +246,16 @@ class BranchedDIVABase(EEGModuleMixin, nn.Module):
           NB: number of bins; L: bin_len
         """
         B, F, T = x_feat.shape
+
+        # Ensure bin parameters are valid for the current temporal length.
+        # If T is shorter than the configured bin_len or bin_stride (which can
+        # happen for some tuned hyperparameter combinations), we clamp them so
+        # that unfold still works instead of raising a runtime error.
+        size = min(self.bin_len, T)
+        step = min(self.bin_stride, size)
+
         # Unfold along time: -> [B, F, NB, L]
-        x_unf = x_feat.unfold(dimension=2, size=self.bin_len, step=self.bin_stride)
+        x_unf = x_feat.unfold(dimension=2, size=size, step=step)
         NB = x_unf.shape[2]
         L  = x_unf.shape[3]
         # Reorder to [B, NB, L, F]
@@ -327,7 +335,7 @@ class BranchedDIVABase(EEGModuleMixin, nn.Module):
             x_seq = (x_seq * (1 - self.weight_residual)) + (residual * self.weight_residual)
         else:
             # If dimensions don't match, skip residual (shouldn't happen with default settings)
-            pass
+            raise ValueError(f"Residual dimension mismatch: H={H} != F2={self.F2}")
 
         # Intra-bin attention pool -> per-bin summary
         z_per_bin = self.intra_bin_pool(x_seq)             # [B*NB, H]

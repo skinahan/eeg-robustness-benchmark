@@ -229,90 +229,91 @@ def two_stage_opt(dataset, subj, paradigm, model_name, model_fn, seed, mode, res
 
 def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
     """Aggregate all CSV results from the results directory."""
-    root = os.path.join("results", paradigm, dataset)
+    root1 = os.path.join("sol_results", paradigm, dataset)
+    roots = [root1, os.path.join("results", paradigm, dataset)]
     all_dfs = []
     noise_types = ['gaussian', 'eog', 'dropout', 'spike']
     intensities = [str(x*10.0) for x in range(1, 10)]
-    
-    for dirpath, _, filenames in os.walk(root):
-        for file in filenames:
-            if file.endswith(".csv"): # and not file.startswith("all_results"):
-                full_path = os.path.join(dirpath, file)
-                print(full_path)
-                try:
-                    df = pd.read_csv(full_path)
-                    selected_type = None
-                    intensity = None
-                    
-                    # Only set noise_type and intensity if they don't already exist in the CSV
-                    if 'noise_type' not in df.columns or 'intensity' not in df.columns:
-                        for type in noise_types:
-                            if type in file:
-                                selected_type = type
-                                for strength in intensities:
-                                    if strength in file:
-                                        intensity = strength
-                                        break
-                                break
-                        if selected_type is not None and intensity is not None:
-                            if 'noise_type' not in df.columns:
-                                df['noise_type'] = selected_type
-                            if 'intensity' not in df.columns:
-                                df['intensity'] = intensity
+    for root in roots:
+        for dirpath, _, filenames in os.walk(root):
+            for file in filenames:
+                if file.endswith(".csv"): # and not file.startswith("all_results"):
+                    full_path = os.path.join(dirpath, file)
+                    print(full_path)
+                    try:
+                        df = pd.read_csv(full_path)
+                        selected_type = None
+                        intensity = None
+                        
+                        # Only set noise_type and intensity if they don't already exist in the CSV
+                        if 'noise_type' not in df.columns or 'intensity' not in df.columns:
+                            for type in noise_types:
+                                if type in file:
+                                    selected_type = type
+                                    for strength in intensities:
+                                        if strength in file:
+                                            intensity = strength
+                                            break
+                                    break
+                            if selected_type is not None and intensity is not None:
+                                if 'noise_type' not in df.columns:
+                                    df['noise_type'] = selected_type
+                                if 'intensity' not in df.columns:
+                                    df['intensity'] = intensity
 
-                    # Only set eval_mode if it doesn't already exist in the CSV
-                    if 'eval_mode' not in df.columns:
-                        if 'cross_session' in full_path or 'CrossSessionEvaluation' in full_path:
-                            df['eval_mode'] = 'CrossSessionEvaluation'
-                        elif 'cross_subject' in full_path or 'CrossSubjectEvaluation' in full_path:
-                            df['eval_mode'] = 'CrossSubjectEvaluation'
-                        else:
-                            df['eval_mode'] = 'WithinSessionEvaluation'
+                        # Only set eval_mode if it doesn't already exist in the CSV
+                        if 'eval_mode' not in df.columns:
+                            if 'cross_session' in full_path or 'CrossSessionEvaluation' in full_path:
+                                df['eval_mode'] = 'CrossSessionEvaluation'
+                            elif 'cross_subject' in full_path or 'CrossSubjectEvaluation' in full_path:
+                                df['eval_mode'] = 'CrossSubjectEvaluation'
+                            else:
+                                df['eval_mode'] = 'WithinSessionEvaluation'
 
-                    # Detect whether this is a tuned experiment
-                    # Priority 1: Check if 'tune' column exists in the CSV itself (most reliable)
-                    if 'tune' in df.columns:
-                        # Use the tune column to determine mode
-                        # Get the first value (should be consistent across the CSV)
-                        is_tuned = df['tune'].iloc[0] if len(df) > 0 else False
-                        if is_tuned:
-                            df['mode'] = 'test_perturb_tune'
-                        else:
-                            # Non-tuned: check if this is multirun or test_perturb
-                            if 'mode' not in df.columns or pd.isna(df['mode'].iloc[0]):
-                                if 'multirun' in full_path:
-                                    df['mode'] = 'multirun'
-                                elif 'test_perturb' in full_path or 'test_perturb' in file:
+                        # Detect whether this is a tuned experiment
+                        # Priority 1: Check if 'tune' column exists in the CSV itself (most reliable)
+                        if 'tune' in df.columns:
+                            # Use the tune column to determine mode
+                            # Get the first value (should be consistent across the CSV)
+                            is_tuned = df['tune'].iloc[0] if len(df) > 0 else False
+                            if is_tuned:
+                                df['mode'] = 'test_perturb_tune'
+                            else:
+                                # Non-tuned: check if this is multirun or test_perturb
+                                if 'mode' not in df.columns or pd.isna(df['mode'].iloc[0]):
+                                    if 'multirun' in full_path:
+                                        df['mode'] = 'multirun'
+                                    elif 'test_perturb' in full_path or 'test_perturb' in file:
+                                        df['mode'] = 'test_perturb'
+                                    else:
+                                        df['mode'] = 'test_perturb'  # Default for non-tuned
+                                # If mode column exists and is not NA, keep the existing mode value
+                        elif 'mode' not in df.columns:
+                            # Priority 2: No 'tune' column, no 'mode' column - infer from path/filename
+                            if 'test_perturb_tune' in full_path or '_tune' in file:
+                                df['mode'] = 'test_perturb_tune'
+                            elif 'test_perturb' in full_path:
+                                df['mode'] = 'test_perturb'
+                            elif 'multirun' in full_path:
+                                df['mode'] = 'multirun'
+                            else:
+                                # Try to infer from filename
+                                if 'test_perturb' in file:
                                     df['mode'] = 'test_perturb'
                                 else:
-                                    df['mode'] = 'test_perturb'  # Default for non-tuned
-                            # If mode column exists and is not NA, keep the existing mode value
-                    elif 'mode' not in df.columns:
-                        # Priority 2: No 'tune' column, no 'mode' column - infer from path/filename
-                        if 'test_perturb_tune' in full_path or '_tune' in file:
-                            df['mode'] = 'test_perturb_tune'
-                        elif 'test_perturb' in full_path:
-                            df['mode'] = 'test_perturb'
-                        elif 'multirun' in full_path:
-                            df['mode'] = 'multirun'
-                        else:
-                            # Try to infer from filename
-                            if 'test_perturb' in file:
-                                df['mode'] = 'test_perturb'
-                            else:
-                                df['mode'] = 'unknown'
+                                    df['mode'] = 'unknown'
 
-                    # Ensure dataset column is set
-                    if 'dataset' not in df.columns:
-                        df['dataset'] = dataset
-                    
-                    # Ensure paradigm column is set
-                    if 'paradigm' not in df.columns:
-                        df['paradigm'] = paradigm
+                        # Ensure dataset column is set
+                        if 'dataset' not in df.columns:
+                            df['dataset'] = dataset
+                        
+                        # Ensure paradigm column is set
+                        if 'paradigm' not in df.columns:
+                            df['paradigm'] = paradigm
 
-                    all_dfs.append(df)
-                except Exception as e:
-                    print(f"Failed to read {full_path}: {e}")
+                        all_dfs.append(df)
+                    except Exception as e:
+                        print(f"Failed to read {full_path}: {e}")
     
     if all_dfs:
         full_df = pd.concat(all_dfs, ignore_index=True)

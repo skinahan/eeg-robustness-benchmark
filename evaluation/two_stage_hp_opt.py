@@ -513,10 +513,15 @@ def branched_lstm_training_space(trial, prefix):
 def branched_wiredcfc_architecture_space(trial, prefix):
     """Architecture parameter space for BranchedWiredCfC model."""
     return {
-        # CfC core parameters
-        f"{prefix}module__recurrent_output_size": trial.suggest_int(
-            f"{prefix}module__recurrent_output_size", 16, 64
-        ),
+        # NOTE:
+        # - We intentionally DO NOT tune `recurrent_output_size` here.
+        #   The BranchedWiredCfC base class defaults `recurrent_output_size` to F2
+        #   (the CNN feature dimension) to keep the residual connection valid.
+        #   Tuning it independently caused shape mismatches (H != F2) in the
+        #   residual add. By omitting it from the search space, we keep the
+        #   safe default behaviour for all tuned runs.
+
+        # CfC / regularization parameters
         f"{prefix}module__drop_prob": trial.suggest_float(
             f"{prefix}module__drop_prob", 0.1, 0.5
         ),
@@ -539,14 +544,16 @@ def branched_wiredcfc_architecture_space(trial, prefix):
         f"{prefix}module__temporal_stride": trial.suggest_categorical(
             f"{prefix}module__temporal_stride", [2, 4, 6, 8]
         ),
-        
-        # Binning parameters
-        f"{prefix}module__bin_len": trial.suggest_int(
-            f"{prefix}module__bin_len", 32, 128, step=16
-        ),
-        f"{prefix}module__bin_stride": trial.suggest_int(
-            f"{prefix}module__bin_stride", 24, 96, step=12
-        ),
+        # NOTE:
+        # - We also intentionally DO NOT tune `bin_len` or `bin_stride` here.
+        #   The BranchedDIVABase uses defaults bin_len=48 and bin_stride=44,
+        #   which are known to work for BNCI2014_001 CrossSession runs.
+        #   Allowing Optuna to sample larger window sizes led to runtime errors
+        #   in `_chunk_time` when the post-downsampled length T2 was shorter
+        #   than the suggested bin length. By omitting these parameters from
+        #   the search space, tuned runs re-use the stable defaults.
+
+        # Fusion type over bins
         f"{prefix}module__fusion": trial.suggest_categorical(
             f"{prefix}module__fusion", ["attn", "mean"]
         ),
