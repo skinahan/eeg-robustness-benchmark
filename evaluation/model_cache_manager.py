@@ -100,14 +100,76 @@ class ModelCacheManager:
         """Get the configuration file path for a checkpoint."""
         return checkpoint_path.with_suffix('.json')
     
+    def _get_history_path(self, checkpoint_path: Path) -> Path:
+        """Get the history file path for a checkpoint."""
+        return checkpoint_path.with_suffix('.history.json')
+    
     def _generate_config_hash(self, config: Dict[str, Any]) -> str:
         """Generate a hash for model configuration to detect changes."""
         # Create a normalized config for hashing (exclude non-architectural params)
         arch_config = self._extract_architectural_params(config)
         
+        # Clean the config to ensure all values are JSON-serializable
+        cleaned_config = self._make_json_serializable(arch_config)
+        
         # Sort keys for consistent hashing
-        sorted_config = json.dumps(arch_config, sort_keys=True)
+        sorted_config = json.dumps(cleaned_config, sort_keys=True)
         return hashlib.md5(sorted_config.encode()).hexdigest()
+    
+    def _make_json_serializable(self, obj: Any) -> Any:
+        """
+        Recursively convert an object to JSON-serializable format.
+        Removes non-serializable objects like type, function, etc.
+        """
+        # Handle None
+        if obj is None:
+            return None
+        
+        # Handle basic JSON-serializable types
+        if isinstance(obj, (str, int, float, bool)):
+            return obj
+        
+        # Handle dict - recursively process values
+        if isinstance(obj, dict):
+            return {k: self._make_json_serializable(v) for k, v in obj.items()}
+        
+        # Handle list/tuple - recursively process items
+        if isinstance(obj, (list, tuple)):
+            return [self._make_json_serializable(item) for item in obj]
+        
+        # Handle type objects (classes)
+        if isinstance(obj, type):
+            return str(obj)
+        
+        # Handle callable objects (functions, methods, etc.)
+        if callable(obj):
+            return str(obj)
+        
+        # Handle objects with __name__ attribute (functions, classes, modules)
+        if hasattr(obj, '__name__'):
+            return str(obj)
+        
+        # Handle numpy types
+        try:
+            import numpy as np
+            if isinstance(obj, (np.integer, np.floating)):
+                return obj.item()
+            if isinstance(obj, np.ndarray):
+                return obj.tolist()
+        except ImportError:
+            pass
+        
+        # Try to serialize directly - if it works, return as-is
+        try:
+            json.dumps(obj)
+            return obj
+        except (TypeError, ValueError):
+            # If serialization fails, convert to string
+            try:
+                return str(obj)
+            except Exception:
+                # Last resort: return a placeholder
+                return "<non-serializable>"
     
     def _extract_architectural_params(self, config: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -236,8 +298,17 @@ class ModelCacheManager:
             torch.save(model.module_.state_dict(), checkpoint_path)
             
             # Save configuration with metadata
+            # Clean config to make it JSON-serializable (remove type objects, functions, etc.)
+            try:
+                cleaned_config = self._make_json_serializable(config)
+            except Exception as e:
+                self.logger.error(f"Failed to clean config for serialization: {e}")
+                import traceback
+                self.logger.error(traceback.format_exc())
+                raise
+            
             config_data = {
-                'config': config,
+                'config': cleaned_config,
                 'config_hash': config_hash,
                 'dataset': dataset,
                 'model': model_name,
@@ -253,14 +324,63 @@ class ModelCacheManager:
                 'epoch': epoch
             }
             
+            # Try to serialize the config_data to catch any remaining issues
+            try:
+                json.dumps(config_data)  # Test serialization
+            except Exception as e:
+                self.logger.error(f"Config data still contains non-serializable objects: {e}")
+                # Try to identify which key is problematic
+                for key, value in config_data.items():
+                    try:
+                        json.dumps(value)
+                    except Exception as ve:
+                        self.logger.error(f"  Problematic key: {key}, value type: {type(value)}, error: {ve}")
+                raise
+            
             with open(config_path, 'w') as f:
                 json.dump(config_data, f, indent=2)
+            
+            # Save model history if available
+            history_path = self._get_history_path(checkpoint_path)
+            if hasattr(model, 'history') and model.history is not None and len(model.history) > 0:
+                try:
+                    history_data = []
+                    for i, epoch_data in enumerate(model.history):
+                        epoch_dict = {'epoch': i + 1}
+                        for key, value in epoch_data.items():
+                            try:
+                                if isinstance(value, (int, float, str, bool, type(None))):
+                                    epoch_dict[key] = value
+                                elif isinstance(value, (list, tuple)):
+                                    epoch_dict[key] = list(value)
+                                elif hasattr(value, 'item'):  # numpy/torch scalars
+                                    epoch_dict[key] = value.item()
+                                elif hasattr(value, 'tolist'):  # numpy arrays
+                                    epoch_dict[key] = value.tolist()
+                                elif hasattr(value, 'cpu'):  # torch tensors
+                                    epoch_dict[key] = value.cpu().tolist() if value.numel() > 1 else value.cpu().item()
+                                else:
+                                    epoch_dict[key] = str(value)
+                            except Exception:
+                                continue
+                        history_data.append(epoch_dict)
+                    
+                    with open(history_path, 'w') as f:
+                        json.dump(history_data, f, indent=2)
+                    self.logger.debug(f"Saved model history: {history_path}")
+                except Exception as e:
+                    self.logger.warning(f"Failed to save model history: {e}")
             
             self.logger.info(f"Saved {checkpoint_type} model checkpoint: {checkpoint_path}")
             return True
             
         except Exception as e:
             self.logger.error(f"Failed to save model checkpoint: {e}")
+            import traceback
+            self.logger.error(traceback.format_exc())
+            print(f"Failed to save model: {e}")
+            import traceback
+            traceback.print_exc()
             return False
     
     def _cleanup_old_checkpoints(self, dataset: str, model_name: str, seed: int, 
@@ -316,8 +436,14 @@ class ModelCacheManager:
         checkpoint_path = self._get_cache_path(dataset, model_name, seed, subject, session, eval_mode, tuned, checkpoint_type, fold_idx)
         config_path = self._get_config_path(checkpoint_path)
         
+        # Debug output
+        print(f"[CACHE] Looking for checkpoint at: {checkpoint_path}")
+        print(f"[CACHE] Config file at: {config_path}")
+        print(f"[CACHE] Checkpoint exists: {checkpoint_path.exists()}, Config exists: {config_path.exists()}")
+        
         if not checkpoint_path.exists() or not config_path.exists():
             self.logger.info(f"No cached model found: {checkpoint_path}")
+            print(f"[CACHE] No cached model found: {checkpoint_path}")
             return None, False
         
         try:
@@ -333,16 +459,57 @@ class ModelCacheManager:
             cached_config = config_data.get('config', {})
             cached_config_params = self._extract_architectural_params(cached_config)
             
+            # Debug: Print what we're comparing
+            print(f"[CACHE] Load config params: {load_config_params}")
+            print(f"[CACHE] Cached config params (first 10): {dict(list(cached_config_params.items())[:10])}")
+            
             # Only compare parameters that are in the load config
             # This allows saved configs with extra params to still match
+            # Also handle module__ prefix differences (n_chans vs module__n_chans)
             config_matches = True
+            mismatches = []
             for key, value in load_config_params.items():
-                if key not in cached_config_params:
+                # Try to find the key in cached config, with or without module__ prefix
+                cached_key = None
+                cached_value = None
+                
+                # First try exact match
+                if key in cached_config_params:
+                    cached_key = key
+                    cached_value = cached_config_params[key]
+                # Then try with module__ prefix
+                elif f"module__{key}" in cached_config_params:
+                    cached_key = f"module__{key}"
+                    cached_value = cached_config_params[cached_key]
+                # Then try without module__ prefix if key has it
+                elif key.startswith("module__") and key[8:] in cached_config_params:
+                    cached_key = key[8:]
+                    cached_value = cached_config_params[cached_key]
+                
+                if cached_key is None:
                     config_matches = False
+                    mismatches.append(f"{key}: not in cached config (tried {key}, module__{key})")
                     break
-                if cached_config_params[key] != value:
+                
+                # Use type-aware comparison (handle string vs number conversions from JSON)
+                if cached_value != value:
+                    # Try type conversion for numeric comparisons
+                    try:
+                        if isinstance(value, (int, float)) and isinstance(cached_value, str):
+                            if float(cached_value) == float(value):
+                                continue
+                        elif isinstance(cached_value, (int, float)) and isinstance(value, str):
+                            if float(cached_value) == float(value):
+                                continue
+                    except (ValueError, TypeError):
+                        pass
+                    
                     config_matches = False
+                    mismatches.append(f"{key}: load={value} (type {type(value).__name__}) vs cached[{cached_key}]={cached_value} (type {type(cached_value).__name__})")
                     break
+            
+            if mismatches:
+                print(f"[CACHE] Config mismatches: {mismatches}")
             
             if not config_matches:
                 # Fall back to hash comparison for detailed logging
@@ -357,22 +524,60 @@ class ModelCacheManager:
             
             # Load model - only use architectural parameters for model creation
             arch_config = self._extract_architectural_params(config)
-            # Remove module__ prefix for model creation
+            # Extract n_chans, n_times, n_outputs for model creation
+            # The model_class is a factory function (e.g., create_eegnet_classifier)
+            # that takes n_chans, n_times, n_outputs as parameters
             model_config = {}
-            for key, value in arch_config.items():
-                if key.startswith('module__'):
-                    model_config[key[8:]] = value  # Remove 'module__' prefix
-                elif key in ['n_chans', 'n_times', 'n_outputs']:
-                    model_config[key] = value
+            for key in ['n_chans', 'n_times', 'n_outputs']:
+                # Try to find the value with or without module__ prefix
+                if key in arch_config:
+                    model_config[key] = arch_config[key]
+                elif f"module__{key}" in arch_config:
+                    model_config[key] = arch_config[f"module__{key}"]
             
+            # Create model using the factory function
             model = model_class(**model_config)
+            
+            # Initialize the model (required for skorch models to set up module_)
+            if hasattr(model, 'initialize'):
+                model.initialize()
+            
+            # Load the state dict
             state_dict = torch.load(checkpoint_path, map_location='cpu')
             model.module_.load_state_dict(state_dict)
+            
+            # Load model history if available
+            history_path = self._get_history_path(checkpoint_path)
+            if history_path.exists():
+                try:
+                    with open(history_path, 'r') as f:
+                        history_data = json.load(f)
+                    
+                    # Restore history to model
+                    # Skorch models store history as a list of dicts
+                    if hasattr(model, 'history'):
+                        # Initialize history if needed
+                        if model.history is None:
+                            from skorch.history import History
+                            model.history = History()
+                        
+                        # Clear existing history and restore from saved data
+                        model.history.clear()
+                        for epoch_dict in history_data:
+                            # Remove 'epoch' key if present (it's the index)
+                            epoch_data = {k: v for k, v in epoch_dict.items() if k != 'epoch'}
+                            model.history.append(epoch_data)
+                        
+                        self.logger.debug(f"Restored model history from: {history_path}")
+                        print(f"[CACHE] Restored model history ({len(history_data)} epochs)")
+                except Exception as e:
+                    self.logger.warning(f"Failed to load model history: {e}")
             
             # Mark model as cached
             model._was_cached = True
             
             self.logger.info(f"Loaded cached model: {checkpoint_path}")
+            print(f"[CACHE] Successfully loaded cached model")
             return model, True
             
         except Exception as e:

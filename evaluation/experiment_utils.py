@@ -8,10 +8,11 @@ to reduce code duplication and improve maintainability.
 import os
 import json
 import pandas as pd
+import numpy as np
 from typing import List, Dict, Any
 from sklearn.preprocessing import LabelEncoder
 
-from utils import create_output_path, create_hdf5_model_path
+from utils import create_output_path, create_hdf5_model_path, get_noise_intensities
 from evaluation.two_stage_hp_opt import run_two_stage_optuna
 
 
@@ -120,17 +121,175 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
             for session in sessions_to_check:
                 # Determine paradigm and dataset for path creation
                 out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
-                if noise_type is not None and intensity is not None:
-                    filename_suffix = f"_{noise_type}_{intensity}"
+                
+                # For test_perturb/multirun mode, check for ANY CSV file in the output directory
+                # instead of a specific filename pattern (to handle legacy filename conventions)
+                is_test_perturb_mode = mode in ['test_perturb', 'multirun'] or mode.startswith('test_perturb')
+                if is_test_perturb_mode:
+                    # Check if directory exists and has any CSV files
+                    if os.path.exists(out_dir):
+                        csv_files = [f for f in os.listdir(out_dir) if f.endswith('.csv')]
+                        if csv_files:
+                            # Add all CSV files found in this directory
+                            for csv_file in csv_files:
+                                existing_output_paths.append(os.path.join(out_dir, csv_file))
+                        else:
+                            expected_output_paths.append(out_dir)  # Directory exists but no CSVs
+                    else:
+                        expected_output_paths.append(out_dir)  # Directory doesn't exist
                 else:
-                    filename_suffix = ""
-                out_file = os.path.join(out_dir,
-                                        f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
-                if os.path.exists(out_file):
-                    existing_output_paths.append(out_file)
-                else:
-                    expected_output_paths.append(out_file)
+                    # For non-test_perturb modes, use the original specific filename pattern
+                    if noise_type is not None and intensity is not None:
+                        filename_suffix = f"_{noise_type}_{intensity}"
+                    else:
+                        filename_suffix = ""
+                    out_file = os.path.join(out_dir,
+                                            f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
+                    if os.path.exists(out_file):
+                        existing_output_paths.append(out_file)
+                    else:
+                        expected_output_paths.append(out_file)
 
+    # For test_perturb/multirun mode, we need to verify that the CSV files contain
+    # all expected noise intensities, not just that the files exist
+    # Note: mode might be 'test_perturb_tune' if tuning is enabled
+    is_test_perturb_mode = mode in ['test_perturb', 'multirun'] or mode.startswith('test_perturb')
+    
+    # Debug output
+    print(f"[check_skip_eval] Mode: {mode}, is_test_perturb_mode: {is_test_perturb_mode}")
+    print(f"[check_skip_eval] Existing output paths: {len(existing_output_paths)}, Expected: {len(expected_output_paths)}")
+    if existing_output_paths:
+        print(f"[check_skip_eval] First existing file: {existing_output_paths[0]}")
+    
+    # For test_perturb mode, check intensity completeness if files exist
+    if len(expected_output_paths) == 0 and is_test_perturb_mode:
+        # Check if all expected noise intensities are present in the existing files
+        all_intensities_present = True
+        missing_intensities_info = []
+        
+        # Get expected noise intensities for all noise types
+        noise_types = ['gaussian', 'dropout', 'eog', 'spike']
+        expected_intensities_by_noise = {}
+        
+        # Load saturation file to get expected intensities
+        saturation_file = "saturation_results/saturation_points_summary.csv"
+        num_steps = 20  # Default from experiment_config.yaml
+        
+        for nt in noise_types:
+            try:
+                expected_intensities = get_noise_intensities(
+                    dataset=dataset, 
+                    noise_type=nt, 
+                    num_steps=num_steps,
+                    saturation_file=saturation_file
+                )
+                # Convert to Python float to avoid numpy/pandas type mismatches in comparison
+                expected_intensities_by_noise[nt] = [float(x) for x in expected_intensities]
+            except Exception as e:
+                print(f"Warning: Could not get expected intensities for {nt}: {e}")
+                # If we can't get expected intensities, assume we need to run
+                all_intensities_present = False
+                break
+        
+        # Check each existing output file to see if it contains all expected intensities
+        # If ANY file has all expected intensities, we can skip the job
+        print(f"[check_skip_eval] Checking {len(existing_output_paths)} existing file(s) for intensity completeness...")
+        files_with_all_intensities = []
+        
+        for out_file in existing_output_paths:
+            try:
+                df = pd.read_csv(out_file)
+                print(f"[check_skip_eval] Loaded {out_file}: {len(df)} rows, columns: {list(df.columns)}")
+                
+                # Check if the file has the required columns
+                if 'noise_type' not in df.columns or 'intensity' not in df.columns:
+                    print(f"[check_skip_eval] {out_file} missing noise_type or intensity columns, skipping this file")
+                    continue
+                
+                # Check if this file has all expected intensities for all noise types
+                file_has_all_intensities = True
+                file_missing_info = []
+                
+                # Check each noise type
+                for noise_type in noise_types:
+                    if noise_type not in expected_intensities_by_noise:
+                        continue
+                    
+                    # Get intensities present in the file for this noise type
+                    noise_df = df[df['noise_type'] == noise_type]
+                    if len(noise_df) == 0:
+                        file_missing_info.append(f"{noise_type}: missing all results")
+                        file_has_all_intensities = False
+                        continue
+                    
+                    # Convert to float to avoid numpy/pandas type mismatches
+                    existing_intensities = [float(x) for x in noise_df['intensity'].unique()]
+                    expected_intensities = expected_intensities_by_noise[noise_type]
+                    
+                    print(f"[check_skip_eval] {out_file} - {noise_type}: Found {len(existing_intensities)} intensities, expected {len(expected_intensities)}")
+                    
+                    # Check if all expected intensities are present (with tolerance for floating point)
+                    # Use 1e-3 tolerance to account for CSV round-trip precision loss and reasonable floating point differences
+                    missing_intensities = []
+                    for exp_int in expected_intensities:
+                        found = False
+                        closest_match = None
+                        min_diff = float('inf')
+                        for existing_int in existing_intensities:
+                            diff = abs(exp_int - existing_int)
+                            if diff < min_diff:
+                                min_diff = diff
+                                closest_match = existing_int
+                            if diff < 1e-3:
+                                found = True
+                                break
+                        if not found:
+                            missing_intensities.append(exp_int)
+                            # Debug: show closest match if it's close but not close enough
+                            if min_diff < 1e-2:
+                                print(f"  Debug: Expected intensity {exp_int} not found, closest match: {closest_match} (diff: {min_diff:.2e})")
+                    
+                    if missing_intensities:
+                        file_missing_info.append(f"{noise_type}: missing {len(missing_intensities)} intensities")
+                        file_has_all_intensities = False
+                        missing_intensities_info.append(
+                            f"{out_file}: {noise_type} missing intensities: {sorted(missing_intensities)[:5]}..." 
+                            if len(missing_intensities) > 5 
+                            else f"{out_file}: {noise_type} missing intensities: {sorted(missing_intensities)}"
+                        )
+                
+                # If this file has all intensities, we can skip
+                if file_has_all_intensities:
+                    files_with_all_intensities.append(out_file)
+                    print(f"[check_skip_eval] ✓ {out_file} contains all expected intensities")
+                else:
+                    print(f"[check_skip_eval] ✗ {out_file} missing intensities: {', '.join(file_missing_info)}")
+                        
+            except Exception as e:
+                print(f"Warning: Could not read or verify {out_file}: {e}")
+                import traceback
+                traceback.print_exc()
+                # Continue checking other files even if one fails
+                continue
+        
+        # If any file has all intensities, we can skip
+        all_intensities_present = len(files_with_all_intensities) > 0
+        
+        if all_intensities_present:
+            print(f"[check_skip_eval] ✓ All expected intensities found in existing files - SKIPPING job")
+            print(f"[check_skip_eval] Files with complete intensity data:")
+            for out_file in files_with_all_intensities:
+                print(f"  {out_file}")
+            return True
+        else:
+            print(f"[check_skip_eval] ✗ Missing intensities detected - will RE-RUN job")
+            print(f"[check_skip_eval] Missing intensity details:")
+            for info in missing_intensities_info[:5]:  # Show first 5 missing items
+                print(f"  {info}")
+            if len(missing_intensities_info) > 5:
+                print(f"  ... and {len(missing_intensities_info) - 5} more")
+            return False
+    
     if len(expected_output_paths) == 0:
         print(f"Skipping analysis, file(s) exist:")
         for out_file in existing_output_paths:

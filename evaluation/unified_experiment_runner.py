@@ -270,9 +270,13 @@ class UnifiedExperimentRunner:
         # Set seeds
         set_seeds(seed)
         
-        # Initialize noise configuration first
+        # Initialize noise configuration
+        # IMPORTANT: For test_perturb mode, we do NOT set noise_dict because:
+        # 1. Training happens on clean data (so models can be cached)
+        # 2. Noise is only applied during evaluation in _evaluate_perturb
+        # Setting noise_dict would disable caching, which we don't want
         self.noise_dict = None
-        if noise_type and intensity:
+        if noise_type and intensity and mode not in ["test_perturb", "multirun"]:
             self.noise_dict = {"noise_type": noise_type, "intensity": intensity}
         
         # Initialize dataset and paradigm
@@ -415,7 +419,8 @@ class UnifiedExperimentRunner:
                 n_outputs = 2  # MotorImagery has 2 classes
         
         # Try to load from cache first (only for non-noise modes and when try_cache=True)
-        if try_cache and not self.noise_dict and self.current_subject != -1 and self.current_session != -1:
+        # Skip cache loading if overwrite is True (user explicitly wants to retrain)
+        if try_cache and not self.overwrite and not self.noise_dict and self.current_subject != -1 and self.current_session != -1:
             # For tuned models, try "best" first (saved during training), then "final" as fallback
             # For baseline models, use "final" (only checkpoint type saved by ModelCacheCallback)
             # Note: The cache manager uses lenient config comparison, so the minimal config here
@@ -426,10 +431,18 @@ class UnifiedExperimentRunner:
             # data leakage between different folds of the same session.
             checkpoint_types_to_try = ["best", "final"] if self.tune else ["final"]
             
+            # Debug: Print cache lookup attempt
+            print(f"[CACHE] Attempting to load cached model: {self.model}, subject {self.current_subject}, "
+                  f"session {self.current_session}, eval_mode {self.eval_mode}, tuned {self.tune}, "
+                  f"fold_idx {fold_idx}")
+            
             cached_model = None
             config_matches = False
             
             for checkpoint_type in checkpoint_types_to_try:
+                # Debug: Print which checkpoint type we're trying
+                print(f"[CACHE] Trying checkpoint type: {checkpoint_type}")
+                
                 cached_model, config_matches = self.cache_manager.load_model(
                     model_class=self.model_fn,
                     config={'n_chans': n_chans, 'n_times': n_times, 'n_outputs': n_outputs},
@@ -445,7 +458,12 @@ class UnifiedExperimentRunner:
                 )
                 
                 if cached_model is not None and config_matches:
+                    print(f"[CACHE] Successfully loaded {checkpoint_type} checkpoint")
                     break  # Successfully loaded, no need to try other checkpoint types
+                elif cached_model is None:
+                    print(f"[CACHE] No {checkpoint_type} checkpoint found")
+                elif not config_matches:
+                    print(f"[CACHE] {checkpoint_type} checkpoint found but config mismatch")
             
             if cached_model is not None and config_matches:
                 print(f"Loaded cached model for {self.model} subject {self.current_subject} session {self.current_session}" + 
@@ -453,6 +471,14 @@ class UnifiedExperimentRunner:
                 return cached_model
             elif cached_model is not None and not config_matches:
                 print(f"Model configuration changed, will retrain for {self.model} subject {self.current_subject} session {self.current_session}")
+        elif not try_cache:
+            print(f"[CACHE] Cache loading disabled (try_cache=False)")
+        elif self.overwrite:
+            print(f"[CACHE] Cache loading disabled (overwrite=True, will retrain)")
+        elif self.noise_dict:
+            print(f"[CACHE] Cache loading disabled (noise_dict is set)")
+        elif self.current_subject == -1 or self.current_session == -1:
+            print(f"[CACHE] Cache loading disabled (current_subject={self.current_subject}, current_session={self.current_session})")
         
         # Create new model
         model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
@@ -939,21 +965,30 @@ class UnifiedExperimentRunner:
         fold_idx: int,
         session: str
     ) -> List[Dict[str, Any]]:
-        """Evaluate model with increasing noise perturbations (test_perturb mode)."""
-        if not self.noise_dict:
-            raise ValueError("test_perturb mode requires noise_type and intensity")
+        """
+        Evaluate model with increasing noise perturbations (test_perturb mode).
         
+        Note: This method trains on clean data and evaluates on corrupted data.
+        Noise intensities are determined dynamically in _evaluate_perturb from
+        the saturation file, so self.noise_dict is not required.
+        """
         n_chans, n_times = self._determine_data_dimensions()
         set_seeds(self.seed)
         model = self._create_model(n_chans, n_times)
         
+        # Check if model was loaded from cache
+        model_was_cached = hasattr(model, '_was_cached') and model._was_cached
         
-        # Train on clean data
-        start_time = time.time()
-        model.module_.train()
-        _verify_and_log_max_epochs(model, self.dataset, f"fold {fold_idx}, session {session}")
-        model.fit(X_train, y_train)
-        training_time = time.time() - start_time
+        # Train on clean data (only if not cached)
+        if not model_was_cached:
+            start_time = time.time()
+            model.module_.train()
+            _verify_and_log_max_epochs(model, self.dataset, f"fold {fold_idx}, session {session}")
+            model.fit(X_train, y_train)
+            training_time = time.time() - start_time
+        else:
+            print(f"Using cached model, skipping training for {self.model} subject {self.current_subject} session {self.current_session}")
+            training_time = 0.0  # No training time if using cache
         
         # Save training history
         self.current_session = str(session)
@@ -978,7 +1013,8 @@ class UnifiedExperimentRunner:
         evaluation_time = time.time() - start_time
 
         # If we are tuning, we incur too high a time cost to re-train the model this often.
-        if not self.tune:
+        # Also skip retraining if model was loaded from cache (it was already trained and validated)
+        if not self.tune and not model_was_cached:
             # Use a set threshold to restart training if clean score indicates underfitting.
             if clean_score < UNDERFITTING_THRESHOLD:
                 # Disable early stopping
@@ -1104,7 +1140,8 @@ class UnifiedExperimentRunner:
             results_df['tune'] = self.tune
 
             n_chans, n_times = self._determine_data_dimensions()
-            model_instance = self._create_model(n_chans, n_times)
+            # Use try_cache=False since we only need model structure for parameter extraction, not a trained model
+            model_instance = self._create_model(n_chans, n_times, try_cache=False)
             row_headers = get_all_model_params(self.model)
             config = model_instance.get_params()
             for k, v in config.items():
@@ -1195,7 +1232,8 @@ class UnifiedExperimentRunner:
                 results_df['tune'] = self.tune
 
                 n_chans, n_times = self._determine_data_dimensions()
-                model_instance = self._create_model(n_chans, n_times)
+                # Use try_cache=False since we only need model structure for parameter extraction, not a trained model
+                model_instance = self._create_model(n_chans, n_times, try_cache=False)
                 row_headers = get_all_model_params(self.model)
                 config = model_instance.get_params()
                 for k, v in config.items():

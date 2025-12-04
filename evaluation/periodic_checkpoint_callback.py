@@ -126,6 +126,10 @@ class PeriodicCheckpointCallback(Callback):
                     
             except Exception as e:
                 self.logger.error(f"Failed to save model at epoch {current_epoch}: {e}")
+                import traceback
+                self.logger.error(traceback.format_exc())
+                print(f"Failed to save model at epoch {current_epoch}: {e}")
+                traceback.print_exc()
         else:
             self.logger.debug(f"Epoch {current_epoch}: {self.monitor}={current_score:.6f} not better than {self.best_score:.6f}")
     
@@ -165,6 +169,10 @@ class PeriodicCheckpointCallback(Callback):
                 
         except Exception as e:
             self.logger.error(f"Failed to save final model: {e}")
+            import traceback
+            self.logger.error(traceback.format_exc())
+            print(f"Failed to save final model: {e}")
+            traceback.print_exc()
     
     def _cleanup_unused_checkpoint(self, net, config):
         """Clean up unused checkpoint to save space."""
