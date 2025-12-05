@@ -149,14 +149,20 @@ class ModelCacheManager:
         if hasattr(obj, '__name__'):
             return str(obj)
         
-        # Handle numpy types
+        # Handle numpy types - must check before the generic int/float check
+        # since numpy scalars are not instances of Python int/float
         try:
             import numpy as np
-            if isinstance(obj, (np.integer, np.floating)):
+            # Check for numpy scalar types (int8, int16, int32, int64, uint8, etc.)
+            if isinstance(obj, (np.integer, np.floating, np.bool_, np.complexfloating)):
                 return obj.item()
+            # Check for numpy arrays
             if isinstance(obj, np.ndarray):
                 return obj.tolist()
-        except ImportError:
+            # Also check for numpy scalar types by checking the type name
+            if type(obj).__module__ == 'numpy' and hasattr(obj, 'item'):
+                return obj.item()
+        except (ImportError, AttributeError):
             pass
         
         # Try to serialize directly - if it works, return as-is
@@ -323,6 +329,9 @@ class ModelCacheManager:
                 'validation_loss': validation_loss,
                 'epoch': epoch
             }
+            
+            # Clean config_data to ensure all values are JSON-serializable (handle numpy types, etc.)
+            config_data = self._make_json_serializable(config_data)
             
             # Try to serialize the config_data to catch any remaining issues
             try:
