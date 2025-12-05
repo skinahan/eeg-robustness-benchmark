@@ -18,6 +18,7 @@ import yaml
 import pandas as pd
 import argparse
 import itertools
+import pickle
 from typing import Dict, List, Set, Tuple, Any, Optional
 from datetime import datetime
 from pathlib import Path
@@ -33,7 +34,7 @@ from tqdm import tqdm
 class ExperimentAutomation:
     """Main class for experiment automation."""
     
-    def __init__(self, config_file: str = "experiment_config.yaml", preaggregated_results_file: str = None, local: bool = False):
+    def __init__(self, config_file: str = "experiment_config.yaml", preaggregated_results_file: str = None, local: bool = False, use_cached: bool = False):
         """Initialize the automation system with configuration."""
         self.config_file = config_file
         self.config = self._load_config()
@@ -41,15 +42,89 @@ class ExperimentAutomation:
         self.missing_experiments = []
         self.preaggregated_results_file = preaggregated_results_file
         self.local = local
+        self.use_cached = use_cached
         # Performance optimization caches
-        self._cached_noise_intensities = None
+        self._cached_noise_intensities = {}  # (dataset, noise_type) -> intensities array
         self._cached_existing_signatures = None
+        self._cached_existing_df_normalized = None  # Normalized DataFrame for fast lookups
+        self._cached_intensity_tolerance_map = None  # Intensity tolerance mapping
+        self._cached_metadata = None  # Metadata for quick filtering (unique values, etc.)
+        # Cache file path
+        self.cache_file = os.path.join(current_dir, ".experiment_cache.pkl")
         
     def _invalidate_caches(self):
         """Invalidate all performance caches."""
         self._cached_existing_signatures = None
+        self._cached_existing_df_normalized = None
+        self._cached_intensity_tolerance_map = None
+        self._cached_metadata = None
         if hasattr(self, 'expected_test_perturb_results'):
             delattr(self, 'expected_test_perturb_results')
+    
+    def _save_cache(self, df_normalized: pd.DataFrame, signatures: set, metadata: Dict[str, Any]):
+        """Save processed results to cache file."""
+        try:
+            cache_data = {
+                'df_normalized': df_normalized,
+                'signatures': signatures,
+                'metadata': metadata,
+                'timestamp': datetime.now().isoformat()
+            }
+            with open(self.cache_file, 'wb') as f:
+                pickle.dump(cache_data, f)
+            print(f"[OK] Saved processed results cache to {self.cache_file}")
+        except Exception as e:
+            print(f"[WARNING] Failed to save cache: {e}")
+    
+    def _load_cache(self) -> Optional[Dict[str, Any]]:
+        """Load processed results from cache file."""
+        if not os.path.exists(self.cache_file):
+            return None
+        try:
+            with open(self.cache_file, 'rb') as f:
+                cache_data = pickle.load(f)
+            print(f"[OK] Loaded processed results cache from {self.cache_file}")
+            print(f"[INFO] Cache timestamp: {cache_data.get('timestamp', 'unknown')}")
+            return cache_data
+        except Exception as e:
+            print(f"[WARNING] Failed to load cache: {e}")
+            return None
+    
+    def _extract_metadata(self, df: pd.DataFrame) -> Dict[str, Any]:
+        """Extract metadata for quick filtering from DataFrame."""
+        if df.empty:
+            return {
+                'datasets': set(),
+                'models': set(),
+                'eval_modes': set(),
+                'seeds': set(),
+                'noise_types': set(),
+                'has_test_perturb': False
+            }
+        
+        metadata = {
+            'datasets': set(df['dataset'].unique()) if 'dataset' in df.columns else set(),
+            'models': set(df['model'].unique()) if 'model' in df.columns else set(),
+            'eval_modes': set(df['eval_mode_normalized'].unique()) if 'eval_mode_normalized' in df.columns else set(),
+            'seeds': set(str(s) for s in df['seed'].unique()) if 'seed' in df.columns else set(),
+            'noise_types': set(df['noise_type'].unique()) if 'noise_type' in df.columns else set(),
+            'has_test_perturb': False
+        }
+        
+        # Check if we have test_perturb results
+        if 'mode_normalized' in df.columns:
+            metadata['has_test_perturb'] = 'test_perturb' in df['mode_normalized'].values
+        
+        return metadata
+    
+    def _get_noise_intensities_cached(self, dataset: str, noise_type: str) -> np.ndarray:
+        """Get noise intensities with caching to avoid repeated calls."""
+        cache_key = (dataset, noise_type)
+        if cache_key not in self._cached_noise_intensities:
+            self._cached_noise_intensities[cache_key] = get_noise_intensities(
+                dataset, noise_type, num_steps=20
+            )
+        return self._cached_noise_intensities[cache_key]
         
     def _load_config(self) -> Dict[str, Any]:
         """Load configuration from YAML file."""
@@ -164,9 +239,13 @@ class ExperimentAutomation:
         total_combinations = 0
         
         # Calculate total combinations for progress tracking
+        # OPTIMIZED: Pre-compute and cache all intensity arrays to avoid repeated calls
+        intensity_cache = {}
         for dataset_name, dataset_config in dataset_items:
             for noise_type in noise_types:
+                cache_key = (dataset_name, noise_type)
                 intensities = get_noise_intensities(dataset_name, noise_type, num_steps=20)
+                intensity_cache[cache_key] = intensities
                 total_combinations += len(model_names) * len(eval_modes) * len(seeds) * len(intensities) * len(tune_flags)
         
         print(f"[INFO] Total combinations to process: {total_combinations}")
@@ -178,8 +257,9 @@ class ExperimentAutomation:
                 for eval_mode in eval_modes:
                     for seed in seeds:
                         for noise_type in noise_types:
-                            # Get dynamic intensities for this dataset and noise type
-                            intensities = get_noise_intensities(dataset_name, noise_type, num_steps=20)
+                            # Get dynamic intensities from cache (avoid repeated calls)
+                            cache_key = (dataset_name, noise_type)
+                            intensities = intensity_cache[cache_key]
                             
                             for intensity in intensities:
                                 for tune_flag in tune_flags:
@@ -246,6 +326,22 @@ class ExperimentAutomation:
         # Initialize missing_combinations for diagnostics
         missing_combinations = {}
         
+        # Try to load from cache if use_cached flag is set
+        if self.use_cached:
+            cache_data = self._load_cache()
+            if cache_data:
+                self._cached_existing_df_normalized = cache_data['df_normalized']
+                self._cached_existing_signatures = cache_data['signatures']
+                self._cached_metadata = cache_data.get('metadata', {})
+                print("[INFO] Using cached processed results (skipping aggregation)")
+                # Still need existing_results for some operations, but can be minimal
+                if self.existing_results is None or self.existing_results.empty:
+                    # Create minimal existing_results from cached data
+                    if not self._cached_existing_df_normalized.empty:
+                        self.existing_results = self._cached_existing_df_normalized.copy()
+                    else:
+                        self.existing_results = pd.DataFrame()
+        
         if self.existing_results is None or self.existing_results.empty:
             print("[WARNING] No existing results found, all test_perturb results are missing")
             missing_test_perturb_results = self.expected_test_perturb_results
@@ -283,200 +379,329 @@ class ExperimentAutomation:
                 existing_df['mode_normalized'] = 'Unknown'
             
             # Create a set of existing result signatures for fast lookup (with caching)
-            if self._cached_existing_signatures is None or len(self._cached_existing_signatures) != len(existing_df):
-                print("[INFO] Creating lookup set for existing results...")
-                existing_signatures = set()
+            # OPTIMIZED: Use vectorized operations instead of iterrows()
+            if self._cached_existing_signatures is None or self._cached_existing_df_normalized is None:
+                print("[INFO] Creating lookup set for existing results (vectorized)...")
                 
-                for _, row in existing_df.iterrows():
-                    # Determine if this is a tuned experiment (check for '_tune' suffix in mode)
-                    mode_str = str(row.get('mode', ''))
-                    is_tuned = '_tune' in mode_str
+                # Use vectorized operations to normalize columns
+                df_work = existing_df.copy()
+                df_work['is_tuned'] = df_work['mode'].astype(str).str.contains('_tune', na=False)
+                
+                # Filter to test_perturb results only
+                test_perturb_mask = df_work['mode_normalized'] == 'test_perturb'
+                df_test_perturb = df_work[test_perturb_mask].copy()
+                
+                if not df_test_perturb.empty:
+                    # Create signatures using vectorized string operations
+                    # Base signature parts
+                    df_test_perturb['sig_dataset'] = df_test_perturb['dataset'].astype(str)
+                    df_test_perturb['sig_model'] = df_test_perturb['model'].astype(str)
+                    df_test_perturb['sig_eval_mode'] = df_test_perturb['eval_mode_normalized'].astype(str)
+                    df_test_perturb['sig_seed'] = df_test_perturb['seed'].astype(str)
+                    df_test_perturb['sig_noise_type'] = df_test_perturb['noise_type'].astype(str)
+                    df_test_perturb['sig_intensity'] = df_test_perturb['intensity'].astype(str)
+                    df_test_perturb['sig_tune'] = df_test_perturb['is_tuned'].astype(str)
                     
-                    # Create signature based on the matching criteria
-                    signature_parts = [
-                        row.get('dataset', ''),
-                        row.get('model', ''),
-                        row.get('eval_mode_normalized', ''),
-                        row.get('seed', ''),
-                        row.get('noise_type', ''),
-                        str(row.get('intensity', '')),  # Convert to string for consistent comparison
-                        row.get('mode_normalized', ''),
-                        str(is_tuned)  # Include tune flag in signature
-                    ]
-                    
-                    # Add subject/eval_subjects for signature
-                    # For CrossSubject, use eval_subjects if available; otherwise use subject
-                    eval_mode_normalized = str(row.get('eval_mode_normalized', ''))
-                    if eval_mode_normalized == 'CrossSubject':
-                        # For CrossSubject, use eval_subjects or session to identify the fold
-                        if 'eval_subjects' in row and pd.notna(row['eval_subjects']):
-                            signature_parts.append(f"eval_subjects_{row['eval_subjects']}")
-                        elif 'session' in row and pd.notna(row['session']) and 'eval_subjects' in str(row['session']):
-                            # Extract eval_subjects from session string like "fold_0_eval_subjects_1,2,3"
-                            signature_parts.append(f"session_{row['session']}")
+                    # Create subject key using vectorized operations
+                    def create_subject_key(row):
+                        eval_mode_norm = str(row.get('eval_mode_normalized', ''))
+                        if eval_mode_norm == 'CrossSubject':
+                            if pd.notna(row.get('eval_subjects')):
+                                return f"eval_subjects_{row['eval_subjects']}"
+                            elif pd.notna(row.get('session')):
+                                return f"session_{row['session']}"
+                            else:
+                                return 'no_subject'
+                        elif pd.notna(row.get('subject')):
+                            return str(int(row['subject']))
                         else:
-                            signature_parts.append('no_subject')
-                    elif 'subject' in row and pd.notna(row['subject']):
-                        # For CrossSession/WithinSession, use subject
-                        signature_parts.append(str(row['subject']))
-                    else:
-                        signature_parts.append('no_subject')
-                        
-                    signature = '|'.join(str(part) for part in signature_parts)
-                    existing_signatures.add(signature)
+                            return 'no_subject'
+                    
+                    df_test_perturb['sig_subject'] = df_test_perturb.apply(create_subject_key, axis=1)
+                    
+                    # Combine into signature using vectorized concatenation
+                    df_test_perturb['signature'] = (
+                        df_test_perturb['sig_dataset'] + '|' +
+                        df_test_perturb['sig_model'] + '|' +
+                        df_test_perturb['sig_eval_mode'] + '|' +
+                        df_test_perturb['sig_seed'] + '|' +
+                        df_test_perturb['sig_noise_type'] + '|' +
+                        df_test_perturb['sig_intensity'] + '|' +
+                        'test_perturb|' +
+                        df_test_perturb['sig_tune'] + '|' +
+                        df_test_perturb['sig_subject']
+                    )
+                    
+                    existing_signatures = set(df_test_perturb['signature'].values)
+                    
+                    # Cache normalized DataFrame for future use
+                    self._cached_existing_df_normalized = df_test_perturb.copy()
+                else:
+                    existing_signatures = set()
+                    self._cached_existing_df_normalized = pd.DataFrame()
                 
                 # Cache the signatures for future use
                 self._cached_existing_signatures = existing_signatures
+                
+                # Extract metadata for quick filtering
+                self._cached_metadata = self._extract_metadata(df_test_perturb)
+                
+                # Save cache for future use
+                if not self.use_cached:  # Only save if we're not loading from cache
+                    self._save_cache(
+                        self._cached_existing_df_normalized,
+                        self._cached_existing_signatures,
+                        self._cached_metadata
+                    )
             else:
                 print("[INFO] Using cached existing result signatures")
                 existing_signatures = self._cached_existing_signatures
+                if self._cached_metadata is None:
+                    self._cached_metadata = self._extract_metadata(self._cached_existing_df_normalized)
             
-            # Find missing results using set operations
-            print("[INFO] Identifying missing experiments using vectorized comparison...")
-            missing_test_perturb_results = []
+            # EARLY FILTERING: Quickly eliminate impossible matches using DataFrame operations
+            print("[INFO] Applying early filtering to eliminate impossible matches...")
             
-            # Pre-compute intensity mapping for better performance
-            print("[INFO] Pre-computing intensity mappings...")
-            existing_intensities = sorted(existing_df['intensity'].unique())
-            intensity_mapping = {}
+            # Track which expected results can be quickly determined as missing
+            quickly_missing_indices = set()
             
-            for expected_result in self.expected_test_perturb_results:
-                intensity = expected_result['intensity']
-                if intensity not in intensity_mapping:
-                    # Find matching intensity in existing data with tolerance
-                    matching_intensity = None
-                    for existing_intensity in existing_intensities:
-                        if abs(intensity - existing_intensity) < 1e-10:
-                            matching_intensity = existing_intensity
-                            break
-                    intensity_mapping[intensity] = matching_intensity
-            
-            print("[INFO] Checking missing experiments...")
-            for expected_result in tqdm(self.expected_test_perturb_results, desc="Checking missing experiments"):
-                # Create signature for expected result with floating-point tolerance for intensity
-                intensity = expected_result['intensity']
-                matching_intensity = intensity_mapping[intensity]
-                eval_mode = expected_result['eval_mode']  # Extract eval_mode once for this iteration
+            if self._cached_metadata and not self._cached_existing_df_normalized.empty:
+                metadata = self._cached_metadata
                 
-                if matching_intensity is None:
-                    # This intensity doesn't exist in the data at all
+                # Filter expected results based on metadata
+                for idx, expected_result in enumerate(self.expected_test_perturb_results):
+                    # Quick checks: if any key field doesn't exist in existing results, mark as missing immediately
+                    dataset_match = expected_result['dataset'] in metadata['datasets']
+                    model_match = expected_result['model'] in metadata['models']
+                    eval_mode_match = expected_result['eval_mode'] in metadata['eval_modes']
+                    seed_match = str(expected_result['seed']) in metadata['seeds']
+                    noise_type_match = expected_result['noise_type'] in metadata['noise_types']
+                    
+                    # If we don't have test_perturb results at all, all are missing
+                    if not metadata['has_test_perturb']:
+                        quickly_missing_indices.add(idx)
+                        continue
+                    
+                    # If any critical field doesn't match, it's definitely missing
+                    if not dataset_match or not model_match or not noise_type_match or not seed_match:
+                        quickly_missing_indices.add(idx)
+                        continue
+                    
+                    # For non-CrossSubject modes, if eval_mode doesn't match, it's missing
+                    if expected_result['eval_mode'] != 'CrossSubject' and not eval_mode_match:
+                        quickly_missing_indices.add(idx)
+                        continue
+                    
+                    # For CrossSubject with no matching eval_mode, also mark as missing
+                    if expected_result['eval_mode'] == 'CrossSubject' and not eval_mode_match:
+                        quickly_missing_indices.add(idx)
+                        continue
+            else:
+                # No existing results or metadata, all are missing
+                quickly_missing_indices = set(range(len(self.expected_test_perturb_results)))
+            
+            # Results that need detailed checking (not in quickly_missing_indices)
+            needs_detailed_check = [idx for idx in range(len(self.expected_test_perturb_results)) 
+                                   if idx not in quickly_missing_indices]
+            
+            print(f"[INFO] Early filtering: {len(quickly_missing_indices)} results immediately marked as missing, {len(needs_detailed_check)} need detailed checking")
+            
+            # OPTIMIZATION: If all results were marked as quickly missing, skip detailed checking entirely
+            if len(needs_detailed_check) == 0:
+                print("[INFO] All expected results were marked as missing by early filtering - skipping detailed checking")
+                missing_test_perturb_results = [self.expected_test_perturb_results[idx] for idx in quickly_missing_indices]
+                found_expected_indices = set()
+            else:
+                # Find missing results using set operations
+                print("[INFO] Identifying missing experiments using vectorized comparison...")
+                missing_test_perturb_results = []
+                
+                # Pre-compute intensity mapping for better performance
+                # OPTIMIZED: Build mapping once for all unique intensities
+                print("[INFO] Pre-computing intensity mappings...")
+                # Get intensities from cached normalized DataFrame if available, otherwise from existing_df
+                if self._cached_existing_df_normalized is not None and not self._cached_existing_df_normalized.empty:
+                    existing_intensities = self._cached_existing_df_normalized['intensity'].dropna().unique()
+                else:
+                    existing_intensities = existing_df['intensity'].dropna().unique()
+                intensity_mapping = {}
+                
+                if len(existing_intensities) > 0:
+                    existing_intensities_arr = np.array(existing_intensities)
+                    
+                    # Get all unique expected intensities from results that need checking
+                    expected_intensities = set()
+                    for idx in needs_detailed_check:
+                        expected_result = self.expected_test_perturb_results[idx]
+                        expected_intensities.add(expected_result['intensity'])
+                    
+                    # Build mapping for all expected intensities at once
+                    for expected_intensity in expected_intensities:
+                        # Vectorized: Find if any existing intensity is close enough
+                        matches = np.isclose(existing_intensities_arr, expected_intensity, atol=1e-4)
+                        if np.any(matches):
+                            # Find first matching intensity
+                            matching_intensity = existing_intensities_arr[matches][0]
+                            intensity_mapping[expected_intensity] = float(matching_intensity)
+                        else:
+                            intensity_mapping[expected_intensity] = None
+                
+                print("[INFO] Checking missing experiments...")
+                
+                # OPTIMIZED: Instead of iterating through expected results, iterate through existing results
+                # and mark matching expected results as found. This is more efficient when 
+                # len(existing_results) < len(expected_results), which is the typical case.
+                
+                # Helper function to build signature from expected result
+                def build_expected_signature(expected_result, use_matching_intensity=True):
+                    """Build signature for an expected result, using matching intensity if available."""
+                    intensity = expected_result['intensity']
+                    matching_intensity = intensity_mapping.get(intensity) if use_matching_intensity else None
+                    eval_mode = expected_result['eval_mode']
+                    
+                    if matching_intensity is None:
+                        intensity_to_use = intensity
+                    else:
+                        intensity_to_use = matching_intensity
+                    
                     signature_parts = [
                         expected_result['dataset'],
                         expected_result['model'],
-                        expected_result['eval_mode'],
+                        eval_mode,
                         str(expected_result['seed']),
                         expected_result['noise_type'],
-                        str(intensity),
-                        'test_perturb',  # Mode is always test_perturb for expected results
-                        str(expected_result['tune'])  # Include tune flag in signature
+                        str(intensity_to_use),
+                        'test_perturb',
+                        str(expected_result['tune'])
                     ]
                     
                     # Add subject/eval_subjects for signature
-                    # For CrossSubject, expected results have 'subjects' (all subjects)
                     if eval_mode == 'CrossSubject':
-                        # For CrossSubject, we match based on all subjects (since it's a fold-based evaluation)
-                        # Use 'subjects' field to create signature
                         if 'subjects' in expected_result:
                             subjects_tuple = tuple(sorted(expected_result['subjects']))
                             signature_parts.append(f"subjects_{subjects_tuple}")
                         else:
                             signature_parts.append('no_subject')
                     elif 'subject' in expected_result:
-                        # For CrossSession/WithinSession, use subject
                         signature_parts.append(str(expected_result['subject']))
                     else:
                         signature_parts.append('no_subject')
-                        
-                    signature = '|'.join(str(part) for part in signature_parts)
-                else:
-                    # Use the matching intensity from existing data
-                    signature_parts = [
-                        expected_result['dataset'],
-                        expected_result['model'],
-                        expected_result['eval_mode'],
-                        str(expected_result['seed']),
-                        expected_result['noise_type'],
-                        str(matching_intensity),
-                        'test_perturb',  # Mode is always test_perturb for expected results
-                        str(expected_result['tune'])  # Include tune flag in signature
-                    ]
                     
-                    # Add subject/eval_subjects for signature
-                    # For CrossSubject, expected results have 'subjects' (all subjects)
-                    if eval_mode == 'CrossSubject':
-                        # For CrossSubject, we match based on all subjects (since it's a fold-based evaluation)
-                        # Use 'subjects' field to create signature
-                        if 'subjects' in expected_result:
-                            subjects_tuple = tuple(sorted(expected_result['subjects']))
-                            signature_parts.append(f"subjects_{subjects_tuple}")
-                        else:
-                            signature_parts.append('no_subject')
-                    elif 'subject' in expected_result:
-                        # For CrossSession/WithinSession, use subject
-                        signature_parts.append(str(expected_result['subject']))
-                    else:
-                        signature_parts.append('no_subject')
-                        
-                    signature = '|'.join(str(part) for part in signature_parts)
+                    return '|'.join(str(part) for part in signature_parts)
                 
-                # For CrossSubject, check if we have results for ANY fold (more lenient matching)
-                # Since each fold generates separate results, we check if at least one fold exists
-                if eval_mode == 'CrossSubject':
-                    # For CrossSubject, check if any result exists with matching criteria and any eval_subjects
-                    signature_found = False
-                    if 'subjects' in expected_result:
-                        expected_subjects = set(expected_result['subjects'])
-                        # Check all existing signatures for matching CrossSubject results
-                        for existing_sig in existing_signatures:
-                            sig_parts = existing_sig.split('|')
-                            if len(sig_parts) >= 9:  # Ensure we have all parts
-                                # Check if base signature matches (dataset, model, eval_mode, seed, noise_type, intensity, mode, tune)
-                                base_match = (
-                                    sig_parts[0] == expected_result['dataset'] and
-                                    sig_parts[1] == expected_result['model'] and
-                                    sig_parts[2] == eval_mode and
-                                    sig_parts[3] == str(expected_result['seed']) and
-                                    sig_parts[4] == expected_result['noise_type'] and
-                                    (sig_parts[5] == str(intensity) or sig_parts[5] == str(matching_intensity)) and
-                                    sig_parts[6] == 'test_perturb' and
-                                    sig_parts[7] == str(expected_result['tune'])
-                                )
-                                if base_match:
-                                    # Check if eval_subjects from existing result is a subset of expected subjects
-                                    if sig_parts[8].startswith('eval_subjects_'):
-                                        eval_subjects_str = sig_parts[8].replace('eval_subjects_', '')
-                                        existing_eval_subjects = set(int(s) for s in eval_subjects_str.split(',') if s.isdigit())
-                                        if existing_eval_subjects.issubset(expected_subjects):
-                                            signature_found = True
-                                            break
-                    
-                    if not signature_found:
-                        missing_test_perturb_results.append(expected_result)
-                    
-                    # Track missing combinations for diagnostics
-                    combo_key = (expected_result['dataset'], expected_result['model'], 
-                               expected_result['eval_mode'], expected_result['seed'],
-                               expected_result['noise_type'])
-                    if combo_key not in missing_combinations:
-                        missing_combinations[combo_key] = []
-                    # For CrossSubject, track subjects tuple; for others, track subject
-                    if 'subjects' in expected_result:
-                        missing_combinations[combo_key].append(f"subjects_{expected_result['subjects']}")
+                # Create a set to track which expected results have been found
+                # Use a set of indices to track found expected results
+                found_expected_indices = set()
+                
+                # For non-CrossSubject: build a mapping from signature to expected result indices
+                # For CrossSubject: we'll handle separately with more complex matching
+                expected_signature_to_indices = {}  # signature -> set of indices
+                crosssubject_expected_results = []  # Store CrossSubject expected results separately
+                
+                # Only process results that need detailed checking
+                for idx in needs_detailed_check:
+                    expected_result = self.expected_test_perturb_results[idx]
+                    eval_mode = expected_result['eval_mode']
+                    if eval_mode == 'CrossSubject':
+                        crosssubject_expected_results.append((idx, expected_result))
                     else:
-                        missing_combinations[combo_key].append(expected_result.get('subject', 'no_subject'))
-                else:
-                    # For non-CrossSubject modes, use exact signature matching
-                    if signature not in existing_signatures:
-                        missing_test_perturb_results.append(expected_result)
+                        # Build signature with matching intensity
+                        signature = build_expected_signature(expected_result, use_matching_intensity=True)
+                        if signature not in expected_signature_to_indices:
+                            expected_signature_to_indices[signature] = set()
+                        expected_signature_to_indices[signature].add(idx)
+                
+                # Now iterate through existing results and mark matching expected results as found
+                # OPTIMIZATION: Only iterate if we have results that need checking
+                if self._cached_existing_df_normalized is not None and not self._cached_existing_df_normalized.empty:
+                    df_norm = self._cached_existing_df_normalized
+                    
+                    for _, existing_row in tqdm(df_norm.iterrows(), total=len(df_norm), desc="Checking existing results"):
+                        existing_signature = existing_row['signature']
+                        existing_eval_mode = existing_row['sig_eval_mode']
                         
-                        # Track missing combinations for diagnostics
-                        combo_key = (expected_result['dataset'], expected_result['model'], 
-                                   expected_result['eval_mode'], expected_result['seed'],
-                                   expected_result['noise_type'])
-                        if combo_key not in missing_combinations:
-                            missing_combinations[combo_key] = []
-                        # Track subject for non-CrossSubject modes
-                        missing_combinations[combo_key].append(expected_result.get('subject', 'no_subject'))
+                        # For non-CrossSubject modes, use exact signature matching
+                        if existing_eval_mode != 'CrossSubject':
+                            if existing_signature in expected_signature_to_indices:
+                                # Mark all expected results with this signature as found
+                                found_expected_indices.update(expected_signature_to_indices[existing_signature])
+                        else:
+                            # For CrossSubject, need to check subset matching
+                            # Extract existing result details
+                            existing_dataset = existing_row['sig_dataset']
+                            existing_model = existing_row['sig_model']
+                            existing_seed = existing_row['sig_seed']
+                            existing_noise_type = existing_row['sig_noise_type']
+                            existing_intensity = float(existing_row['sig_intensity'])
+                            existing_tune = existing_row['sig_tune']
+                            existing_subject_sig = str(existing_row['sig_subject'])
+                            
+                            # Extract eval_subjects from existing result
+                            if existing_subject_sig.startswith('eval_subjects_'):
+                                eval_subjects_str = existing_subject_sig.replace('eval_subjects_', '')
+                                existing_eval_subjects = set(int(s) for s in eval_subjects_str.split(',') if s.isdigit())
+                            else:
+                                existing_eval_subjects = set()
+                            
+                            # Check against all CrossSubject expected results
+                            for idx, expected_result in crosssubject_expected_results:
+                                if idx in found_expected_indices:
+                                    continue  # Already found
+                                
+                                # Check base criteria match
+                                if (expected_result['dataset'] == existing_dataset and
+                                    expected_result['model'] == existing_model and
+                                    str(expected_result['seed']) == existing_seed and
+                                    expected_result['noise_type'] == existing_noise_type and
+                                    str(expected_result['tune']) == existing_tune):
+                                    
+                                    # Check intensity match (with tolerance)
+                                    intensity = expected_result['intensity']
+                                    matching_intensity = intensity_mapping.get(intensity)
+                                    intensity_to_check = matching_intensity if matching_intensity is not None else intensity
+                                    
+                                    if np.isclose(existing_intensity, intensity_to_check, atol=1e-4):
+                                        # Check if existing eval_subjects are subset of expected subjects
+                                        if 'subjects' in expected_result:
+                                            expected_subjects = set(expected_result['subjects'])
+                                            if existing_eval_subjects.issubset(expected_subjects):
+                                                found_expected_indices.add(idx)
+                
+                # Collect missing results (those not found + those quickly determined as missing)
+                # Note: missing_test_perturb_results was already initialized above for early-exit case
+                if len(needs_detailed_check) > 0:  # Only do this if we did detailed checking
+                    missing_test_perturb_results = []
+                    
+                    # Add quickly determined missing results
+                    for idx in quickly_missing_indices:
+                        missing_test_perturb_results.append(self.expected_test_perturb_results[idx])
+                    
+                    # Add results that were checked but not found
+                    for idx in needs_detailed_check:
+                        if idx not in found_expected_indices:
+                            missing_test_perturb_results.append(self.expected_test_perturb_results[idx])
+            
+            # Build missing_combinations for diagnostics
+            # Collect all missing indices (quickly missing + not found in detailed check)
+            missing_combinations = {}
+            all_missing_indices = quickly_missing_indices.copy()
+            if len(needs_detailed_check) > 0:
+                all_missing_indices.update(set(needs_detailed_check) - found_expected_indices)
+            
+            for idx in all_missing_indices:
+                expected_result = self.expected_test_perturb_results[idx]
+                
+                # Track missing combinations for diagnostics
+                combo_key = (expected_result['dataset'], expected_result['model'], 
+                           expected_result['eval_mode'], expected_result['seed'],
+                           expected_result['noise_type'])
+                if combo_key not in missing_combinations:
+                    missing_combinations[combo_key] = []
+                # For CrossSubject, track subjects tuple; for others, track subject
+                if 'subjects' in expected_result:
+                    missing_combinations[combo_key].append(f"subjects_{expected_result['subjects']}")
+                else:
+                    missing_combinations[combo_key].append(expected_result.get('subject', 'no_subject'))
         
         print(f"[OK] Found {len(missing_test_perturb_results)} missing test_perturb results out of {len(self.expected_test_perturb_results)} total expected")
         
@@ -765,6 +990,10 @@ class ExperimentAutomation:
             f.write("    successful_jobs = 0\n")
             f.write("    start_time = time.time()\n")
             f.write("    \n")
+            f.write("    # Initialize phase counters for interruption handling\n")
+            f.write("    phase1_successful = 0\n")
+            f.write("    phase2_successful = 0\n")
+            f.write("    \n")
             f.write("    # Run experiments in parallel with configurable workers\n")
             f.write("    max_workers = 4\n")
             f.write("    \n")
@@ -786,39 +1015,85 @@ class ExperimentAutomation:
             f.write("        # Sort experiments by model to potentially improve cache efficiency\n")
             f.write("        experiments.sort(key=lambda x: x['model'])\n")
             f.write("        \n")
-            f.write("        with ProcessPoolExecutor(max_workers=max_workers) as executor:\n")
-            f.write("            # Submit all experiments to the executor\n")
-            f.write("            future_to_job = {}\n")
-            f.write("            for i, exp in enumerate(experiments):\n")
-            f.write("                job_num = i + 1 + job_offset\n")
-            f.write("                future = executor.submit(run_single_experiment, exp, job_num, total_jobs)\n")
-            f.write("                future_to_job[future] = (job_num, exp)\n")
-            f.write("            \n")
-            f.write("            # Process completed experiments as they finish\n")
-            f.write("            completed = 0\n")
-            f.write("            with tqdm(total=len(experiments), desc=f'{phase_name} progress') as pbar:\n")
-            f.write("                for future in as_completed(future_to_job):\n")
-            f.write("                    job_num, exp = future_to_job[future]\n")
-            f.write("                    completed += 1\n")
+            f.write("        try:\n")
+            f.write("            with ProcessPoolExecutor(max_workers=max_workers) as executor:\n")
+            f.write("                # Submit all experiments to the executor\n")
+            f.write("                future_to_job = {}\n")
+            f.write("                for i, exp in enumerate(experiments):\n")
+            f.write("                    job_num = i + 1 + job_offset\n")
+            f.write("                    future = executor.submit(run_single_experiment, exp, job_num, total_jobs)\n")
+            f.write("                    future_to_job[future] = (job_num, exp)\n")
+            f.write("                \n")
+            f.write("                # Process completed experiments as they finish\n")
+            f.write("                completed = 0\n")
+            f.write("                pending_futures = set(future_to_job.keys())\n")
+            f.write("                \n")
+            f.write("                try:\n")
+            f.write("                    with tqdm(total=len(experiments), desc=f'{phase_name} progress') as pbar:\n")
+            f.write("                        for future in as_completed(future_to_job):\n")
+            f.write("                            job_num, exp = future_to_job[future]\n")
+            f.write("                            completed += 1\n")
+            f.write("                            pending_futures.discard(future)\n")
+            f.write("                            \n")
+            f.write("                            try:\n")
+            f.write("                                result_job_num, success, error_msg, elapsed_time = future.result()\n")
+            f.write("                                \n")
+            f.write("                                if success:\n")
+            f.write("                                    batch_successful_jobs += 1\n")
+            f.write("                                else:\n")
+            f.write("                                    batch_failed_jobs.append((result_job_num, exp, error_msg))\n")
+            f.write("                                \n")
+            f.write("                            except Exception as e:\n")
+            f.write("                                print(f'\\n[CRITICAL ERROR] Job {job_num} crashed: {e}')\n")
+            f.write("                                import traceback\n")
+            f.write("                                traceback.print_exc()\n")
+            f.write("                                batch_failed_jobs.append((job_num, exp, str(e)))\n")
+            f.write("                            \n")
+            f.write("                            pbar.update(1)\n")
+            f.write("                \n")
+            f.write("                except KeyboardInterrupt:\n")
+            f.write("                    print(f'\\n\\n[INTERRUPTED] KeyboardInterrupt received during {phase_name} phase')\n")
+            f.write("                    print(f'Completed {completed}/{len(experiments)} jobs before interruption')\n")
+            f.write("                    print(f'Cancelling {len(pending_futures)} pending jobs...')\n")
             f.write("                    \n")
-            f.write("                    try:\n")
-            f.write("                        result_job_num, success, error_msg, elapsed_time = future.result()\n")
-            f.write("                        \n")
-            f.write("                        if success:\n")
-            f.write("                            batch_successful_jobs += 1\n")
-            f.write("                        else:\n")
-            f.write("                            batch_failed_jobs.append((result_job_num, exp, error_msg))\n")
-            f.write("                        \n")
-            f.write("                    except Exception as e:\n")
-            f.write("                        print(f'\\n[CRITICAL ERROR] Job {job_num} crashed: {e}')\n")
-            f.write("                        import traceback\n")
-            f.write("                        traceback.print_exc()\n")
-            f.write("                        batch_failed_jobs.append((job_num, exp, str(e)))\n")
+            f.write("                    # Cancel all pending futures\n")
+            f.write("                    cancelled_count = 0\n")
+            f.write("                    for future in pending_futures:\n")
+            f.write("                        if future.cancel():\n")
+            f.write("                            cancelled_count += 1\n")
             f.write("                    \n")
-            f.write("                    pbar.update(1)\n")
+            f.write("                    print(f'Cancelled {cancelled_count} pending jobs')\n")
+            f.write("                    print(f'Waiting for {len(pending_futures) - cancelled_count} running jobs to complete...')\n")
             f.write("                    \n")
-            f.write("            # Cleanup after batch\n")
+            f.write("                    # Wait for running jobs to complete (with timeout)\n")
+            f.write("                    running_futures = [f for f in pending_futures if not f.cancelled()]\n")
+            f.write("                    if running_futures:\n")
+            f.write("                        try:\n")
+            f.write("                            for future in as_completed(running_futures, timeout=300):  # 5 minute timeout\n")
+            f.write("                                job_num, exp = future_to_job[future]\n")
+            f.write("                                try:\n")
+            f.write("                                    result_job_num, success, error_msg, elapsed_time = future.result()\n")
+            f.write("                                    if success:\n")
+            f.write("                                        batch_successful_jobs += 1\n")
+            f.write("                                    else:\n")
+            f.write("                                        batch_failed_jobs.append((result_job_num, exp, error_msg))\n")
+            f.write("                                except Exception as e:\n")
+            f.write("                                    print(f'[WARNING] Job {job_num} result unavailable: {e}')\n")
+            f.write("                                    batch_failed_jobs.append((job_num, exp, f'Interrupted: {e}'))\n")
+            f.write("                        except TimeoutError:\n")
+            f.write("                            print(f'[WARNING] Timeout waiting for {len(running_futures)} running jobs to complete')\n")
+            f.write("                            print(f'These jobs may still be running in background processes')\n")
+            f.write("                    \n")
+            f.write("                    print(f'Gracefully shut down {phase_name} phase')\n")
+            f.write("                    raise  # Re-raise to propagate to outer handler\n")
+            f.write("                \n")
+            f.write("                # Cleanup after batch\n")
+            f.write("                cleanup_memory()\n")
+            f.write("        \n")
+            f.write("        except KeyboardInterrupt:\n")
+            f.write("            # Cleanup on interruption\n")
             f.write("            cleanup_memory()\n")
+            f.write("            raise  # Re-raise to propagate to outer handler\n")
             f.write("        \n")
             f.write("        print(f'\\n{phase_name.upper()} PHASE COMPLETE')\n")
             f.write("        print(f'Successful: {batch_successful_jobs}')\n")
@@ -826,74 +1101,106 @@ class ExperimentAutomation:
             f.write("        \n")
             f.write("        return batch_failed_jobs, batch_successful_jobs\n")
             f.write("    \n")
-            f.write("    # PHASE 1: Run non-tuned experiments\n")
-            f.write("    phase1_failed, phase1_successful = run_experiment_batch(non_tuned_experiments, 'non-tuned', 0)\n")
-            f.write("    failed_jobs.extend(phase1_failed)\n")
-            f.write("    successful_jobs += phase1_successful\n")
-            f.write("    \n")
-            f.write("    # Aggregate results after non-tuned phase\n")
-            f.write("    if phase1_successful > 0:\n")
+            f.write("    try:\n")
+            f.write("        # PHASE 1: Run non-tuned experiments\n")
+            f.write("        phase1_failed, phase1_successful = run_experiment_batch(non_tuned_experiments, 'non-tuned', 0)\n")
+            f.write("        failed_jobs.extend(phase1_failed)\n")
+            f.write("        successful_jobs += phase1_successful\n")
+            f.write("        \n")
+            f.write("        # Aggregate results after non-tuned phase\n")
+            f.write("        if phase1_successful > 0:\n")
+            f.write("            print(f'\\n{\"=\"*60}')\n")
+            f.write("            print('AGGREGATING RESULTS AFTER NON-TUNED PHASE')\n")
+            f.write("            print(f'{\"=\"*60}')\n")
+            f.write("            try:\n")
+            f.write("                print('Calling collect_all_results_unified()...')\n")
+            f.write("                aggregated_results = collect_all_results_unified()\n")
+            f.write("                if aggregated_results is not None:\n")
+            f.write("                    print(f'Aggregated {len(aggregated_results)} result rows')\n")
+            f.write("                else:\n")
+            f.write("                    print('No results found to aggregate')\n")
+            f.write("            except Exception as e:\n")
+            f.write("                print(f'Error during aggregation: {e}')\n")
+            f.write("                import traceback\n")
+            f.write("                traceback.print_exc()\n")
+            f.write("        \n")
+            f.write("        # PHASE 2: Run tuned experiments\n")
+            f.write("        phase2_failed, phase2_successful = run_experiment_batch(tuned_experiments, 'tuned', len(non_tuned_experiments))\n")
+            f.write("        failed_jobs.extend(phase2_failed)\n")
+            f.write("        successful_jobs += phase2_successful\n")
+            f.write("        \n")
+            f.write("        # Final aggregation after tuned phase\n")
+            f.write("        if phase2_successful > 0:\n")
+            f.write("            print(f'\\n{\"=\"*60}')\n")
+            f.write("            print('FINAL AGGREGATION AFTER TUNED PHASE')\n")
+            f.write("            print(f'{\"=\"*60}')\n")
+            f.write("            try:\n")
+            f.write("                print('Calling collect_all_results_unified()...')\n")
+            f.write("                aggregated_results = collect_all_results_unified()\n")
+            f.write("                if aggregated_results is not None:\n")
+            f.write("                    print(f'Final aggregated {len(aggregated_results)} result rows')\n")
+            f.write("                else:\n")
+            f.write("                    print('No results found to aggregate')\n")
+            f.write("            except Exception as e:\n")
+            f.write("                print(f'Error during final aggregation: {e}')\n")
+            f.write("                import traceback\n")
+            f.write("                traceback.print_exc()\n")
+            f.write("        \n")
+            f.write("        # Final summary\n")
+            f.write("        total_time = time.time() - start_time\n")
             f.write("        print(f'\\n{\"=\"*60}')\n")
-            f.write("        print('AGGREGATING RESULTS AFTER NON-TUNED PHASE')\n")
+            f.write("        print('EXPERIMENT EXECUTION COMPLETE')\n")
             f.write("        print(f'{\"=\"*60}')\n")
-            f.write("        try:\n")
-            f.write("            print('Calling collect_all_results_unified()...')\n")
-            f.write("            aggregated_results = collect_all_results_unified()\n")
-            f.write("            if aggregated_results is not None:\n")
-            f.write("                print(f'Aggregated {len(aggregated_results)} result rows')\n")
-            f.write("            else:\n")
-            f.write("                print('No results found to aggregate')\n")
-            f.write("        except Exception as e:\n")
-            f.write("            print(f'Error during aggregation: {e}')\n")
-            f.write("            import traceback\n")
-            f.write("            traceback.print_exc()\n")
-            f.write("    \n")
-            f.write("    # PHASE 2: Run tuned experiments\n")
-            f.write("    phase2_failed, phase2_successful = run_experiment_batch(tuned_experiments, 'tuned', len(non_tuned_experiments))\n")
-            f.write("    failed_jobs.extend(phase2_failed)\n")
-            f.write("    successful_jobs += phase2_successful\n")
-            f.write("    \n")
-            f.write("    # Final aggregation after tuned phase\n")
-            f.write("    if phase2_successful > 0:\n")
-            f.write("        print(f'\\n{\"=\"*60}')\n")
-            f.write("        print('FINAL AGGREGATION AFTER TUNED PHASE')\n")
-            f.write("        print(f'{\"=\"*60}')\n")
-            f.write("        try:\n")
-            f.write("            print('Calling collect_all_results_unified()...')\n")
-            f.write("            aggregated_results = collect_all_results_unified()\n")
-            f.write("            if aggregated_results is not None:\n")
-            f.write("                print(f'Final aggregated {len(aggregated_results)} result rows')\n")
-            f.write("            else:\n")
-            f.write("                print('No results found to aggregate')\n")
-            f.write("        except Exception as e:\n")
-            f.write("            print(f'Error during final aggregation: {e}')\n")
-            f.write("            import traceback\n")
-            f.write("            traceback.print_exc()\n")
-            f.write("    \n")
-            f.write("    # Final summary\n")
-            f.write("    total_time = time.time() - start_time\n")
-            f.write("    print(f'\\n{\"=\"*60}')\n")
-            f.write("    print('EXPERIMENT EXECUTION COMPLETE')\n")
-            f.write("    print(f'{\"=\"*60}')\n")
-            f.write("    print(f'Completed at: {datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")}')\n")
-            f.write("    print(f'Total runtime: {total_time/3600:.2f} hours ({total_time/60:.2f} minutes)')\n")
-            f.write("    print(f'Total jobs: {total_jobs}')\n")
-            f.write("    print(f'Successful: {successful_jobs}')\n")
-            f.write("    print(f'Failed: {len(failed_jobs)}')\n")
-            f.write("    print(f'Non-tuned successful: {phase1_successful}')\n")
-            f.write("    print(f'Tuned successful: {phase2_successful}')\n")
-            f.write("    if successful_jobs > 0:\n")
-            f.write("        print(f'Average time per job: {total_time/successful_jobs/60:.2f} minutes')\n\n")
+            f.write("        print(f'Completed at: {datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")}')\n")
+            f.write("        print(f'Total runtime: {total_time/3600:.2f} hours ({total_time/60:.2f} minutes)')\n")
+            f.write("        print(f'Total jobs: {total_jobs}')\n")
+            f.write("        print(f'Successful: {successful_jobs}')\n")
+            f.write("        print(f'Failed: {len(failed_jobs)}')\n")
+            f.write("        print(f'Non-tuned successful: {phase1_successful}')\n")
+            f.write("        print(f'Tuned successful: {phase2_successful}')\n")
+            f.write("        if successful_jobs > 0:\n")
+            f.write("            print(f'Average time per job: {total_time/successful_jobs/60:.2f} minutes')\n\n")
             
-            f.write("    if failed_jobs:\n")
-            f.write("        print(f'\\nFailed jobs:')\n")
-            f.write("        for job_num, exp, error in failed_jobs:\n")
-            f.write("            print(f'  Job {job_num}: {exp[\"dataset\"]} | {exp[\"model\"]} | '\n")
-            f.write("                  f'{exp[\"eval_mode\"]} | seed={exp[\"seed\"]} - Error: {error}')\n")
-            f.write("        sys.exit(1)\n")
-            f.write("    else:\n")
-            f.write("        print('\\nAll jobs completed successfully!')\n")
-            f.write("        sys.exit(0)\n\n")
+            f.write("        if failed_jobs:\n")
+            f.write("            print(f'\\nFailed jobs:')\n")
+            f.write("            for job_num, exp, error in failed_jobs:\n")
+            f.write("                print(f'  Job {job_num}: {exp[\"dataset\"]} | {exp[\"model\"]} | '\n")
+            f.write("                      f'{exp[\"eval_mode\"]} | seed={exp[\"seed\"]} - Error: {error}')\n")
+            f.write("            sys.exit(1)\n")
+            f.write("        else:\n")
+            f.write("            print('\\nAll jobs completed successfully!')\n")
+            f.write("            sys.exit(0)\n")
+            f.write("    \n")
+            f.write("    except KeyboardInterrupt:\n")
+            f.write("        # Handle graceful shutdown on Ctrl+C\n")
+            f.write("        total_time = time.time() - start_time\n")
+            f.write("        print(f'\\n\\n{\"=\"*60}')\n")
+            f.write("        print('EXPERIMENT EXECUTION INTERRUPTED')\n")
+            f.write("        print(f'{\"=\"*60}')\n")
+            f.write("        print(f'Interrupted at: {datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")}')\n")
+            f.write("        print(f'Total runtime before interruption: {total_time/3600:.2f} hours ({total_time/60:.2f} minutes)')\n")
+            f.write("        print(f'\\nProgress Summary:')\n")
+            f.write("        print(f'  Total jobs: {total_jobs}')\n")
+            f.write("        print(f'  Successful: {successful_jobs}')\n")
+            f.write("        print(f'  Failed: {len(failed_jobs)}')\n")
+            f.write("        print(f'  Remaining: {total_jobs - successful_jobs - len(failed_jobs)}')\n")
+            f.write("        \n")
+            f.write("        if failed_jobs:\n")
+            f.write("            print(f'\\nFailed jobs before interruption:')\n")
+            f.write("            for job_num, exp, error in failed_jobs[:10]:  # Show first 10\n")
+            f.write("                print(f'  Job {job_num}: {exp[\"dataset\"]} | {exp[\"model\"]} | '\n")
+            f.write("                      f'{exp[\"eval_mode\"]} | seed={exp[\"seed\"]} - Error: {error}')\n")
+            f.write("            if len(failed_jobs) > 10:\n")
+            f.write("                print(f'  ... and {len(failed_jobs) - 10} more failed jobs')\n")
+            f.write("        \n")
+            f.write("        print(f'\\nNote: Completed experiments have been saved. You can re-run this script')\n")
+            f.write("        print(f'      to continue with remaining experiments.')\n")
+            f.write("        \n")
+            f.write("        # Cleanup\n")
+            f.write("        cleanup_memory()\n")
+            f.write("        \n")
+            f.write("        # Exit with code 130 (standard for SIGINT/KeyboardInterrupt)\n")
+            f.write("        sys.exit(130)\n\n")
             
             f.write("if __name__ == '__main__':\n")
             f.write("    run_experiments()\n")
@@ -1064,7 +1371,12 @@ class ExperimentAutomation:
         print("="*60)
         
         # Step 1: Load existing results (either aggregate or load pre-aggregated)
-        if self.preaggregated_results_file:
+        if self.use_cached:
+            print("[INFO] Using cached results (skipping aggregation)")
+            # Cache will be loaded in identify_missing_experiments
+            # Create minimal existing_results for compatibility
+            self.existing_results = pd.DataFrame()
+        elif self.preaggregated_results_file:
             self.load_preaggregated_results()
         else:
             self.aggregate_existing_results()
@@ -1120,11 +1432,13 @@ def main():
                        help="Only identify missing experiments, don't aggregate")
     parser.add_argument("--local", action="store_true",
                        help="Generate Python script for local execution instead of sbatch script")
+    parser.add_argument("--use-cached", action="store_true",
+                       help="Use cached processed results (skips aggregation and signature generation)")
     
     args = parser.parse_args()
     
     # Initialize automation system
-    automation = ExperimentAutomation(args.config, args.preaggregated_results, args.local)
+    automation = ExperimentAutomation(args.config, args.preaggregated_results, args.local, args.use_cached)
     
     if args.aggregate_only:
         # Only aggregate results (ignore pre-aggregated file for this mode)
@@ -1133,7 +1447,10 @@ def main():
         automation.aggregate_existing_results()
     elif args.missing_only:
         # Only identify missing experiments
-        if args.preaggregated_results:
+        if args.use_cached:
+            print("[INFO] Using cached results (skipping aggregation)")
+            automation.existing_results = pd.DataFrame()
+        elif args.preaggregated_results:
             automation.load_preaggregated_results()
         else:
             automation.aggregate_existing_results()
