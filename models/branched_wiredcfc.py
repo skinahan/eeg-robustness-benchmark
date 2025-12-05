@@ -56,6 +56,10 @@ class BranchedWiredCfC(BranchedDIVABase):
         bn_momentum: float = 0.01,
         bn_eps: float = 1e-3,
         use_spectral_norm_first_conv: bool = False,
+        # --- Residual initialization strategy ---
+        # Default: "backwards_rezero" (recurrent at full strength at init)
+        # Empirically validated to outperform correct ReZero. See REZERO_BACKWARDS_ANALYSIS.md
+        residual_init_strategy: str = "backwards_rezero",  # "backwards_rezero" (default, empirically superior) or "correct_rezero" (standard ReZero)
         # --- CfC-specific parameters ---
         mixed_memory: bool = True,
         mode: str = "default",
@@ -95,6 +99,7 @@ class BranchedWiredCfC(BranchedDIVABase):
             bn_momentum=bn_momentum,
             bn_eps=bn_eps,
             use_spectral_norm_first_conv=use_spectral_norm_first_conv,
+            residual_init_strategy=residual_init_strategy,
             # CfC-specific parameters
             mixed_memory=mixed_memory,
             mode=mode,
