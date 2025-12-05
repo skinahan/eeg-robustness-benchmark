@@ -385,7 +385,13 @@ class ExperimentAutomation:
                 
                 # Use vectorized operations to normalize columns
                 df_work = existing_df.copy()
-                df_work['is_tuned'] = df_work['mode'].astype(str).str.contains('_tune', na=False)
+                # Check if 'tune' column exists (preferred), otherwise infer from mode
+                if 'tune' in df_work.columns:
+                    # Use the 'tune' column directly if it exists
+                    df_work['is_tuned'] = df_work['tune'].astype(bool)
+                else:
+                    # Fall back to inferring from mode string
+                    df_work['is_tuned'] = df_work['mode'].astype(str).str.contains('_tune', na=False)
                 
                 # Filter to test_perturb results only
                 test_perturb_mask = df_work['mode_normalized'] == 'test_perturb'
@@ -583,7 +589,8 @@ class ExperimentAutomation:
                         else:
                             signature_parts.append('no_subject')
                     elif 'subject' in expected_result:
-                        signature_parts.append(str(expected_result['subject']))
+                        # Ensure subject is converted to int then string for consistency with existing results
+                        signature_parts.append(str(int(expected_result['subject'])))
                     else:
                         signature_parts.append('no_subject')
                     
