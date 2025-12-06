@@ -1074,10 +1074,17 @@ class UnifiedExperimentRunner:
         mode_str = self.mode
         if self.tune:
             mode_str = f"{self.mode}_tune"
-            
+        
+        # Determine paradigm for check_skip_eval (must match log_all_subjects)
+        if self.dataset == "Lee2019_SSVEP":
+            paradigm_name = "SSVEP"
+        elif self.dataset == "BI2015a":
+            paradigm_name = "ERP"
+        else:
+            paradigm_name = "MotorImagery"
 
         if not self.overwrite:
-            if check_skip_eval(self.model, self.seed, self.subjects, mode_str, self.noise_type, self.intensity, eval_mode=self.eval_mode, dataset=self.dataset, paradigm_obj=self.paradigm, dataset_obj=self.dataset_obj):
+            if check_skip_eval(self.model, self.seed, self.subjects, mode_str, self.noise_type, self.intensity, eval_mode=self.eval_mode, paradigm=paradigm_name, dataset=self.dataset, paradigm_obj=self.paradigm, dataset_obj=self.dataset_obj):
                 print(f"Skipping evaluation due to existing output files.")
                 return None
         
