@@ -1,0 +1,129 @@
+ABLATION STUDIES EXPERIMENT SPECIFICATION
+==========================================
+
+Experiment Overview
+-------------------
+This experiment conducts ablation studies on the HYDRA model (branched_wiredcfc architecture #4)
+to evaluate the contribution of individual model mechanisms: gating, branching, and CfC recurrent dynamics.
+
+Base Model Configuration
+------------------------
+- Model: branched_wiredcfc
+- Architecture: #4 (from best_architecture_4_trial_178.json)
+- Dataset: BNCI2014_001 (BCI competition IV-2a)
+- Evaluation Mode: CrossSubject
+- Hyperparameter Optimization: None (no tune mode)
+
+Ablation Studies
+---------------
+
+1. BASELINE: Full HYDRA Model
+   - Model: branched_wiredcfc_arch4
+   - Configuration: Standard model with all features enabled
+   - Carry Gate: Enabled (weighted residual connection)
+   - Branching: Enabled (temporal binning with overlap)
+   - Recurrent Cell: CfC with ArbitraryWiring (Architecture 4)
+
+2. ABLATION 1: No Carry Gate
+   - Model Variant: branched_wiredcfc_arch4_no_carry_gate
+   - Modification: Disable weighted residual connection
+   - Implementation: Set weight_residual to 0 or disable residual addition
+   - Hypothesis: Less stable model, decreased robustness after training
+   - Carry Gate: DISABLED
+   - Branching: Enabled
+   - Recurrent Cell: CfC with ArbitraryWiring (Architecture 4)
+
+3. ABLATION 2: No Branching
+   - Model Variant: branched_wiredcfc_arch4_no_branching
+   - Modification: Process entire sequence in single temporal bin
+   - Implementation: Set bin_len to full sequence length, bin_stride = 1
+   - Hypothesis: Negative impact on robustness (especially to continuous noise),
+                 negative impact on inference speed
+   - Carry Gate: Enabled
+   - Branching: DISABLED
+   - Recurrent Cell: CfC with ArbitraryWiring (Architecture 4)
+
+4. ABLATION 3: Replace CfC with LSTM
+   - Model Variant: branched_lstm_arch4_equivalent
+   - Modification: Replace CfC cells with traditional LSTM layer
+   - Implementation: Use BranchedLSTM with equivalent architecture parameters
+   - Hypothesis: Negative impact on model robustness
+   - Carry Gate: Enabled
+   - Branching: Enabled
+   - Recurrent Cell: LSTM (instead of CfC)
+
+Experimental Design
+-------------------
+- Number of Runs: 5 (for statistical significance)
+- Seeds: [100, 200, 300, 400, 500] (fixed seeds for reproducibility)
+- Evaluation: CrossSubject (3-fold split)
+- Noise Types: Clean, Gaussian, Dropout, EOG
+- Noise Intensities: Standard intensity levels for each noise type
+- Metrics: ROC-AUC, Accuracy, Precision, Recall, F1-Score
+- Additional Metrics: Training time, Inference time, Model stability
+
+Execution Flow
+--------------
+1. Phase 1: Run all experiments (5 runs per ablation)
+   - Baseline: 5 runs with seeds [100, 200, 300, 400, 500]
+   - Ablation 1 (No Carry Gate): 5 runs with seeds [100, 200, 300, 400, 500]
+   - Ablation 2 (No Branching): 5 runs with seeds [100, 200, 300, 400, 500]
+   - Ablation 3 (LSTM Replacement): 5 runs with seeds [100, 200, 300, 400, 500]
+   
+2. Phase 2: Statistical analysis and plotting (only after all experiments complete)
+   - Statistical tests comparing each ablation to baseline
+   - Visualization plots
+   - Combined results summary
+
+Data Collection
+---------------
+- Baseline data: Already collected for branched_wiredcfc_arch4 on BNCI2014_001
+- Ablation data: Will be collected for each ablation variant
+- Results will be saved incrementally after each run
+- Partial results saved after each fold/subject completion
+
+Statistical Analysis
+--------------------
+- Compare each ablation against baseline using:
+  * Paired t-tests (for within-subject comparisons)
+  * Wilcoxon signed-rank tests (non-parametric alternative)
+  * Effect size calculations (Cohen's d)
+- Multiple comparison correction: Bonferroni correction (3 ablations)
+- Significance threshold: p < 0.05 (after correction)
+
+Visualization
+-------------
+- Box plots comparing baseline vs each ablation
+- Line plots showing performance across noise intensities
+- Statistical significance indicators on plots
+- Summary tables with mean, std, and p-values
+
+Output Structure
+----------------
+All results are isolated in the ablations/ directory to avoid mixing with primary benchmark results.
+
+ablations/
+  ├── experiment_specification.txt (this file)
+  ├── run_ablations.py (main experiment script)
+  ├── ablation_models.py (model variant definitions)
+  ├── results/
+  │   ├── baseline_results.csv
+  │   ├── baseline_partial_run1.csv, ..., baseline_partial_run5.csv
+  │   ├── ablation1_no_carry_gate_results.csv
+  │   ├── ablation1_no_carry_gate_partial_run1.csv, ..., partial_run5.csv
+  │   ├── ablation2_no_branching_results.csv
+  │   ├── ablation2_no_branching_partial_run1.csv, ..., partial_run5.csv
+  │   ├── ablation3_lstm_replacement_results.csv
+  │   ├── ablation3_lstm_replacement_partial_run1.csv, ..., partial_run5.csv
+  │   ├── combined_results.csv
+  │   └── statistical_tests.csv
+  ├── plots/
+  │   ├── ablation_comparison_boxplot.png
+  │   ├── ablation_comparison_violin.png
+  │   └── statistical_summary.png
+  └── models/ (cached models if needed)
+
+Note: Intermediate files from UnifiedExperimentRunner may be written to the base results/ 
+directory, but all final ablation results CSV files are saved exclusively to ablations/results/
+to maintain isolation from primary benchmark results.
+
