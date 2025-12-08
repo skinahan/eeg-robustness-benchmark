@@ -1271,7 +1271,67 @@ class UnifiedExperimentRunner:
                     agg_results = []
                     
                     # Handle corrupted scores at different intensities
-                    if 'intensity' in results_df.columns:
+                    # CRITICAL FIX: We must iterate over noise_type first to properly aggregate each noise type separately
+                    # The bug was that we were only iterating over intensity and session, which caused results from
+                    # different noise types to be mixed together, with only the first noise_type being saved.
+                    if 'intensity' in results_df.columns and 'noise_type' in results_df.columns:
+                        # Get unique combinations of noise_type and intensity
+                        for noise_type in results_df['noise_type'].unique():
+                            if pd.notna(noise_type):
+                                noise_df = results_df[results_df['noise_type'] == noise_type]
+                                for intensity in noise_df['intensity'].unique():
+                                    if pd.notna(intensity) and intensity != 'clean':
+                                        intensity_df = noise_df[noise_df['intensity'] == intensity]
+                                        if len(intensity_df) > 0:
+                                            for session in intensity_df['session'].unique():
+                                                session_df = intensity_df[intensity_df['session'] == session]
+                                                if len(session_df) > 0:
+                                                    agg_row = {
+                                                        'subject': session_df['subject'].iloc[0],
+                                                        'session': session,
+                                                        'score': session_df['corrupted_score'].mean() if 'corrupted_score' in session_df.columns else 0.0,
+                                                        'model': self.model,
+                                                        'mode': self.mode,
+                                                        'eval_mode': self.eval_mode,
+                                                        'seed': self.seed,
+                                                        'tune': self.tune,
+                                                        'noise_type': noise_type,
+                                                        'intensity': intensity,
+                                                        'clean_score': session_df['clean_score'].mean() if 'clean_score' in session_df.columns else 0.0,
+                                                        'corrupted_score': session_df['corrupted_score'].mean() if 'corrupted_score' in session_df.columns else 0.0,
+                                                        'relative_drop': session_df['relative_drop'].mean() if 'relative_drop' in session_df.columns else 0.0,
+                                                        'training_time': session_df['training_time'].mean() if 'training_time' in session_df.columns else 0.0,
+                                                        'evaluation_time': session_df['evaluation_time'].mean() if 'evaluation_time' in session_df.columns else 0.0,
+                                                        'total_time': session_df['total_time'].mean() if 'total_time' in session_df.columns else 0.0
+                                                    }
+                                                    
+                                                    # Add all clean metrics (matching CrossSession)
+                                                    if 'clean_roc_auc' in session_df.columns:
+                                                        agg_row['clean_roc_auc'] = session_df['clean_roc_auc'].mean()
+                                                    if 'clean_accuracy' in session_df.columns:
+                                                        agg_row['clean_accuracy'] = session_df['clean_accuracy'].mean()
+                                                    if 'clean_precision' in session_df.columns:
+                                                        agg_row['clean_precision'] = session_df['clean_precision'].mean()
+                                                    if 'clean_recall' in session_df.columns:
+                                                        agg_row['clean_recall'] = session_df['clean_recall'].mean()
+                                                    if 'clean_f1' in session_df.columns:
+                                                        agg_row['clean_f1'] = session_df['clean_f1'].mean()
+                                                    
+                                                    # Add all corrupted metrics (matching CrossSession)
+                                                    if 'corrupted_roc_auc' in session_df.columns:
+                                                        agg_row['corrupted_roc_auc'] = session_df['corrupted_roc_auc'].mean()
+                                                    if 'corrupted_accuracy' in session_df.columns:
+                                                        agg_row['corrupted_accuracy'] = session_df['corrupted_accuracy'].mean()
+                                                    if 'corrupted_precision' in session_df.columns:
+                                                        agg_row['corrupted_precision'] = session_df['corrupted_precision'].mean()
+                                                    if 'corrupted_recall' in session_df.columns:
+                                                        agg_row['corrupted_recall'] = session_df['corrupted_recall'].mean()
+                                                    if 'corrupted_f1' in session_df.columns:
+                                                        agg_row['corrupted_f1'] = session_df['corrupted_f1'].mean()
+                                                    
+                                                    agg_results.append(agg_row)
+                    elif 'intensity' in results_df.columns:
+                        # Fallback for backward compatibility (if noise_type column is missing)
                         for intensity in results_df['intensity'].unique():
                             if pd.notna(intensity) and intensity != 'clean':
                                 intensity_df = results_df[results_df['intensity'] == intensity]
