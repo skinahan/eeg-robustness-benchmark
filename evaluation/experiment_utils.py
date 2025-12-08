@@ -92,6 +92,9 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
         n_subjects = len(subject_list)
         fold_size = n_subjects // 3
         
+        # Check if we're in test_perturb mode (for directory-based file search)
+        is_test_perturb_mode = mode in ['test_perturb', 'multirun'] or mode.startswith('test_perturb')
+        
         # Generate expected fold sessions
         for fold_idx in range(3):
             eval_start = fold_idx * fold_size
@@ -104,16 +107,33 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
             representative_subject = eval_subjects[0] if eval_subjects else subject_list[0]
             
             out_dir = create_output_path(model_name, seed, int(representative_subject), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
-            if noise_type is not None and intensity is not None:
-                filename_suffix = f"_{noise_type}_{intensity}"
+            
+            # For test_perturb/multirun mode, check for ANY CSV file in the output directory
+            # instead of a specific filename pattern (to handle legacy filename conventions)
+            if is_test_perturb_mode:
+                # Check if directory exists and has any CSV files
+                if os.path.exists(out_dir):
+                    csv_files = [f for f in os.listdir(out_dir) if f.endswith('.csv')]
+                    if csv_files:
+                        # Add all CSV files found in this directory
+                        for csv_file in csv_files:
+                            existing_output_paths.append(os.path.join(out_dir, csv_file))
+                    else:
+                        expected_output_paths.append(out_dir)  # Directory exists but no CSVs
+                else:
+                    expected_output_paths.append(out_dir)  # Directory doesn't exist
             else:
-                filename_suffix = ""
-            out_file = os.path.join(out_dir,
-                                    f"{model_name}_{mode}{filename_suffix}_{session}_seed{seed}.csv")
-            if os.path.exists(out_file):
-                existing_output_paths.append(out_file)
-            else:
-                expected_output_paths.append(out_file)
+                # For non-test_perturb modes, use the original specific filename pattern
+                if noise_type is not None and intensity is not None:
+                    filename_suffix = f"_{noise_type}_{intensity}"
+                else:
+                    filename_suffix = ""
+                out_file = os.path.join(out_dir,
+                                        f"{model_name}_{mode}{filename_suffix}_{session}_seed{seed}.csv")
+                if os.path.exists(out_file):
+                    existing_output_paths.append(out_file)
+                else:
+                    expected_output_paths.append(out_file)
     else:
         # Original logic for WithinSession and CrossSession
         # sessions_to_check was already determined above
