@@ -407,7 +407,7 @@ class UnifiedExperimentRunner:
             n_times: Number of time points
             n_outputs: Number of output classes (auto-detected if None)
             try_cache: Whether to try loading from cache
-            fold_idx: Fold index (required for WithinSession to prevent data leakage)
+            fold_idx: Fold index (required to prevent data leakage)
         """
         # Determine number of outputs based on dataset
         if n_outputs is None:
@@ -427,8 +427,8 @@ class UnifiedExperimentRunner:
             # (n_chans, n_times, n_outputs) will match saved configs that include additional
             # params like max_epochs and verbose (which are excluded from hash comparison)
             # 
-            # IMPORTANT: For WithinSession, fold_idx is included in cache key to prevent
-            # data leakage between different folds of the same session.
+            # IMPORTANT: fold_idx is included in cache key to prevent
+            # data leakage between different folds.
             checkpoint_types_to_try = ["best", "final"] if self.tune else ["final"]
             
             # Debug: Print cache lookup attempt
@@ -454,7 +454,7 @@ class UnifiedExperimentRunner:
                     eval_mode=self.eval_mode,
                     tuned=self.tune,
                     checkpoint_type=checkpoint_type,
-                    fold_idx=fold_idx  # Critical for WithinSession to prevent fold mixing
+                    fold_idx=fold_idx  # Critical to prevent fold mixing
                 )
                 
                 if cached_model is not None and config_matches:
@@ -488,8 +488,9 @@ class UnifiedExperimentRunner:
 
         # Add caching callbacks
         if not self.noise_dict and self.current_subject != -1 and self.current_session != -1:
-            # For WithinSession, pass fold_idx to prevent data leakage between folds
-            fold_idx_for_callback = fold_idx if self.eval_mode == "WithinSession" else None
+            # Always pass fold_idx when available, regardless of eval_mode
+            # This ensures proper cache key generation and prevents data leakage
+            fold_idx_for_callback = fold_idx
             
             if self.tune:
                 # For tuned models, use periodic checkpoint callback
@@ -734,7 +735,7 @@ class UnifiedExperimentRunner:
 
         # Train final model with best parameters
         n_chans, n_times = self._determine_data_dimensions()
-        final_model = self._create_model(n_chans, n_times)
+        final_model = self._create_model(n_chans, n_times, try_cache=False)
         final_params['verbose'] = 0
         # Ensure max_epochs is set correctly for this dataset
         final_params['max_epochs'] = get_max_epochs_for_dataset(self.dataset)
@@ -838,10 +839,8 @@ class UnifiedExperimentRunner:
         IMPORTANT: current_session must be set before calling this method (done in _evaluate_cv_fold).
         fold_idx is passed to _create_model to ensure proper cache key for WithinSession.
         """
-        n_chans, n_times = self._determine_data_dimensions()
-        # Pass fold_idx for WithinSession to prevent data leakage between folds
-        fold_idx_for_cache = fold_idx if self.eval_mode == "WithinSession" else None
-        model = self._create_model(n_chans, n_times, fold_idx=fold_idx_for_cache)
+        n_chans, n_times = self._determine_data_dimensions()        
+        model = self._create_model(n_chans, n_times, fold_idx=fold_idx)
         
         # Check if model was loaded from cache
         model_was_cached = hasattr(model, '_was_cached') and model._was_cached
@@ -974,7 +973,7 @@ class UnifiedExperimentRunner:
         """
         n_chans, n_times = self._determine_data_dimensions()
         set_seeds(self.seed)
-        model = self._create_model(n_chans, n_times)
+        model = self._create_model(n_chans, n_times, fold_idx=fold_idx)
         
         # Check if model was loaded from cache
         model_was_cached = hasattr(model, '_was_cached') and model._was_cached

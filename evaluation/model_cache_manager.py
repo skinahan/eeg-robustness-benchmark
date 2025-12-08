@@ -460,6 +460,68 @@ class ModelCacheManager:
             with open(config_path, 'r') as f:
                 config_data = json.load(f)
             
+            # CRITICAL: Prevent data leakage by validating fold_idx matches
+            # fold_idx must match between cached and requested models to prevent
+            # loading models from different folds/splits
+            cached_fold_idx = config_data.get('fold_idx')
+            
+            # For WithinSession, fold_idx is REQUIRED and must match exactly
+            if eval_mode == "WithinSession":
+                if cached_fold_idx is None:
+                    self.logger.warning(
+                        f"Rejecting cached model: cached fold_idx is None for WithinSession mode. "
+                        f"This would cause data leakage across folds. "
+                        f"Requested fold_idx: {fold_idx}"
+                    )
+                    print(
+                        f"[CACHE] REJECTED: Cached model has fold_idx=None for WithinSession. "
+                        f"This would cause data leakage. Requested fold_idx: {fold_idx}"
+                    )
+                    return None, False
+                elif fold_idx is None:
+                    self.logger.warning(
+                        f"Rejecting cached model: attempting to load WithinSession model without fold_idx. "
+                        f"Cached fold_idx: {cached_fold_idx}. fold_idx is required for WithinSession."
+                    )
+                    print(
+                        f"[CACHE] REJECTED: Cannot load WithinSession model without fold_idx. "
+                        f"Cached fold_idx: {cached_fold_idx}"
+                    )
+                    return None, False
+                elif cached_fold_idx != fold_idx:
+                    self.logger.warning(
+                        f"Rejecting cached model: fold_idx mismatch for WithinSession. "
+                        f"Cached fold_idx: {cached_fold_idx}, Requested fold_idx: {fold_idx}"
+                    )
+                    print(
+                        f"[CACHE] REJECTED: fold_idx mismatch for WithinSession. "
+                        f"Cached: {cached_fold_idx}, Requested: {fold_idx}"
+                    )
+                    return None, False
+            else:
+                # For other eval modes (CrossSession, CrossSubject), fold_idx should match if both are set
+                # If one is None and the other isn't, that's a mismatch
+                if (fold_idx is None) != (cached_fold_idx is None):
+                    self.logger.warning(
+                        f"Rejecting cached model: fold_idx mismatch. "
+                        f"Cached fold_idx: {cached_fold_idx}, Requested fold_idx: {fold_idx}"
+                    )
+                    print(
+                        f"[CACHE] REJECTED: fold_idx mismatch. "
+                        f"Cached: {cached_fold_idx}, Requested: {fold_idx}"
+                    )
+                    return None, False
+                elif fold_idx is not None and cached_fold_idx is not None and cached_fold_idx != fold_idx:
+                    self.logger.warning(
+                        f"Rejecting cached model: fold_idx mismatch. "
+                        f"Cached fold_idx: {cached_fold_idx}, Requested fold_idx: {fold_idx}"
+                    )
+                    print(
+                        f"[CACHE] REJECTED: fold_idx mismatch. "
+                        f"Cached: {cached_fold_idx}, Requested: {fold_idx}"
+                    )
+                    return None, False
+            
             # Validate configuration
             # Use a more lenient comparison: only compare parameters present in the load config
             # This handles cases where saved config has extra params (like max_epochs, verbose)
