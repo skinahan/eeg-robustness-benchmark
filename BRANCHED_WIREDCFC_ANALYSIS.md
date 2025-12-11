@@ -209,9 +209,6 @@ The core innovation of BranchedWiredCfC is its **branched recurrent processing**
   - `mixed_memory=True`: Enables mixed memory mechanism
   - `mode="default"`: Standard CfC operation mode
   - `activation="lecun_tanh"`: LeCun's tanh activation
-  - `backbone_units=128`: Backbone network units (not used in wired mode)
-  - `backbone_layers=1`: Backbone network layers (not used in wired mode)
-  - `backbone_dropout=0.0`: Backbone dropout (not used in wired mode)
 
 **Arbitrary Wiring:**
 - The wiring structure is defined by an `ArbitraryWiring` instance
@@ -230,8 +227,10 @@ After CfC processing, a weighted residual connection is applied:
 **Operation**: `x_out = x_cfc * (1 - α) + x_residual * α`
 
 Where:
-- `α = weight_residual` is a learnable parameter (initialized to 0.0, using ReZero initialization)
-- This allows the model to learn the optimal balance between CfC-processed features and original features
+- `α = weight_residual` is a learnable parameter (initialized to 0.0, using "backwards_rezero" strategy)
+- At initialization (α=0): output = x_cfc (CfC/recurrent at full strength)
+- This empirically validated approach outperforms standard ReZero (identity at init) for temporal modeling
+- Allows the model to learn the optimal balance between CfC-processed features and original features
 
 **Purpose**:
 - Stabilizes training by providing gradient pathways through residual connections
@@ -492,7 +491,10 @@ All convolutional and linear layers use **Xavier (Glorot) uniform initialization
 
 ### 11.2 Residual Connection Initialization
 
-The weighted residual parameter `weight_residual` is initialized to **0.0** (ReZero initialization), allowing the model to start with identity mapping and gradually learn the optimal weighting.
+The weighted residual parameter `weight_residual` is initialized to **0.0** with the "backwards_rezero" strategy (default). 
+This means the recurrent compartment starts at full strength rather than identity mapping. This approach has been 
+empirically validated to provide ~6.4% better clean performance compared to standard ReZero (identity at init). 
+See `REZERO_BACKWARDS_ANALYSIS.md` for theoretical justification.
 
 ### 11.3 Forward Pass Flow
 
