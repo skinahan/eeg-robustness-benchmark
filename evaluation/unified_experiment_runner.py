@@ -484,7 +484,8 @@ class UnifiedExperimentRunner:
         model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
         assert(model is not None)
         # Set common model parameters with dataset-specific max_epochs
-        model.max_epochs = get_max_epochs_for_dataset(self.dataset)
+        # Pass eval_mode to get CrossSubject-specific epoch limit (20 epochs)
+        model.max_epochs = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
 
         # Add caching callbacks
         if not self.noise_dict and self.current_subject != -1 and self.current_session != -1:
@@ -541,7 +542,7 @@ class UnifiedExperimentRunner:
                     else:
                         n_outputs = 2  # MotorImagery and BI2015a (P300) both have 2 classes
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
-                base_model.max_epochs = get_max_epochs_for_dataset(self.dataset)
+                base_model.max_epochs = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
                 return TrainOnlyNoiseClassifier(
                     base_pipeline=base_model,
                     noise_type=self.noise_dict["noise_type"],
@@ -556,7 +557,7 @@ class UnifiedExperimentRunner:
                     else:
                         n_outputs = 2  # MotorImagery and BI2015a (P300) both have 2 classes
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
-                base_model.max_epochs = get_max_epochs_for_dataset(self.dataset)
+                base_model.max_epochs = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
                 return ConcatenatedNoiseAugmenter(
                     base_pipeline=base_model,
                     noise_type=self.noise_dict["noise_type"],
@@ -571,7 +572,7 @@ class UnifiedExperimentRunner:
                     else:
                         n_outputs = 2  # MotorImagery and BI2015a (P300) both have 2 classes
                 base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
-                base_model.max_epochs = get_max_epochs_for_dataset(self.dataset)
+                base_model.max_epochs = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
                 return base_model
         else:
             return self.model_fn
@@ -630,6 +631,8 @@ class UnifiedExperimentRunner:
         
         IMPORTANT: Sets current_session before creating model to ensure proper cache key generation.
         For WithinSession, fold_idx is passed to prevent data leakage between folds.
+        
+        NOTE: CrossSubject evaluation skips hyperparameter optimization due to performance constraints.
         """
         all_results = []
         
@@ -681,7 +684,8 @@ class UnifiedExperimentRunner:
                 output_root=fold_output_dir,
                 arch_trials=20,
                 train_trials=20,
-                dataset=self.dataset
+                dataset=self.dataset,
+                eval_mode=self.eval_mode
             )
         else:
             # Mode is tune (no noise)
@@ -697,7 +701,8 @@ class UnifiedExperimentRunner:
                 arch_trials=10,
                 train_trials=10,
                 perturbed=False,
-                dataset=self.dataset
+                dataset=self.dataset,
+                eval_mode=self.eval_mode
             )        
 
         final_params = {}
@@ -737,8 +742,11 @@ class UnifiedExperimentRunner:
         n_chans, n_times = self._determine_data_dimensions()
         final_model = self._create_model(n_chans, n_times, try_cache=False)
         final_params['verbose'] = 0
-        # Ensure max_epochs is set correctly for this dataset
-        final_params['max_epochs'] = get_max_epochs_for_dataset(self.dataset)
+        # Restore max_epochs for final training run after optimization
+        # Note: During optimization, CrossSubject uses max_epochs=5 to speed up trials
+        # After optimization, CrossSubject uses max_epochs=20 for the full training run
+        # Other eval modes use their normal dataset-specific values
+        final_params['max_epochs'] = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
         final_model.set_params(**final_params)
         # Train on full training set
         start_time = time.time()
@@ -781,7 +789,7 @@ class UnifiedExperimentRunner:
                     final_model.set_params(**final_params)
                     final_model.callbacks = []
                     # Ensure max_epochs is still correct after removing early stopping
-                    final_model.max_epochs = get_max_epochs_for_dataset(self.dataset)
+                    final_model.max_epochs = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
                     final_model.module_.train()
                     start_time = time.time()
                     _verify_and_log_max_epochs(final_model, self.dataset, f"fold {fold_idx} (tuned, retraining)")
@@ -1024,7 +1032,7 @@ class UnifiedExperimentRunner:
                         new_callbacks.append(callback)
                 model.callbacks = new_callbacks
                 # Ensure max_epochs is still correct after removing early stopping
-                model.max_epochs = get_max_epochs_for_dataset(self.dataset)
+                model.max_epochs = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
                 model.module_.train()
                 start_time = time.time()
                 _verify_and_log_max_epochs(model, self.dataset, f"fold {fold_idx}, session {session} (retraining)")

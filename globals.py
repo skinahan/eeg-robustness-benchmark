@@ -52,16 +52,24 @@ def get_early_stopping_callback():
 # Default max_epochs - increased to allow more training time
 DEFAULT_MAX_EPOCHS = 200  # Increased from 100
 
-def get_max_epochs_for_dataset(dataset: str) -> int:
+def get_max_epochs_for_dataset(dataset: str, eval_mode: str = None) -> int:
     """
     Get dataset-specific max_epochs setting.
     
     Args:
         dataset: Dataset name (e.g., "Lee2019_SSVEP", "BI2015a", "BNCI2014_001")
+        eval_mode: Evaluation mode (e.g., "CrossSubject", "CrossSession", "WithinSession")
     
     Returns:
-        int: Max epochs for the dataset (100 for Lee2019_SSVEP and BI2015a, 200 otherwise)
+        int: Max epochs for the dataset and evaluation mode.
+             - CrossSubject: Always 20 (for performance reasons)
+             - Lee2019_SSVEP and BI2015a: 100
+             - Otherwise: 200
     """
+    # CrossSubject evaluation is much slower, so use fewer epochs
+    if eval_mode == "CrossSubject":
+        return 20
+    
     if dataset in ["Lee2019_SSVEP", "BI2015a"]:
         return 100
     return DEFAULT_MAX_EPOCHS

@@ -154,7 +154,8 @@ def run_optuna_stage(
         n_trials=25,
         seed=42,
         perturbed=False,
-        output_root="optuna_results"
+        output_root="optuna_results",
+        eval_mode=None
 ):
     # In the old version we explicitly wanted to only use 0train for hyperparameter optimization. That is no longer the case.
     # In the current code version, we can expect X and y to be split before run_optuna_stage is called.
@@ -187,6 +188,14 @@ def run_optuna_stage(
         # params[f"{param_prefix}train_split"] = None
         params[f"{param_prefix}verbose"] = 0
         # params[f"{param_prefix}callbacks"] = []
+        
+        # For CrossSubject evaluation, use only 5 epochs during optimization to speed up trials
+        from globals import get_max_epochs_for_dataset, DEFAULT_MAX_EPOCHS
+        if eval_mode == "CrossSubject":
+            params[f"{param_prefix}max_epochs"] = 5
+        else:
+            # Use normal max_epochs for other evaluation modes
+            params[f"{param_prefix}max_epochs"] = get_max_epochs_for_dataset(None, eval_mode=eval_mode) if eval_mode else DEFAULT_MAX_EPOCHS
         
         # Define model
         model.set_params(**params)
@@ -253,7 +262,8 @@ def alternate_optuna_stage(
         n_trials=25,
         seed=42,
         output_root="optuna_results",
-        dataset=None
+        dataset=None,
+        eval_mode=None
 ):
     noise_type = noise_dict["noise_type"]
     intensity = noise_dict["intensity"]
@@ -276,9 +286,13 @@ def alternate_optuna_stage(
         params = param_space_fn(trial, param_prefix)
         params[f"{param_prefix}train_split"] = None
         from globals import get_max_epochs_for_dataset, DEFAULT_MAX_EPOCHS
-        # Use dataset-specific max_epochs if dataset is provided, otherwise use default
-        max_epochs = get_max_epochs_for_dataset(dataset) if dataset else DEFAULT_MAX_EPOCHS
-        params[f"{param_prefix}max_epochs"] = max_epochs
+        # For CrossSubject evaluation, use only 5 epochs during optimization to speed up trials
+        if eval_mode == "CrossSubject":
+            params[f"{param_prefix}max_epochs"] = 5
+        else:
+            # Use dataset-specific max_epochs if dataset is provided, otherwise use default
+            max_epochs = get_max_epochs_for_dataset(dataset, eval_mode=eval_mode) if dataset else DEFAULT_MAX_EPOCHS
+            params[f"{param_prefix}max_epochs"] = max_epochs
         params[f"{param_prefix}verbose"] = 0
         params[f"{param_prefix}callbacks"] = []
 
@@ -1041,7 +1055,8 @@ def alternate_two_stage_optuna(
         output_root="optuna_results",
         arch_trials=10,
         train_trials=10,
-        dataset=None
+        dataset=None,
+        eval_mode=None
 ):
     noise_type = noise_dict["noise_type"]
     intensity = noise_dict["intensity"]
@@ -1062,7 +1077,8 @@ def alternate_two_stage_optuna(
         n_trials=arch_trials,
         seed=seed,
         output_root=output_root,
-        dataset=dataset
+        dataset=dataset,
+        eval_mode=eval_mode
     )
 
     print("\n[Stage 2] Training Optimization")
@@ -1089,7 +1105,8 @@ def alternate_two_stage_optuna(
         n_trials=train_trials,
         seed=seed,
         output_root=output_root,
-        dataset=dataset
+        dataset=dataset,
+        eval_mode=eval_mode
     )
     for k, v in arch_params.items():
         final_params[k] = v
@@ -1109,7 +1126,8 @@ def run_two_stage_optuna(
         arch_trials=10,
         train_trials=10,
         perturbed=False,
-        dataset=None
+        dataset=None,
+        eval_mode=None
 ):
     print("\n[Stage 1] Architecture Search")
     arch_param_space_fn = get_model_architecture_space(model_name)
@@ -1125,7 +1143,8 @@ def run_two_stage_optuna(
         n_trials=arch_trials,
         seed=seed,
         perturbed=perturbed,
-        output_root=output_root
+        output_root=output_root,
+        eval_mode=eval_mode
     )
 
     print("\n[Stage 2] Training Optimization")
@@ -1150,7 +1169,8 @@ def run_two_stage_optuna(
         n_trials=train_trials,
         seed=seed,
         perturbed=perturbed,
-        output_root=output_root
+        output_root=output_root,
+        eval_mode=eval_mode
     )
     for k, v in arch_params.items():
         final_params[k] = v
