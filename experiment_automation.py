@@ -23,6 +23,7 @@ from typing import Dict, List, Set, Tuple, Any, Optional
 from datetime import datetime
 from pathlib import Path
 import numpy as np
+from collections import defaultdict
 # Add project root to path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
@@ -34,8 +35,16 @@ from tqdm import tqdm
 class ExperimentAutomation:
     """Main class for experiment automation."""
     
-    def __init__(self, config_file: str = "experiment_config.yaml", preaggregated_results_file: str = None, local: bool = False, use_cached: bool = False):
-        """Initialize the automation system with configuration."""
+    def __init__(self, config_file: str = "experiment_config.yaml", preaggregated_results_file: str = None, local: bool = False, use_cached: bool = False, use_optimized: bool = True):
+        """Initialize the automation system with configuration.
+        
+        Args:
+            config_file: Path to configuration YAML file
+            preaggregated_results_file: Path to pre-aggregated results CSV (skips aggregation)
+            local: If True, generate Python script for local execution
+            use_cached: If True, use cached processed results
+            use_optimized: If True, use optimized multirun job-level approach (default: True)
+        """
         self.config_file = config_file
         self.config = self._load_config()
         self.existing_results = None
@@ -43,12 +52,15 @@ class ExperimentAutomation:
         self.preaggregated_results_file = preaggregated_results_file
         self.local = local
         self.use_cached = use_cached
+        self.use_optimized = use_optimized  # Use optimized approach by default
         # Performance optimization caches
         self._cached_noise_intensities = {}  # (dataset, noise_type) -> intensities array
         self._cached_existing_signatures = None
         self._cached_existing_df_normalized = None  # Normalized DataFrame for fast lookups
         self._cached_intensity_tolerance_map = None  # Intensity tolerance mapping
         self._cached_metadata = None  # Metadata for quick filtering (unique values, etc.)
+        # Optimized approach caches
+        self._cached_existing_index = None  # Indexed structure for fast lookups (optimized approach)
         # Cache file path
         self.cache_file = os.path.join(current_dir, ".experiment_cache.pkl")
         
@@ -58,16 +70,25 @@ class ExperimentAutomation:
         self._cached_existing_df_normalized = None
         self._cached_intensity_tolerance_map = None
         self._cached_metadata = None
+        self._cached_existing_index = None  # Optimized approach cache
         if hasattr(self, 'expected_test_perturb_results'):
             delattr(self, 'expected_test_perturb_results')
     
-    def _save_cache(self, df_normalized: pd.DataFrame, signatures: set, metadata: Dict[str, Any]):
-        """Save processed results to cache file."""
+    def _save_cache(self, df_normalized: pd.DataFrame, signatures: set, metadata: Dict[str, Any], existing_index: Dict = None):
+        """Save processed results to cache file.
+        
+        Args:
+            df_normalized: Normalized DataFrame for original approach
+            signatures: Set of signatures for original approach
+            metadata: Metadata dictionary
+            existing_index: Indexed structure for optimized approach (optional)
+        """
         try:
             cache_data = {
                 'df_normalized': df_normalized,
                 'signatures': signatures,
                 'metadata': metadata,
+                'existing_index': existing_index,  # Add optimized index to cache
                 'timestamp': datetime.now().isoformat()
             }
             with open(self.cache_file, 'wb') as f:
@@ -85,6 +106,10 @@ class ExperimentAutomation:
                 cache_data = pickle.load(f)
             print(f"[OK] Loaded processed results cache from {self.cache_file}")
             print(f"[INFO] Cache timestamp: {cache_data.get('timestamp', 'unknown')}")
+            # Load optimized index if available
+            if 'existing_index' in cache_data and cache_data['existing_index'] is not None:
+                self._cached_existing_index = cache_data['existing_index']
+                print("[INFO] Loaded optimized index from cache")
             return cache_data
         except Exception as e:
             print(f"[WARNING] Failed to load cache: {e}")
@@ -309,12 +334,331 @@ class ExperimentAutomation:
         # For now, return empty list - multirun jobs will be determined in identify_missing_experiments
         return []
     
+    def generate_expected_multirun_jobs(self) -> List[Dict[str, Any]]:
+        """
+        OPTIMIZED: Generate expected multirun jobs directly without generating all individual combinations.
+        This is much more efficient than generate_expected_experiments().
+        
+        Returns:
+            List of multirun job dictionaries
+        """
+        print("\n" + "="*60)
+        print("GENERATING EXPECTED MULTIRUN JOBS (OPTIMIZED)")
+        print("="*60)
+        
+        datasets = self.config['datasets']
+        models = self.config['models']
+        eval_modes = self.config['eval_modes']
+        seeds = self.config['seeds']
+        noise_types = self.config['noise_types']
+        tune_flags = [False, True]
+        
+        expected_jobs = []
+        
+        model_names = [model['name'] for model in models]
+        
+        print(f"[INFO] Generating multirun jobs from:")
+        print(f"   - Datasets: {len(datasets)}")
+        print(f"   - Models: {len(model_names)}")
+        print(f"   - Eval modes: {len(eval_modes)}")
+        print(f"   - Seeds: {len(seeds)}")
+        print(f"   - Tune flags: {len(tune_flags)}")
+        
+        for dataset_name, dataset_config in datasets.items():
+            subjects = dataset_config['subjects']
+            
+            for model_name in model_names:
+                for eval_mode in eval_modes:
+                    for seed in seeds:
+                        for tune_flag in tune_flags:
+                            if eval_mode == 'CrossSession' or eval_mode == 'WithinSession':
+                                # One job per subject
+                                for subject in subjects:
+                                    job = {
+                                        'dataset': dataset_name,
+                                        'paradigm': dataset_config['paradigm'],
+                                        'model': model_name,
+                                        'eval_mode': eval_mode,
+                                        'subjects': [subject],
+                                        'seed': seed,
+                                        'tune': tune_flag,
+                                        'noise_types': noise_types,  # All noise types
+                                        'mode': 'multirun'
+                                    }
+                                    expected_jobs.append(job)
+                            else:
+                                # CrossSubject: one job for all subjects
+                                job = {
+                                    'dataset': dataset_name,
+                                    'paradigm': dataset_config['paradigm'],
+                                    'model': model_name,
+                                    'eval_mode': eval_mode,
+                                    'subjects': subjects,
+                                    'seed': seed,
+                                    'tune': tune_flag,
+                                    'noise_types': noise_types,  # All noise types
+                                    'mode': 'multirun'
+                                }
+                                expected_jobs.append(job)
+        
+        print(f"[OK] Generated {len(expected_jobs)} expected multirun jobs")
+        return expected_jobs
+    
+    def _build_existing_index(self, existing_df: pd.DataFrame) -> Dict:
+        """
+        OPTIMIZED: Build an indexed structure for fast lookups of existing results.
+        Returns a nested dictionary structure for O(1) lookups.
+        
+        Structure: index[(dataset, model, eval_mode, seed, noise_type, is_tuned)][subject_key][intensity] = True
+        
+        Args:
+            existing_df: DataFrame with existing results
+            
+        Returns:
+            Nested dictionary index structure
+        """
+        print("[INFO] Building indexed structure for existing results (optimized)...")
+        
+        # Normalize columns
+        if 'eval_mode' in existing_df.columns:
+            existing_df = existing_df.copy()
+            existing_df['eval_mode_norm'] = existing_df['eval_mode'].str.replace('Evaluation', '', regex=False)
+        else:
+            existing_df['eval_mode_norm'] = 'Unknown'
+        
+        if 'mode' in existing_df.columns:
+            existing_df['is_tuned'] = existing_df['mode'].str.contains('_tune', na=False)
+            existing_df['mode_norm'] = existing_df['mode'].str.replace('_tune', '', regex=False)
+        else:
+            existing_df['is_tuned'] = False
+            existing_df['mode_norm'] = 'Unknown'
+        
+        # Check if 'tune' column exists (preferred), otherwise use inferred value
+        if 'tune' in existing_df.columns:
+            existing_df['is_tuned'] = existing_df['tune'].astype(bool)
+        
+        # Filter to test_perturb results only
+        test_perturb_mask = existing_df['mode_norm'] == 'test_perturb'
+        test_perturb_df = existing_df[test_perturb_mask].copy()
+        
+        if test_perturb_df.empty:
+            return {}
+        
+        # Build index structure: 
+        # index[(dataset, model, eval_mode, seed, noise_type, is_tuned)][subject_key][intensity] = True
+        index = defaultdict(lambda: defaultdict(lambda: set()))
+        
+        # Use vectorized operations to build index
+        for _, row in test_perturb_df.iterrows():
+            dataset = row.get('dataset', '')
+            model = row.get('model', '')
+            eval_mode = row.get('eval_mode_norm', '')
+            seed = row.get('seed', '')
+            noise_type = row.get('noise_type', '')
+            is_tuned = row.get('is_tuned', False)
+            intensity = row.get('intensity', None)
+            
+            if pd.isna(intensity):
+                continue
+                
+            # Create subject key based on eval_mode
+            if eval_mode == 'CrossSubject':
+                # For CrossSubject, use eval_subjects or session
+                if 'eval_subjects' in row and pd.notna(row['eval_subjects']):
+                    subject_key = ('eval_subjects', str(row['eval_subjects']))
+                elif 'session' in row and pd.notna(row['session']):
+                    subject_key = ('session', str(row['session']))
+                else:
+                    subject_key = ('unknown', '')
+            elif 'subject' in row and pd.notna(row['subject']):
+                subject_key = ('subject', int(row['subject']))
+            else:
+                subject_key = ('unknown', '')
+            
+            # Add to index
+            key = (dataset, model, eval_mode, seed, noise_type, is_tuned)
+            index[key][subject_key].add(float(intensity))
+        
+        return dict(index)
+    
+    def _check_multirun_job_complete(self, job_key: Tuple, existing_index: Dict, 
+                                     expected_intensities: np.ndarray) -> bool:
+        """
+        OPTIMIZED: Check if a multirun job has produced all expected results.
+        
+        Args:
+            job_key: (dataset, model, eval_mode, seed, noise_type, is_tuned, subject_info)
+            existing_index: Indexed structure of existing results
+            expected_intensities: Array of expected intensities
+            
+        Returns:
+            True if job appears complete, False otherwise
+        """
+        dataset, model, eval_mode, seed, noise_type, is_tuned, subject_info = job_key
+        
+        # Look up in index
+        index_key = (dataset, model, eval_mode, seed, noise_type, is_tuned)
+        
+        if index_key not in existing_index:
+            return False
+        
+        # Check if we have results for the subject
+        subject_results = existing_index[index_key]
+        
+        # Find matching subject key
+        found_subject = False
+        matching_subject_key = None
+        for subject_key in subject_results:
+            subject_type, subject_value = subject_key
+            
+            if subject_type == 'subject' and subject_info['type'] == 'single':
+                if subject_value == subject_info['value']:
+                    found_subject = True
+                    matching_subject_key = subject_key
+                    break
+            elif subject_type == 'eval_subjects' and subject_info['type'] == 'multi':
+                # For CrossSubject, check if eval_subjects is subset of expected subjects
+                existing_subjects = set(int(s) for s in str(subject_value).split(',') if s.isdigit())
+                expected_subjects = set(subject_info['value'])
+                if existing_subjects.issubset(expected_subjects):
+                    found_subject = True
+                    matching_subject_key = subject_key
+                    break
+        
+        if not found_subject:
+            return False
+        
+        # Check if we have all expected intensities (with tolerance)
+        existing_intensities = subject_results[matching_subject_key]
+        
+        # Use vectorized comparison for intensity matching
+        existing_arr = np.array(list(existing_intensities))
+        
+        # For each expected intensity, check if close match exists
+        for expected_int in expected_intensities:
+            if not np.any(np.isclose(existing_arr, expected_int, atol=1e-4)):
+                return False
+        
+        return True
+    
+    def identify_missing_experiments_optimized(self) -> List[Dict[str, Any]]:
+        """
+        OPTIMIZED: Identify missing multirun jobs directly without generating all individual combinations.
+        Works at multirun job level using vectorized operations.
+        
+        Returns:
+            List of missing multirun job dictionaries
+        """
+        print("\n" + "="*60)
+        print("IDENTIFYING MISSING EXPERIMENTS (OPTIMIZED)")
+        print("="*60)
+        
+        # Generate expected multirun jobs (much fewer than individual combinations)
+        expected_jobs = self.generate_expected_multirun_jobs()
+        
+        if self.existing_results is None or self.existing_results.empty:
+            print("[WARNING] No existing results found, all multirun jobs are missing")
+            self.missing_experiments = expected_jobs
+            return expected_jobs
+        
+        # Build indexed structure for fast lookups
+        if self._cached_existing_index is None:
+            # Try to load from cache first
+            if self.use_cached:
+                cache_data = self._load_cache()
+                if cache_data and 'existing_index' in cache_data and cache_data['existing_index'] is not None:
+                    self._cached_existing_index = cache_data['existing_index']
+                    print("[INFO] Using cached existing index")
+                else:
+                    # Build index if not in cache
+                    self._cached_existing_index = self._build_existing_index(self.existing_results)
+            else:
+                # Build index
+                self._cached_existing_index = self._build_existing_index(self.existing_results)
+        else:
+            print("[INFO] Using cached existing index")
+        
+        existing_index = self._cached_existing_index
+        
+        # Find missing multirun jobs
+        print("[INFO] Checking multirun job completeness...")
+        missing_jobs = []
+        
+        for job in tqdm(expected_jobs, desc="Checking multirun jobs"):
+            dataset = job['dataset']
+            model = job['model']
+            eval_mode = job['eval_mode']
+            seed = job['seed']
+            tune = job['tune']
+            noise_types = job['noise_types']
+            subjects = job['subjects']
+            
+            # Check if job is complete for all noise types
+            job_complete = True
+            
+            for noise_type in noise_types:
+                # Get expected intensities for this dataset and noise type
+                expected_intensities = self._get_noise_intensities_cached(dataset, noise_type)
+                
+                # Build job key
+                if eval_mode == 'CrossSession' or eval_mode == 'WithinSession':
+                    subject_info = {'type': 'single', 'value': subjects[0]}
+                else:
+                    subject_info = {'type': 'multi', 'value': subjects}
+                
+                job_key = (dataset, model, eval_mode, seed, noise_type, tune, subject_info)
+                
+                # Check if this job has produced all expected results
+                if not self._check_multirun_job_complete(job_key, existing_index, expected_intensities):
+                    job_complete = False
+                    break
+            
+            if not job_complete:
+                missing_jobs.append(job)
+        
+        print(f"[OK] Found {len(missing_jobs)} missing multirun jobs out of {len(expected_jobs)} total expected")
+        
+        # Save cache for future use (if not loading from cache)
+        if not self.use_cached and self._cached_existing_index is not None:
+            # Also save the normalized DataFrame and signatures for backward compatibility
+            # Build minimal normalized DataFrame from existing results
+            if self._cached_existing_df_normalized is None:
+                # Create a minimal normalized DataFrame for cache compatibility
+                if 'mode' in self.existing_results.columns:
+                    test_perturb_df = self.existing_results[
+                        self.existing_results['mode'].str.replace('_tune', '', regex=False) == 'test_perturb'
+                    ].copy()
+                else:
+                    test_perturb_df = pd.DataFrame()
+                self._cached_existing_df_normalized = test_perturb_df
+            # Save cache with optimized index
+            metadata = {}
+            if not self._cached_existing_df_normalized.empty:
+                metadata = self._extract_metadata(self._cached_existing_df_normalized)
+            self._save_cache(
+                self._cached_existing_df_normalized,
+                set(),  # Signatures not needed for optimized approach
+                metadata,
+                self._cached_existing_index
+            )
+        
+        self.missing_experiments = missing_jobs
+        return missing_jobs
+    
     def identify_missing_experiments(self) -> List[Dict[str, Any]]:
         """
         Identify missing test_perturb results and map them to required multirun jobs.
+        
+        Uses optimized approach by default (use_optimized=True) which works at multirun job level.
+        Set use_optimized=False to use the original approach that generates all individual combinations.
         """
+        # Use optimized approach by default
+        if self.use_optimized:
+            return self.identify_missing_experiments_optimized()
+        
+        # Original approach (for backward compatibility)
         print("\n" + "="*60)
-        print("IDENTIFYING MISSING TEST_PERTURB RESULTS")
+        print("IDENTIFYING MISSING TEST_PERTURB RESULTS (ORIGINAL APPROACH)")
         print("="*60)
         
         # Generate expected test_perturb results (cached if already generated)
@@ -1280,7 +1624,7 @@ class ExperimentAutomation:
                     if exp['eval_mode'] == 'CrossSession':
                         if exp['tune']:
                             # CrossSession with tuning: ~2.5 days / 5 = ~12 hours
-                            slurm_args = "--time=0-12:00:00 --mem=12G"
+                            slurm_args = "--time=3-12:00:00 --mem=12G"
                         else:
                             # CrossSession without tuning: ~3 hours * 3 / 5 = ~1.8 hours
                             slurm_args = "--time=0-02:00:00 --mem=12G"
@@ -1288,7 +1632,7 @@ class ExperimentAutomation:
                     elif exp['eval_mode'] == 'WithinSession':
                         if exp['tune']:
                             # WithinSession with tuning: ~12.5 days / 5 = ~2.5 days
-                            slurm_args = "--time=2-12:00:00 --mem=12G"
+                            slurm_args = "--time=5-12:00:00 --mem=12G"
                         else:
                             # WithinSession without tuning: ~15 hours * 3 / 5 = ~9 hours
                             slurm_args = "--time=0-10:00:00 --mem=12G"
@@ -1307,7 +1651,7 @@ class ExperimentAutomation:
                             slurm_args = "--time=3-00:00:00 --mem=12G"
                         else:
                             # CrossSession without tuning: ~3 hours / 5 = ~36 minutes
-                            slurm_args = "--time=0-01:00:00 --mem=12G"
+                            slurm_args = "--time=0-08:00:00 --mem=12G"
                             
                     elif exp['eval_mode'] == 'WithinSession':
                         if exp['tune']:
@@ -1441,11 +1785,14 @@ def main():
                        help="Generate Python script for local execution instead of sbatch script")
     parser.add_argument("--use-cached", action="store_true",
                        help="Use cached processed results (skips aggregation and signature generation)")
+    parser.add_argument("--use-original", action="store_true",
+                       help="Use original approach (generates all individual combinations). Default is optimized approach.")
     
     args = parser.parse_args()
     
     # Initialize automation system
-    automation = ExperimentAutomation(args.config, args.preaggregated_results, args.local, args.use_cached)
+    use_optimized = not args.use_original  # Default to optimized unless --use-original is specified
+    automation = ExperimentAutomation(args.config, args.preaggregated_results, args.local, args.use_cached, use_optimized)
     
     if args.aggregate_only:
         # Only aggregate results (ignore pre-aggregated file for this mode)
