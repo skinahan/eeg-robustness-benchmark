@@ -24,6 +24,7 @@ import json
 import hashlib
 import torch
 import pickle
+import re
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple, List
 from datetime import datetime
@@ -89,6 +90,14 @@ class ModelCacheManager:
         # between different folds of the same session
         if eval_mode == "WithinSession" and fold_idx is not None:
             session_key = f"{session}_fold{fold_idx}"
+        elif eval_mode == "CrossSubject" or eval_mode == "CrossSubjectEvaluation":
+            # Use short session identifier for CrossSubject to avoid long paths
+            # Extract fold number from session string (e.g., "fold_0_eval_subjects_..." -> "fold_0")
+            match = re.match(r'fold_(\d+)', session)
+            if match:
+                session_key = f"fold_{match.group(1)}"
+            else:
+                session_key = session  # Fallback to original if pattern doesn't match
         else:
             session_key = session
         
@@ -445,15 +454,33 @@ class ModelCacheManager:
         checkpoint_path = self._get_cache_path(dataset, model_name, seed, subject, session, eval_mode, tuned, checkpoint_type, fold_idx)
         config_path = self._get_config_path(checkpoint_path)
         
+        # For CrossSubject, also check old path format (with full session string) for backwards compatibility
+        checkpoint_path_old = None
+        config_path_old = None
+        if (eval_mode == "CrossSubject" or eval_mode == "CrossSubjectEvaluation") and 'fold_' in session and 'eval_subjects' in session:
+            # Create old path format with full session string
+            tuned_suffix = "_tuned" if tuned else "_baseline"
+            type_suffix = f"_{checkpoint_type}" if checkpoint_type != "final" else ""
+            cache_dir_old = self.cache_root / dataset / model_name / f"seed_{seed}" / f"subject_{subject:03d}" / eval_mode
+            checkpoint_path_old = cache_dir_old / f"session_{session}{tuned_suffix}{type_suffix}.pt"
+            config_path_old = self._get_config_path(checkpoint_path_old)
+        
         # Debug output
         print(f"[CACHE] Looking for checkpoint at: {checkpoint_path}")
         print(f"[CACHE] Config file at: {config_path}")
         print(f"[CACHE] Checkpoint exists: {checkpoint_path.exists()}, Config exists: {config_path.exists()}")
         
+        # Try new path first, then old path for backwards compatibility
         if not checkpoint_path.exists() or not config_path.exists():
-            self.logger.info(f"No cached model found: {checkpoint_path}")
-            print(f"[CACHE] No cached model found: {checkpoint_path}")
-            return None, False
+            if checkpoint_path_old is not None and checkpoint_path_old.exists() and config_path_old.exists():
+                # Use old path format
+                checkpoint_path = checkpoint_path_old
+                config_path = config_path_old
+                print(f"[CACHE] Using old path format for backwards compatibility: {checkpoint_path}")
+            else:
+                self.logger.info(f"No cached model found: {checkpoint_path}")
+                print(f"[CACHE] No cached model found: {checkpoint_path}")
+                return None, False
         
         try:
             # Load configuration

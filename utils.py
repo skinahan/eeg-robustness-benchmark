@@ -1,6 +1,38 @@
 import os
 import pandas as pd
 import numpy as np
+import re
+
+
+def get_short_session_id(session: str, eval_mode: str = 'CrossSession') -> str:
+    """
+    Create a short session identifier for CrossSubject evaluation to avoid long file paths.
+    
+    For CrossSubject evaluation, converts long session strings like:
+    "fold_0_eval_subjects_1,2,3,4,5,6,7,8,9,10,11,12,13,14" 
+    to short identifiers like: "fold_0"
+    
+    The full eval_subjects information is preserved in the CSV file data itself,
+    so we don't lose any information by shortening the path.
+    
+    For other eval modes, returns the session unchanged.
+    
+    Args:
+        session: Full session identifier string
+        eval_mode: Evaluation mode (CrossSubject, CrossSession, WithinSession, etc.)
+        
+    Returns:
+        Short session identifier for CrossSubject, original session for others
+    """
+    # Only shorten for CrossSubject evaluation
+    if eval_mode == 'CrossSubject' or eval_mode == 'CrossSubjectEvaluation':
+        # Extract fold number from session string (e.g., "fold_0_eval_subjects_..." -> "fold_0")
+        match = re.match(r'fold_(\d+)', session)
+        if match:
+            return f"fold_{match.group(1)}"
+        # Fallback: if pattern doesn't match, return original (shouldn't happen in normal operation)
+        return session
+    return session
 
 
 def create_hdf5_model_path(model, seed, session, mode, session_type='WithinSessionEvaluation', paradigm='MotorImagery', dataset='BNCI2014_001', others=[]):
@@ -28,6 +60,10 @@ def create_output_path(model, seed, subject, session, mode, session_type='Within
     if not session_type.endswith("Evaluation"):
         session_type = f"{session_type}Evaluation"
 
+    # Use short session identifier for CrossSubject to avoid long paths
+    eval_mode = session_type.replace("Evaluation", "")
+    short_session = get_short_session_id(session, eval_mode)
+
     subject_str = f"sub-{int(subject):03d}"
     full_list = [
         "results",
@@ -37,7 +73,7 @@ def create_output_path(model, seed, subject, session, mode, session_type='Within
         session_type,
         str(seed),
         subject_str,
-        session,
+        short_session,  # Use shortened session for path
         mode
     ]
    
