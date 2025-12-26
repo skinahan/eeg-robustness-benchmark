@@ -63,6 +63,7 @@ class ExperimentAutomation:
         self._cached_existing_index = None  # Indexed structure for fast lookups (optimized approach)
         # Cache file path
         self.cache_file = os.path.join(current_dir, ".experiment_cache.pkl")
+        print(f"Expecting: {self.cache_file}")
         
     def _invalidate_caches(self):
         """Invalidate all performance caches."""
@@ -106,14 +107,46 @@ class ExperimentAutomation:
                 cache_data = pickle.load(f)
             print(f"[OK] Loaded processed results cache from {self.cache_file}")
             print(f"[INFO] Cache timestamp: {cache_data.get('timestamp', 'unknown')}")
-            # Load optimized index if available
-            if 'existing_index' in cache_data and cache_data['existing_index'] is not None:
-                self._cached_existing_index = cache_data['existing_index']
-                print("[INFO] Loaded optimized index from cache")
             return cache_data
         except Exception as e:
             print(f"[WARNING] Failed to load cache: {e}")
             return None
+    
+    def _apply_cache_data(self, cache_data: Dict[str, Any]) -> None:
+        """Apply cached data to instance variables.
+        
+        Args:
+            cache_data: Dictionary containing cached data
+        """
+        # Load optimized index if available
+        if 'existing_index' in cache_data and cache_data['existing_index'] is not None:
+            self._cached_existing_index = cache_data['existing_index']
+            print("[INFO] Loaded optimized index from cache")
+        
+        # Load normalized DataFrame if available
+        if 'df_normalized' in cache_data and cache_data['df_normalized'] is not None:
+            self._cached_existing_df_normalized = cache_data['df_normalized']
+            print("[INFO] Loaded normalized DataFrame from cache")
+        
+        # Load signatures if available
+        if 'signatures' in cache_data and cache_data['signatures'] is not None:
+            self._cached_existing_signatures = cache_data['signatures']
+            print("[INFO] Loaded signatures from cache")
+        
+        # Load metadata if available
+        if 'metadata' in cache_data and cache_data['metadata'] is not None:
+            self._cached_metadata = cache_data['metadata']
+            print("[INFO] Loaded metadata from cache")
+        
+        # Populate existing_results from cached data for compatibility
+        # Prefer df_normalized if available, otherwise use empty DataFrame
+        if self._cached_existing_df_normalized is not None and not self._cached_existing_df_normalized.empty:
+            self.existing_results = self._cached_existing_df_normalized.copy()
+            print(f"[INFO] Populated existing_results from cache ({len(self.existing_results)} rows)")
+        elif self.existing_results is None or self.existing_results.empty:
+            # If no cached DataFrame, create empty DataFrame for compatibility
+            self.existing_results = pd.DataFrame()
+            print("[INFO] No cached DataFrame available, using empty DataFrame")
     
     def _extract_metadata(self, df: pd.DataFrame) -> Dict[str, Any]:
         """Extract metadata for quick filtering from DataFrame."""
@@ -564,27 +597,31 @@ class ExperimentAutomation:
         # Generate expected multirun jobs (much fewer than individual combinations)
         expected_jobs = self.generate_expected_multirun_jobs()
         
-        if self.existing_results is None or self.existing_results.empty:
-            print("[WARNING] No existing results found, all multirun jobs are missing")
-            self.missing_experiments = expected_jobs
-            return expected_jobs
-        
         # Build indexed structure for fast lookups
+        # Check if we have cached index first (even if existing_results is empty)
         if self._cached_existing_index is None:
-            # Try to load from cache first
+            # Try to load from cache if use_cached flag is set
             if self.use_cached:
                 cache_data = self._load_cache()
-                if cache_data and 'existing_index' in cache_data and cache_data['existing_index'] is not None:
-                    self._cached_existing_index = cache_data['existing_index']
-                    print("[INFO] Using cached existing index")
-                else:
-                    # Build index if not in cache
-                    self._cached_existing_index = self._build_existing_index(self.existing_results)
-            else:
-                # Build index
+                if cache_data:
+                    self._apply_cache_data(cache_data)
+            
+            # Build index if still not available
+            if self._cached_existing_index is None:
+                if self.existing_results is None or self.existing_results.empty:
+                    print("[WARNING] No existing results found and no cached index, all multirun jobs are missing")
+                    self.missing_experiments = expected_jobs
+                    return expected_jobs
+                # Build index from existing results
                 self._cached_existing_index = self._build_existing_index(self.existing_results)
         else:
             print("[INFO] Using cached existing index")
+        
+        # Verify we have a valid index (should not be None at this point, but check for empty dict)
+        if self._cached_existing_index is None or len(self._cached_existing_index) == 0:
+            print("[WARNING] No existing index available, all multirun jobs are missing")
+            self.missing_experiments = expected_jobs
+            return expected_jobs
         
         existing_index = self._cached_existing_index
         
@@ -1732,9 +1769,13 @@ class ExperimentAutomation:
         # Step 1: Load existing results (either aggregate or load pre-aggregated)
         if self.use_cached:
             print("[INFO] Using cached results (skipping aggregation)")
-            # Cache will be loaded in identify_missing_experiments
-            # Create minimal existing_results for compatibility
-            self.existing_results = pd.DataFrame()
+            # Load cache data and apply it to instance variables
+            cache_data = self._load_cache()
+            if cache_data:
+                self._apply_cache_data(cache_data)
+            else:
+                print("[WARNING] Cache file not found or failed to load, using empty results")
+                self.existing_results = pd.DataFrame()
         elif self.preaggregated_results_file:
             self.load_preaggregated_results()
         else:
@@ -1811,7 +1852,13 @@ def main():
         # Only identify missing experiments
         if args.use_cached:
             print("[INFO] Using cached results (skipping aggregation)")
-            automation.existing_results = pd.DataFrame()
+            # Load cache data and apply it to instance variables
+            cache_data = automation._load_cache()
+            if cache_data:
+                automation._apply_cache_data(cache_data)
+            else:
+                print("[WARNING] Cache file not found or failed to load, using empty results")
+                automation.existing_results = pd.DataFrame()
         elif args.preaggregated_results:
             automation.load_preaggregated_results()
         else:
