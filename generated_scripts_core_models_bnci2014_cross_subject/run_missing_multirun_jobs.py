@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 Generated Python automation script for local experiment execution
-Generated on: 2025-12-04 20:11:01
-Total missing multirun jobs: 15
+Generated on: 2025-12-26 13:56:33
+Total missing multirun jobs: 0
 Non-tuned jobs: 0
-Tuned jobs: 15
+Tuned jobs: 0
 OPTIMIZED: Runs non-tuned jobs first, aggregates, then runs tuned jobs
 """
 
@@ -105,9 +105,9 @@ def run_single_experiment(exp_config: Dict[str, Any], job_num: int, total_jobs: 
 
 def run_experiments():
     """Run all missing experiments in two phases: non-tuned first, then tuned."""
-    total_jobs = 15
+    total_jobs = 0
     non_tuned_jobs = 0
-    tuned_jobs = 15
+    tuned_jobs = 0
     print(f'Starting local experiment execution...')
     print(f'Total multirun jobs to execute: {total_jobs}')
     print(f'Non-tuned jobs: {non_tuned_jobs}')
@@ -118,141 +118,6 @@ def run_experiments():
     ]
 
     tuned_experiments = [
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'MotorImagery'
-        },
-        {
-            'dataset': 'BNCI2014_001',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'MotorImagery'
-        },
     ]
 
     failed_jobs = []

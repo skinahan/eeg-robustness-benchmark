@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Generated Python automation script for local experiment execution
-Generated on: 2025-12-04 16:37:45
+Generated on: 2025-12-26 14:02:07
 Total missing multirun jobs: 1290
 Non-tuned jobs: 645
 Tuned jobs: 645
@@ -118,280 +118,10 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [30],
+            'subjects': [1],
             'tune': False,
-            'model': 'reegnet',
+            'model': 'eegnet',
             'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
             'paradigm': 'ERP'
         },
         {
@@ -399,53 +129,8 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [2],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -454,25 +139,25 @@ def run_experiments():
             'subjects': [3],
             'tune': False,
             'model': 'eegnet',
-            'seed': 500,
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [9],
+            'subjects': [4],
             'tune': False,
             'model': 'eegnet',
-            'seed': 200,
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [32],
+            'subjects': [5],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -482,69 +167,6 @@ def run_experiments():
             'tune': False,
             'model': 'eegnet',
             'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
             'paradigm': 'ERP'
         },
         {
@@ -553,439 +175,7 @@ def run_experiments():
             'subjects': [7],
             'tune': False,
             'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'eegnet',
             'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
             'paradigm': 'ERP'
         },
         {
@@ -994,169 +184,7 @@ def run_experiments():
             'subjects': [8],
             'tune': False,
             'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'reegnet',
             'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
             'paradigm': 'ERP'
         },
         {
@@ -1165,889 +193,16 @@ def run_experiments():
             'subjects': [9],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'cnn_ncp',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
+            'subjects': [10],
             'tune': False,
             'model': 'eegnet',
             'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
             'paradigm': 'ERP'
         },
         {
@@ -2064,143 +219,35 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [12],
             'tune': False,
-            'model': 'reegnet',
+            'model': 'eegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [6],
+            'subjects': [13],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'reegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [34],
+            'subjects': [14],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'reegnet',
+            'model': 'eegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
+            'subjects': [15],
             'tune': False,
             'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -2215,7 +262,79 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [1],
+            'subjects': [17],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
             'tune': False,
             'model': 'eegnet',
             'seed': 100,
@@ -2227,322 +346,7 @@ def run_experiments():
             'subjects': [26],
             'tune': False,
             'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'cnn_ncp',
             'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -2551,1069 +355,16 @@ def run_experiments():
             'subjects': [27],
             'tune': False,
             'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'reegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
+            'subjects': [28],
             'tune': False,
             'model': 'eegnet',
             'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -3622,7 +373,88 @@ def run_experiments():
             'subjects': [29],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -3630,44 +462,44 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [39],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [16],
+            'subjects': [40],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -3675,26 +507,179 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [1],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
+            'model': 'eegnet',
+            'seed': 200,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [22],
+            'subjects': [2],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 200,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [37],
+            'subjects': [3],
             'tune': False,
             'model': 'eegnet',
-            'seed': 400,
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
             'paradigm': 'ERP'
         },
         {
@@ -3703,22 +688,229 @@ def run_experiments():
             'subjects': [21],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
             'subjects': [3],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
             'tune': False,
             'model': 'eegnet',
             'seed': 300,
@@ -3729,43 +921,52 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [4],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 300,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [36],
+            'subjects': [5],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 300,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [15],
+            'subjects': [6],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
+            'model': 'eegnet',
+            'seed': 300,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [38],
+            'subjects': [7],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
+            'model': 'eegnet',
+            'seed': 300,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [35],
+            'subjects': [8],
             'tune': False,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'eegnet',
             'seed': 300,
             'paradigm': 'ERP'
         },
@@ -3775,15 +976,6 @@ def run_experiments():
             'subjects': [10],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'cnn_ncp',
             'seed': 300,
             'paradigm': 'ERP'
         },
@@ -3792,8 +984,17 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [11],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
             'paradigm': 'ERP'
         },
         {
@@ -3801,14 +1002,50 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [13],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
+            'model': 'eegnet',
+            'seed': 300,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [34],
+            'subjects': [14],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
             'tune': False,
             'model': 'eegnet',
             'seed': 300,
@@ -3828,17 +1065,188 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [20],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
+            'model': 'eegnet',
+            'seed': 300,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [8],
+            'subjects': [21],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
             'paradigm': 'ERP'
         },
         {
@@ -3853,19 +1261,118 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [10],
+            'subjects': [42],
             'tune': False,
-            'model': 'reegnet',
+            'model': 'eegnet',
             'seed': 300,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [33],
+            'subjects': [43],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
@@ -3873,8 +1380,134 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [12],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
@@ -3889,37 +1522,10 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [9],
+            'subjects': [28],
             'tune': False,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
             'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -3928,58 +1534,76 @@ def run_experiments():
             'subjects': [29],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'reegnet',
             'seed': 400,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
+            'subjects': [30],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [15],
+            'subjects': [31],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
             'tune': False,
             'model': 'eegnet',
             'seed': 400,
@@ -3991,304 +1615,7 @@ def run_experiments():
             'subjects': [38],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'cnn_ncp',
             'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
             'paradigm': 'ERP'
         },
         {
@@ -4303,28 +1630,10 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [17],
+            'subjects': [40],
             'tune': False,
             'model': 'eegnet',
             'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -4332,105 +1641,6 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [41],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
             'model': 'eegnet',
             'seed': 400,
             'paradigm': 'ERP'
@@ -4438,109 +1648,10 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
+            'subjects': [42],
             'tune': False,
             'model': 'eegnet',
             'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -4548,80 +1659,8 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [43],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
             'model': 'eegnet',
             'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -4629,350 +1668,8 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [1],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
             'model': 'eegnet',
             'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
             'paradigm': 'ERP'
         },
         {
@@ -4980,26 +1677,8 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [2],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -5007,68 +1686,14 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [3],
             'tune': False,
-            'model': 'reegnet',
+            'model': 'eegnet',
             'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
+            'subjects': [4],
             'tune': False,
             'model': 'eegnet',
             'seed': 500,
@@ -5079,8 +1704,17 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [5],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -5088,70 +1722,43 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [7],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
+            'subjects': [8],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [36],
+            'subjects': [9],
             'tune': False,
             'model': 'eegnet',
-            'seed': 400,
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [37],
+            'subjects': [10],
             'tune': False,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'eegnet',
             'seed': 500,
             'paradigm': 'ERP'
         },
@@ -5161,16 +1768,79 @@ def run_experiments():
             'subjects': [12],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [24],
+            'subjects': [13],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -5185,43 +1855,7 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
+            'subjects': [22],
             'tune': False,
             'model': 'eegnet',
             'seed': 500,
@@ -5230,10 +1864,46 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [7],
+            'subjects': [23],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -5242,52 +1912,7 @@ def run_experiments():
             'subjects': [28],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -5302,16 +1927,16 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [39],
+            'subjects': [30],
             'tune': False,
-            'model': 'reegnet',
+            'model': 'eegnet',
             'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [14],
+            'subjects': [31],
             'tune': False,
             'model': 'eegnet',
             'seed': 500,
@@ -5323,88 +1948,7 @@ def run_experiments():
             'subjects': [32],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'reegnet',
             'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -5419,7 +1963,7 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [19],
+            'subjects': [34],
             'tune': False,
             'model': 'eegnet',
             'seed': 500,
@@ -5428,18 +1972,162 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [8],
+            'subjects': [35],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [19],
+            'subjects': [36],
             'tune': False,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'reegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
@@ -5449,58 +2137,13 @@ def run_experiments():
             'subjects': [10],
             'tune': False,
             'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'eegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
+            'subjects': [11],
             'tune': False,
             'model': 'reegnet',
             'seed': 100,
@@ -5509,19 +2152,19 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [28],
+            'subjects': [12],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [39],
+            'subjects': [13],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -5529,50 +2172,14 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [14],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
             'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'cnn_ncp',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [4],
+            'subjects': [15],
             'tune': False,
             'model': 'reegnet',
             'seed': 100,
@@ -5581,18 +2188,81 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [26],
+            'subjects': [16],
             'tune': False,
             'model': 'reegnet',
-            'seed': 300,
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [38],
+            'subjects': [17],
             'tune': False,
-            'model': 'cnn_ncp',
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'reegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
@@ -5608,45 +2278,54 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [29],
+            'subjects': [26],
             'tune': False,
             'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'eegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [3],
+            'subjects': [27],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [9],
+            'subjects': [28],
             'tune': False,
-            'model': 'eegnet',
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'reegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
@@ -5664,7 +2343,574 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [33],
             'tune': False,
-            'model': 'eegnet',
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'reegnet',
             'seed': 300,
             'paradigm': 'ERP'
         },
@@ -5673,14 +2919,113 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [11],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
+            'model': 'reegnet',
+            'seed': 300,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [2],
+            'subjects': [12],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
             'tune': False,
             'model': 'reegnet',
             'seed': 300,
@@ -5698,16 +3043,7 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
+            'subjects': [25],
             'tune': False,
             'model': 'reegnet',
             'seed': 300,
@@ -5716,19 +3052,37 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [11],
+            'subjects': [26],
             'tune': False,
             'model': 'reegnet',
-            'seed': 500,
+            'seed': 300,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [7],
+            'subjects': [27],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
             'paradigm': 'ERP'
         },
         {
@@ -5743,7 +3097,1159 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
             'subjects': [28],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
             'tune': False,
             'model': 'cnn_ncp',
             'seed': 100,
@@ -5754,8 +4260,170 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [31],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
             'paradigm': 'ERP'
         },
         {
@@ -5763,8 +4431,170 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [7],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
             'paradigm': 'ERP'
         },
         {
@@ -5772,7 +4602,16 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [26],
             'tune': False,
-            'model': 'eegnet',
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'cnn_ncp',
             'seed': 200,
             'paradigm': 'ERP'
         },
@@ -5781,14 +4620,500 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [28],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
             'subjects': [5],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
             'tune': False,
             'model': 'cnn_ncp',
             'seed': 300,
@@ -5806,10 +5131,244 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [40],
+            'subjects': [42],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
@@ -5817,8 +5376,143 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [26],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
@@ -5826,8 +5520,269 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [42],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -5842,10 +5797,19 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [2],
+            'subjects': [30],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -5854,16 +5818,34 @@ def run_experiments():
             'subjects': [32],
             'tune': False,
             'model': 'cnn_ncp',
-            'seed': 100,
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [2],
+            'subjects': [33],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -5872,43 +5854,61 @@ def run_experiments():
             'subjects': [36],
             'tune': False,
             'model': 'cnn_ncp',
-            'seed': 100,
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [24],
+            'subjects': [37],
             'tune': False,
             'model': 'cnn_ncp',
-            'seed': 300,
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [3],
+            'subjects': [38],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [9],
+            'subjects': [39],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [11],
+            'subjects': [40],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -5917,7 +5917,7 @@ def run_experiments():
             'subjects': [43],
             'tune': False,
             'model': 'cnn_ncp',
-            'seed': 100,
+            'seed': 500,
             'paradigm': 'ERP'
         },
     ]
@@ -5926,2221 +5926,7 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
             'subjects': [1],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
             'tune': True,
             'model': 'eegnet',
             'seed': 100,
@@ -8150,546 +5936,6 @@ def run_experiments():
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
             'subjects': [2],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
             'tune': True,
             'model': 'eegnet',
             'seed': 100,
@@ -8700,35 +5946,26 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [3],
             'tune': True,
-            'model': 'reegnet',
+            'model': 'eegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [11],
+            'subjects': [4],
             'tune': True,
             'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'reegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [12],
+            'subjects': [5],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
+            'model': 'eegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -8737,115 +5974,88 @@ def run_experiments():
             'subjects': [6],
             'tune': True,
             'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'cnn_ncp',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
+            'subjects': [7],
             'tune': True,
             'model': 'eegnet',
-            'seed': 500,
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [40],
+            'subjects': [8],
             'tune': True,
             'model': 'eegnet',
-            'seed': 400,
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [17],
+            'subjects': [9],
             'tune': True,
             'model': 'eegnet',
-            'seed': 400,
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -8854,7 +6064,259 @@ def run_experiments():
             'subjects': [16],
             'tune': True,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
             'paradigm': 'ERP'
         },
         {
@@ -8863,7 +6325,43 @@ def run_experiments():
             'subjects': [2],
             'tune': True,
             'model': 'eegnet',
-            'seed': 400,
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
             'paradigm': 'ERP'
         },
         {
@@ -8871,8 +6369,332 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [7],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
             'paradigm': 'ERP'
         },
         {
@@ -8887,10 +6709,118 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [36],
+            'subjects': [2],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
             'paradigm': 'ERP'
         },
         {
@@ -8898,7 +6828,88 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [15],
             'tune': True,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'eegnet',
             'seed': 300,
             'paradigm': 'ERP'
         },
@@ -8906,6 +6917,690 @@ def run_experiments():
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
             'subjects': [25],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
             'tune': True,
             'model': 'eegnet',
             'seed': 500,
@@ -8916,23 +7611,50 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [16],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [2],
+            'subjects': [17],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [36],
+            'subjects': [18],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
             'tune': True,
             'model': 'eegnet',
             'seed': 500,
@@ -8952,133 +7674,25 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [23],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
             'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'reegnet',
             'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
+            'subjects': [24],
             'tune': True,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [11],
+            'subjects': [25],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'reegnet',
+            'model': 'eegnet',
             'seed': 500,
             'paradigm': 'ERP'
         },
@@ -9094,10 +7708,55 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [39],
+            'subjects': [27],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -9112,64 +7771,19 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
             'subjects': [34],
             'tune': True,
-            'model': 'reegnet',
+            'model': 'eegnet',
             'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [19],
+            'subjects': [35],
             'tune': True,
-            'model': 'reegnet',
+            'model': 'eegnet',
             'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -9178,42 +7792,6 @@ def run_experiments():
             'subjects': [36],
             'tune': True,
             'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'ERP'
         },
@@ -9222,44 +7800,8 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [37],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
             'model': 'eegnet',
             'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
             'paradigm': 'ERP'
         },
         {
@@ -9267,80 +7809,8 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [38],
             'tune': True,
-            'model': 'reegnet',
+            'model': 'eegnet',
             'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
             'paradigm': 'ERP'
         },
         {
@@ -9349,7 +7819,25 @@ def run_experiments():
             'subjects': [39],
             'tune': True,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -9364,132 +7852,6 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
             'subjects': [43],
             'tune': True,
             'model': 'eegnet',
@@ -9499,28 +7861,19 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [13],
+            'subjects': [1],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'cnn_ncp',
+            'model': 'reegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [19],
+            'subjects': [2],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -9529,160 +7882,7 @@ def run_experiments():
             'subjects': [3],
             'tune': True,
             'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'reegnet',
             'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
             'paradigm': 'ERP'
         },
         {
@@ -9697,46 +7897,55 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [16],
+            'subjects': [5],
             'tune': True,
             'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'eegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [35],
+            'subjects': [6],
             'tune': True,
             'model': 'reegnet',
-            'seed': 200,
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [37],
+            'subjects': [7],
             'tune': True,
             'model': 'reegnet',
-            'seed': 400,
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [12],
+            'subjects': [8],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -9744,8 +7953,17 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [11],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -9753,107 +7971,26 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [13],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'eegnet',
+            'model': 'reegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [20],
+            'subjects': [14],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [39],
+            'subjects': [15],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -9862,223 +7999,7 @@ def run_experiments():
             'subjects': [16],
             'tune': True,
             'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'eegnet',
             'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
             'paradigm': 'ERP'
         },
         {
@@ -10086,61 +8007,43 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [17],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
+            'subjects': [18],
             'tune': True,
             'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'cnn_ncp',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [24],
+            'subjects': [19],
             'tune': True,
-            'model': 'cnn_ncp',
+            'model': 'reegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [9],
+            'subjects': [20],
             'tune': True,
-            'model': 'cnn_ncp',
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'reegnet',
             'seed': 100,
             'paradigm': 'ERP'
         },
@@ -10156,258 +8059,6 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
             'subjects': [23],
             'tune': True,
             'model': 'reegnet',
@@ -10417,233 +8068,8 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
             'subjects': [24],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
             'model': 'reegnet',
             'seed': 100,
             'paradigm': 'ERP'
@@ -10651,28 +8077,10 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
+            'subjects': [25],
             'tune': True,
             'model': 'reegnet',
             'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -10680,70 +8088,7 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [26],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
             'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'cnn_ncp',
             'seed': 100,
             'paradigm': 'ERP'
         },
@@ -10752,8 +8097,17 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [27],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -10761,17 +8115,53 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [29],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [14],
+            'subjects': [30],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -10779,8 +8169,44 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [35],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -10795,18 +8221,99 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [3],
+            'subjects': [41],
             'tune': True,
-            'model': 'cnn_ncp',
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'reegnet',
             'seed': 200,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [24],
+            'subjects': [2],
             'tune': True,
-            'model': 'cnn_ncp',
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'reegnet',
             'seed': 200,
             'paradigm': 'ERP'
         },
@@ -10815,7 +8322,142 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [9],
             'tune': True,
-            'model': 'cnn_ncp',
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'reegnet',
             'seed': 200,
             'paradigm': 'ERP'
         },
@@ -10831,90 +8473,9 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [22],
+            'subjects': [26],
             'tune': True,
             'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'cnn_ncp',
             'seed': 200,
             'paradigm': 'ERP'
         },
@@ -10923,53 +8484,8 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [27],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
             'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
+            'seed': 200,
             'paradigm': 'ERP'
         },
         {
@@ -10978,94 +8494,13 @@ def run_experiments():
             'subjects': [28],
             'tune': True,
             'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'cnn_ncp',
             'seed': 200,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
+            'subjects': [29],
             'tune': True,
             'model': 'reegnet',
             'seed': 200,
@@ -11083,10 +8518,10 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [9],
+            'subjects': [31],
             'tune': True,
             'model': 'reegnet',
-            'seed': 500,
+            'seed': 200,
             'paradigm': 'ERP'
         },
         {
@@ -11095,69 +8530,42 @@ def run_experiments():
             'subjects': [32],
             'tune': True,
             'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'eegnet',
             'seed': 200,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [26],
+            'subjects': [33],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
+            'model': 'reegnet',
+            'seed': 200,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [41],
+            'subjects': [34],
             'tune': True,
-            'model': 'cnn_ncp',
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'reegnet',
             'seed': 200,
             'paradigm': 'ERP'
         },
@@ -11166,8 +8574,44 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [37],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
             'paradigm': 'ERP'
         },
         {
@@ -11182,10 +8626,1180 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [27],
+            'subjects': [43],
             'tune': True,
             'model': 'reegnet',
             'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -11200,145 +9814,28 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
             'subjects': [3],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 500,
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [24],
+            'subjects': [4],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 500,
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [30],
+            'subjects': [5],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
@@ -11353,9 +9850,9 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [8],
+            'subjects': [7],
             'tune': True,
-            'model': 'reegnet',
+            'model': 'cnn_ncp',
             'seed': 100,
             'paradigm': 'ERP'
         },
@@ -11365,24 +9862,177 @@ def run_experiments():
             'subjects': [8],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 300,
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [39],
+            'subjects': [9],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
+            'model': 'cnn_ncp',
+            'seed': 100,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [42],
+            'subjects': [10],
             'tune': True,
-            'model': 'eegnet',
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'cnn_ncp',
             'seed': 100,
             'paradigm': 'ERP'
         },
@@ -11391,8 +10041,368 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [28],
             'tune': True,
-            'model': 'eegnet',
+            'model': 'cnn_ncp',
             'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
             'paradigm': 'ERP'
         },
         {
@@ -11407,9 +10417,315 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
             'subjects': [37],
             'tune': True,
-            'model': 'eegnet',
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'cnn_ncp',
             'seed': 300,
             'paradigm': 'ERP'
         },
@@ -11425,10 +10741,10 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [42],
+            'subjects': [20],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 200,
+            'seed': 300,
             'paradigm': 'ERP'
         },
         {
@@ -11437,16 +10753,232 @@ def run_experiments():
             'subjects': [21],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 500,
+            'seed': 300,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [6],
+            'subjects': [22],
             'tune': True,
-            'model': 'reegnet',
+            'model': 'cnn_ncp',
             'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
@@ -11455,7 +10987,25 @@ def run_experiments():
             'subjects': [4],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 100,
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
@@ -11464,7 +11014,178 @@ def run_experiments():
             'subjects': [7],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 500,
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
@@ -11479,37 +11200,37 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
+            'subjects': [28],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 100,
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [35],
+            'subjects': [29],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
+            'model': 'cnn_ncp',
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [40],
+            'subjects': [30],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
@@ -11517,17 +11238,53 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [32],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
+            'model': 'cnn_ncp',
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [1],
+            'subjects': [33],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
@@ -11536,70 +11293,43 @@ def run_experiments():
             'subjects': [38],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 300,
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [24],
+            'subjects': [39],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 300,
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [9],
+            'subjects': [40],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 300,
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
+            'subjects': [41],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 100,
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [30],
+            'subjects': [42],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
+            'model': 'cnn_ncp',
+            'seed': 400,
             'paradigm': 'ERP'
         },
         {
@@ -11614,18 +11344,63 @@ def run_experiments():
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [6],
+            'subjects': [1],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [31],
+            'subjects': [2],
             'tune': True,
-            'model': 'reegnet',
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'ERP'
         },
@@ -11634,16 +11409,97 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [8],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [23],
+            'subjects': [9],
             'tune': True,
-            'model': 'reegnet',
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'ERP'
         },
@@ -11653,7 +11509,16 @@ def run_experiments():
             'subjects': [19],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 100,
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -11662,52 +11527,61 @@ def run_experiments():
             'subjects': [21],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'reegnet',
             'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [40],
+            'subjects': [22],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
@@ -11716,16 +11590,142 @@ def run_experiments():
             'subjects': [28],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 300,
+            'seed': 500,
             'paradigm': 'ERP'
         },
         {
             'dataset': 'BI2015a',
             'eval_mode': 'WithinSession',
-            'subjects': [26],
+            'subjects': [29],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'ERP'
+        },
+        {
+            'dataset': 'BI2015a',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'ERP'
         },
     ]
@@ -11733,6 +11733,10 @@ def run_experiments():
     failed_jobs = []
     successful_jobs = 0
     start_time = time.time()
+    
+    # Initialize phase counters for interruption handling
+    phase1_successful = 0
+    phase2_successful = 0
     
     # Run experiments in parallel with configurable workers
     max_workers = 4
@@ -11755,39 +11759,85 @@ def run_experiments():
         # Sort experiments by model to potentially improve cache efficiency
         experiments.sort(key=lambda x: x['model'])
         
-        with ProcessPoolExecutor(max_workers=max_workers) as executor:
-            # Submit all experiments to the executor
-            future_to_job = {}
-            for i, exp in enumerate(experiments):
-                job_num = i + 1 + job_offset
-                future = executor.submit(run_single_experiment, exp, job_num, total_jobs)
-                future_to_job[future] = (job_num, exp)
-            
-            # Process completed experiments as they finish
-            completed = 0
-            with tqdm(total=len(experiments), desc=f'{phase_name} progress') as pbar:
-                for future in as_completed(future_to_job):
-                    job_num, exp = future_to_job[future]
-                    completed += 1
+        try:
+            with ProcessPoolExecutor(max_workers=max_workers) as executor:
+                # Submit all experiments to the executor
+                future_to_job = {}
+                for i, exp in enumerate(experiments):
+                    job_num = i + 1 + job_offset
+                    future = executor.submit(run_single_experiment, exp, job_num, total_jobs)
+                    future_to_job[future] = (job_num, exp)
+                
+                # Process completed experiments as they finish
+                completed = 0
+                pending_futures = set(future_to_job.keys())
+                
+                try:
+                    with tqdm(total=len(experiments), desc=f'{phase_name} progress') as pbar:
+                        for future in as_completed(future_to_job):
+                            job_num, exp = future_to_job[future]
+                            completed += 1
+                            pending_futures.discard(future)
+                            
+                            try:
+                                result_job_num, success, error_msg, elapsed_time = future.result()
+                                
+                                if success:
+                                    batch_successful_jobs += 1
+                                else:
+                                    batch_failed_jobs.append((result_job_num, exp, error_msg))
+                                
+                            except Exception as e:
+                                print(f'\n[CRITICAL ERROR] Job {job_num} crashed: {e}')
+                                import traceback
+                                traceback.print_exc()
+                                batch_failed_jobs.append((job_num, exp, str(e)))
+                            
+                            pbar.update(1)
+                
+                except KeyboardInterrupt:
+                    print(f'\n\n[INTERRUPTED] KeyboardInterrupt received during {phase_name} phase')
+                    print(f'Completed {completed}/{len(experiments)} jobs before interruption')
+                    print(f'Cancelling {len(pending_futures)} pending jobs...')
                     
-                    try:
-                        result_job_num, success, error_msg, elapsed_time = future.result()
-                        
-                        if success:
-                            batch_successful_jobs += 1
-                        else:
-                            batch_failed_jobs.append((result_job_num, exp, error_msg))
-                        
-                    except Exception as e:
-                        print(f'\n[CRITICAL ERROR] Job {job_num} crashed: {e}')
-                        import traceback
-                        traceback.print_exc()
-                        batch_failed_jobs.append((job_num, exp, str(e)))
+                    # Cancel all pending futures
+                    cancelled_count = 0
+                    for future in pending_futures:
+                        if future.cancel():
+                            cancelled_count += 1
                     
-                    pbar.update(1)
+                    print(f'Cancelled {cancelled_count} pending jobs')
+                    print(f'Waiting for {len(pending_futures) - cancelled_count} running jobs to complete...')
                     
-            # Cleanup after batch
+                    # Wait for running jobs to complete (with timeout)
+                    running_futures = [f for f in pending_futures if not f.cancelled()]
+                    if running_futures:
+                        try:
+                            for future in as_completed(running_futures, timeout=300):  # 5 minute timeout
+                                job_num, exp = future_to_job[future]
+                                try:
+                                    result_job_num, success, error_msg, elapsed_time = future.result()
+                                    if success:
+                                        batch_successful_jobs += 1
+                                    else:
+                                        batch_failed_jobs.append((result_job_num, exp, error_msg))
+                                except Exception as e:
+                                    print(f'[WARNING] Job {job_num} result unavailable: {e}')
+                                    batch_failed_jobs.append((job_num, exp, f'Interrupted: {e}'))
+                        except TimeoutError:
+                            print(f'[WARNING] Timeout waiting for {len(running_futures)} running jobs to complete')
+                            print(f'These jobs may still be running in background processes')
+                    
+                    print(f'Gracefully shut down {phase_name} phase')
+                    raise  # Re-raise to propagate to outer handler
+                
+                # Cleanup after batch
+                cleanup_memory()
+        
+        except KeyboardInterrupt:
+            # Cleanup on interruption
             cleanup_memory()
+            raise  # Re-raise to propagate to outer handler
         
         print(f'\n{phase_name.upper()} PHASE COMPLETE')
         print(f'Successful: {batch_successful_jobs}')
@@ -11795,74 +11845,106 @@ def run_experiments():
         
         return batch_failed_jobs, batch_successful_jobs
     
-    # PHASE 1: Run non-tuned experiments
-    phase1_failed, phase1_successful = run_experiment_batch(non_tuned_experiments, 'non-tuned', 0)
-    failed_jobs.extend(phase1_failed)
-    successful_jobs += phase1_successful
-    
-    # Aggregate results after non-tuned phase
-    if phase1_successful > 0:
+    try:
+        # PHASE 1: Run non-tuned experiments
+        phase1_failed, phase1_successful = run_experiment_batch(non_tuned_experiments, 'non-tuned', 0)
+        failed_jobs.extend(phase1_failed)
+        successful_jobs += phase1_successful
+        
+        # Aggregate results after non-tuned phase
+        if phase1_successful > 0:
+            print(f'\n{"="*60}')
+            print('AGGREGATING RESULTS AFTER NON-TUNED PHASE')
+            print(f'{"="*60}')
+            try:
+                print('Calling collect_all_results_unified()...')
+                aggregated_results = collect_all_results_unified()
+                if aggregated_results is not None:
+                    print(f'Aggregated {len(aggregated_results)} result rows')
+                else:
+                    print('No results found to aggregate')
+            except Exception as e:
+                print(f'Error during aggregation: {e}')
+                import traceback
+                traceback.print_exc()
+        
+        # PHASE 2: Run tuned experiments
+        phase2_failed, phase2_successful = run_experiment_batch(tuned_experiments, 'tuned', len(non_tuned_experiments))
+        failed_jobs.extend(phase2_failed)
+        successful_jobs += phase2_successful
+        
+        # Final aggregation after tuned phase
+        if phase2_successful > 0:
+            print(f'\n{"="*60}')
+            print('FINAL AGGREGATION AFTER TUNED PHASE')
+            print(f'{"="*60}')
+            try:
+                print('Calling collect_all_results_unified()...')
+                aggregated_results = collect_all_results_unified()
+                if aggregated_results is not None:
+                    print(f'Final aggregated {len(aggregated_results)} result rows')
+                else:
+                    print('No results found to aggregate')
+            except Exception as e:
+                print(f'Error during final aggregation: {e}')
+                import traceback
+                traceback.print_exc()
+        
+        # Final summary
+        total_time = time.time() - start_time
         print(f'\n{"="*60}')
-        print('AGGREGATING RESULTS AFTER NON-TUNED PHASE')
+        print('EXPERIMENT EXECUTION COMPLETE')
         print(f'{"="*60}')
-        try:
-            print('Calling collect_all_results_unified()...')
-            aggregated_results = collect_all_results_unified()
-            if aggregated_results is not None:
-                print(f'Aggregated {len(aggregated_results)} result rows')
-            else:
-                print('No results found to aggregate')
-        except Exception as e:
-            print(f'Error during aggregation: {e}')
-            import traceback
-            traceback.print_exc()
-    
-    # PHASE 2: Run tuned experiments
-    phase2_failed, phase2_successful = run_experiment_batch(tuned_experiments, 'tuned', len(non_tuned_experiments))
-    failed_jobs.extend(phase2_failed)
-    successful_jobs += phase2_successful
-    
-    # Final aggregation after tuned phase
-    if phase2_successful > 0:
-        print(f'\n{"="*60}')
-        print('FINAL AGGREGATION AFTER TUNED PHASE')
-        print(f'{"="*60}')
-        try:
-            print('Calling collect_all_results_unified()...')
-            aggregated_results = collect_all_results_unified()
-            if aggregated_results is not None:
-                print(f'Final aggregated {len(aggregated_results)} result rows')
-            else:
-                print('No results found to aggregate')
-        except Exception as e:
-            print(f'Error during final aggregation: {e}')
-            import traceback
-            traceback.print_exc()
-    
-    # Final summary
-    total_time = time.time() - start_time
-    print(f'\n{"="*60}')
-    print('EXPERIMENT EXECUTION COMPLETE')
-    print(f'{"="*60}')
-    print(f'Completed at: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
-    print(f'Total runtime: {total_time/3600:.2f} hours ({total_time/60:.2f} minutes)')
-    print(f'Total jobs: {total_jobs}')
-    print(f'Successful: {successful_jobs}')
-    print(f'Failed: {len(failed_jobs)}')
-    print(f'Non-tuned successful: {phase1_successful}')
-    print(f'Tuned successful: {phase2_successful}')
-    if successful_jobs > 0:
-        print(f'Average time per job: {total_time/successful_jobs/60:.2f} minutes')
+        print(f'Completed at: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
+        print(f'Total runtime: {total_time/3600:.2f} hours ({total_time/60:.2f} minutes)')
+        print(f'Total jobs: {total_jobs}')
+        print(f'Successful: {successful_jobs}')
+        print(f'Failed: {len(failed_jobs)}')
+        print(f'Non-tuned successful: {phase1_successful}')
+        print(f'Tuned successful: {phase2_successful}')
+        if successful_jobs > 0:
+            print(f'Average time per job: {total_time/successful_jobs/60:.2f} minutes')
 
-    if failed_jobs:
-        print(f'\nFailed jobs:')
-        for job_num, exp, error in failed_jobs:
-            print(f'  Job {job_num}: {exp["dataset"]} | {exp["model"]} | '
-                  f'{exp["eval_mode"]} | seed={exp["seed"]} - Error: {error}')
-        sys.exit(1)
-    else:
-        print('\nAll jobs completed successfully!')
-        sys.exit(0)
+        if failed_jobs:
+            print(f'\nFailed jobs:')
+            for job_num, exp, error in failed_jobs:
+                print(f'  Job {job_num}: {exp["dataset"]} | {exp["model"]} | '
+                      f'{exp["eval_mode"]} | seed={exp["seed"]} - Error: {error}')
+            sys.exit(1)
+        else:
+            print('\nAll jobs completed successfully!')
+            sys.exit(0)
+    
+    except KeyboardInterrupt:
+        # Handle graceful shutdown on Ctrl+C
+        total_time = time.time() - start_time
+        print(f'\n\n{"="*60}')
+        print('EXPERIMENT EXECUTION INTERRUPTED')
+        print(f'{"="*60}')
+        print(f'Interrupted at: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
+        print(f'Total runtime before interruption: {total_time/3600:.2f} hours ({total_time/60:.2f} minutes)')
+        print(f'\nProgress Summary:')
+        print(f'  Total jobs: {total_jobs}')
+        print(f'  Successful: {successful_jobs}')
+        print(f'  Failed: {len(failed_jobs)}')
+        print(f'  Remaining: {total_jobs - successful_jobs - len(failed_jobs)}')
+        
+        if failed_jobs:
+            print(f'\nFailed jobs before interruption:')
+            for job_num, exp, error in failed_jobs[:10]:  # Show first 10
+                print(f'  Job {job_num}: {exp["dataset"]} | {exp["model"]} | '
+                      f'{exp["eval_mode"]} | seed={exp["seed"]} - Error: {error}')
+            if len(failed_jobs) > 10:
+                print(f'  ... and {len(failed_jobs) - 10} more failed jobs')
+        
+        print(f'\nNote: Completed experiments have been saved. You can re-run this script')
+        print(f'      to continue with remaining experiments.')
+        
+        # Cleanup
+        cleanup_memory()
+        
+        # Exit with code 130 (standard for SIGINT/KeyboardInterrupt)
+        sys.exit(130)
 
 if __name__ == '__main__':
     run_experiments()

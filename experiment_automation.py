@@ -479,7 +479,15 @@ class ExperimentAutomation:
             key = (dataset, model, eval_mode, seed, noise_type, is_tuned)
             index[key][subject_key].add(float(intensity))
         
-        return dict(index)
+        # Convert nested defaultdicts to regular dicts for pickling compatibility
+        # This ensures the structure can be pickled and cached
+        result = {}
+        for key, subject_dict in index.items():
+            result[key] = {}
+            for subject_key, intensity_set in subject_dict.items():
+                result[key][subject_key] = intensity_set
+        
+        return result
     
     def _check_multirun_job_complete(self, job_key: Tuple, existing_index: Dict, 
                                      expected_intensities: np.ndarray) -> bool:
@@ -1664,7 +1672,7 @@ class ExperimentAutomation:
                             
                     else:
                         # Default time limit for other modes (CrossSubject, etc.)
-                        slurm_args = "--time=1-08:00:00 --mem=12G"
+                        slurm_args = "--time=1-08:00:00 --mem=16G"
                 
                 # Format: sbatch {slurm_args} unified_eval_script.sh {subject} {dataset} {eval_mode} {tune_flag} {model} {seed}
                 command = f"sbatch {slurm_args} unified_eval_script.sh {subjects_str} {exp['dataset']} {exp['eval_mode']} {tune_flag} {model} {seed}"

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Generated Python automation script for local experiment execution
-Generated on: 2025-12-04 17:05:15
+Generated on: 2025-12-26 13:59:23
 Total missing multirun jobs: 1620
 Non-tuned jobs: 810
 Tuned jobs: 810
@@ -118,7 +118,772 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
             'subjects': [53],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
             'tune': False,
             'model': 'eegnet',
             'seed': 200,
@@ -129,8 +894,476 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [33],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
             'paradigm': 'SSVEP'
         },
         {
@@ -139,7 +1372,196 @@ def run_experiments():
             'subjects': [32],
             'tune': False,
             'model': 'eegnet',
-            'seed': 500,
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 300,
             'paradigm': 'SSVEP'
         },
         {
@@ -154,70 +1576,61 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [39],
+            'subjects': [1],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'reegnet',
+            'model': 'eegnet',
             'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
+            'subjects': [2],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [44],
+            'subjects': [3],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
+            'model': 'eegnet',
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [51],
+            'subjects': [4],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
             'tune': False,
             'model': 'eegnet',
             'seed': 400,
@@ -229,132 +1642,6 @@ def run_experiments():
             'subjects': [8],
             'tune': False,
             'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'reegnet',
             'seed': 400,
             'paradigm': 'SSVEP'
         },
@@ -363,17 +1650,35 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [9],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
+            'model': 'eegnet',
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [25],
+            'subjects': [10],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
@@ -381,89 +1686,44 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [13],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
             'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'cnn_ncp',
             'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [33],
+            'subjects': [14],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
+            'model': 'eegnet',
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [32],
+            'subjects': [15],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
@@ -478,37 +1738,10 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [39],
+            'subjects': [19],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
+            'model': 'eegnet',
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
@@ -517,78 +1750,33 @@ def run_experiments():
             'subjects': [20],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'reegnet',
             'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [5],
+            'subjects': [21],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
+            'subjects': [22],
             'tune': False,
             'model': 'eegnet',
-            'seed': 200,
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [8],
+            'subjects': [23],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'cnn_ncp',
             'seed': 400,
             'paradigm': 'SSVEP'
         },
@@ -597,26 +1785,26 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [24],
             'tune': False,
-            'model': 'reegnet',
+            'model': 'eegnet',
             'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [5],
+            'subjects': [25],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [28],
+            'subjects': [26],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
+            'model': 'eegnet',
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
@@ -625,24 +1813,15 @@ def run_experiments():
             'subjects': [27],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'reegnet',
             'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [7],
+            'subjects': [28],
             'tune': False,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
             'seed': 400,
             'paradigm': 'SSVEP'
         },
@@ -652,34 +1831,61 @@ def run_experiments():
             'subjects': [29],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [14],
+            'subjects': [30],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [53],
+            'subjects': [31],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
+            'model': 'eegnet',
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [38],
+            'subjects': [32],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
@@ -688,16 +1894,7 @@ def run_experiments():
             'subjects': [36],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
@@ -712,79 +1909,7 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
+            'subjects': [38],
             'tune': False,
             'model': 'eegnet',
             'seed': 400,
@@ -793,10 +1918,10 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [9],
+            'subjects': [39],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
@@ -804,581 +1929,14 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [40],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': False,
             'model': 'eegnet',
             'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
             'subjects': [41],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
             'tune': False,
             'model': 'eegnet',
             'seed': 400,
@@ -1389,458 +1947,8 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [42],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
             'model': 'eegnet',
             'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
             'paradigm': 'SSVEP'
         },
         {
@@ -1848,205 +1956,7 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [43],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': False,
             'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': False,
-            'model': 'cnn_ncp',
             'seed': 400,
             'paradigm': 'SSVEP'
         },
@@ -2065,58 +1975,13 @@ def run_experiments():
             'subjects': [45],
             'tune': False,
             'model': 'eegnet',
-            'seed': 500,
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
+            'subjects': [46],
             'tune': False,
             'model': 'eegnet',
             'seed': 400,
@@ -2125,55 +1990,10 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
+            'subjects': [47],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
@@ -2191,103 +2011,13 @@ def run_experiments():
             'subjects': [49],
             'tune': False,
             'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': False,
-            'model': 'cnn_ncp',
             'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
+            'subjects': [50],
             'tune': False,
             'model': 'eegnet',
             'seed': 400,
@@ -2296,28 +2026,19 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
+            'subjects': [51],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [31],
+            'subjects': [52],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
+            'model': 'eegnet',
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
@@ -2332,118 +2053,19 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [13],
+            'subjects': [54],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
             'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
+            'subjects': [1],
             'tune': False,
             'model': 'eegnet',
             'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
             'paradigm': 'SSVEP'
         },
         {
@@ -2452,70 +2074,16 @@ def run_experiments():
             'subjects': [2],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': False,
-            'model': 'reegnet',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
+            'subjects': [3],
             'tune': False,
             'model': 'eegnet',
             'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
             'paradigm': 'SSVEP'
         },
         {
@@ -2523,95 +2091,14 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [4],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
             'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
+            'subjects': [5],
             'tune': False,
             'model': 'eegnet',
             'seed': 500,
@@ -2620,45 +2107,54 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
+            'subjects': [6],
             'tune': False,
             'model': 'eegnet',
-            'seed': 400,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [49],
+            'subjects': [7],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [20],
+            'subjects': [8],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [1],
+            'subjects': [9],
             'tune': False,
-            'model': 'reegnet',
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'eegnet',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
@@ -2667,89 +2163,17 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [12],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
             'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [5],
+            'subjects': [13],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -2764,73 +2188,10 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
             'subjects': [15],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'cnn_ncp',
             'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
             'paradigm': 'SSVEP'
         },
         {
@@ -2838,17 +2199,26 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [16],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [1],
+            'subjects': [17],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -2856,26 +2226,26 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [19],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [23],
+            'subjects': [20],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -2884,25 +2254,16 @@ def run_experiments():
             'subjects': [22],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
+            'subjects': [23],
             'tune': False,
             'model': 'eegnet',
-            'seed': 400,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -2911,232 +2272,16 @@ def run_experiments():
             'subjects': [24],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': False,
-            'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
+            'subjects': [25],
             'tune': False,
             'model': 'eegnet',
             'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
             'paradigm': 'SSVEP'
         },
         {
@@ -3151,34 +2296,7 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
+            'subjects': [27],
             'tune': False,
             'model': 'eegnet',
             'seed': 500,
@@ -3187,73 +2305,28 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
+            'subjects': [28],
             'tune': False,
             'model': 'eegnet',
-            'seed': 400,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
+            'subjects': [29],
             'tune': False,
             'model': 'eegnet',
-            'seed': 200,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
+            'subjects': [30],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -3268,19 +2341,19 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [7],
+            'subjects': [32],
             'tune': False,
             'model': 'eegnet',
-            'seed': 400,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [13],
+            'subjects': [33],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -3288,233 +2361,8 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [34],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
             'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
             'paradigm': 'SSVEP'
         },
         {
@@ -3522,14 +2370,14 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [35],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [46],
+            'subjects': [36],
             'tune': False,
             'model': 'eegnet',
             'seed': 500,
@@ -3538,126 +2386,9 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [43],
+            'subjects': [37],
             'tune': False,
             'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'reegnet',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
@@ -3667,330 +2398,6 @@ def run_experiments():
             'subjects': [38],
             'tune': False,
             'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
@@ -4000,213 +2407,6 @@ def run_experiments():
             'subjects': [39],
             'tune': False,
             'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'reegnet',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
@@ -4215,61 +2415,34 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [40],
             'tune': False,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [2],
+            'subjects': [41],
             'tune': False,
             'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [6],
+            'subjects': [42],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [47],
+            'subjects': [43],
             'tune': False,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
@@ -4278,14 +2451,131 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [44],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [20],
+            'subjects': [45],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': False,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
             'tune': False,
             'model': 'reegnet',
             'seed': 100,
@@ -4303,198 +2593,36 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
             'subjects': [6],
             'tune': False,
             'model': 'reegnet',
-            'seed': 500,
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [48],
+            'subjects': [7],
             'tune': False,
             'model': 'reegnet',
-            'seed': 200,
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [34],
+            'subjects': [8],
             'tune': False,
             'model': 'reegnet',
-            'seed': 200,
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [49],
+            'subjects': [9],
             'tune': False,
             'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'cnn_ncp',
             'seed': 100,
             'paradigm': 'SSVEP'
         },
@@ -4510,72 +2638,45 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [53],
+            'subjects': [11],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': False,
-            'model': 'cnn_ncp',
+            'model': 'reegnet',
             'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [19],
+            'subjects': [12],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [54],
+            'subjects': [13],
             'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [38],
+            'subjects': [14],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [40],
+            'subjects': [15],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'eegnet',
+            'model': 'reegnet',
             'seed': 100,
             'paradigm': 'SSVEP'
         },
@@ -4584,52 +2685,115 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [16],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
+            'subjects': [17],
             'tune': False,
             'model': 'reegnet',
-            'seed': 200,
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [32],
+            'subjects': [18],
             'tune': False,
             'model': 'reegnet',
-            'seed': 500,
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [49],
+            'subjects': [19],
             'tune': False,
-            'model': 'cnn_ncp',
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'reegnet',
             'seed': 100,
             'paradigm': 'SSVEP'
         },
@@ -4648,7 +2812,178 @@ def run_experiments():
             'subjects': [30],
             'tune': False,
             'model': 'reegnet',
-            'seed': 400,
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
@@ -4656,7 +2991,646 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [50],
             'tune': False,
-            'model': 'eegnet',
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'reegnet',
             'seed': 300,
             'paradigm': 'SSVEP'
         },
@@ -4666,7 +3640,16 @@ def run_experiments():
             'subjects': [14],
             'tune': False,
             'model': 'reegnet',
-            'seed': 100,
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
             'paradigm': 'SSVEP'
         },
         {
@@ -4676,6 +3659,3264 @@ def run_experiments():
             'tune': False,
             'model': 'reegnet',
             'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': False,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
@@ -4690,1909 +6931,28 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
             'subjects': [2],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': False,
             'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': False,
-            'model': 'reegnet',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [30],
+            'subjects': [3],
             'tune': False,
             'model': 'cnn_ncp',
-            'seed': 300,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [24],
+            'subjects': [4],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -6601,25 +6961,16 @@ def run_experiments():
             'subjects': [5],
             'tune': False,
             'model': 'cnn_ncp',
-            'seed': 100,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [52],
+            'subjects': [6],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -6628,16 +6979,34 @@ def run_experiments():
             'subjects': [7],
             'tune': False,
             'model': 'cnn_ncp',
-            'seed': 300,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [29],
+            'subjects': [8],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -6645,17 +7014,26 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [11],
             'tune': False,
-            'model': 'reegnet',
+            'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [28],
+            'subjects': [12],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -6663,51 +7041,6 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [14],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': False,
             'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'SSVEP'
@@ -6715,28 +7048,10 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [33],
+            'subjects': [15],
             'tune': False,
-            'model': 'reegnet',
+            'model': 'cnn_ncp',
             'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
             'paradigm': 'SSVEP'
         },
         {
@@ -6751,54 +7066,18 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
+            'subjects': [17],
             'tune': False,
             'model': 'cnn_ncp',
-            'seed': 200,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [22],
+            'subjects': [18],
             'tune': False,
-            'model': 'reegnet',
+            'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
@@ -6807,23 +7086,14 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [19],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': False,
             'model': 'cnn_ncp',
-            'seed': 200,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [27],
+            'subjects': [20],
             'tune': False,
             'model': 'cnn_ncp',
             'seed': 500,
@@ -6832,262 +7102,10 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
+            'subjects': [21],
             'tune': False,
             'model': 'cnn_ncp',
             'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
             'paradigm': 'SSVEP'
         },
         {
@@ -7095,23 +7113,14 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [22],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': False,
             'model': 'cnn_ncp',
-            'seed': 400,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [8],
+            'subjects': [23],
             'tune': False,
             'model': 'cnn_ncp',
             'seed': 500,
@@ -7120,10 +7129,28 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [3],
+            'subjects': [24],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -7132,24 +7159,15 @@ def run_experiments():
             'subjects': [27],
             'tune': False,
             'model': 'cnn_ncp',
-            'seed': 300,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [50],
+            'subjects': [28],
             'tune': False,
             'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'reegnet',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
@@ -7165,16 +7183,7 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
+            'subjects': [30],
             'tune': False,
             'model': 'cnn_ncp',
             'seed': 500,
@@ -7183,28 +7192,37 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [28],
+            'subjects': [31],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [7],
+            'subjects': [32],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [49],
+            'subjects': [33],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -7212,26 +7230,8 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [35],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
             'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -7246,19 +7246,10 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [17],
+            'subjects': [37],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -7266,8 +7257,71 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [38],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -7276,88 +7330,7 @@ def run_experiments():
             'subjects': [46],
             'tune': False,
             'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': False,
-            'model': 'eegnet',
             'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
@@ -7365,26 +7338,26 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [47],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [4],
+            'subjects': [48],
             'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [7],
+            'subjects': [49],
             'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -7392,17 +7365,44 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [50],
             'tune': False,
-            'model': 'reegnet',
+            'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [31],
+            'subjects': [51],
             'tune': False,
             'model': 'cnn_ncp',
-            'seed': 300,
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': False,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
     ]
@@ -7411,28 +7411,10 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [18],
+            'subjects': [1],
             'tune': True,
-            'model': 'reegnet',
+            'model': 'eegnet',
             'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -7440,305 +7422,8 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [2],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
             'model': 'eegnet',
             'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -7753,505 +7438,10 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
             'subjects': [4],
             'tune': True,
             'model': 'eegnet',
             'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
@@ -8266,1260 +7456,9 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
             'subjects': [6],
             'tune': True,
             'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': True,
-            'model': 'reegnet',
             'seed': 100,
             'paradigm': 'SSVEP'
         },
@@ -9527,3291 +7466,6 @@ def run_experiments():
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
             'subjects': [7],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [3],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [18],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [20],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [23],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [43],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [35],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [17],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
             'tune': True,
             'model': 'eegnet',
             'seed': 100,
@@ -12832,169 +7486,25 @@ def run_experiments():
             'subjects': [9],
             'tune': True,
             'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'reegnet',
             'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
+            'subjects': [10],
             'tune': True,
             'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'cnn_ncp',
             'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [51],
+            'subjects': [11],
             'tune': True,
             'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'cnn_ncp',
             'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
@@ -13009,199 +7519,46 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
             'subjects': [13],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'reegnet',
+            'model': 'eegnet',
             'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [31],
+            'subjects': [14],
             'tune': True,
             'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'cnn_ncp',
             'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [5],
+            'subjects': [15],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
             'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [25],
+            'subjects': [16],
             'tune': True,
             'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': True,
-            'model': 'cnn_ncp',
             'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
+            'subjects': [17],
             'tune': True,
             'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
@@ -13210,43 +7567,16 @@ def run_experiments():
             'subjects': [18],
             'tune': True,
             'model': 'eegnet',
-            'seed': 400,
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [44],
+            'subjects': [19],
             'tune': True,
             'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [38],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
@@ -13261,64 +7591,10 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [52],
+            'subjects': [21],
             'tune': True,
             'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'cnn_ncp',
             'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
             'paradigm': 'SSVEP'
         },
         {
@@ -13326,70 +7602,25 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [22],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
+            'model': 'eegnet',
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
+            'subjects': [23],
             'tune': True,
             'model': 'eegnet',
-            'seed': 400,
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [34],
+            'subjects': [24],
             'tune': True,
             'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'reegnet',
             'seed': 100,
             'paradigm': 'SSVEP'
         },
@@ -13405,172 +7636,28 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [19],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [44],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
             'subjects': [26],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
+            'model': 'eegnet',
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [53],
+            'subjects': [27],
             'tune': True,
             'model': 'eegnet',
-            'seed': 400,
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [23],
+            'subjects': [28],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [50],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
@@ -13585,16 +7672,7 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
+            'subjects': [30],
             'tune': True,
             'model': 'eegnet',
             'seed': 100,
@@ -13603,46 +7681,154 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [15],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
+            'subjects': [31],
             'tune': True,
             'model': 'eegnet',
-            'seed': 500,
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [26],
+            'subjects': [32],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
@@ -13651,52 +7837,79 @@ def run_experiments():
             'subjects': [48],
             'tune': True,
             'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'eegnet',
             'seed': 200,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [27],
+            'subjects': [2],
             'tune': True,
             'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'cnn_ncp',
             'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [21],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -13711,9 +7924,900 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
             'subjects': [50],
             'tune': True,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': True,
+            'model': 'eegnet',
             'seed': 300,
             'paradigm': 'SSVEP'
         },
@@ -13721,6 +8825,348 @@ def run_experiments():
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
             'subjects': [50],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
             'tune': True,
             'model': 'eegnet',
             'seed': 400,
@@ -13738,16 +9184,88 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [11],
+            'subjects': [36],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [12],
+            'subjects': [37],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
             'tune': True,
             'model': 'eegnet',
             'seed': 400,
@@ -13765,43 +9283,214 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [11],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
             'subjects': [47],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [32],
-            'tune': True,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
             'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [31],
+            'subjects': [48],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
+            'model': 'eegnet',
+            'seed': 400,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [32],
+            'subjects': [49],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
             'tune': True,
             'model': 'eegnet',
             'seed': 500,
@@ -13819,402 +9508,6 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [8],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [42],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [54],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [16],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [51],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [27],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [47],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [36],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [46],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [22],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [48],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [13],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [40],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [31],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [5],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [45],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [4],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [9],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [33],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
             'subjects': [18],
             'tune': True,
             'model': 'eegnet',
@@ -14224,36 +9517,9 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [44],
+            'subjects': [19],
             'tune': True,
             'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [6],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [26],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [52],
-            'tune': True,
-            'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
@@ -14263,43 +9529,70 @@ def run_experiments():
             'subjects': [20],
             'tune': True,
             'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'reegnet',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [5],
+            'subjects': [21],
             'tune': True,
             'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [32],
+            'subjects': [22],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -14307,16 +9600,7 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [28],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
@@ -14326,67 +9610,13 @@ def run_experiments():
             'subjects': [29],
             'tune': True,
             'model': 'eegnet',
-            'seed': 400,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [28],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [14],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [1],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [39],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [41],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [37],
+            'subjects': [30],
             'tune': True,
             'model': 'eegnet',
             'seed': 500,
@@ -14395,7 +9625,25 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [48],
+            'subjects': [31],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
             'tune': True,
             'model': 'eegnet',
             'seed': 500,
@@ -14413,63 +9661,9 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [31],
+            'subjects': [35],
             'tune': True,
             'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [25],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [7],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [24],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [10],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [49],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [12],
-            'tune': True,
-            'model': 'cnn_ncp',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
@@ -14478,16 +9672,70 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [36],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [46],
+            'subjects': [37],
             'tune': True,
-            'model': 'cnn_ncp',
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'eegnet',
             'seed': 500,
             'paradigm': 'SSVEP'
         },
@@ -14496,53 +9744,71 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [44],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [19],
+            'subjects': [45],
             'tune': True,
             'model': 'eegnet',
-            'seed': 400,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [44],
+            'subjects': [46],
             'tune': True,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [6],
+            'subjects': [47],
             'tune': True,
             'model': 'eegnet',
-            'seed': 300,
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [43],
+            'subjects': [48],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [41],
+            'subjects': [49],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': True,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -14550,17 +9816,8 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [52],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [2],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -14575,19 +9832,64 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [23],
+            'subjects': [54],
             'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
+            'model': 'eegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
-            'subjects': [8],
+            'subjects': [1],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
@@ -14595,26 +9897,8 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [7],
             'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [29],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'WithinSession',
-            'subjects': [30],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
@@ -14622,8 +9906,53 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [8],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
@@ -14631,8 +9960,242 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [14],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
             'paradigm': 'SSVEP'
         },
         {
@@ -14650,7 +10213,1699 @@ def run_experiments():
             'subjects': [42],
             'tune': True,
             'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'reegnet',
             'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -14666,6 +11921,2400 @@ def run_experiments():
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
             'subjects': [16],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': True,
+            'model': 'reegnet',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 100,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 200,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 300,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [13],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [26],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [48],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 400,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [1],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [2],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [3],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [4],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [5],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [6],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [7],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [8],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [9],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [10],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [11],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [12],
             'tune': True,
             'model': 'cnn_ncp',
             'seed': 500,
@@ -14683,10 +14332,307 @@ def run_experiments():
         {
             'dataset': 'Lee2019_SSVEP',
             'eval_mode': 'WithinSession',
+            'subjects': [14],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [15],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [16],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [17],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [18],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [19],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [20],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [21],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [22],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [23],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [24],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [25],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
             'subjects': [26],
             'tune': True,
             'model': 'cnn_ncp',
-            'seed': 400,
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [27],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [28],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [29],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [30],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [31],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [32],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [33],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [34],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [35],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [36],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [37],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [38],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [39],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [40],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [41],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [42],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [43],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [44],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [45],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [46],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [47],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
         {
@@ -14694,8 +14640,62 @@ def run_experiments():
             'eval_mode': 'WithinSession',
             'subjects': [48],
             'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [49],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [50],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [51],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [52],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [53],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
+            'paradigm': 'SSVEP'
+        },
+        {
+            'dataset': 'Lee2019_SSVEP',
+            'eval_mode': 'WithinSession',
+            'subjects': [54],
+            'tune': True,
+            'model': 'cnn_ncp',
+            'seed': 500,
             'paradigm': 'SSVEP'
         },
     ]
@@ -14703,6 +14703,10 @@ def run_experiments():
     failed_jobs = []
     successful_jobs = 0
     start_time = time.time()
+    
+    # Initialize phase counters for interruption handling
+    phase1_successful = 0
+    phase2_successful = 0
     
     # Run experiments in parallel with configurable workers
     max_workers = 4
@@ -14777,17 +14781,22 @@ def run_experiments():
                     
                     # Wait for running jobs to complete (with timeout)
                     running_futures = [f for f in pending_futures if not f.cancelled()]
-                    for future in as_completed(running_futures, timeout=300):  # 5 minute timeout
-                        job_num, exp = future_to_job[future]
+                    if running_futures:
                         try:
-                            result_job_num, success, error_msg, elapsed_time = future.result()
-                            if success:
-                                batch_successful_jobs += 1
-                            else:
-                                batch_failed_jobs.append((result_job_num, exp, error_msg))
-                        except Exception as e:
-                            print(f'[WARNING] Job {job_num} result unavailable: {e}')
-                            batch_failed_jobs.append((job_num, exp, f'Interrupted: {e}'))
+                            for future in as_completed(running_futures, timeout=300):  # 5 minute timeout
+                                job_num, exp = future_to_job[future]
+                                try:
+                                    result_job_num, success, error_msg, elapsed_time = future.result()
+                                    if success:
+                                        batch_successful_jobs += 1
+                                    else:
+                                        batch_failed_jobs.append((result_job_num, exp, error_msg))
+                                except Exception as e:
+                                    print(f'[WARNING] Job {job_num} result unavailable: {e}')
+                                    batch_failed_jobs.append((job_num, exp, f'Interrupted: {e}'))
+                        except TimeoutError:
+                            print(f'[WARNING] Timeout waiting for {len(running_futures)} running jobs to complete')
+                            print(f'These jobs may still be running in background processes')
                     
                     print(f'Gracefully shut down {phase_name} phase')
                     raise  # Re-raise to propagate to outer handler
@@ -14806,74 +14815,106 @@ def run_experiments():
         
         return batch_failed_jobs, batch_successful_jobs
     
-    # PHASE 1: Run non-tuned experiments
-    phase1_failed, phase1_successful = run_experiment_batch(non_tuned_experiments, 'non-tuned', 0)
-    failed_jobs.extend(phase1_failed)
-    successful_jobs += phase1_successful
-    
-    # Aggregate results after non-tuned phase
-    if phase1_successful > 0:
+    try:
+        # PHASE 1: Run non-tuned experiments
+        phase1_failed, phase1_successful = run_experiment_batch(non_tuned_experiments, 'non-tuned', 0)
+        failed_jobs.extend(phase1_failed)
+        successful_jobs += phase1_successful
+        
+        # Aggregate results after non-tuned phase
+        if phase1_successful > 0:
+            print(f'\n{"="*60}')
+            print('AGGREGATING RESULTS AFTER NON-TUNED PHASE')
+            print(f'{"="*60}')
+            try:
+                print('Calling collect_all_results_unified()...')
+                aggregated_results = collect_all_results_unified()
+                if aggregated_results is not None:
+                    print(f'Aggregated {len(aggregated_results)} result rows')
+                else:
+                    print('No results found to aggregate')
+            except Exception as e:
+                print(f'Error during aggregation: {e}')
+                import traceback
+                traceback.print_exc()
+        
+        # PHASE 2: Run tuned experiments
+        phase2_failed, phase2_successful = run_experiment_batch(tuned_experiments, 'tuned', len(non_tuned_experiments))
+        failed_jobs.extend(phase2_failed)
+        successful_jobs += phase2_successful
+        
+        # Final aggregation after tuned phase
+        if phase2_successful > 0:
+            print(f'\n{"="*60}')
+            print('FINAL AGGREGATION AFTER TUNED PHASE')
+            print(f'{"="*60}')
+            try:
+                print('Calling collect_all_results_unified()...')
+                aggregated_results = collect_all_results_unified()
+                if aggregated_results is not None:
+                    print(f'Final aggregated {len(aggregated_results)} result rows')
+                else:
+                    print('No results found to aggregate')
+            except Exception as e:
+                print(f'Error during final aggregation: {e}')
+                import traceback
+                traceback.print_exc()
+        
+        # Final summary
+        total_time = time.time() - start_time
         print(f'\n{"="*60}')
-        print('AGGREGATING RESULTS AFTER NON-TUNED PHASE')
+        print('EXPERIMENT EXECUTION COMPLETE')
         print(f'{"="*60}')
-        try:
-            print('Calling collect_all_results_unified()...')
-            aggregated_results = collect_all_results_unified()
-            if aggregated_results is not None:
-                print(f'Aggregated {len(aggregated_results)} result rows')
-            else:
-                print('No results found to aggregate')
-        except Exception as e:
-            print(f'Error during aggregation: {e}')
-            import traceback
-            traceback.print_exc()
-    
-    # PHASE 2: Run tuned experiments
-    phase2_failed, phase2_successful = run_experiment_batch(tuned_experiments, 'tuned', len(non_tuned_experiments))
-    failed_jobs.extend(phase2_failed)
-    successful_jobs += phase2_successful
-    
-    # Final aggregation after tuned phase
-    if phase2_successful > 0:
-        print(f'\n{"="*60}')
-        print('FINAL AGGREGATION AFTER TUNED PHASE')
-        print(f'{"="*60}')
-        try:
-            print('Calling collect_all_results_unified()...')
-            aggregated_results = collect_all_results_unified()
-            if aggregated_results is not None:
-                print(f'Final aggregated {len(aggregated_results)} result rows')
-            else:
-                print('No results found to aggregate')
-        except Exception as e:
-            print(f'Error during final aggregation: {e}')
-            import traceback
-            traceback.print_exc()
-    
-    # Final summary
-    total_time = time.time() - start_time
-    print(f'\n{"="*60}')
-    print('EXPERIMENT EXECUTION COMPLETE')
-    print(f'{"="*60}')
-    print(f'Completed at: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
-    print(f'Total runtime: {total_time/3600:.2f} hours ({total_time/60:.2f} minutes)')
-    print(f'Total jobs: {total_jobs}')
-    print(f'Successful: {successful_jobs}')
-    print(f'Failed: {len(failed_jobs)}')
-    print(f'Non-tuned successful: {phase1_successful}')
-    print(f'Tuned successful: {phase2_successful}')
-    if successful_jobs > 0:
-        print(f'Average time per job: {total_time/successful_jobs/60:.2f} minutes')
+        print(f'Completed at: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
+        print(f'Total runtime: {total_time/3600:.2f} hours ({total_time/60:.2f} minutes)')
+        print(f'Total jobs: {total_jobs}')
+        print(f'Successful: {successful_jobs}')
+        print(f'Failed: {len(failed_jobs)}')
+        print(f'Non-tuned successful: {phase1_successful}')
+        print(f'Tuned successful: {phase2_successful}')
+        if successful_jobs > 0:
+            print(f'Average time per job: {total_time/successful_jobs/60:.2f} minutes')
 
-    if failed_jobs:
-        print(f'\nFailed jobs:')
-        for job_num, exp, error in failed_jobs:
-            print(f'  Job {job_num}: {exp["dataset"]} | {exp["model"]} | '
-                  f'{exp["eval_mode"]} | seed={exp["seed"]} - Error: {error}')
-        sys.exit(1)
-    else:
-        print('\nAll jobs completed successfully!')
-        sys.exit(0)
+        if failed_jobs:
+            print(f'\nFailed jobs:')
+            for job_num, exp, error in failed_jobs:
+                print(f'  Job {job_num}: {exp["dataset"]} | {exp["model"]} | '
+                      f'{exp["eval_mode"]} | seed={exp["seed"]} - Error: {error}')
+            sys.exit(1)
+        else:
+            print('\nAll jobs completed successfully!')
+            sys.exit(0)
+    
+    except KeyboardInterrupt:
+        # Handle graceful shutdown on Ctrl+C
+        total_time = time.time() - start_time
+        print(f'\n\n{"="*60}')
+        print('EXPERIMENT EXECUTION INTERRUPTED')
+        print(f'{"="*60}')
+        print(f'Interrupted at: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
+        print(f'Total runtime before interruption: {total_time/3600:.2f} hours ({total_time/60:.2f} minutes)')
+        print(f'\nProgress Summary:')
+        print(f'  Total jobs: {total_jobs}')
+        print(f'  Successful: {successful_jobs}')
+        print(f'  Failed: {len(failed_jobs)}')
+        print(f'  Remaining: {total_jobs - successful_jobs - len(failed_jobs)}')
+        
+        if failed_jobs:
+            print(f'\nFailed jobs before interruption:')
+            for job_num, exp, error in failed_jobs[:10]:  # Show first 10
+                print(f'  Job {job_num}: {exp["dataset"]} | {exp["model"]} | '
+                      f'{exp["eval_mode"]} | seed={exp["seed"]} - Error: {error}')
+            if len(failed_jobs) > 10:
+                print(f'  ... and {len(failed_jobs) - 10} more failed jobs')
+        
+        print(f'\nNote: Completed experiments have been saved. You can re-run this script')
+        print(f'      to continue with remaining experiments.')
+        
+        # Cleanup
+        cleanup_memory()
+        
+        # Exit with code 130 (standard for SIGINT/KeyboardInterrupt)
+        sys.exit(130)
 
 if __name__ == '__main__':
     run_experiments()

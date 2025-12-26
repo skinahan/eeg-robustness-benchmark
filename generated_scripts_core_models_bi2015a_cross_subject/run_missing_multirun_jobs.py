@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 Generated Python automation script for local experiment execution
-Generated on: 2025-12-05 09:12:13
-Total missing multirun jobs: 30
-Non-tuned jobs: 15
-Tuned jobs: 15
+Generated on: 2025-12-26 14:02:42
+Total missing multirun jobs: 0
+Non-tuned jobs: 0
+Tuned jobs: 0
 OPTIMIZED: Runs non-tuned jobs first, aggregates, then runs tuned jobs
 """
 
@@ -105,9 +105,9 @@ def run_single_experiment(exp_config: Dict[str, Any], job_num: int, total_jobs: 
 
 def run_experiments():
     """Run all missing experiments in two phases: non-tuned first, then tuned."""
-    total_jobs = 30
-    non_tuned_jobs = 15
-    tuned_jobs = 15
+    total_jobs = 0
+    non_tuned_jobs = 0
+    tuned_jobs = 0
     print(f'Starting local experiment execution...')
     print(f'Total multirun jobs to execute: {total_jobs}')
     print(f'Non-tuned jobs: {non_tuned_jobs}')
@@ -115,279 +115,9 @@ def run_experiments():
     print(f'Started at: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
 
     non_tuned_experiments = [
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': False,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': False,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': False,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
     ]
 
     tuned_experiments = [
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 300,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 500,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': True,
-            'model': 'reegnet',
-            'seed': 400,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': True,
-            'model': 'eegnet',
-            'seed': 200,
-            'paradigm': 'ERP'
-        },
-        {
-            'dataset': 'BI2015a',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'ERP'
-        },
     ]
 
     failed_jobs = []
@@ -399,7 +129,7 @@ def run_experiments():
     phase2_successful = 0
     
     # Run experiments in parallel with configurable workers
-    max_workers = 1
+    max_workers = 4
     
     def run_experiment_batch(experiments, phase_name, job_offset=0):
         """Run a batch of experiments and return results."""

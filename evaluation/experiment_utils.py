@@ -554,6 +554,8 @@ def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
     
     if all_dfs:
         full_df = pd.concat(all_dfs, ignore_index=True)
+        # Drop all rows that are completely duplicated
+        full_df = full_df.drop_duplicates()
         out_file = os.path.join(root, "all_results.csv")
         full_df.to_csv(out_file, index=False)
         print(f"Aggregated results saved to: {out_file}")
