@@ -199,6 +199,21 @@ def aggregate_results(input_dir):
             else:
                 combined_df['dataset'] = 'BNCI2014_001'  # Default
 
+        # Filter to only include intended experimental seeds: [100, 200, 300, 400, 500]
+        valid_seeds = [100, 200, 300, 400, 500]
+        if 'seed' in combined_df.columns:
+            initial_len = len(combined_df)
+            # Convert seed to numeric, handling any string representations
+            combined_df['seed'] = pd.to_numeric(combined_df['seed'], errors='coerce')
+            # Filter to valid seeds (drop rows with NaN seeds or seeds not in valid list)
+            combined_df = combined_df[combined_df['seed'].isin(valid_seeds)].copy()
+            filtered_count = initial_len - len(combined_df)
+            if filtered_count > 0:
+                print(f"[INFO] Filtered out {filtered_count} rows with seeds not in {valid_seeds}")
+            print(f"[INFO] Remaining rows with valid seeds: {len(combined_df)}")
+        else:
+            print("[WARNING] No 'seed' column found - cannot filter by seed values")
+
         return combined_df
     else:
         print("No .csv files found in the provided directory.")
@@ -461,8 +476,8 @@ def reegnet_plots(aggregated_df):
 
 
 def cnn_ncp_plots(aggregated_df):
-    # model_plots(aggregated_df, 'cnn_ncp')
-    model_plots(aggregated_df, 'CNN_NCP_RESAMPLE')
+    model_plots(aggregated_df, 'cnn_ncp')
+    # model_plots(aggregated_df, 'CNN_NCP_RESAMPLE')
 
 
 def run_comparative_plots(aggregated_df):
@@ -1512,31 +1527,51 @@ def extract_custom_data(df, filters=None, columns=None, aggregate=None, group_by
 
 
 if __name__ == '__main__':
-
-    results_dir = '../sol_results/'
-    dataset_configs = [
-        {
-            'label': 'MotorImagery/BNCI2014_001',
-            'input_dir': os.path.join(results_dir, 'MotorImagery/BNCI2014_001/'),
-            'csv_path': os.path.join(results_dir, 'MotorImagery/BNCI2014_001/all_results.csv')
-        },
-        {
-            'label': 'SSVEP/Lee2019_SSVEP',
-            'input_dir': os.path.join(results_dir, 'SSVEP/Lee2019_SSVEP/'),
-            'csv_path': os.path.join(results_dir, 'SSVEP/Lee2019_SSVEP/all_results.csv')
-        },
-        {
-            'label': 'ERP/BI2015a',
-            'input_dir': os.path.join(results_dir, 'ERP/BI2015a/'),
-            'csv_path': os.path.join(results_dir, 'ERP/BI2015a/all_results.csv')
-        }
-    ]
-
+    results_dirs = ['../sol_results/', '../results/']
     available_datasets = []
-    for config in dataset_configs:
-        if os.path.exists(config['csv_path']):
-            aggregated_df = pd.read_csv(config['csv_path'])
-            available_datasets.append((config, aggregated_df))
+    for results_dir in results_dirs:
+        dataset_configs = [
+            {
+                'label': 'MotorImagery/BNCI2014_001',
+                'input_dir': os.path.join(results_dir, 'MotorImagery/BNCI2014_001/'),
+                'csv_path': os.path.join(results_dir, 'MotorImagery/BNCI2014_001/all_results.csv')
+            },
+            {
+                'label': 'SSVEP/Lee2019_SSVEP',
+                'input_dir': os.path.join(results_dir, 'SSVEP/Lee2019_SSVEP/'),
+                'csv_path': os.path.join(results_dir, 'SSVEP/Lee2019_SSVEP/all_results.csv')
+            },
+            {
+                'label': 'ERP/BI2015a',
+                'input_dir': os.path.join(results_dir, 'ERP/BI2015a/'),
+                'csv_path': os.path.join(results_dir, 'ERP/BI2015a/all_results.csv')
+            }
+        ]
+
+        for config in dataset_configs:
+            if os.path.exists(config['csv_path']):
+                aggregated_df = pd.read_csv(config['csv_path'])
+                
+                # Filter to only include intended experimental seeds: [100, 200, 300, 400, 500]
+                valid_seeds = [100, 200, 300, 400, 500]
+                if 'seed' in aggregated_df.columns:
+                    initial_len = len(aggregated_df)
+                    # Convert seed to numeric, handling any string representations
+                    aggregated_df['seed'] = pd.to_numeric(aggregated_df['seed'], errors='coerce')
+                    # Filter to valid seeds (drop rows with NaN seeds or seeds not in valid list)
+                    aggregated_df = aggregated_df[aggregated_df['seed'].isin(valid_seeds)].copy()
+                    filtered_count = initial_len - len(aggregated_df)
+                    if filtered_count > 0:
+                        print(f"[INFO] Filtered out {filtered_count} rows with seeds not in {valid_seeds} for {config['label']}")
+                    print(f"[INFO] Remaining rows with valid seeds: {len(aggregated_df)}")
+                else:
+                    print(f"[WARNING] No 'seed' column found for {config['label']} - cannot filter by seed values")
+                
+                available_datasets.append((config, aggregated_df))
+            else:
+                print(f"No aggregated results found for {config['label']}"
+                      f"in {config['input_dir']}")
+                    	
 
     if not available_datasets:
         raise FileNotFoundError("No aggregated results found for the expected datasets.")

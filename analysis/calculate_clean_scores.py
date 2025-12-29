@@ -3,74 +3,240 @@ Calculate and organize clean scores (baseline performance) for benchmark results
 
 Clean scores represent the baseline ROC-AUC performance without any noise perturbation.
 Results are aggregated across seeds/subjects to get mean +/- std dev for each
-combination of dataset, eval_mode, noise_type, tune setting, and model.
+unique combination of dataset, model, eval_mode, and tune flag.
+
+Note: Clean scores are the same across all noise types since a unique trained model
+is evaluated once to get the clean score, then repeatedly evaluated for corrupted scores.
 
 Usage:
-    python analysis/calculate_clean_scores.py [results_dir] [output_dir]
+    python analysis/calculate_clean_scores.py [--results-file PATH] [--output-dir PATH]
     
     Or import and use:
-    from analysis.calculate_clean_scores import generate_clean_scores_report
-    results = generate_clean_scores_report(results_dir='../sol_results/', output_dir='./clean_scores_results/')
+    from analysis.calculate_clean_scores import compute_clean_scores
+    results = compute_clean_scores()
 """
 
 import os
+import sys
 import pandas as pd
 import numpy as np
 import json
 from typing import Dict, List, Tuple, Optional
 import warnings
 
+# Add project root to path for imports
+_current_dir = os.path.dirname(os.path.abspath(__file__))
+_project_root = os.path.dirname(_current_dir)
+if _project_root not in sys.path:
+    sys.path.insert(0, _project_root)
 
-def calculate_clean_scores_summary(
+
+def canonicalize_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Returns a copy with canonical column names:
+    - lowercase
+    - spaces/hyphens -> underscores
+    """
+    out = df.copy()
+    out.columns = [
+        str(c).strip().lower().replace(" ", "_").replace("-", "_")
+        for c in out.columns
+    ]
+    return out
+
+
+def load_results_dataframe(
+    results_file: Optional[str] = None,
+    aggregate_from_directories: bool = True,
+) -> Tuple[pd.DataFrame, str]:
+    """
+    Load and aggregate results using the same logic as robustness_metrics.py.
+    
+    This function:
+    1. First tries to load from a pre-aggregated CSV file if provided
+    2. Otherwise, uses collect_all_results_unified() to aggregate from directories
+    3. Normalizes column names and maps to expected format
+    4. Handles clean score column detection
+    
+    Parameters:
+    -----------
+    results_file : str, optional
+        Path to pre-aggregated results CSV file. If provided and exists, loads from this file.
+        Otherwise, aggregates from directories.
+    aggregate_from_directories : bool, default=True
+        If True and results_file is not provided or doesn't exist, aggregate from directories.
+        
+    Returns:
+    --------
+    pd.DataFrame
+        Aggregated results with canonicalized column names.
+    """
+    # Try to load from pre-aggregated file first
+    if results_file and os.path.exists(results_file):
+        print(f"[INFO] Loading pre-aggregated results from: {results_file}")
+        df = pd.read_csv(results_file)
+        print(f"[OK] Loaded {len(df)} rows from {results_file}")
+    else:
+        # Check for unified results file
+        unified_file = os.path.join(_project_root, "evaluation", "results", "unified_all_results.csv")
+        if os.path.exists(unified_file):
+            print(f"[INFO] Loading unified results from: {unified_file}")
+            df = pd.read_csv(unified_file)
+            print(f"[OK] Loaded {len(df)} rows from unified results file")
+        elif aggregate_from_directories:
+            # Use collect_all_results_unified to aggregate from directories
+            print("[INFO] Aggregating results from directories...")
+            try:
+                from evaluation.experiment_utils import collect_all_results_unified
+                df = collect_all_results_unified()
+                if df is None:
+                    raise ValueError("No results found to aggregate")
+                print(f"[OK] Aggregated {len(df)} rows from directories")
+            except ImportError as e:
+                raise ImportError(
+                    f"Could not import collect_all_results_unified from evaluation.experiment_utils: {e}\n"
+                    "Make sure you're running from the project root directory."
+                )
+        else:
+            raise FileNotFoundError(
+                f"Results file not found: {results_file}\n"
+                "Set aggregate_from_directories=True to aggregate from directories, "
+                "or provide a valid results_file path."
+            )
+    
+    if df is None or df.empty:
+        raise ValueError("No results loaded - DataFrame is None or empty")
+    
+    # Canonicalize column names (handles spaces, hyphens, case)
+    df = canonicalize_columns(df)
+    
+    # Map column names to expected format
+    # Handle 'tuned' -> 'tune' mapping
+    if 'tuned' in df.columns and 'tune' not in df.columns:
+        df['tune'] = df['tuned'].astype(bool)
+    
+    # Normalize eval_mode (remove 'Evaluation' suffix if present)
+    if 'eval_mode' in df.columns:
+        df['eval_mode'] = df['eval_mode'].astype(str).str.replace('Evaluation', '', regex=False)
+    
+    # Normalize mode column (extract tune flag from mode if not already present)
+    if 'mode' in df.columns:
+        if 'tune' not in df.columns:
+            df['tune'] = df['mode'].astype(str).str.contains('_tune', na=False)
+    
+    # Detect clean metric column (priority: clean_roc_auc > clean_score)
+    clean_metric_candidates = ['clean_roc_auc', 'clean_score']
+    clean_metric_col = None
+    for candidate in clean_metric_candidates:
+        if candidate in df.columns:
+            clean_metric_col = candidate
+            break
+    
+    if clean_metric_col:
+        # Ensure clean metric column is numeric
+        df[clean_metric_col] = pd.to_numeric(df[clean_metric_col], errors='coerce')
+        print(f"[INFO] Using clean metric column: {clean_metric_col}")
+    else:
+        raise KeyError(
+            f"No clean metric column found. Tried: {clean_metric_candidates}\n"
+            f"Available columns: {list(df.columns)}"
+        )
+    
+    # Ensure required columns exist
+    required_cols = ['dataset', 'model', 'eval_mode', 'tune']
+    missing_cols = [col for col in required_cols if col not in df.columns]
+    if missing_cols:
+        raise KeyError(
+            f"Missing required columns after aggregation: {missing_cols}\n"
+            f"Available columns: {list(df.columns)}"
+        )
+    
+    # Filter to test_perturb mode if available
+    if 'mode' in df.columns:
+        test_perturb_mask = df['mode'].astype(str).str.replace('_tune', '', regex=False) == 'test_perturb'
+        if test_perturb_mask.any():
+            print(f"[INFO] Filtering to test_perturb mode: {test_perturb_mask.sum()} rows")
+            df = df[test_perturb_mask].copy()
+        else:
+            print("[WARNING] No test_perturb results found in data")
+    
+    # Filter to only include intended experimental seeds: [100, 200, 300, 400, 500]
+    valid_seeds = [100, 200, 300, 400, 500]
+    if 'seed' in df.columns:
+        initial_len = len(df)
+        # Convert seed to numeric, handling any string representations
+        df['seed'] = pd.to_numeric(df['seed'], errors='coerce')
+        # Filter to valid seeds (drop rows with NaN seeds or seeds not in valid list)
+        df = df[df['seed'].isin(valid_seeds)].copy()
+        filtered_count = initial_len - len(df)
+        if filtered_count > 0:
+            print(f"[INFO] Filtered out {filtered_count} rows with seeds not in {valid_seeds}")
+        print(f"[INFO] Remaining rows with valid seeds: {len(df)}")
+    else:
+        print("[WARNING] No 'seed' column found - cannot filter by seed values")
+    
+    print(f"[OK] Final DataFrame shape: {df.shape}")
+    print(f"[INFO] Columns: {list(df.columns)}")
+    
+    return df, clean_metric_col
+
+
+def compute_clean_scores_summary(
     df: pd.DataFrame,
-    dataset: str,
+    clean_metric_col: str = 'clean_score',
     group_by_cols: Optional[List[str]] = None
 ) -> pd.DataFrame:
     """
-    Calculate clean scores summary statistics for all combinations in the dataset.
+    Calculate clean scores summary statistics (mean and std dev) for each unique
+    combination of dataset, model, eval_mode, and tune.
+    
+    Clean scores are aggregated across seeds/subjects/sessions to get statistics.
+    Note: Clean scores should be the same across noise types, so we don't group by noise_type.
     
     Parameters:
     -----------
     df : pd.DataFrame
-        Full results dataframe with test_perturb results
-    dataset : str
-        Dataset name (BNCI2014_001, Lee2019_SSVEP, BI2015a)
+        Results dataframe with test_perturb results (must include clean_score or clean_roc_auc)
+    clean_metric_col : str
+        Column name containing clean scores (default: 'clean_score')
     group_by_cols : list, optional
-        Additional columns to group by when calculating statistics (e.g., ['subject', 'seed'])
+        Columns to group by when extracting unique clean scores (e.g., ['seed', 'subject', 'session'])
         If None, uses ['seed', 'subject', 'session'] as default
+        These columns identify unique model evaluations
     
     Returns:
     --------
     pd.DataFrame
         Summary table with mean and std dev of clean scores for each combination
+        Columns: dataset, model, eval_mode, tune, clean_score_mean, clean_score_std, n_samples
     """
     if group_by_cols is None:
         group_by_cols = ['seed', 'subject', 'session']
     
-    # Filter for test_perturb mode (can be 'test_perturb' or 'test_perturb_tune')
-    df_filtered = df[df['mode'].str.contains('test_perturb', na=False)].copy()
+    # Filter to only rows with valid clean scores
+    df_filtered = df.dropna(subset=[clean_metric_col]).copy()
     
     if df_filtered.empty:
-        print(f"Warning: No test_perturb data found for {dataset}")
+        print("[WARNING] No rows with valid clean scores found")
         return pd.DataFrame()
     
-    # Get unique combinations
+    # Get unique combinations of dataset, model, eval_mode, tune
     unique_combos = df_filtered.groupby([
-        'model', 'noise_type', 'eval_mode', 'tune'
-    ]).size().reset_index()
+        'dataset', 'model', 'eval_mode', 'tune'
+    ]).size().reset_index().drop(columns=0)
     
     results = []
     
     for _, combo in unique_combos.iterrows():
+        dataset = combo['dataset']
         model = combo['model']
-        noise_type = combo['noise_type']
         eval_mode = combo['eval_mode']
         tune = combo['tune']
         
         # Filter for this combination
         combo_df = df_filtered[
+            (df_filtered['dataset'] == dataset) &
             (df_filtered['model'] == model) &
-            (df_filtered['noise_type'] == noise_type) &
             (df_filtered['eval_mode'] == eval_mode) &
             (df_filtered['tune'] == tune)
         ].copy()
@@ -78,29 +244,27 @@ def calculate_clean_scores_summary(
         if combo_df.empty:
             continue
         
-        # Extract clean scores - use clean_score column if available
-        # Clean score should be the same for all rows in a group (seed, subject, session)
+        # Extract clean scores - group by seed/subject/session to get unique evaluations
         group_cols = [col for col in group_by_cols if col in combo_df.columns]
         
-        # Get clean scores for each group
         clean_score_values = []
         
         if group_cols:
+            # Group by seed/subject/session to get one clean score per unique evaluation
             for group_key, group_df in combo_df.groupby(group_cols):
-                # Get clean score from this group (should be same for all rows)
-                clean_scores = group_df['clean_score'].dropna().unique()
+                # Get clean score from this group (should be same for all rows in group)
+                clean_scores = group_df[clean_metric_col].dropna().unique()
                 if len(clean_scores) > 0:
                     # Use median in case there are slight variations
                     clean_score_val = np.median(clean_scores)
-                    if clean_score_val > 0:  # Only include valid scores
+                    if np.isfinite(clean_score_val) and clean_score_val > 0:
                         clean_score_values.append(clean_score_val)
         else:
-            # If no grouping columns, use all clean scores
-            clean_scores = combo_df['clean_score'].dropna().unique()
-            if len(clean_scores) > 0:
-                clean_score_val = np.median(clean_scores)
-                if clean_score_val > 0:
-                    clean_score_values.append(clean_score_val)
+            # If no grouping columns, use all clean scores (deduplicate)
+            clean_scores = combo_df[clean_metric_col].dropna().unique()
+            for score in clean_scores:
+                if np.isfinite(score) and score > 0:
+                    clean_score_values.append(score)
         
         if len(clean_score_values) == 0:
             continue
@@ -113,7 +277,6 @@ def calculate_clean_scores_summary(
         results.append({
             'dataset': dataset,
             'model': model,
-            'noise_type': noise_type,
             'eval_mode': eval_mode,
             'tune': tune,
             'clean_score_mean': mean_clean_score,
@@ -135,7 +298,7 @@ def format_clean_scores_table(results_df: pd.DataFrame) -> pd.DataFrame:
     Parameters:
     -----------
     results_df : pd.DataFrame
-        Results dataframe from calculate_clean_scores_summary
+        Results dataframe from compute_clean_scores_summary
     
     Returns:
     --------
@@ -150,11 +313,9 @@ def format_clean_scores_table(results_df: pd.DataFrame) -> pd.DataFrame:
         axis=1
     )
     
-    # Capitalize noise_type and eval_mode for better readability
-    if 'noise_type' in formatted_df.columns:
-        formatted_df['noise_type'] = formatted_df['noise_type'].str.capitalize()
+    # Format eval_mode for better readability
     if 'eval_mode' in formatted_df.columns:
-        formatted_df['eval_mode'] = formatted_df['eval_mode'].str.replace('Evaluation', '').str.replace('Session', ' Session')
+        formatted_df['eval_mode'] = formatted_df['eval_mode'].astype(str).str.replace('Evaluation', '', regex=False)
     
     # Convert tune boolean to string
     if 'tune' in formatted_df.columns:
@@ -162,7 +323,7 @@ def format_clean_scores_table(results_df: pd.DataFrame) -> pd.DataFrame:
     
     # Reorder columns for better readability
     col_order = [
-        'dataset', 'model', 'noise_type', 'eval_mode', 'tune',
+        'dataset', 'model', 'eval_mode', 'tune',
         'clean_score_mean', 'clean_score_std', 'clean_score_mean_std', 'n_samples'
     ]
     formatted_df = formatted_df[[col for col in col_order if col in formatted_df.columns]]
@@ -172,7 +333,7 @@ def format_clean_scores_table(results_df: pd.DataFrame) -> pd.DataFrame:
 
 def create_clean_scores_pivot_table(
     results_df: pd.DataFrame,
-    index_cols: List[str] = ['dataset', 'model', 'noise_type'],
+    index_cols: List[str] = ['dataset', 'model'],
     value_col: str = 'clean_score_mean_std',
     columns_col: str = 'eval_mode'
 ) -> pd.DataFrame:
@@ -204,177 +365,141 @@ def create_clean_scores_pivot_table(
     return pivot_df
 
 
-def generate_clean_scores_report(
-    results_dir: str = '../sol_results/',
-    output_dir: str = './analysis/clean_scores_results/',
-    output_format: str = 'both'  # 'csv', 'excel', 'json', or 'all'
+def compute_clean_scores(
+    results_file: Optional[str] = None,
+    output_dir: str = "./analysis/clean_scores_results",
+    aggregate_from_directories: bool = True,
+    save_csv: bool = True,
+    save_excel: bool = True,
+    save_json: bool = False,
 ) -> pd.DataFrame:
     """
-    Generate clean scores report for all datasets.
+    Compute and save clean scores summary for all datasets.
+    
+    Clean scores represent the baseline ROC-AUC performance without any noise perturbation.
+    Results are aggregated across seeds/subjects to get mean +/- std dev for each
+    unique combination of dataset, model, eval_mode, and tune flag.
     
     Parameters:
     -----------
-    results_dir : str
-        Directory containing results (should have subdirectories for each dataset)
+    results_file : str, optional
+        Path to pre-aggregated results CSV file. If None, will aggregate from directories.
     output_dir : str
         Directory to save output files
-    output_format : str
-        Output format: 'csv', 'excel', 'json', 'both', or 'all'
-        - 'csv': Save only CSV file (always saved regardless of format)
-        - 'excel': Save CSV and Excel files
-        - 'json': Save CSV and JSON files
-        - 'both': Save CSV and Excel files (default)
-        - 'all': Save CSV, Excel, and JSON files
+    aggregate_from_directories : bool
+        If True and results_file is not provided, aggregate from directories
+    save_csv : bool
+        Whether to save CSV file
+    save_excel : bool
+        Whether to save Excel file
+    save_json : bool
+        Whether to save JSON file
     
     Returns:
     --------
     pd.DataFrame
-        Combined results for all datasets
+        Formatted clean scores summary
     """
-    dataset_configs = [
-        {
-            'label': 'MotorImagery/BNCI2014_001',
-            'input_dir': os.path.join(results_dir, 'MotorImagery/BNCI2014_001/'),
-            'csv_path': os.path.join(results_dir, 'MotorImagery/BNCI2014_001/all_results.csv'),
-            'dataset': 'BNCI2014_001'
-        },
-        {
-            'label': 'SSVEP/Lee2019_SSVEP',
-            'input_dir': os.path.join(results_dir, 'SSVEP/Lee2019_SSVEP/'),
-            'csv_path': os.path.join(results_dir, 'SSVEP/Lee2019_SSVEP/all_results.csv'),
-            'dataset': 'Lee2019_SSVEP'
-        },
-        {
-            'label': 'ERP/BI2015a',
-            'input_dir': os.path.join(results_dir, 'ERP/BI2015a/'),
-            'csv_path': os.path.join(results_dir, 'ERP/BI2015a/all_results.csv'),
-            'dataset': 'BI2015a'
-        }
-    ]
+    print("=" * 80)
+    print("CLEAN SCORES COMPUTATION")
+    print("=" * 80)
     
-    all_results = []
+    # Load results using the same approach as robustness_metrics.py
+    print("\n[STEP 1] Loading/aggregating results...")
+    df, clean_metric_col = load_results_dataframe(
+        results_file=results_file,
+        aggregate_from_directories=aggregate_from_directories
+    )
     
-    for config in dataset_configs:
-        csv_path = config['csv_path']
-        dataset = config['dataset']
-        
-        if not os.path.exists(csv_path):
-            print(f"Warning: Results file not found: {csv_path}")
-            continue
-        
-        print(f"\n=== Processing {dataset} ===")
-        df = pd.read_csv(csv_path)
-        
-        # Ensure dataset column is set
-        if 'dataset' not in df.columns:
-            df['dataset'] = dataset
-        
-        # Calculate clean scores summary
-        clean_scores_summary = calculate_clean_scores_summary(df, dataset)
-        
-        if not clean_scores_summary.empty:
-            all_results.append(clean_scores_summary)
-            print(f"Calculated clean scores for {len(clean_scores_summary)} combinations")
-        else:
-            print(f"No valid clean scores for {dataset}")
+    # Compute clean scores summary
+    print("\n[STEP 2] Computing clean scores summary...")
+    clean_scores_summary = compute_clean_scores_summary(df, clean_metric_col=clean_metric_col)
     
-    if not all_results:
-        print("No results to aggregate!")
+    if clean_scores_summary.empty:
+        print("[WARNING] No clean scores found!")
         return pd.DataFrame()
     
-    # Combine all results
-    combined_results = pd.concat(all_results, ignore_index=True)
+    print(f"[OK] Computed clean scores for {len(clean_scores_summary)} combinations")
     
     # Format table
-    formatted_results = format_clean_scores_table(combined_results)
+    print("\n[STEP 3] Formatting results...")
+    formatted_results = format_clean_scores_table(clean_scores_summary)
     
     # Sort for better organization
-    sort_cols = ['dataset', 'model', 'noise_type', 'eval_mode', 'tune']
+    sort_cols = ['dataset', 'model', 'eval_mode', 'tune']
     formatted_results = formatted_results.sort_values([col for col in sort_cols if col in formatted_results.columns])
     
     # Save results
+    print("\n[STEP 4] Saving results to files...")
     os.makedirs(output_dir, exist_ok=True)
-    saved_files = []
+    saved_files = {}
     
-    # Always save CSV as the base format
-    csv_path = os.path.join(output_dir, 'clean_scores_summary.csv')
-    try:
-        formatted_results.to_csv(csv_path, index=False)
-        saved_files.append(csv_path)
-        print(f"\nSaved CSV to: {csv_path}")
-    except Exception as e:
-        print(f"Error saving CSV file: {e}")
+    timestamp = pd.Timestamp.now().strftime("%Y%m%d_%H%M%S")
     
-    # Save Excel if requested
-    if output_format in ['excel', 'both', 'all']:
+    # Save CSV
+    if save_csv:
+        csv_path = os.path.join(output_dir, f'clean_scores_summary_{timestamp}.csv')
         try:
-            excel_path = os.path.join(output_dir, 'clean_scores_summary.xlsx')
+            formatted_results.to_csv(csv_path, index=False)
+            saved_files['csv'] = csv_path
+            print(f"  [OK] Saved CSV to: {csv_path}")
+        except Exception as e:
+            print(f"  [ERROR] Could not save CSV file: {e}")
+    
+    # Save Excel
+    if save_excel:
+        excel_path = os.path.join(output_dir, f'clean_scores_summary_{timestamp}.xlsx')
+        try:
             with pd.ExcelWriter(excel_path, engine='openpyxl') as writer:
                 formatted_results.to_excel(writer, index=False, sheet_name='Clean Scores Summary')
                 
-                # Also create pivot tables for different views
+                # Create pivot tables for different views
                 try:
                     # Pivot by eval_mode
                     pivot_eval = create_clean_scores_pivot_table(
                         formatted_results,
-                        index_cols=['dataset', 'model', 'noise_type', 'tune'],
+                        index_cols=['dataset', 'model', 'tune'],
                         value_col='clean_score_mean_std',
                         columns_col='eval_mode'
                     )
                     pivot_eval.to_excel(writer, sheet_name='Pivot by Eval Mode')
                     
-                    # Pivot by noise_type
-                    pivot_noise = create_clean_scores_pivot_table(
-                        formatted_results,
-                        index_cols=['dataset', 'model', 'eval_mode', 'tune'],
-                        value_col='clean_score_mean_std',
-                        columns_col='noise_type'
-                    )
-                    pivot_noise.to_excel(writer, sheet_name='Pivot by Noise Type')
-                    
                     # Pivot by tune setting
                     pivot_tune = create_clean_scores_pivot_table(
                         formatted_results,
-                        index_cols=['dataset', 'model', 'noise_type', 'eval_mode'],
+                        index_cols=['dataset', 'model', 'eval_mode'],
                         value_col='clean_score_mean_std',
                         columns_col='tune'
                     )
                     pivot_tune.to_excel(writer, sheet_name='Pivot by Tune Setting')
                 except Exception as e:
-                    print(f"Warning: Could not create pivot tables: {e}")
+                    print(f"  [WARNING] Could not create pivot tables: {e}")
             
-            saved_files.append(excel_path)
-            print(f"Saved Excel to: {excel_path}")
+            saved_files['excel'] = excel_path
+            print(f"  [OK] Saved Excel to: {excel_path}")
         except ImportError:
-            print("Warning: openpyxl not installed. Skipping Excel export. Install with: pip install openpyxl")
+            print("  [WARNING] openpyxl not installed. Skipping Excel export. Install with: pip install openpyxl")
         except Exception as e:
-            print(f"Warning: Could not save Excel file: {e}")
+            print(f"  [WARNING] Could not save Excel file: {e}")
     
-    # Save JSON if requested
-    if output_format in ['json', 'all']:
+    # Save JSON
+    if save_json:
+        json_path = os.path.join(output_dir, f'clean_scores_summary_{timestamp}.json')
         try:
-            json_path = os.path.join(output_dir, 'clean_scores_summary.json')
             # Convert DataFrame to records format for JSON
             json_data = formatted_results.to_dict(orient='records')
             with open(json_path, 'w') as f:
                 json.dump(json_data, f, indent=2, default=str)
-            saved_files.append(json_path)
-            print(f"Saved JSON to: {json_path}")
+            saved_files['json'] = json_path
+            print(f"  [OK] Saved JSON to: {json_path}")
         except Exception as e:
-            print(f"Warning: Could not save JSON file: {e}")
-    
-    # Print summary of saved files
-    if saved_files:
-        print(f"\n=== Files Saved ({len(saved_files)}) ===")
-        for file_path in saved_files:
-            file_size = os.path.getsize(file_path) / 1024  # Size in KB
-            print(f"  - {os.path.basename(file_path)} ({file_size:.2f} KB)")
-    else:
-        print("\nWarning: No files were saved successfully!")
+            print(f"  [WARNING] Could not save JSON file: {e}")
     
     # Print summary
-    print(f"\n=== Clean Scores Summary ===")
-    print(f"Total combinations: {len(formatted_results)}")
+    print("\n" + "=" * 80)
+    print("COMPUTATION COMPLETE")
+    print("=" * 80)
+    print(f"\nTotal combinations: {len(formatted_results)}")
     print(f"\nSample of results:")
     print(formatted_results.head(20).to_string())
     
@@ -383,7 +508,7 @@ def generate_clean_scores_report(
         print(f"\n=== Pivot Table View (by Eval Mode) ===")
         pivot_eval = create_clean_scores_pivot_table(
             formatted_results,
-            index_cols=['dataset', 'model', 'noise_type', 'tune'],
+            index_cols=['dataset', 'model', 'tune'],
             value_col='clean_score_mean_std',
             columns_col='eval_mode'
         )
@@ -391,22 +516,121 @@ def generate_clean_scores_report(
     except Exception as e:
         print(f"Could not display pivot table: {e}")
     
+    if saved_files:
+        print(f"\nSaved files:")
+        for key, filepath in saved_files.items():
+            file_size = os.path.getsize(filepath) / 1024  # Size in KB
+            print(f"  - {key:10s}: {os.path.basename(filepath)} ({file_size:.2f} KB)")
+    
     return formatted_results
 
 
+# Compatibility alias for old function name
+def generate_clean_scores_report(
+    results_dir: str = '../sol_results/',
+    output_dir: str = './analysis/clean_scores_results/',
+    output_format: str = 'both'
+) -> pd.DataFrame:
+    """
+    Legacy compatibility function. Use compute_clean_scores() instead.
+    
+    This function is kept for backward compatibility but is deprecated.
+    """
+    import warnings
+    warnings.warn(
+        "generate_clean_scores_report() is deprecated. Use compute_clean_scores() instead.",
+        DeprecationWarning,
+        stacklevel=2
+    )
+    
+    # Try to find results file in the old location
+    results_file = None
+    if results_dir and os.path.exists(results_dir):
+        # Try to find all_results.csv in subdirectories
+        for root, dirs, files in os.walk(results_dir):
+            if 'all_results.csv' in files:
+                results_file = os.path.join(root, 'all_results.csv')
+                break
+    
+    save_excel = output_format in ['excel', 'both', 'all']
+    save_json = output_format in ['json', 'all']
+    
+    return compute_clean_scores(
+        results_file=results_file,
+        output_dir=output_dir,
+        aggregate_from_directories=True,
+        save_csv=True,
+        save_excel=save_excel,
+        save_json=save_json,
+    )
+
+
 if __name__ == '__main__':
-    import sys
+    import argparse
     
-    # Default paths
-    results_dir = '../sol_results/'
-    output_dir = './clean_scores_results/'
+    parser = argparse.ArgumentParser(
+        description="Compute and save clean scores (baseline ROC-AUC) for EEG benchmark",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Use default settings (aggregate from directories)
+  python calculate_clean_scores.py
+  
+  # Load from pre-aggregated file
+  python calculate_clean_scores.py --results-file results/all_results.csv
+  
+  # Specify custom output directory
+  python calculate_clean_scores.py --output-dir ./my_results
+        """
+    )
     
-    # Allow command line arguments
-    if len(sys.argv) > 1:
-        results_dir = sys.argv[1]
-    if len(sys.argv) > 2:
-        output_dir = sys.argv[2]
+    parser.add_argument(
+        "--results-file",
+        type=str,
+        default=None,
+        help="Path to pre-aggregated results CSV file (optional)"
+    )
     
-    # Generate report
-    results = generate_clean_scores_report(results_dir, output_dir, output_format='both')
+    parser.add_argument(
+        "--output-dir",
+        type=str,
+        default="./analysis/clean_scores_results",
+        help="Directory to save output files (default: ./analysis/clean_scores_results)"
+    )
+    
+    parser.add_argument(
+        "--no-aggregate",
+        action="store_true",
+        help="Don't aggregate from directories if results file not found"
+    )
+    
+    parser.add_argument(
+        "--no-excel",
+        action="store_true",
+        help="Don't save Excel file"
+    )
+    
+    parser.add_argument(
+        "--save-json",
+        action="store_true",
+        help="Also save JSON file"
+    )
+    
+    args = parser.parse_args()
+    
+    try:
+        results = compute_clean_scores(
+            results_file=args.results_file,
+            output_dir=args.output_dir,
+            aggregate_from_directories=not args.no_aggregate,
+            save_csv=True,
+            save_excel=not args.no_excel,
+            save_json=args.save_json,
+        )
+        print("\n[OK] Clean scores computation completed successfully!")
+    except Exception as e:
+        print(f"\n[ERROR] Failed to compute clean scores: {e}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
 
