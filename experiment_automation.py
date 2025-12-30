@@ -1761,6 +1761,147 @@ class ExperimentAutomation:
         
         return report_file
     
+    def generate_completion_report(self) -> None:
+        """
+        Generate and print a completion report showing which combinations of
+        (dataset, model, tune, eval_mode) are complete.
+        """
+        print("\n" + "="*60)
+        print("COMPLETION STATUS REPORT")
+        print("="*60)
+        
+        # Get all unique combinations from config
+        datasets = self.config['datasets']
+        models = [model['name'] for model in self.config['models']]
+        eval_modes = self.config['eval_modes']
+        seeds = self.config['seeds']
+        tune_flags = [False, True]
+        
+        # Generate expected multirun jobs to check against
+        expected_jobs = self.generate_expected_multirun_jobs()
+        
+        # Build a set of complete job keys for fast lookup
+        # A job is complete if it's NOT in missing_experiments
+        missing_job_keys = set()
+        for job in self.missing_experiments:
+            # Create a unique key for the job
+            subjects_key = tuple(sorted(job['subjects']))
+            
+            job_key = (
+                job['dataset'],
+                job['model'],
+                job['eval_mode'],
+                job['seed'],
+                job['tune'],
+                subjects_key
+            )
+            missing_job_keys.add(job_key)
+        
+        # For each (dataset, model, tune, eval_mode) combination, check if all required jobs are complete
+        completion_data = []
+        
+        for dataset_name in datasets.keys():
+            for model_name in models:
+                for tune_flag in tune_flags:
+                    for eval_mode in eval_modes:
+                        # Get all expected jobs for this combination
+                        expected_jobs_for_combo = [
+                            job for job in expected_jobs
+                            if (job['dataset'] == dataset_name and
+                                job['model'] == model_name and
+                                job['eval_mode'] == eval_mode and
+                                job['tune'] == tune_flag)
+                        ]
+                        
+                        if not expected_jobs_for_combo:
+                            continue  # Skip if no expected jobs for this combination
+                        
+                        # Check how many are missing
+                        missing_count = 0
+                        for job in expected_jobs_for_combo:
+                            subjects_key = tuple(sorted(job['subjects']))
+                            
+                            job_key = (
+                                job['dataset'],
+                                job['model'],
+                                job['eval_mode'],
+                                job['seed'],
+                                job['tune'],
+                                subjects_key
+                            )
+                            
+                            if job_key in missing_job_keys:
+                                missing_count += 1
+                        
+                        total_jobs = len(expected_jobs_for_combo)
+                        complete_jobs = total_jobs - missing_count
+                        is_complete = (missing_count == 0)
+                        
+                        completion_data.append({
+                            'dataset': dataset_name,
+                            'model': model_name,
+                            'tune': 'Tuned' if tune_flag else 'Baseline',
+                            'eval_mode': eval_mode,
+                            'complete': is_complete,
+                            'complete_jobs': complete_jobs,
+                            'total_jobs': total_jobs,
+                            'missing_jobs': missing_count
+                        })
+        
+        # Sort by dataset, then model, then eval_mode, then tune
+        completion_data.sort(key=lambda x: (x['dataset'], x['model'], x['eval_mode'], x['tune']))
+        
+        # Print formatted table
+        print("\nCompletion Status by (Dataset, Model, Tune, Eval Mode):")
+        print("-" * 100)
+        
+        # Header
+        header = f"{'Dataset':<20} {'Model':<20} {'Tune':<10} {'Eval Mode':<15} {'Status':<10} {'Progress':<20}"
+        print(header)
+        print("-" * 100)
+        
+        # Data rows
+        for row in completion_data:
+            status = "✓ Complete" if row['complete'] else "✗ Incomplete"
+            progress = f"{row['complete_jobs']}/{row['total_jobs']} jobs"
+            
+            print(f"{row['dataset']:<20} {row['model']:<20} {row['tune']:<10} {row['eval_mode']:<15} "
+                  f"{status:<10} {progress:<20}")
+        
+        print("-" * 100)
+        
+        # Summary statistics
+        total_combinations = len(completion_data)
+        complete_combinations = sum(1 for row in completion_data if row['complete'])
+        incomplete_combinations = total_combinations - complete_combinations
+        
+        print(f"\nSummary:")
+        print(f"  Total combinations: {total_combinations}")
+        print(f"  Complete: {complete_combinations} ({100*complete_combinations/total_combinations:.1f}%)")
+        print(f"  Incomplete: {incomplete_combinations} ({100*incomplete_combinations/total_combinations:.1f}%)")
+        
+        # Group by dataset and model for easier reading
+        print("\n" + "="*60)
+        print("COMPLETION STATUS BY DATASET AND MODEL")
+        print("="*60)
+        
+        # Group data by dataset and model
+        by_dataset_model = defaultdict(lambda: defaultdict(list))
+        for row in completion_data:
+            by_dataset_model[row['dataset']][row['model']].append(row)
+        
+        for dataset_name in sorted(by_dataset_model.keys()):
+            print(f"\n{dataset_name}:")
+            for model_name in sorted(by_dataset_model[dataset_name].keys()):
+                model_rows = by_dataset_model[dataset_name][model_name]
+                print(f"  {model_name}:")
+                for row in model_rows:
+                    status_symbol = "✓" if row['complete'] else "✗"
+                    print(f"    {status_symbol} {row['tune']:<10} {row['eval_mode']:<15} "
+                          f"({row['complete_jobs']}/{row['total_jobs']} jobs)")
+        
+        print("\n" + "="*60)
+    
     def run_full_automation(self, output_dir: str = None) -> Tuple[str, str]:
         """Run the complete automation process."""
         print("[START] Starting Experiment Automation")
@@ -1784,13 +1925,16 @@ class ExperimentAutomation:
         # Step 2: Identify missing experiments
         self.identify_missing_experiments()
         
-        # Step 3: Generate script (Python or shell based on local flag)
+        # Step 3: Generate completion report
+        self.generate_completion_report()
+        
+        # Step 4: Generate script (Python or shell based on local flag)
         if self.local:
             script_file = self.generate_python_script(output_dir)
         else:
             script_file = self.generate_shell_script(output_dir)
         
-        # Step 4: Generate summary report
+        # Step 5: Generate summary report
         report_file = self.generate_summary_report(output_dir)
         
         print("\n" + "="*60)
@@ -1864,6 +2008,9 @@ def main():
         else:
             automation.aggregate_existing_results()
         automation.identify_missing_experiments()
+        
+        # Generate completion report
+        automation.generate_completion_report()
         
         # Generate script based on local flag
         if args.local:
