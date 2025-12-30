@@ -1294,6 +1294,18 @@ class UnifiedExperimentRunner:
                                             for session in intensity_df['session'].unique():
                                                 session_df = intensity_df[intensity_df['session'] == session]
                                                 if len(session_df) > 0:
+                                                    # DIAGNOSTIC: Check if fold_idx exists and how many unique values
+                                                    if 'fold_idx' in session_df.columns:
+                                                        unique_folds = session_df['fold_idx'].dropna().unique()
+                                                        if len(unique_folds) > 1:
+                                                            print(f"[DIAGNOSTIC] Aggregating {len(unique_folds)} folds for session={session}, "
+                                                                  f"noise_type={noise_type}, intensity={intensity}, subject={session_df['subject'].iloc[0]}")
+                                                            print(f"  Unique fold_idx values: {sorted(unique_folds)}")
+                                                            print(f"  Clean scores before aggregation: {sorted(session_df['clean_score'].dropna().unique())}")
+                                                    elif len(session_df) > 1:
+                                                        print(f"[WARNING] Multiple rows for session={session}, noise_type={noise_type}, "
+                                                              f"intensity={intensity} but no fold_idx column. Rows: {len(session_df)}")
+                                                    
                                                     agg_row = {
                                                         'subject': session_df['subject'].iloc[0],
                                                         'session': session,
@@ -1397,6 +1409,16 @@ class UnifiedExperimentRunner:
                     for session in results_df['session'].unique():
                         session_df = results_df[results_df['session'] == session]
                         if len(session_df) > 0:
+                            # DIAGNOSTIC: Check if fold_idx exists and how many unique values
+                            if 'fold_idx' in session_df.columns:
+                                unique_folds = session_df['fold_idx'].dropna().unique()
+                                if len(unique_folds) > 1:
+                                    print(f"[DIAGNOSTIC] Aggregating {len(unique_folds)} folds for session={session}, "
+                                          f"subject={session_df['subject'].iloc[0]}, mode={self.mode}")
+                                    print(f"  Unique fold_idx values: {sorted(unique_folds)}")
+                            elif len(session_df) > 1:
+                                print(f"[WARNING] Multiple rows for session={session} but no fold_idx column. Rows: {len(session_df)}")
+                            
                             # Calculate mean scores across folds
                             agg_row = {
                                 'subject': session_df['subject'].iloc[0],
