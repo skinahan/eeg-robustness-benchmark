@@ -44,11 +44,56 @@ def compute_classification_metrics(
             # Remap to 0 and 1
             label_map = {old_label: new_label for new_label, old_label in enumerate(sorted(unique_labels))}
             y_true = np.array([label_map[label] for label in y_true])
+            unique_labels = np.unique(y_true)
+    
+    # Ensure y_pred_proba is a numpy array
+    y_pred_proba = np.asarray(y_pred_proba)
+    
+    # Ensure y_pred_proba has the correct shape
+    if y_pred_proba.ndim == 1:
+        y_pred_proba = y_pred_proba.reshape(-1, 1)
     
     is_multiclass = num_classes > 2
 
     if is_multiclass:
-        # y_pred_proba expected shape: [N, num_classes]
+        # For multiclass, sklearn's roc_auc_score with multi_class="ovr" requires that 
+        # the number of columns in y_pred_proba matches the number of unique classes in y_true
+        n_unique_classes = len(unique_labels)
+        n_proba_classes = y_pred_proba.shape[1]
+        
+        if n_proba_classes != n_unique_classes:
+            if n_proba_classes > n_unique_classes:
+                # y_pred_proba has more columns than unique classes in y_true
+                # This can happen if validation set is missing some classes
+                # We need to select only the columns for classes that actually appear
+                max_label = unique_labels.max()
+                
+                # Check if labels are consecutive starting from 0
+                if max_label < n_proba_classes and np.array_equal(unique_labels, np.arange(max_label + 1)):
+                    # Labels are consecutive [0, 1, ..., max_label], select first (max_label+1) columns
+                    y_pred_proba = y_pred_proba[:, :max_label + 1]
+                else:
+                    # Labels are non-consecutive (e.g., [0, 1, 3])
+                    # Remap y_true to consecutive indices and select corresponding columns
+                    label_remap = {old_label: new_idx for new_idx, old_label in enumerate(sorted(unique_labels))}
+                    y_true_remapped = np.array([label_remap[label] for label in y_true])
+                    
+                    # Select columns corresponding to the unique labels
+                    selected_columns = sorted(unique_labels)
+                    if max(selected_columns) >= n_proba_classes:
+                        raise ValueError(
+                            f"Cannot align y_pred_proba (shape {y_pred_proba.shape}) with unique labels {unique_labels}. "
+                            f"Max label {max(selected_columns)} exceeds number of columns {n_proba_classes}"
+                        )
+                    y_pred_proba = y_pred_proba[:, selected_columns]
+                    y_true = y_true_remapped
+            else:
+                raise ValueError(
+                    f"y_pred_proba has {n_proba_classes} columns but y_true has {n_unique_classes} unique classes. "
+                    f"Unique labels: {unique_labels}. Expected at least {n_unique_classes} columns."
+                )
+        
+        # y_pred_proba expected shape: [N, n_unique_classes] after alignment
         y_pred_labels = np.argmax(y_pred_proba, axis=1)
         roc_auc = roc_auc_score(y_true, y_pred_proba, multi_class="ovr")
         acc = accuracy_score(y_true, y_pred_labels)
