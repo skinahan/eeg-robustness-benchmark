@@ -503,7 +503,17 @@ class ExperimentAutomation:
                     subject_key = ('session', str(row['session']))
                 else:
                     subject_key = ('unknown', '')
+            elif eval_mode == 'WithinSession':
+                # For WithinSession, combine subject and session since results are per (subject, session)
+                # However, multirun jobs produce results for all sessions, so we aggregate by subject only
+                # Store session-specific intensities but match by subject (aggregating across sessions)
+                if 'subject' in row and pd.notna(row['subject']):
+                    # Store subject only - we'll check that all sessions are present when matching
+                    subject_key = ('subject', int(row['subject']))
+                else:
+                    subject_key = ('unknown', '')
             elif 'subject' in row and pd.notna(row['subject']):
+                # For CrossSession, also use subject only (one session per job)
                 subject_key = ('subject', int(row['subject']))
             else:
                 subject_key = ('unknown', '')

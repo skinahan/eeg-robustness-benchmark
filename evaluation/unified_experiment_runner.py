@@ -632,7 +632,6 @@ class UnifiedExperimentRunner:
         IMPORTANT: Sets current_session before creating model to ensure proper cache key generation.
         For WithinSession, fold_idx is passed to prevent data leakage between folds.
         
-        NOTE: CrossSubject evaluation skips hyperparameter optimization due to performance constraints.
         """
         all_results = []
         
@@ -1274,7 +1273,7 @@ class UnifiedExperimentRunner:
             Aggregated results DataFrame
         """
         if self.eval_mode == "WithinSession":
-            # WithinSession: calculate fold score means for '0train' and '1test' separately
+            # WithinSession: calculate fold score means for sessions separately
             if 'fold_idx' in results_df.columns:
                 if self.mode == 'test_perturb':
                     # test_perturb mode: calculate fold score means for both clean folds and corrupted validation data

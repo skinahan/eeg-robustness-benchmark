@@ -735,6 +735,11 @@ def collect_from_directory(root_dir: str, source: str, paradigm: str, dataset: s
         for dirpath, _, filenames in os.walk(root_dir):
             for file in filenames:
                 if file.endswith(".csv"):
+                    # Exclude all_results.csv files when collecting from 'results' directory
+                    # Allow them when collecting from 'sol_results' (curated primary source)
+                    if file == "all_results.csv" and source != "sol_results":
+                        continue
+                    
                     full_path = os.path.join(dirpath, file)
                     
                     # Check path length (Windows has 260 char limit by default)
