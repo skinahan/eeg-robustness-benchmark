@@ -125,7 +125,7 @@ def fix_csv_file(csv_path: str, dry_run: bool = False) -> bool:
         if 'eval_mode' in df.columns:
             eval_modes = df['eval_mode'].unique()
             if 'WithinSession' not in eval_modes and 'WithinSessionEvaluation' not in [str(x) for x in eval_modes]:
-                print(f"  Skipping {os.path.basename(csv_path)}: not WithinSession (eval_modes: {eval_modes})")
+                # print(f"  Skipping {os.path.basename(csv_path)}: not WithinSession (eval_modes: {eval_modes})")
                 return False
         
         # Check if file has all rows labeled as 'eog'
@@ -148,7 +148,7 @@ def fix_csv_file(csv_path: str, dry_run: bool = False) -> bool:
                     needs_fixing = True
                     break
             if not needs_fixing:
-                print(f"  Skipping {os.path.basename(csv_path)}: doesn't match expected pattern")
+                # print(f"  Skipping {os.path.basename(csv_path)}: doesn't match expected pattern")
                 return False
         
         print(f"\nProcessing: {os.path.basename(csv_path)}")
