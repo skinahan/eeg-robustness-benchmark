@@ -44,7 +44,7 @@ from models.eegnet import create_eegnet_classifier
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor
 from evaluation.unified_experiment_runner import UnifiedExperimentRunner
 from config import get_paradigm, MODEL_REGISTRY
-from globals import set_seeds, get_seed, UNDERFITTING_THRESHOLD, get_max_epochs_for_dataset
+from globals import set_seeds, get_seed, UNDERFITTING_THRESHOLD, get_max_epochs_for_dataset, get_underfitting_threshold_for_dataset
 from sklearn.metrics import get_scorer
 from evaluation.metrics import compute_classification_metrics
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, balanced_accuracy_score
@@ -788,8 +788,9 @@ class AdaptiveSaturationDetector:
         print(f"  Initial clean score: {clean_score:.3f}")
         
         # Check for underfitting and retrain if necessary (same as test_perturb)
-        if clean_score < UNDERFITTING_THRESHOLD:
-            print(f"  Re-training model without EarlyStopping due to underfitting (threshold: {UNDERFITTING_THRESHOLD:.3f})")
+        underfitting_threshold = get_underfitting_threshold_for_dataset(dataset_name)
+        if clean_score < underfitting_threshold:
+            print(f"  Re-training model without EarlyStopping due to underfitting (threshold: {underfitting_threshold:.3f})")
             model.callbacks = []
             model.module_.train()          
             model.fit(X_train, y_train)

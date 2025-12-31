@@ -74,8 +74,27 @@ def get_max_epochs_for_dataset(dataset: str, eval_mode: str = None) -> int:
         return 100
     return DEFAULT_MAX_EPOCHS
 
-# Underfitting detection threshold
+# Underfitting detection threshold (default for backward compatibility)
 UNDERFITTING_THRESHOLD = 0.70  # Increased from 0.65 to catch more underfitting cases
+
+def get_underfitting_threshold_for_dataset(dataset: str) -> float:
+    """
+    Get dataset-specific underfitting threshold.
+    
+    The threshold should be adjusted based on the number of classes:
+    - For 4-class problems (e.g., Lee2019_SSVEP): ~0.35 (random chance = 0.25)
+    - For 2-class problems (e.g., BI2015a, BNCI2014_001): ~0.70 (random chance = 0.50)
+    
+    Args:
+        dataset: Dataset name (e.g., "Lee2019_SSVEP", "BI2015a", "BNCI2014_001")
+    
+    Returns:
+        float: Underfitting threshold for the dataset
+    """
+    if dataset == "Lee2019_SSVEP":
+        return 0.35  # 4 classes, random chance = 0.25
+    # Default for 2-class problems
+    return UNDERFITTING_THRESHOLD  # 0.70 for 2-class problems
 
 # EEGClassifier verbose level
 # 0 = silent, 1 = epoch progress bar, 2 = epoch progress + batch info

@@ -41,7 +41,7 @@ project_root = os.path.dirname(current_dir)
 sys.path.insert(0, project_root)
 
 from config import MODEL_REGISTRY, get_paradigm, get_dataset_sampling_rate
-from globals import set_seeds, DEFAULT_MAX_EPOCHS, UNDERFITTING_THRESHOLD, get_max_epochs_for_dataset
+from globals import set_seeds, DEFAULT_MAX_EPOCHS, UNDERFITTING_THRESHOLD, get_max_epochs_for_dataset, get_underfitting_threshold_for_dataset
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
 from evaluation.two_stage_hp_opt import alternate_two_stage_optuna, run_two_stage_optuna, format_params, get_all_model_params
 from utils import create_output_path, create_hdf5_model_path, get_noise_intensities
@@ -782,8 +782,9 @@ class UnifiedExperimentRunner:
             session = self.current_session
             retrain = False
             if retrain:
-                # Use a set threshold to restart training if clean score indicates underfitting.
-                if clean_score < UNDERFITTING_THRESHOLD:
+                # Use a dataset-specific threshold to restart training if clean score indicates underfitting.
+                underfitting_threshold = get_underfitting_threshold_for_dataset(self.dataset)
+                if clean_score < underfitting_threshold:
                     # Disable early stopping
                     print(f"Re-training model without EarlyStopping due to underfitting.")
                     final_model.set_params(**final_params)
@@ -1022,8 +1023,9 @@ class UnifiedExperimentRunner:
         # If we are tuning, we incur too high a time cost to re-train the model this often.
         # Also skip retraining if model was loaded from cache (it was already trained and validated)
         if not self.tune and not model_was_cached:
-            # Use a set threshold to restart training if clean score indicates underfitting.
-            if clean_score < UNDERFITTING_THRESHOLD:
+            # Use a dataset-specific threshold to restart training if clean score indicates underfitting.
+            underfitting_threshold = get_underfitting_threshold_for_dataset(self.dataset)
+            if clean_score < underfitting_threshold:
                 # Disable early stopping
                 # print(f"Re-training model without EarlyStopping due to underfitting: {clean_score} < {UNDERFITTING_THRESHOLD}")
                 new_callbacks = []
