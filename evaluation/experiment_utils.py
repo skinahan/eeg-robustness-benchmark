@@ -839,6 +839,9 @@ def collect_from_directory(root_dir: str, source: str, paradigm: str, dataset: s
     
     if all_dfs:
         combined = pd.concat(all_dfs, ignore_index=True)
+        # Save combined dataframe to all_results.csv *IF* source is not 'sol_results'
+        if source != 'sol_results':
+            combined.to_csv(os.path.join(root_dir, "all_results.csv"), index=False)
         return combined
     return pd.DataFrame()
 
