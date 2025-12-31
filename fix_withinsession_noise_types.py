@@ -135,7 +135,7 @@ def fix_csv_file(csv_path: str, dry_run: bool = False) -> bool:
         
         unique_noise_types = df['noise_type'].unique()
         if len(unique_noise_types) > 1:
-            print(f"  Skipping {os.path.basename(csv_path)}: already has multiple noise types or not all 'eog'")
+            print(f"  Skipping {csv_path}: already has multiple noise types or not all 'eog'")
             return False
         
         # Check if file looks like it needs fixing (all 'eog' and multiple of 20 rows per group)
