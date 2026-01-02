@@ -94,6 +94,15 @@ def compute_classification_metrics(
                 )
         
         # y_pred_proba expected shape: [N, n_unique_classes] after alignment
+        # Normalize probabilities to ensure they sum to 1.0 for each sample (required by sklearn)
+        # First, ensure non-negative values (clip negative values to 0)
+        y_pred_proba = np.maximum(y_pred_proba, 0.0)
+        # Then normalize so each row sums to 1.0
+        row_sums = y_pred_proba.sum(axis=1, keepdims=True)
+        # Avoid division by zero - if sum is 0, set to uniform distribution
+        row_sums = np.where(row_sums == 0, 1.0, row_sums)
+        y_pred_proba = y_pred_proba / row_sums
+        
         y_pred_labels = np.argmax(y_pred_proba, axis=1)
         roc_auc = roc_auc_score(y_true, y_pred_proba, multi_class="ovr")
         acc = accuracy_score(y_true, y_pred_labels)
@@ -104,10 +113,14 @@ def compute_classification_metrics(
         # Binary case: use column 1 as positive class probability if available
         if y_pred_proba.ndim == 2 and y_pred_proba.shape[1] >= 2:
             y_pos = y_pred_proba[:, 1]
+            # Ensure probabilities are in [0, 1] range
+            y_pos = np.clip(y_pos, 0.0, 1.0)
             y_pred_labels = (y_pos >= 0.5).astype(int)
         else:
             # If only one probability/score provided, treat as positive score
             y_pos = y_pred_proba.reshape(-1)
+            # Ensure probabilities are in [0, 1] range
+            y_pos = np.clip(y_pos, 0.0, 1.0)
             y_pred_labels = (y_pos >= 0.5).astype(int)
         
         # Ensure y_pred_labels and y_true have the same dtype for sklearn metrics

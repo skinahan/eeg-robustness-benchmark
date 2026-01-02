@@ -1194,6 +1194,499 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
         print(f"Saved multisubject {plot_type} plot: {output_file}")
 
 
+def plot_combined_multisubject_comparison(df, noise_type, models=None, dataset='BNCI2014_001', output_dir='plots', plot_type='line'):
+    """
+    Create a combined multi-subject comparison plot organized in a 3x2 grid:
+    - Rows: CrossSession, WithinSession, CrossSubject (eval_modes)
+    - Columns: Baseline, Tuned
+    
+    Parameters:
+    - df: DataFrame with test_perturb results
+    - noise_type: str, 'dropout', 'gaussian', or 'eog'
+    - models: list, specific models to include (if None, uses all available models)
+    - dataset: str, dataset name for directory organization
+    - output_dir: str, base directory to save plots
+    - plot_type: str, 'line' or 'bar' (default: 'line')
+    """
+    from matplotlib.gridspec import GridSpec
+    
+    # Load saturation points and get correct intensity values
+    saturation_dict = load_saturation_points()
+    valid_seeds = [100, 200, 300, 400, 500]
+    
+    # Define eval_modes in order (rows)
+    eval_mode_order = ['CrossSession', 'WithinSession', 'CrossSubject']
+    eval_mode_labels = ['Cross-Session', 'Within-Session', 'Cross-Subject']
+    
+    # Define tune settings in order (columns)
+    tune_settings = [False, True]
+    tune_labels = ['Baseline', 'Tuned']
+    
+    # Filter by specific models if provided
+    if models is not None:
+        df = df[df['model'].isin(models)]
+    
+    # Use legacy column naming for backward compatibility
+    clean_col, corrupted_col, y_label = _get_metric_columns_legacy('roc_auc')
+    
+    # Create figure with subplots
+    fig = plt.figure(figsize=(16, 12), dpi=300)
+    gs = GridSpec(3, 2, figure=fig, hspace=0.35, wspace=0.3, 
+                  left=0.08, right=0.95, top=0.93, bottom=0.08)
+    
+    # Process each combination
+    for row_idx, eval_mode_base in enumerate(eval_mode_order):
+        # Normalize eval_mode (handle both with and without "Evaluation" suffix)
+        # Check available eval_modes in the dataframe
+        available_modes = df['eval_mode'].dropna().unique()
+        
+        # Try exact match first
+        eval_mode_for_filter = None
+        if eval_mode_base + 'Evaluation' in available_modes:
+            eval_mode_for_filter = eval_mode_base + 'Evaluation'
+        elif eval_mode_base in available_modes:
+            eval_mode_for_filter = eval_mode_base
+        else:
+            # Try to find a matching eval_mode (case-insensitive, partial match)
+            matching_modes = [m for m in available_modes if eval_mode_base.lower() in str(m).lower()]
+            if matching_modes:
+                eval_mode_for_filter = matching_modes[0]
+            else:
+                print(f"[WARNING] No data found for eval_mode {eval_mode_base}, skipping...")
+                # Create empty subplots for this row
+                for col_idx in range(2):
+                    ax = fig.add_subplot(gs[row_idx, col_idx])
+                    ax.text(0.5, 0.5, 'No data available', 
+                           ha='center', va='center', fontsize=12, style='italic')
+                    ax.set_xlabel('Noise Intensity (%)', fontsize=10)
+                    ax.set_ylabel(y_label, fontsize=10)
+                    ax.set_title(f'{eval_mode_labels[row_idx]} | {tune_labels[col_idx]}', 
+                               fontsize=11, fontweight='bold')
+                    ax.grid(True, alpha=0.3)
+                continue
+        
+        for col_idx, tune_setting in enumerate(tune_settings):
+            # Filter data - handle both test_perturb and test_perturb_tune modes
+            df_filtered = df[
+                (df['mode'].astype(str).str.contains('test_perturb', na=False)) &
+                (df['eval_mode'] == eval_mode_for_filter) &
+                (df['noise_type'] == noise_type) &
+                (df['tune'] == tune_setting) &
+                (df['seed'].isin(valid_seeds))
+            ].copy()
+            
+            if df_filtered.empty:
+                # Create empty subplot with message
+                ax = fig.add_subplot(gs[row_idx, col_idx])
+                ax.text(0.5, 0.5, 'No data available', 
+                       ha='center', va='center', fontsize=12, style='italic')
+                ax.set_xlabel('Noise Intensity (%)', fontsize=10)
+                ax.set_ylabel(y_label, fontsize=10)
+                ax.set_title(f'{eval_mode_labels[row_idx]} | {tune_labels[col_idx]}', 
+                           fontsize=11, fontweight='bold')
+                ax.grid(True, alpha=0.3)
+                continue
+            
+            # Remove rows with missing corrupted_score
+            df_filtered = df_filtered.dropna(subset=[corrupted_col])
+            
+            # Add clean_score as intensity 0.0
+            clean_data = df_filtered.dropna(subset=[clean_col]).copy()
+            if not clean_data.empty:
+                clean_data_for_noise = clean_data[clean_data['noise_type'] == noise_type].copy()
+                if not clean_data_for_noise.empty:
+                    clean_summary = clean_data_for_noise.groupby(['model', 'seed', 'session', 'subject'])[clean_col].first().reset_index()
+                    clean_summary['intensity'] = 0.0
+                    clean_summary[corrupted_col] = clean_summary[clean_col]
+                    clean_summary['noise_type'] = noise_type
+                    clean_summary['tune'] = tune_setting
+                    # Preserve mode from original data
+                    if 'mode' in df_filtered.columns and len(df_filtered) > 0:
+                        clean_summary['mode'] = df_filtered['mode'].iloc[0]
+                    clean_summary['eval_mode'] = eval_mode_for_filter
+                    df_filtered = pd.concat([clean_summary, df_filtered], ignore_index=True)
+            
+            # Create subplot
+            ax = fig.add_subplot(gs[row_idx, col_idx])
+            
+            if plot_type == 'bar':
+                sns.barplot(
+                    data=df_filtered,
+                    x='intensity',
+                    y=corrupted_col,
+                    hue='model',
+                    palette='tab10',
+                    errorbar=('ci', 95),
+                    ax=ax
+                )
+            else:  # line plot
+                sns.lineplot(
+                    data=df_filtered,
+                    x='intensity',
+                    y=corrupted_col,
+                    hue='model',
+                    marker='o',
+                    palette='tab10',
+                    linewidth=2.0,
+                    markersize=6,
+                    errorbar=('ci', 95),
+                    ax=ax
+                )
+            
+            # Customize subplot
+            ax.set_title(f'{eval_mode_labels[row_idx]} | {tune_labels[col_idx]}', 
+                        fontsize=11, fontweight='bold', pad=10)
+            ax.set_xlabel('Noise Intensity (%)', fontsize=10)
+            ax.set_ylabel(y_label, fontsize=10)
+            
+            # Set y-axis limits based on dataset
+            y_min = 0.4 if dataset == 'BNCI2014_001' else 0
+            ax.set_ylim(y_min, 1)
+            
+            # Customize legend (only show in first subplot, or all if preferred)
+            if row_idx == 0 and col_idx == 0:
+                ax.legend(title='Model', fontsize=9, title_fontsize=10, 
+                         loc='upper right', framealpha=0.9)
+            else:
+                ax.legend().set_visible(False)
+            
+            ax.grid(True, alpha=0.3)
+            ax.tick_params(labelsize=9)
+    
+    # Add overall title
+    fig.suptitle(f'{dataset} | Multi-Subject Model Comparison | {noise_type.capitalize()} Noise', 
+                 fontsize=14, fontweight='bold', y=0.98)
+    
+    # Save plot
+    combined_dir = os.path.join(output_dir, dataset, 'combined')
+    os.makedirs(combined_dir, exist_ok=True)
+    filename = f"combined_multisubject_{noise_type}_{plot_type}_test_perturb.pdf"
+    output_file = os.path.join(combined_dir, filename)
+    plt.savefig(output_file, dpi=300, bbox_inches='tight', format='pdf')
+    plt.close()
+    
+    print(f"Saved combined multisubject {plot_type} plot: {output_file}")
+
+
+def plot_rd_curves(df, noise_type, models=None, dataset='BNCI2014_001', output_dir='plots', eval_mode=None):
+    """
+    Plot Relative Degradation (RD) curves using robustness_metrics.py.
+    
+    Parameters:
+    - df: DataFrame with test_perturb results
+    - noise_type: str, 'dropout', 'gaussian', or 'eog'
+    - models: list, specific models to include (if None, uses all available models)
+    - dataset: str, dataset name for directory organization
+    - output_dir: str, base directory to save plots
+    - eval_mode: str, evaluation mode (if None, creates separate plots for each)
+    """
+    # Import robustness metrics functions
+    # Handle both relative and absolute imports
+    try:
+        from robustness_metrics import (
+            MetricConfig, ResultsSpec, compute_results_metrics,
+            canonicalize_columns, add_normalized_p
+        )
+    except ImportError:
+        try:
+            from analysis.robustness_metrics import (
+                MetricConfig, ResultsSpec, compute_results_metrics,
+                canonicalize_columns, add_normalized_p
+            )
+        except ImportError as e:
+            print(f"[ERROR] Could not import robustness_metrics: {e}")
+            print("Make sure analysis/robustness_metrics.py is available.")
+            return
+    
+    valid_seeds = [100, 200, 300, 400, 500]
+    
+    # Filter data
+    df_filtered = df[
+        (df['mode'].astype(str).str.contains('test_perturb', na=False)) &
+        (df['noise_type'] == noise_type) &
+        (df['seed'].isin(valid_seeds))
+    ].copy()
+    
+    if models is not None:
+        df_filtered = df_filtered[df_filtered['model'].isin(models)]
+    
+    if df_filtered.empty:
+        print(f"No data found for RD curves: {noise_type}")
+        return
+    
+    # Canonicalize columns
+    df_filtered = canonicalize_columns(df_filtered)
+    
+    # Detect metric column
+    metric_col = None
+    for candidate in ['corrupted_roc_auc', 'corrupted_score', 'score', 'roc_auc']:
+        if candidate in df_filtered.columns:
+            metric_col = candidate
+            break
+    
+    if metric_col is None:
+        print("[ERROR] Could not find metric column for RD curve computation")
+        return
+    
+    # Configure metrics
+    cfg = MetricConfig(metric_col=metric_col)
+    
+    # Add normalized p coordinate
+    df_filtered = add_normalized_p(
+        df_filtered, cfg,
+        normalize_within=['dataset', 'noise_type'],
+        clip=True
+    )
+    
+    # Get eval_modes to process
+    if eval_mode is None:
+        eval_modes = sorted(df_filtered['eval_mode'].dropna().unique())
+    else:
+        # Normalize eval_mode (handle both with and without "Evaluation" suffix)
+        available_modes = df_filtered['eval_mode'].dropna().unique()
+        if eval_mode + 'Evaluation' in available_modes:
+            eval_modes = [eval_mode + 'Evaluation']
+        elif eval_mode in available_modes:
+            eval_modes = [eval_mode]
+        else:
+            # Try to find a matching eval_mode
+            matching_modes = [m for m in available_modes if eval_mode.lower() in str(m).lower()]
+            eval_modes = matching_modes if matching_modes else [eval_mode]
+    
+    for eval_mode_val in eval_modes:
+        df_eval = df_filtered[df_filtered['eval_mode'] == eval_mode_val].copy()
+        if df_eval.empty:
+            continue
+        
+        # Compute RD curves
+        spec = ResultsSpec(
+            base_group_cols=('dataset', 'tune', 'eval_mode', 'model', 'noise_type'),
+            per_instance_cols=('seed',)
+        )
+        
+        results = compute_results_metrics(df_eval, cfg=cfg, spec=spec)
+        rd_summary = results.get('rd_summary')
+        
+        if rd_summary is None or rd_summary.empty:
+            print(f"No RD summary data for {noise_type}, {eval_mode_val}")
+            continue
+        
+        # Create plot
+        fig, axes = plt.subplots(1, 2, figsize=(14, 6), dpi=300)
+        tune_settings = [False, True]
+        tune_labels = ['Baseline', 'Tuned']
+        
+        for ax_idx, tune_setting in enumerate(tune_settings):
+            ax = axes[ax_idx]
+            rd_data = rd_summary[
+                (rd_summary['tune'] == tune_setting) &
+                (rd_summary['noise_type'] == noise_type)
+            ].copy()
+            
+            if rd_data.empty:
+                ax.text(0.5, 0.5, 'No data available', 
+                       ha='center', va='center', fontsize=12, style='italic')
+                ax.set_title(tune_labels[ax_idx], fontsize=12, fontweight='bold')
+                continue
+            
+            # Plot RD curves for each model
+            for model in rd_data['model'].unique():
+                model_data = rd_data[rd_data['model'] == model].copy()
+                model_data = model_data.sort_values('p')
+                
+                ax.plot(model_data['p'], model_data['mean'], 
+                       marker='o', linewidth=2, markersize=6, label=model)
+                # Add confidence intervals
+                if 'ci_low' in model_data.columns and 'ci_high' in model_data.columns:
+                    ax.fill_between(model_data['p'], model_data['ci_low'], model_data['ci_high'],
+                                   alpha=0.2)
+            
+            ax.set_xlabel('Normalized Perturbation (p)', fontsize=11)
+            ax.set_ylabel('Relative Degradation (RD)', fontsize=11)
+            ax.set_title(tune_labels[ax_idx], fontsize=12, fontweight='bold')
+            ax.legend(title='Model', fontsize=9, title_fontsize=10)
+            ax.grid(True, alpha=0.3)
+            ax.set_xlim(0, 1)
+            ax.set_ylim(0, 1)
+        
+        # Normalize eval_mode for filename
+        eval_mode_short = str(eval_mode_val).replace('Evaluation', '')
+        
+        fig.suptitle(f'{dataset} | Relative Degradation | {noise_type.capitalize()} Noise | {eval_mode_short}',
+                    fontsize=13, fontweight='bold')
+        plt.tight_layout(rect=[0, 0, 1, 0.96])
+        
+        # Save plot
+        rd_dir = os.path.join(output_dir, dataset, eval_mode_short, 'robustness_metrics')
+        os.makedirs(rd_dir, exist_ok=True)
+        filename = f"rd_curve_{noise_type}_{eval_mode_short}.pdf"
+        output_file = os.path.join(rd_dir, filename)
+        plt.savefig(output_file, dpi=300, bbox_inches='tight', format='pdf')
+        plt.close()
+        
+        print(f"Saved RD curve plot: {output_file}")
+
+
+def plot_csv_p_curves(df, noise_type, models=None, dataset='BNCI2014_001', output_dir='plots', eval_mode=None):
+    """
+    Plot Cross-Subject Variance (CSV_p) curves using robustness_metrics.py.
+    
+    Parameters:
+    - df: DataFrame with test_perturb results
+    - noise_type: str, 'dropout', 'gaussian', or 'eog'
+    - models: list, specific models to include (if None, uses all available models)
+    - dataset: str, dataset name for directory organization
+    - output_dir: str, base directory to save plots
+    - eval_mode: str, evaluation mode (if None, creates separate plots for each)
+    """
+    # Import robustness metrics functions
+    # Handle both relative and absolute imports
+    try:
+        from robustness_metrics import (
+            MetricConfig, ResultsSpec, compute_results_metrics,
+            canonicalize_columns, add_normalized_p
+        )
+    except ImportError:
+        try:
+            from analysis.robustness_metrics import (
+                MetricConfig, ResultsSpec, compute_results_metrics,
+                canonicalize_columns, add_normalized_p
+            )
+        except ImportError as e:
+            print(f"[ERROR] Could not import robustness_metrics: {e}")
+            print("Make sure analysis/robustness_metrics.py is available.")
+            return
+    
+    valid_seeds = [100, 200, 300, 400, 500]
+    
+    # Filter data
+    df_filtered = df[
+        (df['mode'].astype(str).str.contains('test_perturb', na=False)) &
+        (df['noise_type'] == noise_type) &
+        (df['seed'].isin(valid_seeds))
+    ].copy()
+    
+    if models is not None:
+        df_filtered = df_filtered[df_filtered['model'].isin(models)]
+    
+    if df_filtered.empty:
+        print(f"No data found for CSV_p curves: {noise_type}")
+        return
+    
+    # Canonicalize columns
+    df_filtered = canonicalize_columns(df_filtered)
+    
+    # Detect metric column
+    metric_col = None
+    for candidate in ['corrupted_roc_auc', 'corrupted_score', 'score', 'roc_auc']:
+        if candidate in df_filtered.columns:
+            metric_col = candidate
+            break
+    
+    if metric_col is None:
+        print("[ERROR] Could not find metric column for CSV_p curve computation")
+        return
+    
+    # Configure metrics
+    cfg = MetricConfig(metric_col=metric_col)
+    
+    # Add normalized p coordinate
+    df_filtered = add_normalized_p(
+        df_filtered, cfg,
+        normalize_within=['dataset', 'noise_type'],
+        clip=True
+    )
+    
+    # Get eval_modes to process
+    if eval_mode is None:
+        eval_modes = sorted(df_filtered['eval_mode'].dropna().unique())
+    else:
+        # Normalize eval_mode (handle both with and without "Evaluation" suffix)
+        available_modes = df_filtered['eval_mode'].dropna().unique()
+        if eval_mode + 'Evaluation' in available_modes:
+            eval_modes = [eval_mode + 'Evaluation']
+        elif eval_mode in available_modes:
+            eval_modes = [eval_mode]
+        else:
+            # Try to find a matching eval_mode
+            matching_modes = [m for m in available_modes if eval_mode.lower() in str(m).lower()]
+            eval_modes = matching_modes if matching_modes else [eval_mode]
+    
+    for eval_mode_val in eval_modes:
+        df_eval = df_filtered[df_filtered['eval_mode'] == eval_mode_val].copy()
+        if df_eval.empty:
+            continue
+        
+        # Compute CSV_p curves
+        spec = ResultsSpec(
+            base_group_cols=('dataset', 'tune', 'eval_mode', 'model', 'noise_type'),
+            per_instance_cols=('seed',)
+        )
+        
+        results = compute_results_metrics(df_eval, cfg=cfg, spec=spec)
+        csv_summary = results.get('csv_summary')
+        
+        if csv_summary is None or csv_summary.empty:
+            print(f"No CSV_p summary data for {noise_type}, {eval_mode_val}")
+            continue
+        
+        # Create plot
+        fig, axes = plt.subplots(1, 2, figsize=(14, 6), dpi=300)
+        tune_settings = [False, True]
+        tune_labels = ['Baseline', 'Tuned']
+        
+        for ax_idx, tune_setting in enumerate(tune_settings):
+            ax = axes[ax_idx]
+            csv_data = csv_summary[
+                (csv_summary['tune'] == tune_setting) &
+                (csv_summary['noise_type'] == noise_type)
+            ].copy()
+            
+            if csv_data.empty:
+                ax.text(0.5, 0.5, 'No data available', 
+                       ha='center', va='center', fontsize=12, style='italic')
+                ax.set_title(tune_labels[ax_idx], fontsize=12, fontweight='bold')
+                continue
+            
+            # Plot CSV_p curves for each model
+            for model in csv_data['model'].unique():
+                model_data = csv_data[csv_data['model'] == model].copy()
+                model_data = model_data.sort_values('p')
+                
+                ax.plot(model_data['p'], model_data['mean'], 
+                       marker='o', linewidth=2, markersize=6, label=model)
+                # Add confidence intervals
+                if 'ci_low' in model_data.columns and 'ci_high' in model_data.columns:
+                    ax.fill_between(model_data['p'], model_data['ci_low'], model_data['ci_high'],
+                                   alpha=0.2)
+            
+            ax.set_xlabel('Normalized Perturbation (p)', fontsize=11)
+            ax.set_ylabel('Cross-Subject Variance (CSV_p)', fontsize=11)
+            ax.set_title(tune_labels[ax_idx], fontsize=12, fontweight='bold')
+            ax.legend(title='Model', fontsize=9, title_fontsize=10)
+            ax.grid(True, alpha=0.3)
+            ax.set_xlim(0, 1)
+            # Y-axis limits depend on data, but set reasonable default
+            ax.set_ylim(bottom=0)
+        
+        # Normalize eval_mode for filename
+        eval_mode_short = str(eval_mode_val).replace('Evaluation', '')
+        
+        fig.suptitle(f'{dataset} | Cross-Subject Variance | {noise_type.capitalize()} Noise | {eval_mode_short}',
+                    fontsize=13, fontweight='bold')
+        plt.tight_layout(rect=[0, 0, 1, 0.96])
+        
+        # Save plot
+        csv_dir = os.path.join(output_dir, dataset, eval_mode_short, 'robustness_metrics')
+        os.makedirs(csv_dir, exist_ok=True)
+        filename = f"csv_p_curve_{noise_type}_{eval_mode_short}.pdf"
+        output_file = os.path.join(csv_dir, filename)
+        plt.savefig(output_file, dpi=300, bbox_inches='tight', format='pdf')
+        plt.close()
+        
+        print(f"Saved CSV_p curve plot: {output_file}")
+
+
 def generate_organized_test_perturb_plots(df, models=None, dataset='BNCI2014_001', output_dir='plots'):
     """
     Generate all test_perturb plots with organized directory structure.
@@ -1221,6 +1714,12 @@ def generate_organized_test_perturb_plots(df, models=None, dataset='BNCI2014_001
     print(f"Noise types: {list(noise_types)}")
     print(f"Eval modes: {eval_modes}")
 
+    # Generate combined multi-subject comparison plots (3x2 grid)
+    print("\n=== Generating combined multi-subject comparison plots ===")
+    for noise_type in noise_types:
+        plot_combined_multisubject_comparison(df, noise_type, models, dataset, output_dir, plot_type='line')
+        plot_combined_multisubject_comparison(df, noise_type, models, dataset, output_dir, plot_type='bar')
+
     # Generate multi-subject comparison plots for each eval_mode
     print("\n=== Generating multi-subject comparison plots ===")
     for eval_mode in eval_modes:
@@ -1228,6 +1727,16 @@ def generate_organized_test_perturb_plots(df, models=None, dataset='BNCI2014_001
         for noise_type in noise_types:
             for tune_setting in tune_settings:
                 plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, models, dataset, output_dir, eval_mode=eval_mode)
+
+    # Generate RD curves
+    print("\n=== Generating Relative Degradation (RD) curves ===")
+    for noise_type in noise_types:
+        plot_rd_curves(df, noise_type, models, dataset, output_dir)
+
+    # Generate CSV_p curves
+    print("\n=== Generating Cross-Subject Variance (CSV_p) curves ===")
+    for noise_type in noise_types:
+        plot_csv_p_curves(df, noise_type, models, dataset, output_dir)
 
     # Generate per-subject plots for each model and eval_mode
     # print("\n=== Generating per-subject plots ===")
