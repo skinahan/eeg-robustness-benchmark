@@ -20,6 +20,8 @@ import argparse
 import uuid
 import warnings
 import time
+import gc
+import resource
 from datetime import datetime
 from typing import List, Dict, Any, Tuple, Optional
 import numpy as np
@@ -63,6 +65,29 @@ try:
     _carbonfootprint = True
 except ImportError:
     _carbonfootprint = False
+
+
+def get_memory_usage_mb():
+    """Get current memory usage in MB."""
+    try:
+        if hasattr(resource, 'getrusage'):
+            mem_usage = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+            # On Linux, ru_maxrss is in KB; on macOS, it's in bytes
+            if sys.platform == 'darwin':
+                return mem_usage / 1024 / 1024
+            else:
+                return mem_usage / 1024
+    except Exception:
+        pass
+    return None
+
+
+def log_memory_usage(stage=""):
+    """Log current memory usage."""
+    mem_mb = get_memory_usage_mb()
+    if mem_mb is not None:
+        print(f"[MEMORY] {stage}: {mem_mb:.2f} MB")
+    return mem_mb
 
 
 class ThreeFoldSubjectSplit:
@@ -960,6 +985,12 @@ class UnifiedExperimentRunner:
                         'total_time': training_time + evaluation_time,
                         'session': session,
                     })
+                    
+                    # Memory management: Delete corrupted data copy after evaluation
+                    del X_valid_corrupted, y_pred_proba_corrupted
+                    # Periodically force garbage collection to free memory
+                    if len(results) % 10 == 0:
+                        gc.collect()
 
             return results
 
@@ -1100,7 +1131,43 @@ class UnifiedExperimentRunner:
         set_seeds(self.seed)
         if self.eval_mode == "CrossSubject":
             # For CrossSubject, get data from all subjects at once
+            # Memory management: Force garbage collection before loading large dataset
+            gc.collect()
+            
+            # Log memory usage before loading
+            log_memory_usage("Before loading data")
+            
+            print(f"[MEMORY] Loading data for {len(self.subjects)} subjects in CrossSubject mode...")
             X, y, metadata = self.paradigm.get_data(self.dataset_obj, subjects=self.subjects)
+            
+            # Log memory usage after loading
+            mem_mb = log_memory_usage("After loading data")
+            if isinstance(X, np.ndarray):
+                data_size_mb = X.nbytes / 1024 / 1024
+                print(f"[MEMORY] Data shape: X={X.shape}, dtype={X.dtype}, estimated size: {data_size_mb:.2f} MB")
+                
+                # Check against memory limit if set
+                max_memory_mb = None
+                max_memory_gb = os.environ.get('PYTHON_MAX_MEMORY_GB')
+                if max_memory_gb:
+                    try:
+                        max_memory_mb = float(max_memory_gb) * 1024
+                    except ValueError:
+                        pass
+                
+                # Warn if data size is very large
+                if data_size_mb > 10000:  # > 10GB
+                    print(f"[WARNING] Large dataset loaded: {data_size_mb:.2f} MB. This may cause memory issues.")
+                    print(f"[WARNING] Consider processing subjects in smaller batches if OOM errors occur.")
+                
+                # Warn if approaching memory limit
+                if max_memory_mb and mem_mb and mem_mb > max_memory_mb * 0.8:
+                    print(f"[WARNING] Memory usage ({mem_mb:.2f} MB) is above 80% of limit ({max_memory_mb:.2f} MB)")
+                    print(f"[WARNING] Risk of out-of-memory errors. Consider reducing number of subjects or batch size.")
+            
+            # Force garbage collection after loading
+            gc.collect()
+            
             y_encoded = LabelEncoder().fit_transform(y)
             
             # Prepare cross-validation
@@ -1134,9 +1201,17 @@ class UnifiedExperimentRunner:
                     result['n_eval_subjects'] = len(eval_subjects)
                 
                 all_results.extend(fold_results)
+                
+                # Memory management: Clear intermediate arrays after each fold
+                del X_train, y_train, X_valid, y_valid, metadata_train
+                gc.collect()
             
             # Convert results to DataFrame
             results_df = pd.DataFrame(all_results)
+            
+            # Memory management: Clear large arrays after processing all folds
+            del X, y, y_encoded, metadata
+            gc.collect()
             
             # Aggregate fold results according to eval_mode and mode
             results_df = self._aggregate_fold_results(results_df)
@@ -1542,6 +1617,18 @@ def main():
     parser.add_argument("--tune", action="store_true")
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--aggregate", action="store_true")
+    
+    # Memory management: Check for environment variable to set memory limit
+    max_memory_gb = os.environ.get('PYTHON_MAX_MEMORY_GB')
+    if max_memory_gb:
+        try:
+            max_memory_mb = float(max_memory_gb) * 1024
+            print(f"[MEMORY] Memory limit set via environment variable: {max_memory_gb} GB ({max_memory_mb:.0f} MB)")
+        except ValueError:
+            print(f"[WARNING] Invalid PYTHON_MAX_MEMORY_GB value: {max_memory_gb}, ignoring")
+            max_memory_mb = None
+    else:
+        max_memory_mb = None
     
     args = parser.parse_args()
 
