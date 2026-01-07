@@ -939,6 +939,10 @@ class UnifiedExperimentRunner:
             y_pred_proba_clean = trained_model.predict_proba(X_valid)
             num_classes_clean = 4 if self.dataset == "Lee2019_SSVEP" else 2
             metrics_clean = compute_classification_metrics(y_valid, y_pred_proba_clean, num_classes_clean)
+            # Memory optimization: Delete prediction array after computing metrics
+            del y_pred_proba_clean
+            gc.collect()
+            
             for noise_type in noise_types:
                 # Use dynamic bounds based on dataset and noise type
                 intensities = get_noise_intensities(self.dataset, noise_type, num_steps=20)            
@@ -1170,16 +1174,23 @@ class UnifiedExperimentRunner:
             
             y_encoded = LabelEncoder().fit_transform(y)
             
+            # Memory optimization: Delete original y array after encoding (we only need y_encoded)
+            del y
+            gc.collect()
+            
             # Prepare cross-validation
             cv_splitter, cv_metadata = self.prepare_data_cv()
             
             # Run cross-validation with subject groups
             groups = metadata['subject'].values
-            folds = list(enumerate(cv_splitter.split(X, y_encoded, groups=groups)))
             
+            # Memory optimization: Don't store all folds in memory - iterate directly
+            # This avoids keeping all fold indices in memory at once
             all_results = []
-            for fold_idx, (train_idx, valid_idx) in folds:
+            fold_idx = 0
+            for train_idx, valid_idx in cv_splitter.split(X, y_encoded, groups=groups):
                 # Get the subjects that are in the evaluation set for this fold
+                # Memory optimization: Use .iloc with list conversion to avoid keeping view in memory
                 eval_subjects = np.unique(metadata.iloc[valid_idx]['subject'].values)
                 eval_subjects_str = ','.join(map(str, sorted(eval_subjects)))
                 session = f"fold_{fold_idx}_eval_subjects_{eval_subjects_str}"
@@ -1187,11 +1198,17 @@ class UnifiedExperimentRunner:
                 # Set current_subject to a representative value (first eval subject)
                 self.current_subject = eval_subjects[0]
                 
+                # Memory optimization: Array indexing with arrays creates copies automatically
+                # Note: X[train_idx] creates a copy (necessary for training), no need for explicit .copy()
                 X_train = X[train_idx]
                 y_train = y_encoded[train_idx]
                 X_valid = X[valid_idx]
                 y_valid = y_encoded[valid_idx]
+                # Memory optimization: .iloc creates a view, but we'll delete it promptly after use
                 metadata_train = metadata.iloc[train_idx]
+                
+                # Memory optimization: Delete indices immediately after use
+                del train_idx, valid_idx
                 
                 fold_results = self._evaluate_cv_fold(X_train, y_train, X_valid, y_valid, fold_idx, cv_metadata, session, metadata_train)
                 
@@ -1203,15 +1220,26 @@ class UnifiedExperimentRunner:
                 all_results.extend(fold_results)
                 
                 # Memory management: Clear intermediate arrays after each fold
-                del X_train, y_train, X_valid, y_valid, metadata_train
+                del X_train, y_train, X_valid, y_valid, metadata_train, eval_subjects
                 gc.collect()
+                
+                fold_idx += 1
+            
+            # Memory management: Clear large arrays before creating DataFrame
+            # Delete groups array (no longer needed after folds are processed)
+            del groups
+            gc.collect()
             
             # Convert results to DataFrame
             results_df = pd.DataFrame(all_results)
             
             # Memory management: Clear large arrays after processing all folds
-            del X, y, y_encoded, metadata
+            # Note: y was already deleted after encoding
+            del X, y_encoded, metadata
             gc.collect()
+            
+            # Log memory usage after cleanup
+            log_memory_usage("After processing all folds and cleanup")
             
             # Aggregate fold results according to eval_mode and mode
             results_df = self._aggregate_fold_results(results_df)

@@ -74,25 +74,25 @@ source activate ncp_env
 
 # Set memory limits to prevent OOM errors
 # Note: ulimit may not work on all systems, but it's worth trying
-# Limit virtual memory to 30GB (slightly less than SLURM's 32GB to allow for overhead)
-# This will cause the process to be killed if it tries to allocate more than 30GB
-if ulimit -v 31457280 2>/dev/null; then  # 30GB in KB (30 * 1024 * 1024)
-    echo "[MEMORY] Virtual memory limit set: 30GB"
+# Limit virtual memory to 60GB (slightly less than SLURM's 64GB to allow for overhead)
+# This will cause the process to be killed if it tries to allocate more than 60GB
+if ulimit -v 62914560 2>/dev/null; then  # 60GB in KB (60 * 1024 * 1024)
+    echo "[MEMORY] Virtual memory limit set: 60GB"
 else
     echo "[MEMORY] Could not set virtual memory limit (may not be supported on this system)"
 fi
 
-# Also set a soft limit on RSS (resident set size) to 28GB
+# Also set a soft limit on RSS (resident set size) to 58GB
 # This is a soft limit, so it will warn but not kill the process
-if ulimit -m 29360128 2>/dev/null; then  # 28GB in KB (28 * 1024 * 1024)
-    echo "[MEMORY] RSS soft limit set: 28GB"
+if ulimit -m 60817408 2>/dev/null; then  # 58GB in KB (58 * 1024 * 1024)
+    echo "[MEMORY] RSS soft limit set: 58GB"
 else
     echo "[MEMORY] Could not set RSS limit (may not be supported on this system)"
 fi
 
 # Set environment variable for Python to use (in MB, converted to GB for display)
 # This allows Python code to check memory usage and warn before exceeding limits
-export PYTHON_MAX_MEMORY_GB=30
+export PYTHON_MAX_MEMORY_GB=60
 echo "[MEMORY] Python memory monitoring enabled: PYTHON_MAX_MEMORY_GB=${PYTHON_MAX_MEMORY_GB}"
 
 # Convert tune flag to command line argument

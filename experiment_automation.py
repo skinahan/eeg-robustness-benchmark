@@ -1775,8 +1775,8 @@ class ExperimentAutomation:
                             
                     else:
                         # Default time limit for other modes (CrossSubject, etc.)
-                        # Increased memory to 32G due to out of memory errors with multiple subjects
-                        slurm_args = "--time=1-08:00:00 --mem=32G"
+                        # Increased memory to 64G due to out of memory errors with multiple subjects
+                        slurm_args = "--time=1-08:00:00 --mem=64G"
                         
                 else:
                     # Motor Imagery timeouts (reduced by factor of 5)
@@ -1801,8 +1801,8 @@ class ExperimentAutomation:
                             
                     else:
                         # Default time limit for other modes (CrossSubject, etc.)
-                        # Increased memory to 32G due to out of memory errors with multiple subjects
-                        slurm_args = "--time=1-08:00:00 --mem=32G"
+                        # Increased memory to 64G due to out of memory errors with multiple subjects
+                        slurm_args = "--time=1-08:00:00 --mem=64G"
                 
                 # Format: sbatch {slurm_args} unified_eval_script.sh {subject} {dataset} {eval_mode} {tune_flag} {model} {seed}
                 # Use CrossSubject-specific script for CrossSubject eval mode
