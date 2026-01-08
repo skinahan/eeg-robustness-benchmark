@@ -130,14 +130,18 @@ def unified_cv_training_loop_method(model, cv, X_train, y_train, trial=None, gro
     """
     if use_slice_dataset:
         # Memory-efficient approach: Use SliceDataset to avoid NumPy fancy indexing copies
-        # Convert to float32 and tensors once, then wrap with SliceDataset
         # Reference: https://skorch.readthedocs.io/en/stable/user/helper.html#slicedataset
+        # 
+        # CRITICAL: We keep the data as float64 in the tensor and let PyTorch/skorch handle
+        # the conversion to float32 during training (which happens in batches, so it's memory efficient).
+        # This avoids allocating a full 5.32 GiB float32 tensor upfront.
         if isinstance(X_train, np.ndarray):
-            if X_train.dtype == np.float64:
-                X_train = X_train.astype(np.float32)
+            # Create tensor views (no copy) - keep original dtype
+            # PyTorch will handle dtype conversion during training in batches
             X_train_tensor = torch.from_numpy(X_train)
             y_train_tensor = torch.from_numpy(y_train)
         else:
+            # Already tensors
             X_train_tensor = X_train
             y_train_tensor = y_train
         
@@ -150,9 +154,16 @@ def unified_cv_training_loop_method(model, cv, X_train, y_train, trial=None, gro
         y_slice = SliceDataset(full_dataset, idx=1)
         
         # cv.split() needs numpy arrays to work, but we'll use SliceDataset for slicing
-        # Get the underlying numpy arrays for cv.split()
-        X_train_np = X_train if isinstance(X_train, np.ndarray) else X_train_tensor.numpy()
-        y_train_np = y_train if isinstance(y_train, np.ndarray) else y_train_tensor.numpy()
+        # Get the underlying numpy arrays for cv.split() - use original arrays to avoid copies
+        # If X_train is already a numpy array, use it directly (no copy)
+        # If it's a tensor, we need to convert, but this should be rare
+        if isinstance(X_train, np.ndarray):
+            X_train_np = X_train
+            y_train_np = y_train
+        else:
+            # If somehow we got tensors, convert back (creates copy but should be rare)
+            X_train_np = X_train_tensor.numpy()
+            y_train_np = y_train_tensor.numpy()
         
         fold_scores = []
         for i, (train_idx, valid_idx) in enumerate(cv.split(X_train_np, y_train_np, groups)):
@@ -240,16 +251,17 @@ def run_optuna_stage(
     y_train = y
     metadata_train = metadata
 
-    # Memory optimization: Convert to float32 to reduce memory usage by 50%
+    # Memory optimization: For CrossSubject mode, we use SliceDataset which avoids copies entirely
+    # For other modes, convert to float32 to reduce memory usage by 50%
     # This is especially important for large arrays when using fancy indexing (which creates copies)
-    # Do this once here rather than in the CV loop to avoid repeated conversions
-    # Note: For CrossSubject mode, we use SliceDataset which avoids copies entirely
-    if X_train.dtype == np.float64:
-        X_train = X_train.astype(np.float32)
-        print(f"[MEMORY] Converted X_train from float64 to float32 to reduce memory usage. Shape: {X_train.shape}")
-    
     if eval_mode == "CrossSubject":
         print(f"[MEMORY] Using SliceDataset for CrossSubject mode to avoid NumPy fancy indexing copies. Shape: {X_train.shape}")
+        print(f"[MEMORY] Will convert to float32 only when creating tensors (no intermediate copy).")
+    else:
+        # For non-CrossSubject modes, convert to float32 here to reduce memory usage
+        if X_train.dtype == np.float64:
+            X_train = X_train.astype(np.float32)
+            print(f"[MEMORY] Converted X_train from float64 to float32 to reduce memory usage. Shape: {X_train.shape}")
 
     if len(X_train) < 10:
         print(f"Too few training samples: {len(X_train)}")
