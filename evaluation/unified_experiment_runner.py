@@ -690,6 +690,13 @@ class UnifiedExperimentRunner:
         fold_output_dir = os.path.join(out_dir, f"Optuna/fold_{fold_idx}")
         os.makedirs(fold_output_dir, exist_ok=True)
 
+        # Memory optimization: Convert to float32 early to reduce memory usage by 50%
+        # This is critical for large datasets to avoid OOM errors during hyperparameter optimization
+        # when NumPy fancy indexing creates copies of the data
+        if isinstance(X_train, np.ndarray) and X_train.dtype == np.float64:
+            X_train = X_train.astype(np.float32)
+            print(f"[MEMORY] Converted X_train to float32 before hyperparameter optimization. Shape: {X_train.shape}, Memory saved: {X_train.nbytes / 1024**3:.2f} GB")
+
         # Get dataset-specific sampling rate
         resample_rate = get_dataset_sampling_rate(self.dataset)
         

@@ -8,12 +8,14 @@ import numpy as np
 import pandas as pd
 import sklearn
 import torch
+from torch.utils.data import TensorDataset
 import joblib
 from moabb.evaluations import WithinSessionSplitter
 from optuna.visualization import plot_optimization_history, plot_param_importances
 from sklearn.model_selection import StratifiedKFold, GroupKFold
 from optuna.integration import SkorchPruningCallback
 from skorch.dataset import ValidSplit, StratifiedShuffleSplit
+from skorch.helper import SliceDataset
 from sklearn.metrics import roc_auc_score
 
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
@@ -115,58 +117,105 @@ def enhanced_cv_training_loop(
     return mean_score, std_score, mean_time
 
 # Returns the mean roc-auc over the passed CV folds
-def unified_cv_training_loop_method(model, cv, X_train, y_train, trial=None, groups=None):
+def unified_cv_training_loop_method(model, cv, X_train, y_train, trial=None, groups=None, use_slice_dataset=False):
     """
     Root Issue: NumPy fancy indexing (integer array indexing like X_train[valid_idx]) 
     ALWAYS creates copies, not views. This is a fundamental NumPy limitation.
     
-    Why DataLoader would help: PyTorch's DataLoader with Subset/Sampler can work with 
-    indices without copying data. However, skorch's fit() method expects numpy arrays, 
-    not PyTorch Datasets, so we'd need to either:
-    1. Refactor to use native PyTorch training loops (major change)
-    2. Modify skorch to accept Datasets (not feasible)
-    3. Convert tensors back to numpy (still creates copies)
+    Solution for CrossSubject mode: Use skorch's SliceDataset which wraps PyTorch Datasets
+    and allows slicing without copying. SliceDataset behaves like numpy arrays for sklearn
+    compatibility, but uses PyTorch's efficient indexing under the hood.
     
-    Current solution: Convert to float32 once before CV loop (reduces memory by 50%).
-    The conversion happens in run_optuna_stage() before this function is called.
+    Reference: https://skorch.readthedocs.io/en/stable/user/helper.html#slicedataset
     """
-    # Note: X_train should already be converted to float32 in run_optuna_stage to save memory
-    # This function assumes the conversion has already been done
-    fold_scores = []
-    for i, (train_idx, valid_idx) in enumerate(cv.split(X_train, y_train, groups)):
-        # print(f"Fold {i}:")
-        # Fancy indexing creates copies - unavoidable with NumPy integer array indexing
-        # But since X_train is already float32, these copies use 50% less memory than float64
-        # Shape (1440, 62, 4001) float64 = 2.66 GiB, float32 = 1.33 GiB
-        X_train_part, y_train_part = X_train[train_idx], y_train[train_idx]
-        X_valid_part, y_valid_part = X_train[valid_idx], y_train[valid_idx]
-        
-        # Fit on training fold
-        model.module_.train()
-        model.fit(X_train_part, y_train_part)
-
-        # Evaluate on held-out validation set
-        model.module_.eval()
-        with torch.no_grad():
-            y_pred_proba = model.predict_proba(X_valid_part)
-        
-        # Handle both binary and multi-class classification
-        n_classes = y_pred_proba.shape[1]
-        if n_classes == 2:
-            # Binary classification - use positive class probabilities
-            y_pred = y_pred_proba[:, 1]
-            auc = roc_auc_score(y_valid_part, y_pred)
+    if use_slice_dataset:
+        # Memory-efficient approach: Use SliceDataset to avoid NumPy fancy indexing copies
+        # Convert to float32 and tensors once, then wrap with SliceDataset
+        # Reference: https://skorch.readthedocs.io/en/stable/user/helper.html#slicedataset
+        if isinstance(X_train, np.ndarray):
+            if X_train.dtype == np.float64:
+                X_train = X_train.astype(np.float32)
+            X_train_tensor = torch.from_numpy(X_train)
+            y_train_tensor = torch.from_numpy(y_train)
         else:
-            # Multi-class classification - use all probabilities with OvR strategy
-            auc = roc_auc_score(y_valid_part, y_pred_proba, multi_class='ovr')
-        # print(f"Fold {i} auc: {auc}")
-        fold_scores.append(auc)
-        # if trial is not None:
-        #     trial.report(auc, i)
+            X_train_tensor = X_train
+            y_train_tensor = y_train
+        
+        # Create a TensorDataset that holds references (no copy)
+        full_dataset = TensorDataset(X_train_tensor, y_train_tensor)
+        
+        # Wrap with SliceDataset - this allows slicing without copying
+        # idx=0 for X, idx=1 for y (as per skorch documentation)
+        X_slice = SliceDataset(full_dataset, idx=0)
+        y_slice = SliceDataset(full_dataset, idx=1)
+        
+        # cv.split() needs numpy arrays to work, but we'll use SliceDataset for slicing
+        # Get the underlying numpy arrays for cv.split()
+        X_train_np = X_train if isinstance(X_train, np.ndarray) else X_train_tensor.numpy()
+        y_train_np = y_train if isinstance(y_train, np.ndarray) else y_train_tensor.numpy()
+        
+        fold_scores = []
+        for i, (train_idx, valid_idx) in enumerate(cv.split(X_train_np, y_train_np, groups)):
+            # SliceDataset slicing doesn't create copies - it returns views!
+            # This is the key advantage: no memory copy here
+            X_train_part = X_slice[train_idx]
+            y_train_part = y_slice[train_idx]
+            X_valid_part = X_slice[valid_idx]
+            y_valid_part = y_slice[valid_idx]
+            
+            # Fit on training fold - skorch accepts SliceDataset
+            model.module_.train()
+            model.fit(X_train_part, y_train_part)
 
-        #     # Handle pruning based on the intermediate value.
-        #     if trial.should_prune():
-        #         raise optuna.TrialPruned()
+            # Evaluate on held-out validation set
+            model.module_.eval()
+            with torch.no_grad():
+                y_pred_proba = model.predict_proba(X_valid_part)
+            
+            # Handle both binary and multi-class classification
+            # Convert y_valid_part to numpy if it's a tensor (SliceDataset may return tensors)
+            if isinstance(y_valid_part, torch.Tensor):
+                y_valid_part = y_valid_part.numpy()
+            
+            n_classes = y_pred_proba.shape[1]
+            if n_classes == 2:
+                # Binary classification - use positive class probabilities
+                y_pred = y_pred_proba[:, 1]
+                auc = roc_auc_score(y_valid_part, y_pred)
+            else:
+                # Multi-class classification - use all probabilities with OvR strategy
+                auc = roc_auc_score(y_valid_part, y_pred_proba, multi_class='ovr')
+            fold_scores.append(auc)
+    else:
+        # Fallback: Traditional NumPy approach (creates copies but works for smaller datasets)
+        # Note: X_train should already be converted to float32 in run_optuna_stage to save memory
+        fold_scores = []
+        for i, (train_idx, valid_idx) in enumerate(cv.split(X_train, y_train, groups)):
+            # Fancy indexing creates copies - unavoidable with NumPy integer array indexing
+            # But since X_train is already float32, these copies use 50% less memory than float64
+            X_train_part, y_train_part = X_train[train_idx], y_train[train_idx]
+            X_valid_part, y_valid_part = X_train[valid_idx], y_train[valid_idx]
+            
+            # Fit on training fold
+            model.module_.train()
+            model.fit(X_train_part, y_train_part)
+
+            # Evaluate on held-out validation set
+            model.module_.eval()
+            with torch.no_grad():
+                y_pred_proba = model.predict_proba(X_valid_part)
+            
+            # Handle both binary and multi-class classification
+            n_classes = y_pred_proba.shape[1]
+            if n_classes == 2:
+                # Binary classification - use positive class probabilities
+                y_pred = y_pred_proba[:, 1]
+                auc = roc_auc_score(y_valid_part, y_pred)
+            else:
+                # Multi-class classification - use all probabilities with OvR strategy
+                auc = roc_auc_score(y_valid_part, y_pred_proba, multi_class='ovr')
+            fold_scores.append(auc)
+    
     return np.mean(fold_scores)
 
 
@@ -194,9 +243,13 @@ def run_optuna_stage(
     # Memory optimization: Convert to float32 to reduce memory usage by 50%
     # This is especially important for large arrays when using fancy indexing (which creates copies)
     # Do this once here rather than in the CV loop to avoid repeated conversions
+    # Note: For CrossSubject mode, we use SliceDataset which avoids copies entirely
     if X_train.dtype == np.float64:
         X_train = X_train.astype(np.float32)
         print(f"[MEMORY] Converted X_train from float64 to float32 to reduce memory usage. Shape: {X_train.shape}")
+    
+    if eval_mode == "CrossSubject":
+        print(f"[MEMORY] Using SliceDataset for CrossSubject mode to avoid NumPy fancy indexing copies. Shape: {X_train.shape}")
 
     if len(X_train) < 10:
         print(f"Too few training samples: {len(X_train)}")
@@ -245,7 +298,9 @@ def run_optuna_stage(
         cv = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=seed)
         if check_time:
             start_time = time.time()
-        roc_auc_score = unified_cv_training_loop_method(model, cv, X_train, y_train, trial=trial)
+        # Use SliceDataset for CrossSubject mode to avoid memory copies
+        use_slice_dataset = (eval_mode == "CrossSubject")
+        roc_auc_score = unified_cv_training_loop_method(model, cv, X_train, y_train, trial=trial, use_slice_dataset=use_slice_dataset)
         if check_time:
             elapsed_time = time.time() - start_time
             target_time = 90.0
