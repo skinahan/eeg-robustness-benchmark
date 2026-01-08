@@ -60,10 +60,18 @@ def enhanced_cv_training_loop(
     """
     Enhanced CV training loop with early stopping and better pruning.
     """
+    # Memory optimization: Convert to float32 to reduce memory usage by 50%
+    # This is especially important for large arrays when using fancy indexing (which creates copies)
+    # Note: This conversion happens here as this function may be called from other contexts
+    if X_train.dtype == np.float64:
+        X_train = X_train.astype(np.float32)
+    
     fold_scores = []
     fold_times = []
     
     for i, (train_idx, valid_idx) in enumerate(cv.split(X_train, y_train, groups)):
+        # Fancy indexing creates copies - unavoidable with NumPy integer array indexing
+        # But since X_train is already float32 (if converted), these copies use 50% less memory than float64
         X_train_part, y_train_part = X_train[train_idx], y_train[train_idx]
         X_valid_part, y_valid_part = X_train[valid_idx], y_train[valid_idx]
         
@@ -108,11 +116,31 @@ def enhanced_cv_training_loop(
 
 # Returns the mean roc-auc over the passed CV folds
 def unified_cv_training_loop_method(model, cv, X_train, y_train, trial=None, groups=None):
+    """
+    Root Issue: NumPy fancy indexing (integer array indexing like X_train[valid_idx]) 
+    ALWAYS creates copies, not views. This is a fundamental NumPy limitation.
+    
+    Why DataLoader would help: PyTorch's DataLoader with Subset/Sampler can work with 
+    indices without copying data. However, skorch's fit() method expects numpy arrays, 
+    not PyTorch Datasets, so we'd need to either:
+    1. Refactor to use native PyTorch training loops (major change)
+    2. Modify skorch to accept Datasets (not feasible)
+    3. Convert tensors back to numpy (still creates copies)
+    
+    Current solution: Convert to float32 once before CV loop (reduces memory by 50%).
+    The conversion happens in run_optuna_stage() before this function is called.
+    """
+    # Note: X_train should already be converted to float32 in run_optuna_stage to save memory
+    # This function assumes the conversion has already been done
     fold_scores = []
     for i, (train_idx, valid_idx) in enumerate(cv.split(X_train, y_train, groups)):
         # print(f"Fold {i}:")
+        # Fancy indexing creates copies - unavoidable with NumPy integer array indexing
+        # But since X_train is already float32, these copies use 50% less memory than float64
+        # Shape (1440, 62, 4001) float64 = 2.66 GiB, float32 = 1.33 GiB
         X_train_part, y_train_part = X_train[train_idx], y_train[train_idx]
         X_valid_part, y_valid_part = X_train[valid_idx], y_train[valid_idx]
+        
         # Fit on training fold
         model.module_.train()
         model.fit(X_train_part, y_train_part)
@@ -162,6 +190,13 @@ def run_optuna_stage(
     X_train = X
     y_train = y
     metadata_train = metadata
+
+    # Memory optimization: Convert to float32 to reduce memory usage by 50%
+    # This is especially important for large arrays when using fancy indexing (which creates copies)
+    # Do this once here rather than in the CV loop to avoid repeated conversions
+    if X_train.dtype == np.float64:
+        X_train = X_train.astype(np.float32)
+        print(f"[MEMORY] Converted X_train from float64 to float32 to reduce memory usage. Shape: {X_train.shape}")
 
     if len(X_train) < 10:
         print(f"Too few training samples: {len(X_train)}")
