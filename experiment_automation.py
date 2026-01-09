@@ -1317,6 +1317,10 @@ class ExperimentAutomation:
             
             f.write("    try:\n")
             f.write("        # Create and run experiment\n")
+            f.write("        # For CrossSubject mode, use chunked training to reduce memory usage\n")
+            f.write("        # subject_chunk_size=3 loads 3 subjects at a time (default)\n")
+            f.write("        subject_chunk_size = 3 if exp_config['eval_mode'] == 'CrossSubject' else None\n")
+            f.write("        \n")
             f.write("        runner = UnifiedExperimentRunner(\n")
             f.write("            model=exp_config['model'],\n")
             f.write("            dataset=exp_config['dataset'],\n")
@@ -1327,7 +1331,8 @@ class ExperimentAutomation:
             f.write("            noise_type='gaussian',  # multirun handles all noise types\n")
             f.write("            intensity=10.0,  # multirun handles all intensities\n")
             f.write("            tune=exp_config['tune'],\n")
-            f.write("            overwrite=False\n")
+            f.write("            overwrite=False,\n")
+            f.write("            subject_chunk_size=subject_chunk_size  # Enable chunked training for CrossSubject\n")
             f.write("        )\n\n")
             
             f.write("        results = runner.run_experiment()\n")
@@ -1807,6 +1812,7 @@ class ExperimentAutomation:
                 # Format: sbatch {slurm_args} unified_eval_script.sh {subject} {dataset} {eval_mode} {tune_flag} {model} {seed}
                 # Use CrossSubject-specific script for CrossSubject eval mode
                 # UPDATED: Use fold-by-fold script for CrossSubject to reduce memory usage
+                # Chunked training (subject_chunk_size=3) is automatically enabled via run_crosssubject_folds.py
                 if exp['eval_mode'] == 'CrossSubject':
                     script_name = "unified_eval_script_crosssubject_foldbyfold.sh"
                 else:
@@ -1840,7 +1846,8 @@ class ExperimentAutomation:
         print(f"[INFO] Script contains {len(self.missing_experiments)} multirun sbatch commands")
         print(f"[INFO] Each sbatch command format: sbatch unified_eval_script.sh <subjects> <dataset> <eval_mode> <tune_flag>")
         print(f"[INFO] CrossSubject experiments use fold-by-fold mode (unified_eval_script_crosssubject_foldbyfold.sh)")
-        print(f"[INFO] Memory budget: 64G per job (fold-by-fold reduces actual peak memory usage)")
+        print(f"[INFO] Memory optimization: Chunked training enabled (subject_chunk_size=3) for CrossSubject mode")
+        print(f"[INFO] Memory budget: 64G per job (chunked training + fold-by-fold significantly reduces actual peak memory usage)")
         
         return script_file
     

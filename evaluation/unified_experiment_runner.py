@@ -51,6 +51,7 @@ from evaluation.experiment_utils import check_skip_eval, log_all_subjects, colle
 from evaluation.metrics import compute_classification_metrics
 from evaluation.model_cache_manager import ModelCacheManager
 from evaluation.periodic_checkpoint_callback import create_periodic_checkpoint_callback, create_model_cache_callback
+from evaluation.chunked_subject_trainer import train_with_subject_chunks, evaluate_with_subject_chunks
 import json
 
 # Import MOABB components
@@ -309,7 +310,8 @@ class UnifiedExperimentRunner:
         overwrite: bool = False,
         fold_idx: Optional[int] = None,
         train_subjects: Optional[List[int]] = None,
-        eval_subjects: Optional[List[int]] = None
+        eval_subjects: Optional[List[int]] = None,
+        subject_chunk_size: Optional[int] = None
     ):
         self.model = model
         self.dataset = dataset
@@ -326,6 +328,7 @@ class UnifiedExperimentRunner:
         self.fold_idx = fold_idx
         self.train_subjects = train_subjects
         self.eval_subjects = eval_subjects
+        self.subject_chunk_size = subject_chunk_size
 
         self.current_subject = -1
         self.current_session = -1
@@ -691,17 +694,214 @@ class UnifiedExperimentRunner:
         
         return cv_splitter, cv_metadata
     
+    def _evaluate_cv_fold_chunked(
+        self,
+        train_subjects: List[int],
+        eval_subjects: List[int],
+        fold_idx: int,
+        session: str
+    ) -> List[Dict[str, Any]]:
+        """
+        Evaluate a single CV fold using chunked subject loading for memory efficiency.
+        
+        This method loads subjects in small chunks to avoid loading all data into
+        memory at once. It's particularly useful for CrossSubject evaluation with
+        large numbers of subjects.
+        """
+        # Set current_session for proper cache key generation
+        self.current_session = session
+        
+        # Determine data dimensions (need to load at least one sample to get shape)
+        # For efficiency, we'll load just the first training subject to get dimensions
+        if len(train_subjects) > 0:
+            sample_X, _, _ = self.paradigm.get_data(
+                self.dataset_obj, subjects=[train_subjects[0]]
+            )
+            n_chans, n_times = sample_X.shape[1], sample_X.shape[2]
+            del sample_X
+            gc.collect()
+        else:
+            # Fallback: use defaults or determine from dataset
+            n_chans, n_times = self._determine_data_dimensions()
+        
+        # Create model
+        model = self._create_model(n_chans, n_times, fold_idx=fold_idx)
+        
+        # Check if model was loaded from cache
+        model_was_cached = hasattr(model, '_was_cached') and model._was_cached
+        
+        all_results = []
+        
+        # Handle hyperparameter optimization if enabled
+        if self.tune:
+            # For HPO with chunked training, we need to load training data once
+            # HPO itself uses chunked training (via two_stage_hp_opt), but final model
+            # training after HPO needs the full training set
+            print(f"[CHUNKED_TRAINING] Hyperparameter optimization enabled - loading training data for HPO...")
+            
+            # Load training data for HPO (needed for _tune_and_get_params and final model training)
+            X_train_hpo, y_train_hpo, metadata_train_hpo = self.paradigm.get_data(
+                self.dataset_obj, subjects=train_subjects
+            )
+            if X_train_hpo.dtype == np.float64:
+                X_train_hpo = X_train_hpo.astype(np.float32)
+            
+            if isinstance(y_train_hpo[0], str):
+                y_train_hpo = LabelEncoder().fit_transform(y_train_hpo)
+            
+            # Load validation data for HPO evaluation
+            X_valid_hpo, y_valid_hpo, _ = self.paradigm.get_data(
+                self.dataset_obj, subjects=eval_subjects
+            )
+            if X_valid_hpo.dtype == np.float64:
+                X_valid_hpo = X_valid_hpo.astype(np.float32)
+            
+            if isinstance(y_valid_hpo[0], str):
+                label_encoder = LabelEncoder()
+                y_valid_hpo = label_encoder.fit_transform(y_valid_hpo)
+            
+            # Run HPO (which internally uses chunked training)
+            hpo_results = self._run_hyperparameter_optimization(
+                X_train_hpo, y_train_hpo, X_valid_hpo, y_valid_hpo, 
+                fold_idx, metadata_train_hpo
+            )
+            
+            # Clean up HPO data
+            del X_train_hpo, y_train_hpo, X_valid_hpo, y_valid_hpo, metadata_train_hpo
+            gc.collect()
+            
+            all_results.extend(hpo_results)
+            return all_results
+        
+        # Non-tuning path: Train and evaluate with chunked loading
+        if not model_was_cached:
+            # Train using chunked subject loading
+            print(f"[CHUNKED_TRAINING] Starting chunked training for fold {fold_idx}")
+            model = train_with_subject_chunks(
+                model=model,
+                paradigm=self.paradigm,
+                dataset_obj=self.dataset_obj,
+                train_subjects=train_subjects,
+                chunk_size=self.subject_chunk_size,
+                max_epochs_per_chunk=None,  # Use model's max_epochs
+                verbose=True
+            )
+            
+            # Save training history (if needed - may need to adapt this)
+            output_path = self._get_history_output_path()
+            try:
+                save_training_history(
+                    model,
+                    output_path,
+                    fold_idx=fold_idx,
+                    subject=self.current_subject,
+                    session=str(self.current_session),
+                    mode=self.mode
+                )
+            except Exception as e:
+                print(f"[WARNING] Could not save training history: {e}")
+        else:
+            print(f"[CHUNKED_TRAINING] Using cached model, skipping training")
+        
+        # Evaluate using chunked subject loading
+        print(f"[CHUNKED_EVAL] Starting chunked evaluation for fold {fold_idx}")
+        start_time = time.time()
+        
+        y_valid_all, y_pred_proba_all = evaluate_with_subject_chunks(
+            model=model,
+            paradigm=self.paradigm,
+            dataset_obj=self.dataset_obj,
+            eval_subjects=eval_subjects,
+            chunk_size=self.subject_chunk_size,
+            verbose=True
+        )
+        
+        evaluation_time = time.time() - start_time
+        
+        # Compute metrics
+        num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+        metrics = compute_classification_metrics(y_valid_all, y_pred_proba_all, num_classes)
+        
+        # Handle different modes
+        if self.mode == 'test_perturb':
+            # For test_perturb mode, we need to evaluate on corrupted data
+            # This is more complex with chunked evaluation, so for now we'll
+            # load validation data once for perturbation evaluation
+            # (This could be optimized further if needed)
+            print(f"[CHUNKED_EVAL] Loading validation data for perturbation evaluation...")
+            X_valid_all, y_valid_all_perturb, _ = self.paradigm.get_data(
+                self.dataset_obj, subjects=eval_subjects
+            )
+            if X_valid_all.dtype == np.float64:
+                X_valid_all = X_valid_all.astype(np.float32)
+            
+            if isinstance(y_valid_all_perturb[0], str):
+                label_encoder = getattr(model, '_label_encoder', None)
+                if label_encoder is not None:
+                    y_valid_all_perturb = label_encoder.transform(y_valid_all_perturb)
+                else:
+                    y_valid_all_perturb = LabelEncoder().fit_transform(y_valid_all_perturb)
+            
+            # Evaluate perturbations
+            perturb_results = self._evaluate_perturb(
+                trained_model=model,
+                X_valid=X_valid_all,
+                y_valid=y_valid_all_perturb,
+                fold_idx=fold_idx,
+                session=session,
+                clean_score=metrics["roc_auc"],
+                training_time=0  # Training time not tracked in chunked mode
+            )
+            
+            # Clean up
+            del X_valid_all, y_valid_all_perturb
+            gc.collect()
+            
+            all_results.extend(perturb_results)
+        else:
+            # Standard evaluation
+            result = {
+                'score': metrics["roc_auc"],
+                'validation_roc_auc': metrics["roc_auc"],
+                'validation_accuracy': metrics["accuracy"],
+                'validation_precision': metrics["precision"],
+                'validation_recall': metrics["recall"],
+                'validation_f1': metrics["f1"],
+                'fold_idx': fold_idx,
+                'train_samples': -1,  # Not tracked in chunked mode (can be computed if needed)
+                'valid_samples': len(y_valid_all),
+                'evaluation_time': evaluation_time,
+                'total_time': evaluation_time
+            }
+            all_results.append(result)
+        
+        # Add metadata to all results
+        cv_metadata = {
+            'cv_type': 'ThreeFoldSubjectSplit',
+            'split_level': 'subject'
+        }
+        for result in all_results:
+            result.update({
+                'fold_idx': fold_idx,
+                'cv_type': cv_metadata['cv_type'],
+                'split_level': cv_metadata['split_level'],
+                'session': session,
+                'subject': self.current_subject
+            })
+        
+        return all_results
+
     def _evaluate_cv_fold(
-        self, 
-        X_train: np.ndarray, 
-        y_train: np.ndarray, 
-        X_valid: np.ndarray, 
+        self,
+        X_train: np.ndarray,
+        y_train: np.ndarray,
+        X_valid: np.ndarray,
         y_valid: np.ndarray,
         fold_idx: int,
         cv_metadata: Dict,
         session: str,
         metadata_train: pd.DataFrame
-    ) -> Dict[str, Any]:
+    ) -> List[Dict[str, Any]]:
         """
         Evaluate a single CV fold.
         
@@ -752,6 +952,15 @@ class UnifiedExperimentRunner:
         resample_rate = get_dataset_sampling_rate(self.dataset)
         
         # Determine if we should use noise-aware optimization
+        # Pass chunked training parameters if using chunked training
+        use_chunked_for_hpo = (
+            self.subject_chunk_size is not None and 
+            self.subject_chunk_size > 0 and
+            self.train_subjects is not None and
+            len(self.train_subjects) > 0 and
+            self.eval_mode == "CrossSubject"
+        )
+        
         if self.noise_dict and self.mode in ['augment', 'perturb']:
             best_params, best_score = alternate_two_stage_optuna(
                 model_fn=self._get_wrapped_model_function(),
@@ -767,7 +976,11 @@ class UnifiedExperimentRunner:
                 arch_trials=20,
                 train_trials=20,
                 dataset=self.dataset,
-                eval_mode=self.eval_mode
+                eval_mode=self.eval_mode,
+                paradigm=self.paradigm if use_chunked_for_hpo else None,
+                dataset_obj=self.dataset_obj if use_chunked_for_hpo else None,
+                train_subjects=self.train_subjects if use_chunked_for_hpo else None,
+                subject_chunk_size=self.subject_chunk_size if use_chunked_for_hpo else None
             )
         else:
             # Mode is tune (no noise)
@@ -784,7 +997,11 @@ class UnifiedExperimentRunner:
                 train_trials=10,
                 perturbed=False,
                 dataset=self.dataset,
-                eval_mode=self.eval_mode
+                eval_mode=self.eval_mode,
+                paradigm=self.paradigm if use_chunked_for_hpo else None,
+                dataset_obj=self.dataset_obj if use_chunked_for_hpo else None,
+                train_subjects=self.train_subjects if use_chunked_for_hpo else None,
+                subject_chunk_size=self.subject_chunk_size if use_chunked_for_hpo else None
             )        
 
         final_params = {}
@@ -830,11 +1047,36 @@ class UnifiedExperimentRunner:
         # Other eval modes use their normal dataset-specific values
         final_params['max_epochs'] = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
         final_model.set_params(**final_params)
-        # Train on full training set
+        
+        # Train final model - use chunked training if enabled
         start_time = time.time()
         final_model.module_.train()
         _verify_and_log_max_epochs(final_model, self.dataset, f"fold {fold_idx} (tuned)")
-        final_model.fit(X_train, y_train)
+        
+        # Check if we should use chunked training for final model
+        use_chunked_for_final = (
+            self.subject_chunk_size is not None and 
+            self.subject_chunk_size > 0 and
+            self.train_subjects is not None and
+            len(self.train_subjects) > 0 and
+            self.eval_mode == "CrossSubject"
+        )
+        
+        if use_chunked_for_final:
+            print(f"[CHUNKED_TRAINING] Training final model (after HPO) with chunked training (chunk_size={self.subject_chunk_size})")
+            final_model = train_with_subject_chunks(
+                model=final_model,
+                paradigm=self.paradigm,
+                dataset_obj=self.dataset_obj,
+                train_subjects=self.train_subjects,
+                chunk_size=self.subject_chunk_size,
+                max_epochs_per_chunk=None,  # Use model's max_epochs
+                verbose=True
+            )
+        else:
+            # Use standard training (loads all data at once)
+            final_model.fit(X_train, y_train)
+        
         training_time = time.time() - start_time
         
         # Save training history after hyperparameter tuning is complete
@@ -851,11 +1093,29 @@ class UnifiedExperimentRunner:
         # Evaluate on validation set
         start_time = time.time()
         final_model.module_.eval()
-        with torch.no_grad():
-            y_pred_proba = final_model.predict_proba(X_valid)
+        
+        # Use chunked evaluation if we used chunked training
+        if use_chunked_for_final:
+            print(f"[CHUNKED_EVAL] Evaluating final model (after HPO) with chunked evaluation (chunk_size={self.subject_chunk_size})")
+            y_valid_all, y_pred_proba_all = evaluate_with_subject_chunks(
+                model=final_model,
+                paradigm=self.paradigm,
+                dataset_obj=self.dataset_obj,
+                eval_subjects=self.eval_subjects,
+                chunk_size=self.subject_chunk_size,
+                verbose=True
+            )
             num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
-            metrics_clean = compute_classification_metrics(y_valid, y_pred_proba, num_classes)
+            metrics_clean = compute_classification_metrics(y_valid_all, y_pred_proba_all, num_classes)
             validation_score = metrics_clean["roc_auc"]
+        else:
+            # Standard evaluation (X_valid already loaded)
+            with torch.no_grad():
+                y_pred_proba = final_model.predict_proba(X_valid)
+                num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+                metrics_clean = compute_classification_metrics(y_valid, y_pred_proba, num_classes)
+                validation_score = metrics_clean["roc_auc"]
+        
         evaluation_time = time.time() - start_time
                 
         results = []
@@ -876,7 +1136,22 @@ class UnifiedExperimentRunner:
                     final_model.module_.train()
                     start_time = time.time()
                     _verify_and_log_max_epochs(final_model, self.dataset, f"fold {fold_idx} (tuned, retraining)")
-                    final_model.fit(X_train, y_train)
+                    
+                    # Use chunked training for retraining if enabled
+                    if use_chunked_for_final:
+                        print(f"[CHUNKED_TRAINING] Retraining final model with chunked training (chunk_size={self.subject_chunk_size})")
+                        final_model = train_with_subject_chunks(
+                            model=final_model,
+                            paradigm=self.paradigm,
+                            dataset_obj=self.dataset_obj,
+                            train_subjects=self.train_subjects,
+                            chunk_size=self.subject_chunk_size,
+                            max_epochs_per_chunk=None,
+                            verbose=True
+                        )
+                    else:
+                        final_model.fit(X_train, y_train)
+                    
                     training_time = time.time() - start_time
                     
                     # Save re-training history
@@ -891,11 +1166,26 @@ class UnifiedExperimentRunner:
                     )
                     
                     final_model.module_.eval()
-                    with torch.no_grad():
-                        y_pred_proba = final_model.predict_proba(X_valid)
+                    
+                    # Use chunked evaluation if we used chunked training
+                    if use_chunked_for_final:
+                        y_valid_retrain, y_pred_proba_retrain = evaluate_with_subject_chunks(
+                            model=final_model,
+                            paradigm=self.paradigm,
+                            dataset_obj=self.dataset_obj,
+                            eval_subjects=self.eval_subjects,
+                            chunk_size=self.subject_chunk_size,
+                            verbose=True
+                        )
                         num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
-                        metrics_retrain = compute_classification_metrics(y_valid, y_pred_proba, num_classes)
+                        metrics_retrain = compute_classification_metrics(y_valid_retrain, y_pred_proba_retrain, num_classes)
                         new_clean_score = metrics_retrain["roc_auc"]
+                    else:
+                        with torch.no_grad():
+                            y_pred_proba = final_model.predict_proba(X_valid)
+                            num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+                            metrics_retrain = compute_classification_metrics(y_valid, y_pred_proba, num_classes)
+                            new_clean_score = metrics_retrain["roc_auc"]
                     clean_score = max(clean_score, new_clean_score)
             # Evaluate on corrupted data
             results.extend(self._evaluate_perturb(final_model, X_valid, y_valid, fold_idx, session, clean_score, training_time))
@@ -1253,17 +1543,6 @@ class UnifiedExperimentRunner:
                 del y_valid_full
                 gc.collect()
                 
-                # Use the loaded data directly (no need to split since we loaded separately)
-                X_train = X_train_full
-                y_train = y_train_encoded
-                X_valid = X_valid_full
-                y_valid = y_valid_encoded
-                metadata_train = metadata_train_full
-                
-                # Clean up
-                del X_train_full, X_valid_full, y_train_encoded, y_valid_encoded, metadata_train_full, metadata_valid_full
-                gc.collect()
-                
                 # Create session identifier
                 eval_subjects_str = ','.join(map(str, sorted(self.eval_subjects)))
                 session = f"fold_{self.fold_idx}_eval_subjects_{eval_subjects_str}"
@@ -1271,14 +1550,58 @@ class UnifiedExperimentRunner:
                 # Set current_subject to first eval subject
                 self.current_subject = self.eval_subjects[0]
                 
-                # Prepare CV metadata
-                cv_splitter, cv_metadata = self.prepare_data_cv()
-                
-                # Process single fold
-                fold_results = self._evaluate_cv_fold(
-                    X_train, y_train, X_valid, y_valid, 
-                    self.fold_idx, cv_metadata, session, metadata_train
+                # Check if we should use chunked training (memory optimization)
+                # Use chunked training if:
+                # 1. chunk_size is specified and > 0
+                # 2. We have train_subjects and eval_subjects (fold-by-fold mode)
+                # 3. Not using hyperparameter tuning (HPO with chunked training not yet supported)
+                use_chunked_training = (
+                    self.subject_chunk_size is not None and 
+                    self.subject_chunk_size > 0 and
+                    self.train_subjects is not None and
+                    self.eval_subjects is not None and
+                    len(self.train_subjects) > 0 and
+                    len(self.eval_subjects) > 0
+                    # Note: Chunked training now supported for HPO as well
                 )
+                
+                if use_chunked_training:
+                    # Use chunked training approach
+                    print(f"[CHUNKED_TRAINING] Using chunked training with chunk_size={self.subject_chunk_size}")
+                    print(f"[CHUNKED_TRAINING] Training subjects: {self.train_subjects}")
+                    print(f"[CHUNKED_TRAINING] Evaluation subjects: {self.eval_subjects}")
+                    
+                    # Clean up loaded data since we'll load in chunks
+                    del X_train_full, X_valid_full, y_train_encoded, y_valid_encoded, metadata_train_full, metadata_valid_full
+                    gc.collect()
+                    
+                    # Process fold with chunked training
+                    fold_results = self._evaluate_cv_fold_chunked(
+                        self.train_subjects,
+                        self.eval_subjects,
+                        self.fold_idx,
+                        session
+                    )
+                else:
+                    # Use the loaded data directly (no need to split since we loaded separately)
+                    X_train = X_train_full
+                    y_train = y_train_encoded
+                    X_valid = X_valid_full
+                    y_valid = y_valid_encoded
+                    metadata_train = metadata_train_full
+                    
+                    # Clean up
+                    del X_train_full, X_valid_full, y_train_encoded, y_valid_encoded, metadata_train_full, metadata_valid_full
+                    gc.collect()
+                    
+                    # Prepare CV metadata
+                    cv_splitter, cv_metadata = self.prepare_data_cv()
+                    
+                    # Process single fold with full data
+                    fold_results = self._evaluate_cv_fold(
+                        X_train, y_train, X_valid, y_valid, 
+                        self.fold_idx, cv_metadata, session, metadata_train
+                    )
                 
                 # Add eval_subjects information to each result
                 for result in fold_results:
@@ -1810,6 +2133,8 @@ def main():
                         help="Training subjects for this fold (for CrossSubject fold-by-fold mode)")
     parser.add_argument("--eval_subjects", type=int, nargs="+", default=None,
                         help="Evaluation subjects for this fold (for CrossSubject fold-by-fold mode)")
+    parser.add_argument("--subject_chunk_size", type=int, default=None,
+                        help="Number of subjects to load per chunk for memory-efficient training (CrossSubject mode). If None, loads all subjects at once.")
     
     # Memory management: Check for environment variable to set memory limit
     max_memory_gb = os.environ.get('PYTHON_MAX_MEMORY_GB')
@@ -1905,7 +2230,8 @@ def main():
                     overwrite=args.overwrite,
                     fold_idx=args.fold_idx,
                     train_subjects=args.train_subjects,
-                    eval_subjects=args.eval_subjects
+                    eval_subjects=args.eval_subjects,
+                    subject_chunk_size=args.subject_chunk_size
                 )
                 results = runner.run_experiment()
                 print(f"Experiment completed successfully. Results shape: {results.shape}")
@@ -1952,7 +2278,8 @@ def main():
                 overwrite=args.overwrite,
                 fold_idx=args.fold_idx,
                 train_subjects=args.train_subjects,
-                eval_subjects=args.eval_subjects
+                eval_subjects=args.eval_subjects,
+                subject_chunk_size=args.subject_chunk_size
             )
             
             results = runner.run_experiment()

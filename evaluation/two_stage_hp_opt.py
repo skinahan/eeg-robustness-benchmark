@@ -117,7 +117,15 @@ def enhanced_cv_training_loop(
     return mean_score, std_score, mean_time
 
 # Returns the mean roc-auc over the passed CV folds
-def unified_cv_training_loop_method(model, cv, X_train, y_train, trial=None, groups=None, use_slice_dataset=False):
+def unified_cv_training_loop_method(
+    model, cv, X_train, y_train, trial=None, groups=None, 
+    use_slice_dataset=False, 
+    use_chunked_training=False,
+    paradigm=None,
+    dataset_obj=None,
+    train_subjects=None,
+    subject_chunk_size=None
+):
     """
     Root Issue: NumPy fancy indexing (integer array indexing like X_train[valid_idx]) 
     ALWAYS creates copies, not views. This is a fundamental NumPy limitation.
@@ -127,7 +135,64 @@ def unified_cv_training_loop_method(model, cv, X_train, y_train, trial=None, gro
     compatibility, but uses PyTorch's efficient indexing under the hood.
     
     Reference: https://skorch.readthedocs.io/en/stable/user/helper.html#slicedataset
+    
+    For chunked training: If use_chunked_training=True, loads subjects in chunks to avoid
+    loading all data into memory. Requires paradigm, dataset_obj, and train_subjects.
     """
+    # Check if we should use chunked training (for HPO with large datasets)
+    if use_chunked_training:
+        if paradigm is None or dataset_obj is None or train_subjects is None:
+            raise ValueError(
+                "For chunked training, paradigm, dataset_obj, and train_subjects must be provided"
+            )
+        
+        # Import chunked trainer
+        from evaluation.chunked_subject_trainer import train_with_subject_chunks
+        
+        # For HPO, we train on all training subjects using chunked loading
+        # Each trial will train incrementally on chunks to save memory
+        model.module_.train()
+        
+        # Train model with chunked subject loading
+        # Note: warm_start is handled inside train_with_subject_chunks
+        model = train_with_subject_chunks(
+            model=model,
+            paradigm=paradigm,
+            dataset_obj=dataset_obj,
+            train_subjects=train_subjects,
+            chunk_size=subject_chunk_size if subject_chunk_size else 3,
+            max_epochs_per_chunk=model.max_epochs,  # Use model's max_epochs
+            verbose=False  # Reduce verbosity during HPO
+        )
+        
+        # For evaluation during HPO, we need validation data
+        # Since we're in HPO and don't have X_valid loaded, we'll use a simple approach:
+        # Evaluate on a small held-out subset of training data
+        # This is acceptable for HPO where we just need relative performance between trials
+        from sklearn.model_selection import train_test_split
+        _, X_val_small, _, y_val_small = train_test_split(
+            X_train, y_train, test_size=0.2, random_state=42, stratify=y_train
+        )
+        
+        # Convert to float32 if needed
+        if X_val_small.dtype == np.float64:
+            X_val_small = X_val_small.astype(np.float32)
+        
+        # Evaluate on validation subset
+        model.module_.eval()
+        with torch.no_grad():
+            y_pred_proba = model.predict_proba(X_val_small)
+        
+        # Compute ROC-AUC
+        n_classes = y_pred_proba.shape[1]
+        if n_classes == 2:
+            y_pred = y_pred_proba[:, 1]
+            auc = roc_auc_score(y_val_small, y_pred)
+        else:
+            auc = roc_auc_score(y_val_small, y_pred_proba, multi_class='ovr')
+        
+        return auc
+    
     if use_slice_dataset:
         # Memory-efficient approach: Use SliceDataset to avoid NumPy fancy indexing copies
         # Reference: https://skorch.readthedocs.io/en/stable/user/helper.html#slicedataset
@@ -260,7 +325,11 @@ def run_optuna_stage(
         seed=42,
         perturbed=False,
         output_root="optuna_results",
-        eval_mode=None
+        eval_mode=None,
+        paradigm=None,
+        dataset_obj=None,
+        train_subjects=None,
+        subject_chunk_size=None
 ):
     # In the old version we explicitly wanted to only use 0train for hyperparameter optimization. That is no longer the case.
     # In the current code version, we can expect X and y to be split before run_optuna_stage is called.
@@ -328,8 +397,19 @@ def run_optuna_stage(
         if check_time:
             start_time = time.time()
         # Use SliceDataset for CrossSubject mode to avoid memory copies
-        use_slice_dataset = (eval_mode == "CrossSubject")
-        roc_auc_score = unified_cv_training_loop_method(model, cv, X_train, y_train, trial=trial, use_slice_dataset=use_slice_dataset)
+        # OR use chunked training if subject_chunk_size is provided
+        use_slice_dataset = (eval_mode == "CrossSubject") and (subject_chunk_size is None)
+        use_chunked_training = (eval_mode == "CrossSubject") and (subject_chunk_size is not None)
+        
+        roc_auc_score = unified_cv_training_loop_method(
+            model, cv, X_train, y_train, trial=trial, 
+            use_slice_dataset=use_slice_dataset,
+            use_chunked_training=use_chunked_training,
+            paradigm=paradigm if use_chunked_training else None,
+            dataset_obj=dataset_obj if use_chunked_training else None,
+            train_subjects=train_subjects if use_chunked_training else None,
+            subject_chunk_size=subject_chunk_size if use_chunked_training else None
+        )
         if check_time:
             elapsed_time = time.time() - start_time
             target_time = 90.0
@@ -382,7 +462,11 @@ def alternate_optuna_stage(
         seed=42,
         output_root="optuna_results",
         dataset=None,
-        eval_mode=None
+        eval_mode=None,
+        paradigm=None,
+        dataset_obj=None,
+        train_subjects=None,
+        subject_chunk_size=None
 ):
     noise_type = noise_dict["noise_type"]
     intensity = noise_dict["intensity"]
@@ -426,7 +510,20 @@ def alternate_optuna_stage(
         if mode == 'augment':
             cv = GroupKFold(n_splits=3)
             X_obj, y_obj, groups = model.concat_and_augment(X_train, y_train)
-        return unified_cv_training_loop_method(model, cv, X_obj, y_obj, trial=trial, groups=groups)
+        
+        # Use chunked training if enabled
+        use_slice_dataset = (eval_mode == "CrossSubject") and (subject_chunk_size is None)
+        use_chunked_training = (eval_mode == "CrossSubject") and (subject_chunk_size is not None)
+        
+        return unified_cv_training_loop_method(
+            model, cv, X_obj, y_obj, trial=trial, groups=groups,
+            use_slice_dataset=use_slice_dataset,
+            use_chunked_training=use_chunked_training,
+            paradigm=paradigm if use_chunked_training else None,
+            dataset_obj=dataset_obj if use_chunked_training else None,
+            train_subjects=train_subjects if use_chunked_training else None,
+            subject_chunk_size=subject_chunk_size if use_chunked_training else None
+        )
 
     output_dir = os.path.join(output_root, stage_name)
     os.makedirs(output_dir, exist_ok=True)
@@ -1175,7 +1272,11 @@ def alternate_two_stage_optuna(
         arch_trials=10,
         train_trials=10,
         dataset=None,
-        eval_mode=None
+        eval_mode=None,
+        paradigm=None,
+        dataset_obj=None,
+        train_subjects=None,
+        subject_chunk_size=None
 ):
     noise_type = noise_dict["noise_type"]
     intensity = noise_dict["intensity"]
@@ -1197,7 +1298,11 @@ def alternate_two_stage_optuna(
         seed=seed,
         output_root=output_root,
         dataset=dataset,
-        eval_mode=eval_mode
+        eval_mode=eval_mode,
+        paradigm=paradigm,
+        dataset_obj=dataset_obj,
+        train_subjects=train_subjects,
+        subject_chunk_size=subject_chunk_size
     )
 
     print("\n[Stage 2] Training Optimization")
@@ -1225,7 +1330,11 @@ def alternate_two_stage_optuna(
         seed=seed,
         output_root=output_root,
         dataset=dataset,
-        eval_mode=eval_mode
+        eval_mode=eval_mode,
+        paradigm=paradigm,
+        dataset_obj=dataset_obj,
+        train_subjects=train_subjects,
+        subject_chunk_size=subject_chunk_size
     )
     for k, v in arch_params.items():
         final_params[k] = v
@@ -1246,7 +1355,11 @@ def run_two_stage_optuna(
         train_trials=10,
         perturbed=False,
         dataset=None,
-        eval_mode=None
+        eval_mode=None,
+        paradigm=None,
+        dataset_obj=None,
+        train_subjects=None,
+        subject_chunk_size=None
 ):
     print("\n[Stage 1] Architecture Search")
     arch_param_space_fn = get_model_architecture_space(model_name)
@@ -1263,7 +1376,11 @@ def run_two_stage_optuna(
         seed=seed,
         perturbed=perturbed,
         output_root=output_root,
-        eval_mode=eval_mode
+        eval_mode=eval_mode,
+        paradigm=paradigm,
+        dataset_obj=dataset_obj,
+        train_subjects=train_subjects,
+        subject_chunk_size=subject_chunk_size
     )
 
     print("\n[Stage 2] Training Optimization")
@@ -1289,7 +1406,11 @@ def run_two_stage_optuna(
         seed=seed,
         perturbed=perturbed,
         output_root=output_root,
-        eval_mode=eval_mode
+        eval_mode=eval_mode,
+        paradigm=paradigm,
+        dataset_obj=dataset_obj,
+        train_subjects=train_subjects,
+        subject_chunk_size=subject_chunk_size
     )
     for k, v in arch_params.items():
         final_params[k] = v

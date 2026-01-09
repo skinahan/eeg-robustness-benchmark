@@ -16,9 +16,15 @@ Usage:
         [--tune] \
         [--overwrite] \
         [--noise_type gaussian] \
-        [--intensity 10.0]
+        [--intensity 10.0] \
+        [--subject_chunk_size 3]
 
 After all folds complete, run aggregate_crosssubject_results.py to combine results.
+
+Memory Optimization:
+    --subject_chunk_size controls memory-efficient chunked training for CrossSubject mode.
+    Default: 3 (loads 3 subjects at a time to reduce peak memory usage).
+    This is especially useful for large datasets with many subjects.
 """
 
 import sys
@@ -74,6 +80,8 @@ def main():
                         help="Load fold configuration from JSON file (skip planning)")
     parser.add_argument("--fold_idx", type=int, default=None,
                         help="Run only a specific fold (0-2). If not provided, runs all folds.")
+    parser.add_argument("--subject_chunk_size", type=int, default=3,
+                        help="Number of subjects to load per chunk for memory-efficient training (CrossSubject mode). Default: 3")
     
     args = parser.parse_args()
     
@@ -118,6 +126,7 @@ def main():
     print(f"Running {len(fold_configs)} fold(s) for CrossSubject experiment")
     print(f"Model: {args.model}, Dataset: {args.dataset}")
     print(f"Subjects: {args.subjects}")
+    print(f"Memory optimization: Chunked training enabled (subject_chunk_size={args.subject_chunk_size})")
     print(f"{'='*80}\n")
     
     # Build base command
@@ -163,9 +172,12 @@ def main():
         cmd = base_cmd + [
             "--fold_idx", str(fold_idx),
             "--train_subjects"] + [str(s) for s in train_subjects] + [
-            "--eval_subjects"] + [str(s) for s in eval_subjects]
+            "--eval_subjects"] + [str(s) for s in eval_subjects] + [
+            "--subject_chunk_size", str(args.subject_chunk_size)
+        ]
         
         print(f"Command: {' '.join(cmd)}\n")
+        print(f"[MEMORY] Using chunked training with chunk_size={args.subject_chunk_size}")
         
         try:
             result = subprocess.run(cmd, check=True, capture_output=False)
