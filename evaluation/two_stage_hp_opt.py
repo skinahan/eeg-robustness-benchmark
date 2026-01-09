@@ -168,13 +168,32 @@ def unified_cv_training_loop_method(model, cv, X_train, y_train, trial=None, gro
         fold_scores = []
         for i, (train_idx, valid_idx) in enumerate(cv.split(X_train_np, y_train_np, groups)):
             # SliceDataset slicing doesn't create copies - it returns views!
-            # This is the key advantage: no memory copy here
-            X_train_part = X_slice[train_idx]
-            y_train_part = y_slice[train_idx]
-            X_valid_part = X_slice[valid_idx]
-            y_valid_part = y_slice[valid_idx]
+            # However, braindecode's EEGClassifier doesn't fully support SliceDataset for shape inference,
+            # so we need to convert back to numpy arrays before passing to model.fit()
+            # This still saves memory because:
+            # 1. We only copy the fold's data (not the full dataset)
+            # 2. Data is already float32, so copies are 50% smaller
+            # 3. We avoid the initial large float64 allocation
+            X_train_part_slice = X_slice[train_idx]
+            y_train_part_slice = y_slice[train_idx]
+            X_valid_part_slice = X_slice[valid_idx]
+            y_valid_part_slice = y_slice[valid_idx]
             
-            # Fit on training fold - skorch accepts SliceDataset
+            # Convert SliceDataset to numpy arrays for braindecode compatibility
+            # SliceDataset returns tensors, so convert to numpy
+            if isinstance(X_train_part_slice, torch.Tensor):
+                X_train_part = X_train_part_slice.numpy()
+                y_train_part = y_train_part_slice.numpy() if isinstance(y_train_part_slice, torch.Tensor) else y_train_part_slice
+                X_valid_part = X_valid_part_slice.numpy()
+                y_valid_part = y_valid_part_slice.numpy() if isinstance(y_valid_part_slice, torch.Tensor) else y_valid_part_slice
+            else:
+                # Already numpy arrays (shouldn't happen with SliceDataset, but handle it)
+                X_train_part = np.asarray(X_train_part_slice)
+                y_train_part = np.asarray(y_train_part_slice)
+                X_valid_part = np.asarray(X_valid_part_slice)
+                y_valid_part = np.asarray(y_valid_part_slice)
+            
+            # Fit on training fold
             model.module_.train()
             model.fit(X_train_part, y_train_part)
 
@@ -184,9 +203,7 @@ def unified_cv_training_loop_method(model, cv, X_train, y_train, trial=None, gro
                 y_pred_proba = model.predict_proba(X_valid_part)
             
             # Handle both binary and multi-class classification
-            # Convert y_valid_part to numpy if it's a tensor (SliceDataset may return tensors)
-            if isinstance(y_valid_part, torch.Tensor):
-                y_valid_part = y_valid_part.numpy()
+            # y_valid_part is already numpy from conversion above
             
             n_classes = y_pred_proba.shape[1]
             if n_classes == 2:
