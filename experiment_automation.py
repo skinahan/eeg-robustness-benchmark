@@ -1774,9 +1774,9 @@ class ExperimentAutomation:
                             slurm_args = "--time=0-10:00:00 --mem=12G"
                             
                     else:
-                        # Default time limit for other modes (CrossSubject, etc.)
-                        # Increased memory to 64G due to out of memory errors with multiple subjects
-                        slurm_args = "--time=1-08:00:00 --mem=64G"
+                        # CrossSubject with fold-by-fold: Reduced memory to 40G (from 64G) due to fold-by-fold optimization
+                        # Time increased slightly to account for running 3 folds + aggregation
+                        slurm_args = "--time=1-12:00:00 --mem=40G"
                         
                 else:
                     # Motor Imagery timeouts (reduced by factor of 5)
@@ -1800,14 +1800,15 @@ class ExperimentAutomation:
                             slurm_args = "--time=0-04:00:00 --mem=12G"
                             
                     else:
-                        # Default time limit for other modes (CrossSubject, etc.)
-                        # Increased memory to 64G due to out of memory errors with multiple subjects
-                        slurm_args = "--time=1-08:00:00 --mem=64G"
+                        # CrossSubject with fold-by-fold: Reduced memory to 40G (from 64G) due to fold-by-fold optimization
+                        # Time increased slightly to account for running 3 folds + aggregation
+                        slurm_args = "--time=1-12:00:00 --mem=40G"
                 
                 # Format: sbatch {slurm_args} unified_eval_script.sh {subject} {dataset} {eval_mode} {tune_flag} {model} {seed}
                 # Use CrossSubject-specific script for CrossSubject eval mode
+                # UPDATED: Use fold-by-fold script for CrossSubject to reduce memory usage
                 if exp['eval_mode'] == 'CrossSubject':
-                    script_name = "unified_eval_script_crosssubject.sh"
+                    script_name = "unified_eval_script_crosssubject_foldbyfold.sh"
                 else:
                     script_name = "unified_eval_script.sh"
                 command = f"sbatch {slurm_args} {script_name} {subjects_str} {exp['dataset']} {exp['eval_mode']} {tune_flag} {model} {seed}"
@@ -1838,6 +1839,8 @@ class ExperimentAutomation:
         print(f"[OK] Generated sbatch shell script: {script_file}")
         print(f"[INFO] Script contains {len(self.missing_experiments)} multirun sbatch commands")
         print(f"[INFO] Each sbatch command format: sbatch unified_eval_script.sh <subjects> <dataset> <eval_mode> <tune_flag>")
+        print(f"[INFO] CrossSubject experiments use fold-by-fold mode (unified_eval_script_crosssubject_foldbyfold.sh)")
+        print(f"[INFO] This reduces memory usage from 64G to 40G per job")
         
         return script_file
     

@@ -106,6 +106,49 @@ class ThreeFoldSubjectSplit:
     def get_n_splits(self, X=None, y=None, groups=None):
         return self.n_splits
     
+    @staticmethod
+    def get_fold_subjects(subjects):
+        """
+        Return which subjects go in each fold without requiring data.
+        
+        Args:
+            subjects: List of subject IDs (can have duplicates)
+        
+        Returns:
+            List of dicts, each containing:
+                - fold_idx: int (0, 1, or 2)
+                - train_subjects: list of subject IDs for training
+                - eval_subjects: list of subject IDs for evaluation
+        """
+        unique_subjects = np.unique(subjects)
+        n_subjects = len(unique_subjects)
+        
+        # Calculate size of each evaluation group (should be n_subjects // 3)
+        eval_group_size = n_subjects // 3
+        
+        if eval_group_size == 0:
+            raise ValueError(f"Need at least 3 subjects for 3-fold split, got {n_subjects}")
+        
+        fold_configs = []
+        for fold_idx in range(3):
+            # Determine which subjects go in eval set for this fold
+            eval_start = fold_idx * eval_group_size
+            eval_end = eval_start + eval_group_size
+            
+            eval_subjects = unique_subjects[eval_start:eval_end].tolist()
+            train_subjects = np.concatenate([
+                unique_subjects[:eval_start],
+                unique_subjects[eval_end:]
+            ]).tolist()
+            
+            fold_configs.append({
+                'fold_idx': fold_idx,
+                'train_subjects': train_subjects,
+                'eval_subjects': eval_subjects
+            })
+        
+        return fold_configs
+    
     def split(self, X, y=None, groups=None):
         """
         Generate train/test indices for 3-fold cross-subject splits.
@@ -263,7 +306,10 @@ class UnifiedExperimentRunner:
         noise_type: Optional[str] = None,
         intensity: Optional[float] = None,
         tune: bool = False,
-        overwrite: bool = False
+        overwrite: bool = False,
+        fold_idx: Optional[int] = None,
+        train_subjects: Optional[List[int]] = None,
+        eval_subjects: Optional[List[int]] = None
     ):
         self.model = model
         self.dataset = dataset
@@ -275,6 +321,11 @@ class UnifiedExperimentRunner:
         self.intensity = intensity
         self.tune = tune
         self.overwrite = overwrite
+        
+        # Fold-by-fold execution parameters (for CrossSubject memory optimization)
+        self.fold_idx = fold_idx
+        self.train_subjects = train_subjects
+        self.eval_subjects = eval_subjects
 
         self.current_subject = -1
         self.current_session = -1
@@ -1141,86 +1192,156 @@ class UnifiedExperimentRunner:
         all_subject_results = []
         set_seeds(self.seed)
         if self.eval_mode == "CrossSubject":
-            # For CrossSubject, get data from all subjects at once
-            # Memory management: Force garbage collection before loading large dataset
-            gc.collect()
-            
-            # Log memory usage before loading
-            log_memory_usage("Before loading data")
-            
-            print(f"[MEMORY] Loading data for {len(self.subjects)} subjects in CrossSubject mode...")
-            X, y, metadata = self.paradigm.get_data(self.dataset_obj, subjects=self.subjects)
-            
-            # Log memory usage after loading
-            mem_mb = log_memory_usage("After loading data")
-            if isinstance(X, np.ndarray):
-                data_size_mb = X.nbytes / 1024 / 1024
-                print(f"[MEMORY] Data shape: X={X.shape}, dtype={X.dtype}, estimated size: {data_size_mb:.2f} MB")
+            # Check if we're in fold-by-fold mode (memory optimization)
+            if self.fold_idx is not None:
+                # Fold-by-fold mode: Load only subjects needed for this fold
+                if self.train_subjects is None or self.eval_subjects is None:
+                    raise ValueError("For fold-by-fold execution, both --train_subjects and --eval_subjects must be provided")
                 
-                # Check against memory limit if set
-                max_memory_mb = None
-                max_memory_gb = os.environ.get('PYTHON_MAX_MEMORY_GB')
-                if max_memory_gb:
-                    try:
-                        max_memory_mb = float(max_memory_gb) * 1024
-                    except ValueError:
-                        pass
+                print(f"[MEMORY] Fold-by-fold mode: Processing fold {self.fold_idx}")
+                print(f"[MEMORY] Training subjects: {self.train_subjects}")
+                print(f"[MEMORY] Evaluation subjects: {self.eval_subjects}")
                 
-                # Warn if data size is very large
-                if data_size_mb > 10000:  # > 10GB
-                    print(f"[WARNING] Large dataset loaded: {data_size_mb:.2f} MB. This may cause memory issues.")
-                    print(f"[WARNING] Consider processing subjects in smaller batches if OOM errors occur.")
+                # Load only the subjects needed for this fold
+                all_subjects_for_fold = sorted(set(self.train_subjects + self.eval_subjects))
+                gc.collect()
+                log_memory_usage("Before loading fold data")
                 
-                # Warn if approaching memory limit
-                if max_memory_mb and mem_mb and mem_mb > max_memory_mb * 0.8:
-                    print(f"[WARNING] Memory usage ({mem_mb:.2f} MB) is above 80% of limit ({max_memory_mb:.2f} MB)")
-                    print(f"[WARNING] Risk of out-of-memory errors. Consider reducing number of subjects or batch size.")
-            
-            # Force garbage collection after loading
-            gc.collect()
-            
-            y_encoded = LabelEncoder().fit_transform(y)
-            
-            # Memory optimization: Delete original y array after encoding (we only need y_encoded)
-            del y
-            gc.collect()
-            
-            # Prepare cross-validation
-            cv_splitter, cv_metadata = self.prepare_data_cv()
-            
-            # Run cross-validation with subject groups
-            groups = metadata['subject'].values
-            
-            # Memory optimization: Don't store all folds in memory - iterate directly
-            # This avoids keeping all fold indices in memory at once
-            all_results = []
-            fold_idx = 0
-            for train_idx, valid_idx in cv_splitter.split(X, y_encoded, groups=groups):
-                # Get the subjects that are in the evaluation set for this fold
-                # Memory optimization: Use .iloc with list conversion to avoid keeping view in memory
-                eval_subjects = np.unique(metadata.iloc[valid_idx]['subject'].values)
-                eval_subjects_str = ','.join(map(str, sorted(eval_subjects)))
-                session = f"fold_{fold_idx}_eval_subjects_{eval_subjects_str}"
+                print(f"[MEMORY] Loading data for {len(all_subjects_for_fold)} subjects (fold {self.fold_idx})...")
+                X, y, metadata = self.paradigm.get_data(self.dataset_obj, subjects=all_subjects_for_fold)
                 
-                # Set current_subject to a representative value (first eval subject)
-                self.current_subject = eval_subjects[0]
+                mem_mb = log_memory_usage("After loading fold data")
+                if isinstance(X, np.ndarray):
+                    data_size_mb = X.nbytes / 1024 / 1024
+                    print(f"[MEMORY] Data shape: X={X.shape}, dtype={X.dtype}, estimated size: {data_size_mb:.2f} MB")
                 
-                # Memory optimization: Array indexing with arrays creates copies automatically
-                # Note: X[train_idx] creates a copy (necessary for training), no need for explicit .copy()
-                X_train = X[train_idx]
-                y_train = y_encoded[train_idx]
-                X_valid = X[valid_idx]
-                y_valid = y_encoded[valid_idx]
-                # Memory optimization: .iloc creates a view, but we'll delete it promptly after use
-                metadata_train = metadata.iloc[train_idx]
+                gc.collect()
                 
-                # Memory optimization: Delete indices immediately after use
-                del train_idx, valid_idx
+                y_encoded = LabelEncoder().fit_transform(y)
+                del y
+                gc.collect()
                 
-                fold_results = self._evaluate_cv_fold(X_train, y_train, X_valid, y_valid, fold_idx, cv_metadata, session, metadata_train)
+                # Split into train/valid based on subject IDs
+                train_mask = metadata['subject'].isin(self.train_subjects)
+                valid_mask = metadata['subject'].isin(self.eval_subjects)
+                
+                X_train = X[train_mask]
+                y_train = y_encoded[train_mask]
+                X_valid = X[valid_mask]
+                y_valid = y_encoded[valid_mask]
+                metadata_train = metadata[train_mask]
+                
+                # Clean up full dataset
+                del X, y_encoded, metadata
+                gc.collect()
+                
+                # Create session identifier
+                eval_subjects_str = ','.join(map(str, sorted(self.eval_subjects)))
+                session = f"fold_{self.fold_idx}_eval_subjects_{eval_subjects_str}"
+                
+                # Set current_subject to first eval subject
+                self.current_subject = self.eval_subjects[0]
+                
+                # Prepare CV metadata
+                cv_splitter, cv_metadata = self.prepare_data_cv()
+                
+                # Process single fold
+                fold_results = self._evaluate_cv_fold(
+                    X_train, y_train, X_valid, y_valid, 
+                    self.fold_idx, cv_metadata, session, metadata_train
+                )
                 
                 # Add eval_subjects information to each result
                 for result in fold_results:
+                    result['eval_subjects'] = eval_subjects_str
+                    result['train_subjects'] = ','.join(map(str, sorted(self.train_subjects)))
+                
+                # Convert to DataFrame
+                results_df = pd.DataFrame(fold_results)
+                all_subject_results.append(results_df)
+                
+            else:
+                # Legacy mode: Load all subjects and process all folds (for backward compatibility)
+                # Memory management: Force garbage collection before loading large dataset
+                gc.collect()
+                
+                # Log memory usage before loading
+                log_memory_usage("Before loading data")
+                
+                print(f"[MEMORY] Loading data for {len(self.subjects)} subjects in CrossSubject mode (legacy mode)...")
+                print(f"[MEMORY] WARNING: This loads all subjects at once. For large datasets, use fold-by-fold mode.")
+                X, y, metadata = self.paradigm.get_data(self.dataset_obj, subjects=self.subjects)
+                
+                # Log memory usage after loading
+                mem_mb = log_memory_usage("After loading data")
+                if isinstance(X, np.ndarray):
+                    data_size_mb = X.nbytes / 1024 / 1024
+                    print(f"[MEMORY] Data shape: X={X.shape}, dtype={X.dtype}, estimated size: {data_size_mb:.2f} MB")
+                    
+                    # Check against memory limit if set
+                    max_memory_mb = None
+                    max_memory_gb = os.environ.get('PYTHON_MAX_MEMORY_GB')
+                    if max_memory_gb:
+                        try:
+                            max_memory_mb = float(max_memory_gb) * 1024
+                        except ValueError:
+                            pass
+                    
+                    # Warn if data size is very large
+                    if data_size_mb > 10000:  # > 10GB
+                        print(f"[WARNING] Large dataset loaded: {data_size_mb:.2f} MB. This may cause memory issues.")
+                        print(f"[WARNING] Consider using fold-by-fold mode (--fold_idx, --train_subjects, --eval_subjects) if OOM errors occur.")
+                    
+                    # Warn if approaching memory limit
+                    if max_memory_mb and mem_mb and mem_mb > max_memory_mb * 0.8:
+                        print(f"[WARNING] Memory usage ({mem_mb:.2f} MB) is above 80% of limit ({max_memory_mb:.2f} MB)")
+                        print(f"[WARNING] Risk of out-of-memory errors. Consider using fold-by-fold mode.")
+                
+                # Force garbage collection after loading
+                gc.collect()
+                
+                y_encoded = LabelEncoder().fit_transform(y)
+                
+                # Memory optimization: Delete original y array after encoding (we only need y_encoded)
+                del y
+                gc.collect()
+                
+                # Prepare cross-validation
+                cv_splitter, cv_metadata = self.prepare_data_cv()
+                
+                # Run cross-validation with subject groups
+                groups = metadata['subject'].values
+                
+                # Memory optimization: Don't store all folds in memory - iterate directly
+                # This avoids keeping all fold indices in memory at once
+                all_results = []
+                fold_idx = 0
+                for train_idx, valid_idx in cv_splitter.split(X, y_encoded, groups=groups):
+                    # Get the subjects that are in the evaluation set for this fold
+                    # Memory optimization: Use .iloc with list conversion to avoid keeping view in memory
+                    eval_subjects = np.unique(metadata.iloc[valid_idx]['subject'].values)
+                    eval_subjects_str = ','.join(map(str, sorted(eval_subjects)))
+                    session = f"fold_{fold_idx}_eval_subjects_{eval_subjects_str}"
+                    
+                    # Set current_subject to a representative value (first eval subject)
+                    self.current_subject = eval_subjects[0]
+                    
+                    # Memory optimization: Array indexing with arrays creates copies automatically
+                    # Note: X[train_idx] creates a copy (necessary for training), no need for explicit .copy()
+                    X_train = X[train_idx]
+                    y_train = y_encoded[train_idx]
+                    X_valid = X[valid_idx]
+                    y_valid = y_encoded[valid_idx]
+                    # Memory optimization: .iloc creates a view, but we'll delete it promptly after use
+                    metadata_train = metadata.iloc[train_idx]
+                    
+                    # Memory optimization: Delete indices immediately after use
+                    del train_idx, valid_idx
+                    
+                    fold_results = self._evaluate_cv_fold(X_train, y_train, X_valid, y_valid, fold_idx, cv_metadata, session, metadata_train)
+                    
+                    # Add eval_subjects information to each result
+                    for result in fold_results:
                     result['eval_subjects'] = eval_subjects_str
                     result['n_eval_subjects'] = len(eval_subjects)
                 
@@ -1653,6 +1774,14 @@ def main():
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--aggregate", action="store_true")
     
+    # Fold-by-fold execution for CrossSubject mode (memory optimization)
+    parser.add_argument("--fold_idx", type=int, default=None,
+                        help="Specific fold to process (for CrossSubject mode, 0-2). If not provided, processes all folds.")
+    parser.add_argument("--train_subjects", type=int, nargs="+", default=None,
+                        help="Training subjects for this fold (for CrossSubject fold-by-fold mode)")
+    parser.add_argument("--eval_subjects", type=int, nargs="+", default=None,
+                        help="Evaluation subjects for this fold (for CrossSubject fold-by-fold mode)")
+    
     # Memory management: Check for environment variable to set memory limit
     max_memory_gb = os.environ.get('PYTHON_MAX_MEMORY_GB')
     if max_memory_gb:
@@ -1744,7 +1873,10 @@ def main():
                     noise_type=args.noise_type,
                     intensity=args.intensity,
                     tune=args.tune,
-                    overwrite=args.overwrite
+                    overwrite=args.overwrite,
+                    fold_idx=args.fold_idx,
+                    train_subjects=args.train_subjects,
+                    eval_subjects=args.eval_subjects
                 )
                 results = runner.run_experiment()
                 print(f"Experiment completed successfully. Results shape: {results.shape}")
@@ -1788,7 +1920,10 @@ def main():
                 noise_type=args.noise_type,
                 intensity=args.intensity,
                 tune=args.tune,
-                overwrite=args.overwrite
+                overwrite=args.overwrite,
+                fold_idx=args.fold_idx,
+                train_subjects=args.train_subjects,
+                eval_subjects=args.eval_subjects
             )
             
             results = runner.run_experiment()
