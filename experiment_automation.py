@@ -1774,9 +1774,9 @@ class ExperimentAutomation:
                             slurm_args = "--time=0-10:00:00 --mem=12G"
                             
                     else:
-                        # CrossSubject with fold-by-fold: Reduced memory to 40G (from 64G) due to fold-by-fold optimization
+                        # CrossSubject with fold-by-fold: Using 64G memory budget
                         # Time increased slightly to account for running 3 folds + aggregation
-                        slurm_args = "--time=1-12:00:00 --mem=40G"
+                        slurm_args = "--time=1-12:00:00 --mem=64G"
                         
                 else:
                     # Motor Imagery timeouts (reduced by factor of 5)
@@ -1800,9 +1800,9 @@ class ExperimentAutomation:
                             slurm_args = "--time=0-04:00:00 --mem=12G"
                             
                     else:
-                        # CrossSubject with fold-by-fold: Reduced memory to 40G (from 64G) due to fold-by-fold optimization
+                        # CrossSubject with fold-by-fold: Using 64G memory budget
                         # Time increased slightly to account for running 3 folds + aggregation
-                        slurm_args = "--time=1-12:00:00 --mem=40G"
+                        slurm_args = "--time=1-12:00:00 --mem=64G"
                 
                 # Format: sbatch {slurm_args} unified_eval_script.sh {subject} {dataset} {eval_mode} {tune_flag} {model} {seed}
                 # Use CrossSubject-specific script for CrossSubject eval mode
@@ -1840,7 +1840,7 @@ class ExperimentAutomation:
         print(f"[INFO] Script contains {len(self.missing_experiments)} multirun sbatch commands")
         print(f"[INFO] Each sbatch command format: sbatch unified_eval_script.sh <subjects> <dataset> <eval_mode> <tune_flag>")
         print(f"[INFO] CrossSubject experiments use fold-by-fold mode (unified_eval_script_crosssubject_foldbyfold.sh)")
-        print(f"[INFO] This reduces memory usage from 64G to 40G per job")
+        print(f"[INFO] Memory budget: 64G per job (fold-by-fold reduces actual peak memory usage)")
         
         return script_file
     
