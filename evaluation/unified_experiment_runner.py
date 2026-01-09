@@ -1202,37 +1202,66 @@ class UnifiedExperimentRunner:
                 print(f"[MEMORY] Training subjects: {self.train_subjects}")
                 print(f"[MEMORY] Evaluation subjects: {self.eval_subjects}")
                 
-                # Load only the subjects needed for this fold
-                all_subjects_for_fold = sorted(set(self.train_subjects + self.eval_subjects))
+                # Load train and eval subjects separately to reduce peak memory
+                # This avoids loading all 54 subjects at once (which requires 20GB+ for float64)
                 gc.collect()
                 log_memory_usage("Before loading fold data")
                 
-                print(f"[MEMORY] Loading data for {len(all_subjects_for_fold)} subjects (fold {self.fold_idx})...")
-                X, y, metadata = self.paradigm.get_data(self.dataset_obj, subjects=all_subjects_for_fold)
+                # Load training subjects first
+                print(f"[MEMORY] Loading training data for {len(self.train_subjects)} subjects (fold {self.fold_idx})...")
+                X_train_full, y_train_full, metadata_train_full = self.paradigm.get_data(
+                    self.dataset_obj, subjects=self.train_subjects
+                )
                 
-                mem_mb = log_memory_usage("After loading fold data")
-                if isinstance(X, np.ndarray):
-                    data_size_mb = X.nbytes / 1024 / 1024
-                    print(f"[MEMORY] Data shape: X={X.shape}, dtype={X.dtype}, estimated size: {data_size_mb:.2f} MB")
+                mem_mb = log_memory_usage("After loading training data")
+                if isinstance(X_train_full, np.ndarray):
+                    data_size_mb = X_train_full.nbytes / 1024 / 1024
+                    print(f"[MEMORY] Training data shape: X={X_train_full.shape}, dtype={X_train_full.dtype}, size: {data_size_mb:.2f} MB")
+                    
+                    # CRITICAL: Convert to float32 immediately to reduce memory by 50%
+                    if X_train_full.dtype == np.float64:
+                        print(f"[MEMORY] Converting training data from float64 to float32...")
+                        X_train_full = X_train_full.astype(np.float32)
+                        new_size_mb = X_train_full.nbytes / 1024 / 1024
+                        print(f"[MEMORY] After conversion: {new_size_mb:.2f} MB (saved {data_size_mb - new_size_mb:.2f} MB)")
+                        gc.collect()
                 
+                y_train_encoded = LabelEncoder().fit_transform(y_train_full)
+                del y_train_full
                 gc.collect()
                 
-                y_encoded = LabelEncoder().fit_transform(y)
-                del y
+                # Load evaluation subjects
+                print(f"[MEMORY] Loading evaluation data for {len(self.eval_subjects)} subjects (fold {self.fold_idx})...")
+                X_valid_full, y_valid_full, metadata_valid_full = self.paradigm.get_data(
+                    self.dataset_obj, subjects=self.eval_subjects
+                )
+                
+                mem_mb = log_memory_usage("After loading evaluation data")
+                if isinstance(X_valid_full, np.ndarray):
+                    data_size_mb = X_valid_full.nbytes / 1024 / 1024
+                    print(f"[MEMORY] Evaluation data shape: X={X_valid_full.shape}, dtype={X_valid_full.dtype}, size: {data_size_mb:.2f} MB")
+                    
+                    # CRITICAL: Convert to float32 immediately
+                    if X_valid_full.dtype == np.float64:
+                        print(f"[MEMORY] Converting evaluation data from float64 to float32...")
+                        X_valid_full = X_valid_full.astype(np.float32)
+                        new_size_mb = X_valid_full.nbytes / 1024 / 1024
+                        print(f"[MEMORY] After conversion: {new_size_mb:.2f} MB (saved {data_size_mb - new_size_mb:.2f} MB)")
+                        gc.collect()
+                
+                y_valid_encoded = LabelEncoder().fit_transform(y_valid_full)
+                del y_valid_full
                 gc.collect()
                 
-                # Split into train/valid based on subject IDs
-                train_mask = metadata['subject'].isin(self.train_subjects)
-                valid_mask = metadata['subject'].isin(self.eval_subjects)
+                # Use the loaded data directly (no need to split since we loaded separately)
+                X_train = X_train_full
+                y_train = y_train_encoded
+                X_valid = X_valid_full
+                y_valid = y_valid_encoded
+                metadata_train = metadata_train_full
                 
-                X_train = X[train_mask]
-                y_train = y_encoded[train_mask]
-                X_valid = X[valid_mask]
-                y_valid = y_encoded[valid_mask]
-                metadata_train = metadata[train_mask]
-                
-                # Clean up full dataset
-                del X, y_encoded, metadata
+                # Clean up
+                del X_train_full, X_valid_full, y_train_encoded, y_valid_encoded, metadata_train_full, metadata_valid_full
                 gc.collect()
                 
                 # Create session identifier
