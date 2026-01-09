@@ -1342,8 +1342,8 @@ class UnifiedExperimentRunner:
                     
                     # Add eval_subjects information to each result
                     for result in fold_results:
-                    result['eval_subjects'] = eval_subjects_str
-                    result['n_eval_subjects'] = len(eval_subjects)
+                        result['eval_subjects'] = eval_subjects_str
+                        result['n_eval_subjects'] = len(eval_subjects)
                 
                 all_results.extend(fold_results)
                 
