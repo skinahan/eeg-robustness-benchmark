@@ -71,24 +71,62 @@ except ImportError:
 def get_memory_usage_mb():
     """Get current memory usage in MB."""
     try:
-        if hasattr(resource, 'getrusage'):
-            mem_usage = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-            # On Linux, ru_maxrss is in KB; on macOS, it's in bytes
-            if sys.platform == 'darwin':
-                return mem_usage / 1024 / 1024
-            else:
-                return mem_usage / 1024
+        import psutil
+        process = psutil.Process(os.getpid())
+        return process.memory_info().rss / 1024 / 1024
+    except ImportError:
+        # Fallback to resource module if psutil not available
+        try:
+            if hasattr(resource, 'getrusage'):
+                mem_usage = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+                # On Linux, ru_maxrss is in KB; on macOS, it's in bytes
+                if sys.platform == 'darwin':
+                    return mem_usage / 1024 / 1024
+                else:
+                    return mem_usage / 1024
+        except Exception:
+            pass
     except Exception:
         pass
     return None
 
 
 def log_memory_usage(stage=""):
-    """Log current memory usage."""
-    mem_mb = get_memory_usage_mb()
-    if mem_mb is not None:
-        print(f"[MEMORY] {stage}: {mem_mb:.2f} MB")
-    return mem_mb
+    """Log current memory usage with detailed RSS and VSZ information."""
+    try:
+        import psutil
+        process = psutil.Process(os.getpid())
+        mem_info = process.memory_info()
+        rss_mb = mem_info.rss / 1024 / 1024  # Resident Set Size (actual RAM)
+        vms_mb = mem_info.vms / 1024 / 1024  # Virtual Memory Size
+        
+        print(f"[MEMORY] {stage}:")
+        print(f"  RSS (actual RAM): {rss_mb:.2f} MB ({rss_mb/1024:.2f} GB)")
+        print(f"  VSZ (virtual): {vms_mb:.2f} MB ({vms_mb/1024:.2f} GB)")
+        
+        # Check if we're in SLURM and compare to limit
+        if 'SLURM_MEM_PER_NODE' in os.environ:
+            slurm_mem_mb = int(os.environ['SLURM_MEM_PER_NODE']) / 1024**2  # SLURM reports in MB
+            print(f"  SLURM limit: {slurm_mem_mb:.2f} MB ({slurm_mem_mb/1024:.2f} GB)")
+            if rss_mb > 0:
+                usage_pct = (rss_mb / slurm_mem_mb) * 100
+                print(f"  RSS usage: {usage_pct:.1f}% of SLURM limit")
+                if usage_pct > 80:
+                    print(f"  [WARNING] Memory usage exceeds 80% of SLURM limit!")
+        
+        return rss_mb
+    except ImportError:
+        # Fallback to simpler logging if psutil not available
+        mem_mb = get_memory_usage_mb()
+        if mem_mb is not None:
+            print(f"[MEMORY] {stage}: {mem_mb:.2f} MB ({mem_mb/1024:.2f} GB)")
+        return mem_mb
+    except Exception as e:
+        print(f"[WARNING] Could not get detailed memory usage: {e}")
+        mem_mb = get_memory_usage_mb()
+        if mem_mb is not None:
+            print(f"[MEMORY] {stage}: {mem_mb:.2f} MB ({mem_mb/1024:.2f} GB)")
+        return mem_mb
 
 
 class ThreeFoldSubjectSplit:
