@@ -10,11 +10,27 @@ def set_seeds(seed_num):
     global RAND_SEED
     RAND_SEED = seed_num
     """Ensure full reproducibility for PyTorch, NumPy, and random operations."""
+    
+    # CRITICAL: Limit threading to prevent memory bloat on clusters
+    # OpenMP/MKL threading is the #1 cause of OOM on multi-core cluster nodes
+    # Each thread can allocate 2-4GB of memory buffers, so 16-32 threads = 32-128GB overhead
+    os.environ['OMP_NUM_THREADS'] = '1'
+    os.environ['OPENBLAS_NUM_THREADS'] = '1'
+    os.environ['MKL_NUM_THREADS'] = '1'
+    os.environ['NUMEXPR_NUM_THREADS'] = '1'
+    os.environ['VECLIB_MAX_THREADS'] = '1'
+    os.environ['NUMEXPR_MAX_THREADS'] = '1'
+    os.environ['TORCH_NUM_THREADS'] = '1'
+    
     cuda = torch.cuda.is_available()
     set_random_seeds(seed_num, cuda)
     torch.manual_seed(seed_num)
     torch.cuda.manual_seed_all(seed_num)  # For multi-GPU setups
     np.random.seed(seed_num)
+
+    # Limit PyTorch threading explicitly
+    torch.set_num_threads(1)  # CPU threads
+    torch.set_num_interop_threads(1)  # Inter-op threads (for CUDA operations)
 
     torch.backends.cudnn.deterministic = True  # Enforce deterministic CNN ops
     torch.backends.cudnn.benchmark = False  # Prevent dynamic optimizations

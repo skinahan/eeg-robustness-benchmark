@@ -479,6 +479,7 @@ def compute_results_metrics(
     df_in: pd.DataFrame,
     cfg: MetricConfig = MetricConfig(),
     spec: ResultsSpec = ResultsSpec(),
+    core_models: Optional[Sequence[str]] = None,
 ) -> Dict[str, pd.DataFrame]:
     """
     Returns a dict of DataFrames:
@@ -488,9 +489,26 @@ def compute_results_metrics(
       - "rd_summary": mean/CI RD at each p (summarized over per_instance)
       - "csv_curve": CSV_p per (group + p + per_instance?) depending on inputs
       - "csv_summary": mean/CI CSV_p at each p (summarized over per_instance)
+    
+    Parameters:
+    -----------
+    core_models : Optional[Sequence[str]]
+        If provided, filter to only these models. Default: ['CNN-NCP', 'EEGNet', 'REEGNet']
     """
     df = canonicalize_columns(df_in)
-
+    
+    # Filter to core models if specified
+    if core_models is None:
+        core_models = ['CNN-NCP', 'EEGNet', 'REEGNet']
+    
+    if cfg.model_col in df.columns:
+        initial_count = len(df)
+        df = df[df[cfg.model_col].isin(core_models)].copy()
+        filtered_count = len(df)
+        excluded = initial_count - filtered_count
+        if excluded > 0:
+            print(f"[INFO] Filtered to core models {core_models}: removed {excluded} rows, kept {filtered_count} rows")
+    
     # Auto-detect metric column if default doesn't exist
     if cfg.metric_col not in df.columns:
         metric_candidates = ['corrupted_roc_auc', 'corrupted_score', 'score', 'roc_auc']
@@ -769,6 +787,7 @@ def load_results_dataframe(
     results_file: Optional[str] = None,
     aggregate_from_directories: bool = True,
     results_dirs: Optional[List[str]] = None,
+    core_models: Optional[Sequence[str]] = None,
 ) -> pd.DataFrame:
     """
     Load and aggregate results using the same logic as analyze_results.py and experiment_automation.py.
@@ -778,6 +797,7 @@ def load_results_dataframe(
     2. Otherwise, uses collect_all_results_unified() to aggregate from directories
     3. Normalizes column names and maps to expected format
     4. Handles metric column detection (roc_auc, score, corrupted_score, etc.)
+    5. Optionally filters to core models only
     
     Parameters:
     -----------
@@ -788,6 +808,8 @@ def load_results_dataframe(
         If True and results_file is not provided or doesn't exist, aggregate from directories.
     results_dirs : list of str, optional
         Alternative result directories to check. If None, uses default locations.
+    core_models : Optional[Sequence[str]]
+        If provided, filter to only these models. Default: ['CNN-NCP', 'EEGNet', 'REEGNet']
         
     Returns:
     --------
@@ -832,6 +854,19 @@ def load_results_dataframe(
     
     # Canonicalize column names (handles spaces, hyphens, case)
     df = canonicalize_columns(df)
+    
+    # Filter to core models if specified
+    if core_models is None:
+        core_models = ['CNN-NCP', 'EEGNet', 'REEGNet']
+    
+    model_col = 'model'  # After canonicalization, should be 'model'
+    if model_col in df.columns:
+        initial_count = len(df)
+        df = df[df[model_col].isin(core_models)].copy()
+        filtered_count = len(df)
+        excluded = initial_count - filtered_count
+        if excluded > 0:
+            print(f"[INFO] Filtered to core models {core_models}: removed {excluded} rows, kept {filtered_count} rows")
     
     # Map column names to expected format
     # Handle 'tuned' -> 'tune' mapping

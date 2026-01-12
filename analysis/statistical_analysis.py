@@ -1001,18 +1001,34 @@ def run_statistical_analysis(
             if len(pivot_df) < 3:
                 continue  # Need at least 3 subjects
             
-            model_cols = [col for col in pivot_df.columns if col not in test_group_cols + ['subject']]
+            # Get all model columns
+            all_model_cols = [col for col in pivot_df.columns if col not in test_group_cols + ['subject']]
+            
+            # Filter to only core models: CNN-NCP, EEGNet, REEGNet
+            # This ensures omnibus and pairwise tests only compare the three core models
+            core_models = ['CNN-NCP', 'EEGNet', 'REEGNet']
+            model_cols = [col for col in all_model_cols if col in core_models]
+            
+            # Remove non-core models from pivot_df if they exist
+            cols_to_drop = [col for col in all_model_cols if col not in core_models]
+            if cols_to_drop:
+                pivot_df = pivot_df.drop(columns=cols_to_drop)
+                print(f"  [INFO] Excluding models {cols_to_drop} from {dataset}/{eval_mode}/tune={tune}/{metric}")
             
             # Validate we have enough models
             if len(model_cols) < 2:
-                print(f"  [WARNING] Skipping {metric} for {dataset}/{eval_mode}/tune={tune}: need at least 2 models, found {len(model_cols)}")
+                print(f"  [WARNING] Skipping {metric} for {dataset}/{eval_mode}/tune={tune}: need at least 2 core models, found {len(model_cols)}")
                 continue
             
-            # Validate primary_model exists
+            # Validate primary_model exists (should always be in core_models, but check anyway)
             if primary_model not in model_cols:
                 # Use first available model as primary
-                primary_model_actual = model_cols[0]
-                print(f"  [WARNING] Primary model {primary_model} not found, using {primary_model_actual}")
+                primary_model_actual = model_cols[0] if len(model_cols) > 0 else None
+                if primary_model_actual:
+                    print(f"  [WARNING] Primary model {primary_model} not found in filtered models, using {primary_model_actual}")
+                else:
+                    print(f"  [WARNING] No models available after filtering for {dataset}/{eval_mode}/tune={tune}/{metric}")
+                    continue
             else:
                 primary_model_actual = primary_model
             

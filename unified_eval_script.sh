@@ -33,6 +33,21 @@ if [ -z "$SUBJECTS" ] || [ -z "$DATASET" ] || [ -z "$EVAL_MODE" ] || [ -z "$TUNE
     exit 1
 fi
 
+# CRITICAL: Limit all threading to prevent memory bloat on clusters
+# These MUST be set BEFORE loading any Python libraries
+# Threading overhead is the #1 cause of OOM on multi-core cluster nodes
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+export VECLIB_MAX_THREADS=1
+export NUMEXPR_MAX_THREADS=1
+export TORCH_NUM_THREADS=1
+
+echo "[MEMORY] Threading limited to 1 thread per library to prevent OOM"
+echo "[MEMORY] OMP_NUM_THREADS=${OMP_NUM_THREADS}"
+echo "[MEMORY] MKL_NUM_THREADS=${MKL_NUM_THREADS}"
+
 # Load environment
 module load mamba/latest
 source activate ncp_env
