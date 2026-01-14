@@ -21,7 +21,10 @@ import uuid
 import warnings
 import time
 import gc
-import resource
+try:
+    import resource  # Unix-specific; optional
+except ImportError:
+    resource = None
 from datetime import datetime
 from typing import List, Dict, Any, Tuple, Optional
 import numpy as np
@@ -349,7 +352,8 @@ class UnifiedExperimentRunner:
         fold_idx: Optional[int] = None,
         train_subjects: Optional[List[int]] = None,
         eval_subjects: Optional[List[int]] = None,
-        subject_chunk_size: Optional[int] = None
+        subject_chunk_size: Optional[int] = None,
+        legacy: bool = False
     ):
         self.model = model
         self.dataset = dataset
@@ -367,9 +371,16 @@ class UnifiedExperimentRunner:
         self.train_subjects = train_subjects
         self.eval_subjects = eval_subjects
         self.subject_chunk_size = subject_chunk_size
+        self.legacy = legacy
 
         self.current_subject = -1
         self.current_session = -1
+        
+        # In legacy mode, disable chunked training to follow original protocol
+        if self.legacy:
+            if self.subject_chunk_size is not None and self.subject_chunk_size > 0:
+                print(f"[LEGACY] Legacy mode enabled: disabling subject chunking (subject_chunk_size={self.subject_chunk_size} ignored)")
+            self.subject_chunk_size = None
         
         # Initialize model cache manager
         self.cache_manager = ModelCacheManager(cache_root="model_cache", check_interval=10)
@@ -991,7 +1002,9 @@ class UnifiedExperimentRunner:
         
         # Determine if we should use noise-aware optimization
         # Pass chunked training parameters if using chunked training
+        # Legacy mode disables chunked training to follow original protocol
         use_chunked_for_hpo = (
+            not self.legacy and
             self.subject_chunk_size is not None and 
             self.subject_chunk_size > 0 and
             self.train_subjects is not None and
@@ -1092,7 +1105,9 @@ class UnifiedExperimentRunner:
         _verify_and_log_max_epochs(final_model, self.dataset, f"fold {fold_idx} (tuned)")
         
         # Check if we should use chunked training for final model
+        # Legacy mode disables chunked training to follow original protocol
         use_chunked_for_final = (
+            not self.legacy and
             self.subject_chunk_size is not None and 
             self.subject_chunk_size > 0 and
             self.train_subjects is not None and
@@ -1520,6 +1535,8 @@ class UnifiedExperimentRunner:
         all_subject_results = []
         set_seeds(self.seed)
         if self.eval_mode == "CrossSubject":
+            if self.legacy:
+                print(f"[LEGACY] Legacy mode enabled: Using original CrossSubject experimental protocol (no subject chunking)")
             # Check if we're in fold-by-fold mode (memory optimization)
             if self.fold_idx is not None:
                 # Fold-by-fold mode: Load only subjects needed for this fold
@@ -1590,17 +1607,18 @@ class UnifiedExperimentRunner:
                 
                 # Check if we should use chunked training (memory optimization)
                 # Use chunked training if:
-                # 1. chunk_size is specified and > 0
-                # 2. We have train_subjects and eval_subjects (fold-by-fold mode)
-                # 3. Not using hyperparameter tuning (HPO with chunked training not yet supported)
+                # 1. NOT in legacy mode (legacy mode uses original protocol)
+                # 2. chunk_size is specified and > 0
+                # 3. We have train_subjects and eval_subjects (fold-by-fold mode)
+                # Note: Chunked training now supported for HPO as well
                 use_chunked_training = (
+                    not self.legacy and
                     self.subject_chunk_size is not None and 
                     self.subject_chunk_size > 0 and
                     self.train_subjects is not None and
                     self.eval_subjects is not None and
                     len(self.train_subjects) > 0 and
                     len(self.eval_subjects) > 0
-                    # Note: Chunked training now supported for HPO as well
                 )
                 
                 if use_chunked_training:
@@ -2173,6 +2191,8 @@ def main():
                         help="Evaluation subjects for this fold (for CrossSubject fold-by-fold mode)")
     parser.add_argument("--subject_chunk_size", type=int, default=None,
                         help="Number of subjects to load per chunk for memory-efficient training (CrossSubject mode). If None, loads all subjects at once.")
+    parser.add_argument("--legacy", action="store_true",
+                        help="Use legacy experimental protocol (disables subject chunking and other memory optimizations to match original behavior)")
     
     # Memory management: Check for environment variable to set memory limit
     max_memory_gb = os.environ.get('PYTHON_MAX_MEMORY_GB')
@@ -2269,7 +2289,8 @@ def main():
                     fold_idx=args.fold_idx,
                     train_subjects=args.train_subjects,
                     eval_subjects=args.eval_subjects,
-                    subject_chunk_size=args.subject_chunk_size
+                    subject_chunk_size=args.subject_chunk_size,
+                    legacy=args.legacy
                 )
                 results = runner.run_experiment()
                 print(f"Experiment completed successfully. Results shape: {results.shape}")
@@ -2317,7 +2338,8 @@ def main():
                 fold_idx=args.fold_idx,
                 train_subjects=args.train_subjects,
                 eval_subjects=args.eval_subjects,
-                subject_chunk_size=args.subject_chunk_size
+                subject_chunk_size=args.subject_chunk_size,
+                legacy=args.legacy
             )
             
             results = runner.run_experiment()

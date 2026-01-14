@@ -35,7 +35,7 @@ from tqdm import tqdm
 class ExperimentAutomation:
     """Main class for experiment automation."""
     
-    def __init__(self, config_file: str = "experiment_config.yaml", preaggregated_results_file: str = None, local: bool = False, use_cached: bool = False, use_optimized: bool = True):
+    def __init__(self, config_file: str = "experiment_config.yaml", preaggregated_results_file: str = None, local: bool = False, use_cached: bool = False, use_optimized: bool = True, legacy: bool = False):
         """Initialize the automation system with configuration.
         
         Args:
@@ -44,9 +44,15 @@ class ExperimentAutomation:
             local: If True, generate Python script for local execution
             use_cached: If True, use cached processed results
             use_optimized: If True, use optimized multirun job-level approach (default: True)
+            legacy: If True, use legacy experimental protocol (no subject chunking). Can also be set in config file.
         """
         self.config_file = config_file
         self.config = self._load_config()
+        # Legacy mode can be set via config file or parameter (parameter takes precedence)
+        config_legacy = self.config.get('experiment_settings', {}).get('legacy', False)
+        self.legacy = legacy if legacy else config_legacy
+        if self.legacy:
+            print(f"[INFO] Legacy mode enabled: Using original experimental protocol (no subject chunking)")
         self.existing_results = None
         self.missing_experiments = []
         self.preaggregated_results_file = preaggregated_results_file
@@ -1277,6 +1283,15 @@ class ExperimentAutomation:
             f.write("from evaluation.experiment_utils import collect_all_results_unified\n")
             f.write("from globals import set_seeds\n\n")
             
+            # Add legacy mode support
+            f.write("# Legacy mode flag: Set to True to use original experimental protocol (no subject chunking)\n")
+            f.write("# Can also be set via environment variable: USE_LEGACY_MODE=1\n")
+            f.write("USE_LEGACY_MODE = os.environ.get('USE_LEGACY_MODE', '0').lower() in ('1', 'true', 'yes')\n")
+            if self.legacy:
+                f.write("# Legacy mode enabled via experiment_automation.py --legacy flag or config file\n")
+                f.write("USE_LEGACY_MODE = True\n")
+            f.write("\n")
+            
             f.write("def cleanup_memory():\n")
             f.write("    \"\"\"Perform aggressive garbage collection and clear CUDA cache.\"\"\"\n")
             f.write("    gc.collect()\n")
@@ -1319,7 +1334,8 @@ class ExperimentAutomation:
             f.write("        # Create and run experiment\n")
             f.write("        # For CrossSubject mode, use chunked training to reduce memory usage\n")
             f.write("        # subject_chunk_size=3 loads 3 subjects at a time (default)\n")
-            f.write("        subject_chunk_size = 3 if exp_config['eval_mode'] == 'CrossSubject' else None\n")
+            f.write("        # Legacy mode disables chunked training to follow original protocol\n")
+            f.write("        subject_chunk_size = None if USE_LEGACY_MODE else (3 if exp_config['eval_mode'] == 'CrossSubject' else None)\n")
             f.write("        \n")
             f.write("        runner = UnifiedExperimentRunner(\n")
             f.write("            model=exp_config['model'],\n")
@@ -1332,7 +1348,8 @@ class ExperimentAutomation:
             f.write("            intensity=10.0,  # multirun handles all intensities\n")
             f.write("            tune=exp_config['tune'],\n")
             f.write("            overwrite=False,\n")
-            f.write("            subject_chunk_size=subject_chunk_size  # Enable chunked training for CrossSubject\n")
+            f.write("            subject_chunk_size=subject_chunk_size,  # Enable chunked training for CrossSubject (unless legacy mode)\n")
+            f.write("            legacy=USE_LEGACY_MODE  # Use legacy experimental protocol if enabled\n")
             f.write("        )\n\n")
             
             f.write("        results = runner.run_experiment()\n")
@@ -1779,9 +1796,9 @@ class ExperimentAutomation:
                             slurm_args = "--time=0-10:00:00 --mem=12G"
                             
                     else:
-                        # CrossSubject with fold-by-fold: Using 64G memory budget
+                        # CrossSubject with fold-by-fold: Using 96G memory budget
                         # Time increased slightly to account for running 3 folds + aggregation
-                        slurm_args = "--time=1-12:00:00 --mem=64G"
+                        slurm_args = "--time=3-00:00:00 --mem=96G"
                         
                 else:
                     # Motor Imagery timeouts (reduced by factor of 5)
@@ -2088,12 +2105,14 @@ def main():
                        help="Use cached processed results (skips aggregation and signature generation)")
     parser.add_argument("--use-original", action="store_true",
                        help="Use original approach (generates all individual combinations). Default is optimized approach.")
+    parser.add_argument("--legacy", action="store_true",
+                       help="Use legacy experimental protocol (disables subject chunking and other memory optimizations to match original behavior)")
     
     args = parser.parse_args()
     
     # Initialize automation system
     use_optimized = not args.use_original  # Default to optimized unless --use-original is specified
-    automation = ExperimentAutomation(args.config, args.preaggregated_results, args.local, args.use_cached, use_optimized)
+    automation = ExperimentAutomation(args.config, args.preaggregated_results, args.local, args.use_cached, use_optimized, legacy=args.legacy)
     
     if args.aggregate_only:
         # Only aggregate results (ignore pre-aggregated file for this mode)

@@ -30,7 +30,14 @@ def set_seeds(seed_num):
 
     # Limit PyTorch threading explicitly
     torch.set_num_threads(1)  # CPU threads
-    torch.set_num_interop_threads(1)  # Inter-op threads (for CUDA operations)
+    # set_num_interop_threads can only be called once, before any parallel work starts
+    # Wrap in try-except to handle cases where it's already been set or parallel work has started
+    try:
+        torch.set_num_interop_threads(1)  # Inter-op threads (for CUDA operations)
+    except RuntimeError as e:
+        # Ignore if already set or parallel work has started
+        # This is safe to ignore as the threading is already configured
+        pass
 
     torch.backends.cudnn.deterministic = True  # Enforce deterministic CNN ops
     torch.backends.cudnn.benchmark = False  # Prevent dynamic optimizations
