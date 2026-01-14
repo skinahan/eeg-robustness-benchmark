@@ -1,6 +1,6 @@
 #!/bin/bash
 # Generated multirun sbatch automation script
-# Generated on: 2026-01-09 14:37:38
+# Generated on: 2026-01-14 08:44:54
 # Total missing multirun jobs: 30
 
 set -e  # Exit on any error
@@ -170,12 +170,12 @@ sleep 1  # Brief pause between submissions
 
 # Multirun Job 11/30
 # Dataset: Lee2019_SSVEP | Model: branched_wiredcfc_arch4 | Eval: CrossSubject | Subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54] | Seed: 100
-# Timeout: --time=1-12:00:00 --mem=64G
+# Timeout: --time=3-00:00:00 --mem=96G
 # This multirun will generate test_perturb results for model: branched_wiredcfc_arch4
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 11/30..."
-sbatch --time=1-12:00:00 --mem=64G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject false branched_wiredcfc_arch4 100
+sbatch --time=3-00:00:00 --mem=96G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject false branched_wiredcfc_arch4 100
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 11 submitted successfully"
 else
@@ -186,12 +186,12 @@ sleep 1  # Brief pause between submissions
 
 # Multirun Job 12/30
 # Dataset: Lee2019_SSVEP | Model: branched_wiredcfc_arch4 | Eval: CrossSubject | Subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54] | Seed: 100 | TUNED
-# Timeout: --time=1-12:00:00 --mem=64G
+# Timeout: --time=3-00:00:00 --mem=96G
 # This multirun will generate test_perturb results for model: branched_wiredcfc_arch4
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 12/30..."
-sbatch --time=1-12:00:00 --mem=64G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject true branched_wiredcfc_arch4 100
+sbatch --time=3-00:00:00 --mem=96G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject true branched_wiredcfc_arch4 100
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 12 submitted successfully"
 else
@@ -202,12 +202,12 @@ sleep 1  # Brief pause between submissions
 
 # Multirun Job 13/30
 # Dataset: Lee2019_SSVEP | Model: branched_wiredcfc_arch4 | Eval: CrossSubject | Subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54] | Seed: 200
-# Timeout: --time=1-12:00:00 --mem=64G
+# Timeout: --time=3-00:00:00 --mem=96G
 # This multirun will generate test_perturb results for model: branched_wiredcfc_arch4
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 13/30..."
-sbatch --time=1-12:00:00 --mem=64G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject false branched_wiredcfc_arch4 200
+sbatch --time=3-00:00:00 --mem=96G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject false branched_wiredcfc_arch4 200
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 13 submitted successfully"
 else
@@ -218,12 +218,12 @@ sleep 1  # Brief pause between submissions
 
 # Multirun Job 14/30
 # Dataset: Lee2019_SSVEP | Model: branched_wiredcfc_arch4 | Eval: CrossSubject | Subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54] | Seed: 200 | TUNED
-# Timeout: --time=1-12:00:00 --mem=64G
+# Timeout: --time=3-00:00:00 --mem=96G
 # This multirun will generate test_perturb results for model: branched_wiredcfc_arch4
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 14/30..."
-sbatch --time=1-12:00:00 --mem=64G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject true branched_wiredcfc_arch4 200
+sbatch --time=3-00:00:00 --mem=96G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject true branched_wiredcfc_arch4 200
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 14 submitted successfully"
 else
@@ -234,12 +234,12 @@ sleep 1  # Brief pause between submissions
 
 # Multirun Job 15/30
 # Dataset: Lee2019_SSVEP | Model: branched_wiredcfc_arch4 | Eval: CrossSubject | Subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54] | Seed: 300
-# Timeout: --time=1-12:00:00 --mem=64G
+# Timeout: --time=3-00:00:00 --mem=96G
 # This multirun will generate test_perturb results for model: branched_wiredcfc_arch4
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 15/30..."
-sbatch --time=1-12:00:00 --mem=64G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject false branched_wiredcfc_arch4 300
+sbatch --time=3-00:00:00 --mem=96G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject false branched_wiredcfc_arch4 300
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 15 submitted successfully"
 else
@@ -250,12 +250,12 @@ sleep 1  # Brief pause between submissions
 
 # Multirun Job 16/30
 # Dataset: Lee2019_SSVEP | Model: branched_wiredcfc_arch4 | Eval: CrossSubject | Subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54] | Seed: 300 | TUNED
-# Timeout: --time=1-12:00:00 --mem=64G
+# Timeout: --time=3-00:00:00 --mem=96G
 # This multirun will generate test_perturb results for model: branched_wiredcfc_arch4
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 16/30..."
-sbatch --time=1-12:00:00 --mem=64G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject true branched_wiredcfc_arch4 300
+sbatch --time=3-00:00:00 --mem=96G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject true branched_wiredcfc_arch4 300
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 16 submitted successfully"
 else
@@ -266,12 +266,12 @@ sleep 1  # Brief pause between submissions
 
 # Multirun Job 17/30
 # Dataset: Lee2019_SSVEP | Model: branched_wiredcfc_arch4 | Eval: CrossSubject | Subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54] | Seed: 400
-# Timeout: --time=1-12:00:00 --mem=64G
+# Timeout: --time=3-00:00:00 --mem=96G
 # This multirun will generate test_perturb results for model: branched_wiredcfc_arch4
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 17/30..."
-sbatch --time=1-12:00:00 --mem=64G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject false branched_wiredcfc_arch4 400
+sbatch --time=3-00:00:00 --mem=96G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject false branched_wiredcfc_arch4 400
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 17 submitted successfully"
 else
@@ -282,12 +282,12 @@ sleep 1  # Brief pause between submissions
 
 # Multirun Job 18/30
 # Dataset: Lee2019_SSVEP | Model: branched_wiredcfc_arch4 | Eval: CrossSubject | Subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54] | Seed: 400 | TUNED
-# Timeout: --time=1-12:00:00 --mem=64G
+# Timeout: --time=3-00:00:00 --mem=96G
 # This multirun will generate test_perturb results for model: branched_wiredcfc_arch4
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 18/30..."
-sbatch --time=1-12:00:00 --mem=64G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject true branched_wiredcfc_arch4 400
+sbatch --time=3-00:00:00 --mem=96G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject true branched_wiredcfc_arch4 400
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 18 submitted successfully"
 else
@@ -298,12 +298,12 @@ sleep 1  # Brief pause between submissions
 
 # Multirun Job 19/30
 # Dataset: Lee2019_SSVEP | Model: branched_wiredcfc_arch4 | Eval: CrossSubject | Subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54] | Seed: 500
-# Timeout: --time=1-12:00:00 --mem=64G
+# Timeout: --time=3-00:00:00 --mem=96G
 # This multirun will generate test_perturb results for model: branched_wiredcfc_arch4
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 19/30..."
-sbatch --time=1-12:00:00 --mem=64G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject false branched_wiredcfc_arch4 500
+sbatch --time=3-00:00:00 --mem=96G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject false branched_wiredcfc_arch4 500
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 19 submitted successfully"
 else
@@ -314,12 +314,12 @@ sleep 1  # Brief pause between submissions
 
 # Multirun Job 20/30
 # Dataset: Lee2019_SSVEP | Model: branched_wiredcfc_arch4 | Eval: CrossSubject | Subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54] | Seed: 500 | TUNED
-# Timeout: --time=1-12:00:00 --mem=64G
+# Timeout: --time=3-00:00:00 --mem=96G
 # This multirun will generate test_perturb results for model: branched_wiredcfc_arch4
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 20/30..."
-sbatch --time=1-12:00:00 --mem=64G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject true branched_wiredcfc_arch4 500
+sbatch --time=3-00:00:00 --mem=96G unified_eval_script_crosssubject_foldbyfold.sh 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 Lee2019_SSVEP CrossSubject true branched_wiredcfc_arch4 500
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 20 submitted successfully"
 else

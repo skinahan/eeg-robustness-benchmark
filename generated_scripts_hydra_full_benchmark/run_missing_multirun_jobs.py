@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Generated Python automation script for local experiment execution
-Generated on: 2026-01-09 15:00:07
+Generated on: 2026-01-14 08:45:14
 Total missing multirun jobs: 30
 Non-tuned jobs: 15
 Tuned jobs: 15
@@ -27,6 +27,12 @@ sys.path.insert(0, os.path.join(project_root, 'evaluation'))
 from evaluation.unified_experiment_runner import UnifiedExperimentRunner
 from evaluation.experiment_utils import collect_all_results_unified
 from globals import set_seeds
+
+# Legacy mode flag: Set to True to use original experimental protocol (no subject chunking)
+# Can also be set via environment variable: USE_LEGACY_MODE=1
+USE_LEGACY_MODE = os.environ.get('USE_LEGACY_MODE', '0').lower() in ('1', 'true', 'yes')
+# Legacy mode enabled via experiment_automation.py --legacy flag or config file
+USE_LEGACY_MODE = True
 
 def cleanup_memory():
     """Perform aggressive garbage collection and clear CUDA cache."""
@@ -67,6 +73,11 @@ def run_single_experiment(exp_config: Dict[str, Any], job_num: int, total_jobs: 
 
     try:
         # Create and run experiment
+        # For CrossSubject mode, use chunked training to reduce memory usage
+        # subject_chunk_size=3 loads 3 subjects at a time (default)
+        # Legacy mode disables chunked training to follow original protocol
+        subject_chunk_size = None if USE_LEGACY_MODE else (3 if exp_config['eval_mode'] == 'CrossSubject' else None)
+        
         runner = UnifiedExperimentRunner(
             model=exp_config['model'],
             dataset=exp_config['dataset'],
@@ -77,7 +88,9 @@ def run_single_experiment(exp_config: Dict[str, Any], job_num: int, total_jobs: 
             noise_type='gaussian',  # multirun handles all noise types
             intensity=10.0,  # multirun handles all intensities
             tune=exp_config['tune'],
-            overwrite=False
+            overwrite=False,
+            subject_chunk_size=subject_chunk_size,  # Enable chunked training for CrossSubject (unless legacy mode)
+            legacy=USE_LEGACY_MODE  # Use legacy experimental protocol if enabled
         )
 
         results = runner.run_experiment()
