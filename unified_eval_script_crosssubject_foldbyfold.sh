@@ -10,7 +10,7 @@
 #SBATCH --export=NONE
 
 # Parse command line arguments for CrossSubject fold-by-fold mode
-# Format: unified_eval_script_crosssubject_foldbyfold.sh <subject1> <subject2> ... <subjectN> <dataset> <eval_mode> <tune_flag> <model> <seed>
+# Format: unified_eval_script_crosssubject_foldbyfold.sh <subject1> <subject2> ... <subjectN> <dataset> <eval_mode> <tune_flag> <model> <seed> [legacy_flag]
 # The script collects all numeric arguments until it finds a non-numeric argument (the dataset)
 
 SUBJECTS=()
@@ -44,17 +44,22 @@ MODEL="${!CURRENT_ARG}"
 CURRENT_ARG=$((CURRENT_ARG + 1))
 
 SEED="${!CURRENT_ARG}"
+CURRENT_ARG=$((CURRENT_ARG + 1))
+
+# Legacy flag is optional (defaults to false if not provided)
+LEGACY_FLAG="${!CURRENT_ARG:-false}"
 
 # Validate required arguments
 if [ ${#SUBJECTS[@]} -eq 0 ] || [ -z "$DATASET" ] || [ -z "$EVAL_MODE" ] || [ -z "$TUNE_FLAG" ] || [ -z "$MODEL" ] || [ -z "$SEED" ]; then
     echo "Error: Missing required arguments"
-    echo "Usage: sbatch unified_eval_script_crosssubject_foldbyfold.sh <subject1> <subject2> ... <subjectN> <dataset> <eval_mode> <tune_flag> <model> <seed>"
+    echo "Usage: sbatch unified_eval_script_crosssubject_foldbyfold.sh <subject1> <subject2> ... <subjectN> <dataset> <eval_mode> <tune_flag> <model> <seed> [legacy_flag]"
     echo "  subjects: one or more subject IDs (e.g., '1 2 3 4 5' or '1 2 3 ... 54')"
     echo "  dataset: dataset name (e.g., 'Lee2019_SSVEP')"
     echo "  eval_mode: evaluation mode (should be 'CrossSubject')"
     echo "  tune_flag: tuning flag ('true' or 'false')"
     echo "  model: model name (e.g., 'eegnet', 'reegnet', 'cnn_ncp')"
     echo "  seed: random seed (e.g., '100', '200', '300', '400', '500')"
+    echo "  legacy_flag: legacy mode flag ('true' or 'false', optional, defaults to 'false')"
     exit 1
 fi
 

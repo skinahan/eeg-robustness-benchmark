@@ -1826,15 +1826,28 @@ class ExperimentAutomation:
                         # Time increased slightly to account for running 3 folds + aggregation
                         slurm_args = "--time=1-12:00:00 --mem=64G"
                 
-                # Format: sbatch {slurm_args} unified_eval_script.sh {subject} {dataset} {eval_mode} {tune_flag} {model} {seed}
+                # Format: sbatch {slurm_args} unified_eval_script.sh {subject} {dataset} {eval_mode} {tune_flag} {model} {seed} [legacy_flag]
                 # Use CrossSubject-specific script for CrossSubject eval mode
-                # UPDATED: Use fold-by-fold script for CrossSubject to reduce memory usage
-                # Chunked training (subject_chunk_size=3) is automatically enabled via run_crosssubject_folds.py
+                # UPDATED: Use fold-by-fold script for CrossSubject to reduce memory usage (unless legacy mode)
+                # Legacy mode uses the original script without fold-by-fold processing
+                # Chunked training (subject_chunk_size=3) is automatically enabled via run_crosssubject_folds.py (unless legacy mode)
                 if exp['eval_mode'] == 'CrossSubject':
-                    script_name = "unified_eval_script_crosssubject_foldbyfold.sh"
+                    if self.legacy:
+                        # Legacy mode: use original script without fold-by-fold processing
+                        script_name = "unified_eval_script_crosssubject.sh"
+                    else:
+                        # Normal mode: use fold-by-fold script for memory optimization
+                        script_name = "unified_eval_script_crosssubject_foldbyfold.sh"
                 else:
                     script_name = "unified_eval_script.sh"
-                command = f"sbatch {slurm_args} {script_name} {subjects_str} {exp['dataset']} {exp['eval_mode']} {tune_flag} {model} {seed}"
+                # Pass legacy flag if enabled (only for fold-by-fold script)
+                legacy_flag = "true" if self.legacy else "false"
+                if exp['eval_mode'] == 'CrossSubject' and not self.legacy:
+                    # Only pass legacy flag to fold-by-fold script
+                    command = f"sbatch {slurm_args} {script_name} {subjects_str} {exp['dataset']} {exp['eval_mode']} {tune_flag} {model} {seed} {legacy_flag}"
+                else:
+                    # Other scripts don't need legacy flag (legacy mode uses different script)
+                    command = f"sbatch {slurm_args} {script_name} {subjects_str} {exp['dataset']} {exp['eval_mode']} {tune_flag} {model} {seed}"
                 
                 # Write sbatch command
                 f.write(f"# Multirun Job {i}/{len(self.missing_experiments)}\n")
@@ -1862,9 +1875,13 @@ class ExperimentAutomation:
         print(f"[OK] Generated sbatch shell script: {script_file}")
         print(f"[INFO] Script contains {len(self.missing_experiments)} multirun sbatch commands")
         print(f"[INFO] Each sbatch command format: sbatch unified_eval_script.sh <subjects> <dataset> <eval_mode> <tune_flag>")
-        print(f"[INFO] CrossSubject experiments use fold-by-fold mode (unified_eval_script_crosssubject_foldbyfold.sh)")
-        print(f"[INFO] Memory optimization: Chunked training enabled (subject_chunk_size=3) for CrossSubject mode")
-        print(f"[INFO] Memory budget: 64G per job (chunked training + fold-by-fold significantly reduces actual peak memory usage)")
+        if self.legacy:
+            print(f"[INFO] Legacy mode enabled: CrossSubject experiments use original script (unified_eval_script_crosssubject.sh)")
+            print(f"[INFO] Legacy mode: No subject chunking or fold-by-fold processing (matches original behavior)")
+        else:
+            print(f"[INFO] CrossSubject experiments use fold-by-fold mode (unified_eval_script_crosssubject_foldbyfold.sh)")
+            print(f"[INFO] Memory optimization: Chunked training enabled (subject_chunk_size=3) for CrossSubject mode")
+            print(f"[INFO] Memory budget: 64G per job (chunked training + fold-by-fold significantly reduces actual peak memory usage)")
         
         return script_file
     
