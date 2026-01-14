@@ -110,7 +110,7 @@ python evaluation/unified_experiment_runner.py \
     --intensity 10.0 \
     --eval_mode $EVAL_MODE \
     $TUNE_ARG \
-    --overwrite
+    --legacy
 
 # Check exit status
 if [ $? -eq 0 ]; then
