@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 Generated Python automation script for local experiment execution
-Generated on: 2026-01-06 10:47:11
-Total missing multirun jobs: 16
+Generated on: 2026-01-14 08:36:12
+Total missing multirun jobs: 13
 Non-tuned jobs: 0
-Tuned jobs: 16
+Tuned jobs: 13
 OPTIMIZED: Runs non-tuned jobs first, aggregates, then runs tuned jobs
 """
 
@@ -27,6 +27,12 @@ sys.path.insert(0, os.path.join(project_root, 'evaluation'))
 from evaluation.unified_experiment_runner import UnifiedExperimentRunner
 from evaluation.experiment_utils import collect_all_results_unified
 from globals import set_seeds
+
+# Legacy mode flag: Set to True to use original experimental protocol (no subject chunking)
+# Can also be set via environment variable: USE_LEGACY_MODE=1
+USE_LEGACY_MODE = os.environ.get('USE_LEGACY_MODE', '0').lower() in ('1', 'true', 'yes')
+# Legacy mode enabled via experiment_automation.py --legacy flag or config file
+USE_LEGACY_MODE = True
 
 def cleanup_memory():
     """Perform aggressive garbage collection and clear CUDA cache."""
@@ -67,6 +73,11 @@ def run_single_experiment(exp_config: Dict[str, Any], job_num: int, total_jobs: 
 
     try:
         # Create and run experiment
+        # For CrossSubject mode, use chunked training to reduce memory usage
+        # subject_chunk_size=3 loads 3 subjects at a time (default)
+        # Legacy mode disables chunked training to follow original protocol
+        subject_chunk_size = None if USE_LEGACY_MODE else (3 if exp_config['eval_mode'] == 'CrossSubject' else None)
+        
         runner = UnifiedExperimentRunner(
             model=exp_config['model'],
             dataset=exp_config['dataset'],
@@ -77,7 +88,9 @@ def run_single_experiment(exp_config: Dict[str, Any], job_num: int, total_jobs: 
             noise_type='gaussian',  # multirun handles all noise types
             intensity=10.0,  # multirun handles all intensities
             tune=exp_config['tune'],
-            overwrite=False
+            overwrite=False,
+            subject_chunk_size=subject_chunk_size,  # Enable chunked training for CrossSubject (unless legacy mode)
+            legacy=USE_LEGACY_MODE  # Use legacy experimental protocol if enabled
         )
 
         results = runner.run_experiment()
@@ -105,9 +118,9 @@ def run_single_experiment(exp_config: Dict[str, Any], job_num: int, total_jobs: 
 
 def run_experiments():
     """Run all missing experiments in two phases: non-tuned first, then tuned."""
-    total_jobs = 16
+    total_jobs = 13
     non_tuned_jobs = 0
-    tuned_jobs = 16
+    tuned_jobs = 13
     print(f'Starting local experiment execution...')
     print(f'Total multirun jobs to execute: {total_jobs}')
     print(f'Non-tuned jobs: {non_tuned_jobs}')
@@ -215,33 +228,6 @@ def run_experiments():
             'tune': True,
             'model': 'reegnet',
             'seed': 500,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 100,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 200,
-            'paradigm': 'SSVEP'
-        },
-        {
-            'dataset': 'Lee2019_SSVEP',
-            'eval_mode': 'CrossSubject',
-            'subjects': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54],
-            'tune': True,
-            'model': 'cnn_ncp',
-            'seed': 300,
             'paradigm': 'SSVEP'
         },
         {
