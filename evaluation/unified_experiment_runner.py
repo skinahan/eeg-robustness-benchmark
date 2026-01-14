@@ -49,7 +49,7 @@ from config import MODEL_REGISTRY, get_paradigm, get_dataset_sampling_rate
 from globals import set_seeds, DEFAULT_MAX_EPOCHS, UNDERFITTING_THRESHOLD, get_max_epochs_for_dataset, get_underfitting_threshold_for_dataset
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
 from evaluation.two_stage_hp_opt import alternate_two_stage_optuna, run_two_stage_optuna, format_params, get_all_model_params
-from utils import create_output_path, create_hdf5_model_path, get_noise_intensities
+from utils import create_output_path, create_hdf5_model_path, get_noise_intensities, get_short_session_id
 from evaluation.experiment_utils import check_skip_eval, log_all_subjects, collect_all_results
 from evaluation.metrics import compute_classification_metrics
 from evaluation.model_cache_manager import ModelCacheManager
@@ -1602,6 +1602,11 @@ class UnifiedExperimentRunner:
                 eval_subjects_str = ','.join(map(str, sorted(self.eval_subjects)))
                 session = f"fold_{self.fold_idx}_eval_subjects_{eval_subjects_str}"
                 
+                # Check if this fold's results already exist
+                if not self.overwrite and self._check_fold_result_exists(self.fold_idx, sorted(self.eval_subjects), session):
+                    print(f"[CROSSSUBJECT] Skipping fold {self.fold_idx} - results already exist (eval_subjects: {self.eval_subjects})")
+                    return None
+                
                 # Set current_subject to first eval subject
                 self.current_subject = self.eval_subjects[0]
                 
@@ -1664,7 +1669,10 @@ class UnifiedExperimentRunner:
                     result['eval_subjects'] = eval_subjects_str
                     result['train_subjects'] = ','.join(map(str, sorted(self.train_subjects)))
                 
-                # Convert to DataFrame
+                # Save fold results immediately
+                self._save_fold_results(fold_results, self.fold_idx, sorted(self.eval_subjects), session)
+                
+                # Convert to DataFrame for return (if needed)
                 results_df = pd.DataFrame(fold_results)
                 all_subject_results.append(results_df)
                 
@@ -1728,8 +1736,15 @@ class UnifiedExperimentRunner:
                     # Get the subjects that are in the evaluation set for this fold
                     # Memory optimization: Use .iloc with list conversion to avoid keeping view in memory
                     eval_subjects = np.unique(metadata.iloc[valid_idx]['subject'].values)
-                    eval_subjects_str = ','.join(map(str, sorted(eval_subjects)))
+                    eval_subjects_list = sorted([int(s) for s in eval_subjects])
+                    eval_subjects_str = ','.join(map(str, eval_subjects_list))
                     session = f"fold_{fold_idx}_eval_subjects_{eval_subjects_str}"
+                    
+                    # Check if this fold's results already exist
+                    if not self.overwrite and self._check_fold_result_exists(fold_idx, eval_subjects_list, session):
+                        print(f"[CROSSSUBJECT] Skipping fold {fold_idx} - results already exist (eval_subjects: {eval_subjects_list})")
+                        fold_idx += 1
+                        continue
                     
                     # Set current_subject to a representative value (first eval subject)
                     self.current_subject = eval_subjects[0]
@@ -1752,14 +1767,18 @@ class UnifiedExperimentRunner:
                     for result in fold_results:
                         result['eval_subjects'] = eval_subjects_str
                         result['n_eval_subjects'] = len(eval_subjects)
-                
-                all_results.extend(fold_results)
-                
-                # Memory management: Clear intermediate arrays after each fold
-                del X_train, y_train, X_valid, y_valid, metadata_train, eval_subjects
-                gc.collect()
-                
-                fold_idx += 1
+                    
+                    # Save fold results immediately
+                    self._save_fold_results(fold_results, fold_idx, eval_subjects_list, session)
+                    
+                    # Keep results in memory for final aggregation (if needed)
+                    all_results.extend(fold_results)
+                    
+                    # Memory management: Clear intermediate arrays after each fold
+                    del X_train, y_train, X_valid, y_valid, metadata_train, eval_subjects
+                    gc.collect()
+                    
+                    fold_idx += 1
             
             # Memory management: Clear large arrays before creating DataFrame
             # Delete groups array (no longer needed after folds are processed)
@@ -1899,11 +1918,124 @@ class UnifiedExperimentRunner:
                 if os.path.isdir(self.hdf5_path):
                     shutil.rmtree(self.hdf5_path)
         
+        # Handle case where all folds were skipped (empty results)
+        if len(all_subject_results) == 0:
+            print(f"[CROSSSUBJECT] No results to return - all folds were skipped or no data processed")
+            return pd.DataFrame()
+        
         all_results_df = pd.concat(all_subject_results)
         # Save results
-        self._save_results(all_results_df)                    
+        # For CrossSubject mode, we already saved results per fold, so skip final save to avoid duplicates
+        if self.eval_mode != "CrossSubject":
+            self._save_results(all_results_df)
+        else:
+            print(f"[CROSSSUBJECT] Skipping final save - results already saved per fold")
         return all_results_df
         
+    def _check_fold_result_exists(self, fold_idx: int, eval_subjects: List[int], session: str) -> bool:
+        """
+        Check if results for a specific CrossSubject fold already exist.
+        
+        Args:
+            fold_idx: Fold index (0, 1, or 2)
+            eval_subjects: List of evaluation subjects for this fold
+            session: Session string (e.g., "fold_0_eval_subjects_1,2,3")
+            
+        Returns:
+            True if results exist, False otherwise
+        """
+        
+        # Determine paradigm
+        if self.dataset == "Lee2019_SSVEP":
+            paradigm_name = "SSVEP"
+        elif self.dataset == "BI2015a":
+            paradigm_name = "ERP"
+        else:
+            paradigm_name = "MotorImagery"
+        
+        # Determine mode string
+        mode_str = self.mode
+        if self.tune and self.mode != "tune":
+            mode_str = f"{self.mode}_tune"
+        
+        # Use first eval subject as representative for path
+        representative_subject = eval_subjects[0] if eval_subjects else self.subjects[0]
+        
+        # Get output directory
+        eval_mode_str = "CrossSubjectEvaluation"
+        out_dir = create_output_path(
+            self.model, self.seed, int(representative_subject), session, 
+            mode_str, session_type=eval_mode_str, paradigm=paradigm_name, dataset=self.dataset
+        )
+        
+        # Check for existing files
+        is_test_perturb_mode = self.mode in ['test_perturb', 'multirun'] or self.mode.startswith('test_perturb')
+        
+        if is_test_perturb_mode:
+            # For test_perturb mode, check for ANY CSV file in the directory
+            if os.path.exists(out_dir):
+                csv_files = [f for f in os.listdir(out_dir) if f.endswith('.csv')]
+                if csv_files:
+                    return True
+        else:
+            # For non-test_perturb modes, check for specific filename
+            if self.noise_dict:
+                filename_suffix = f"_{self.noise_dict['noise_type']}_{self.noise_dict['intensity']}"
+            else:
+                filename_suffix = ""
+            
+            short_session = get_short_session_id(session, 'CrossSubject')
+            out_file = os.path.join(
+                out_dir,
+                f"{self.model}_{mode_str}{filename_suffix}_{short_session}_seed{self.seed}.csv"
+            )
+            
+            if os.path.exists(out_file):
+                return True
+        
+        return False
+    
+    def _save_fold_results(self, fold_results: List[Dict[str, Any]], fold_idx: int, eval_subjects: List[int], session: str):
+        """
+        Save results for a single CrossSubject fold immediately after processing.
+        
+        Args:
+            fold_results: List of result dictionaries for this fold
+            fold_idx: Fold index
+            eval_subjects: List of evaluation subjects for this fold
+            session: Session string
+        """
+        # Convert to DataFrame
+        fold_df = pd.DataFrame(fold_results)
+        
+        # Aggregate fold results (may not do much for CrossSubject, but keeps consistency)
+        fold_df = self._aggregate_fold_results(fold_df)
+        
+        # Add experiment metadata
+        fold_df['model'] = self.model
+        fold_df['dataset'] = self.dataset
+        fold_df['mode'] = self.mode
+        fold_df['eval_mode'] = self.eval_mode
+        fold_df['seed'] = self.seed
+        if self.mode != 'test_perturb':
+            if self.noise_dict:
+                fold_df['intensity'] = self.noise_dict['intensity']
+                fold_df['noise_type'] = self.noise_dict['noise_type']
+        fold_df['tune'] = self.tune
+        
+        # Add model parameters
+        n_chans, n_times = self._determine_data_dimensions()
+        model_instance = self._create_model(n_chans, n_times, try_cache=False)
+        row_headers = get_all_model_params(self.model)
+        config = model_instance.get_params()
+        for k, v in config.items():
+            if k in row_headers and k not in fold_df.columns:
+                fold_df[k] = v
+        
+        # Save results using existing method
+        self._save_results(fold_df)
+        print(f"[CROSSSUBJECT] Saved results for fold {fold_idx} (eval_subjects: {eval_subjects})")
+    
     def _aggregate_fold_results(self, results_df: pd.DataFrame) -> pd.DataFrame:
         """
         Aggregate fold results according to eval_mode and mode as specified in the spec.
