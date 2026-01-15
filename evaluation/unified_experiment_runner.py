@@ -1451,8 +1451,6 @@ class UnifiedExperimentRunner:
         Noise intensities are determined dynamically in _evaluate_perturb from
         the saturation file, so self.noise_dict is not required.
         """
-        assert not self.tune, f"_train_and_evaluate_perturb called but self.tune is True. This is a logic error."
-        """
         n_chans, n_times = self._determine_data_dimensions()
         set_seeds(self.seed)
         model = self._create_model(n_chans, n_times, fold_idx=fold_idx)
