@@ -372,6 +372,7 @@ def compute_clean_scores(
     save_csv: bool = True,
     save_excel: bool = True,
     save_json: bool = False,
+    hydra: bool = False,
 ) -> pd.DataFrame:
     """
     Compute and save clean scores summary for all datasets.
@@ -404,12 +405,39 @@ def compute_clean_scores(
     print("CLEAN SCORES COMPUTATION")
     print("=" * 80)
     
+    # Adjust output directory for hydra mode
+    if hydra:
+        output_dir = os.path.join(output_dir, 'hydra')
+        print(f"[INFO] Hydra mode enabled: Including 'branched_wiredcfc_arch4' with core models")
+        print(f"[INFO] Results will be saved to: {output_dir}")
+    
     # Load results using the same approach as robustness_metrics.py
     print("\n[STEP 1] Loading/aggregating results...")
     df, clean_metric_col = load_results_dataframe(
         results_file=results_file,
         aggregate_from_directories=aggregate_from_directories
     )
+    
+    # Filter to hydra models if hydra mode is enabled
+    if hydra:
+        # Core models and hydra model (handle case variations)
+        # Common formats: 'EEGNet', 'eegnet', 'REEGNet', 'reegnet', 'CNN-NCP', 'cnn_ncp', etc.
+        hydra_model_patterns = [
+            'eegnet', 'reegnet', 'cnn_ncp', 'cnn-ncp',
+            'branched_wiredcfc_arch4', 'branched-wiredcfc-arch4'
+        ]
+        
+        if 'model' in df.columns:
+            initial_count = len(df)
+            # Normalize model names for comparison (case-insensitive, handle underscores/hyphens)
+            df['model_normalized'] = df['model'].astype(str).str.lower().str.strip().str.replace('-', '_')
+            hydra_patterns_normalized = [p.lower().strip().replace('-', '_') for p in hydra_model_patterns]
+            df = df[df['model_normalized'].isin(hydra_patterns_normalized)].copy()
+            df = df.drop(columns=['model_normalized'])
+            filtered_count = len(df)
+            excluded = initial_count - filtered_count
+            if excluded > 0:
+                print(f"[INFO] Filtered to hydra models (eegnet, reegnet, cnn_ncp, branched_wiredcfc_arch4): removed {excluded} rows, kept {filtered_count} rows")
     
     # Compute clean scores summary
     print("\n[STEP 2] Computing clean scores summary...")
@@ -616,6 +644,12 @@ Examples:
         help="Also save JSON file"
     )
     
+    parser.add_argument(
+        "--hydra",
+        action="store_true",
+        help="Include 'branched_wiredcfc_arch4' model along with core models (eegnet, reegnet, cnn_ncp) and save to 'hydra' subdirectory"
+    )
+    
     args = parser.parse_args()
     
     try:
@@ -626,6 +660,7 @@ Examples:
             save_csv=True,
             save_excel=not args.no_excel,
             save_json=args.save_json,
+            hydra=args.hydra,
         )
         print("\n[OK] Clean scores computation completed successfully!")
     except Exception as e:

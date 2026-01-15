@@ -83,6 +83,7 @@ class AnalysisConfig:
     models: Optional[List[str]] = None
     noise_types: Optional[List[str]] = None
     bootstrap_reps: int = 10000
+    hydra: bool = False
 
 
 # ----------------------------
@@ -110,6 +111,7 @@ def load_and_filter_data(
     input_csv: Optional[str],
     config: AnalysisConfig,
     aggregate_from_directories: bool = True,
+    hydra: bool = False,
 ) -> pd.DataFrame:
     """
     Load and filter data according to config.
@@ -122,7 +124,8 @@ def load_and_filter_data(
     # Load using robustness_metrics function
     df = load_results_dataframe(
         results_file=input_csv,
-        aggregate_from_directories=aggregate_from_directories
+        aggregate_from_directories=aggregate_from_directories,
+        hydra=hydra
     )
     
     # Canonicalize columns
@@ -904,6 +907,7 @@ def run_statistical_analysis(
     out_dir: str = "./analysis/statistical_results",
     config: Optional[AnalysisConfig] = None,
     aggregate_from_directories: bool = True,
+    hydra: bool = False,
 ) -> Dict[str, pd.DataFrame]:
     """
     Run the complete statistical analysis pipeline.
@@ -914,6 +918,15 @@ def run_statistical_analysis(
     if config is None:
         config = AnalysisConfig()
     
+    # Set hydra flag in config
+    config.hydra = hydra
+    
+    # Adjust output directory for hydra mode
+    if hydra:
+        out_dir = os.path.join(out_dir, 'hydra')
+        print(f"[INFO] Hydra mode enabled: Including 'branched_wiredcfc_arch4' with core models")
+        print(f"[INFO] Results will be saved to: {out_dir}")
+    
     # Create output directory
     os.makedirs(out_dir, exist_ok=True)
     
@@ -922,7 +935,7 @@ def run_statistical_analysis(
     print("=" * 80)
     
     # Step 1: Load and filter
-    df = load_and_filter_data(input_csv, config, aggregate_from_directories)
+    df = load_and_filter_data(input_csv, config, aggregate_from_directories, hydra=hydra)
     
     # Step 2: Aggregate across seeds
     group_cols = ['dataset', 'eval_mode', 'tune', 'subject', 'model', 'noise_type', 'intensity']
@@ -1004,9 +1017,12 @@ def run_statistical_analysis(
             # Get all model columns
             all_model_cols = [col for col in pivot_df.columns if col not in test_group_cols + ['subject']]
             
-            # Filter to only core models: CNN-NCP, EEGNet, REEGNet
-            # This ensures omnibus and pairwise tests only compare the three core models
-            core_models = ['CNN-NCP', 'EEGNet', 'REEGNet']
+            # Filter to core models (or hydra models if hydra mode is enabled)
+            # This ensures omnibus and pairwise tests only compare the specified models
+            if config.hydra:
+                core_models = ['CNN-NCP', 'EEGNet', 'REEGNet', 'branched_wiredcfc_arch4']
+            else:
+                core_models = ['CNN-NCP', 'EEGNet', 'REEGNet']
             model_cols = [col for col in all_model_cols if col in core_models]
             
             # Remove non-core models from pivot_df if they exist
@@ -1368,6 +1384,12 @@ Examples:
         help="Number of bootstrap repetitions for CI (default: 10000)"
     )
     
+    parser.add_argument(
+        "--hydra",
+        action="store_true",
+        help="Include 'branched_wiredcfc_arch4' model along with core models (eegnet, reegnet, cnn_ncp) and save to 'hydra' subdirectory"
+    )
+    
     args = parser.parse_args()
     
     # Parse tune values
@@ -1398,6 +1420,7 @@ Examples:
             out_dir=args.out_dir,
             config=config,
             aggregate_from_directories=not args.no_aggregate,
+            hydra=args.hydra,
         )
         print("\n[OK] Statistical analysis completed successfully!")
         return 0

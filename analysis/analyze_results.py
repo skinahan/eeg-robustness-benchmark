@@ -3122,6 +3122,21 @@ def sanity_check_clean_scores(df, clean_col='clean_score', verbose=True, output_
 
 
 if __name__ == '__main__':
+    import argparse
+    
+    parser = argparse.ArgumentParser(
+        description="Generate analysis plots for EEG benchmark results",
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    
+    parser.add_argument(
+        "--hydra",
+        action="store_true",
+        help="Include 'branched_wiredcfc_arch4' model along with core models (eegnet, reegnet, cnn_ncp) and save to 'hydra' subdirectory"
+    )
+    
+    args = parser.parse_args()
+    
     # Load unified results from evaluation/results/unified_all_results.csv
     script_dir = os.path.dirname(os.path.abspath(__file__))
     unified_file = os.path.join(script_dir, '..', 'evaluation', 'results', 'unified_all_results.csv')
@@ -3175,12 +3190,20 @@ if __name__ == '__main__':
         raise FileNotFoundError("No datasets found in unified results file.")
 
     # Define model subsets for comparison
-    model_subsets = {
-        'main_models': ['eegnet', 'reegnet', 'cnn_ncp'],
-        # 'cfc_models': ['cnncfc_compact', 'cnncfc_v2'],
-        # 'wired_models': ['wiredcfc_arch1', 'wiredcfc_arch2', 'wiredcfc_arch3'],
-        'all_models': None  # Will use all available models
-    }
+    if args.hydra:
+        # Include branched_wiredcfc_arch4 along with core models
+        model_subsets = {
+            'main_models': ['eegnet', 'reegnet', 'cnn_ncp', 'branched_wiredcfc_arch4'],
+            'all_models': None  # Will use all available models
+        }
+        print("[INFO] Hydra mode enabled: Including 'branched_wiredcfc_arch4' with core models")
+    else:
+        model_subsets = {
+            'main_models': ['eegnet', 'reegnet', 'cnn_ncp'],
+            # 'cfc_models': ['cnncfc_compact', 'cnncfc_v2'],
+            # 'wired_models': ['wiredcfc_arch1', 'wiredcfc_arch2', 'wiredcfc_arch3'],
+            'all_models': None  # Will use all available models
+        }
 
     legacy_mode = False
 
@@ -3212,7 +3235,8 @@ if __name__ == '__main__':
 
         if legacy_mode:
             # Also generate the original plots for backward compatibility
-            output_dir = os.path.join('./plots/legacy/', dataset_name)
+            base_output_dir = './plots/hydra/' if args.hydra else './plots/legacy/'
+            output_dir = os.path.join(base_output_dir, dataset_name)
             print("Generating original plots for backward compatibility...")
             generate_all_test_perturb_plots(
                 aggregated_df,
@@ -3223,7 +3247,8 @@ if __name__ == '__main__':
             )
         else:
             # Generate organized plots with per-subject breakdowns
-            output_dir = './plots/'
+            base_output_dir = './plots/hydra/' if args.hydra else './plots/'
+            output_dir = base_output_dir
             print("Generating organized plots with per-subject breakdowns...")
             generate_organized_test_perturb_plots(
                 aggregated_df,

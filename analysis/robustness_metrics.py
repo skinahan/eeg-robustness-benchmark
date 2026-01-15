@@ -480,6 +480,7 @@ def compute_results_metrics(
     cfg: MetricConfig = MetricConfig(),
     spec: ResultsSpec = ResultsSpec(),
     core_models: Optional[Sequence[str]] = None,
+    hydra: bool = False,
 ) -> Dict[str, pd.DataFrame]:
     """
     Returns a dict of DataFrames:
@@ -494,12 +495,17 @@ def compute_results_metrics(
     -----------
     core_models : Optional[Sequence[str]]
         If provided, filter to only these models. Default: ['CNN-NCP', 'EEGNet', 'REEGNet']
+    hydra : bool
+        If True, include 'branched_wiredcfc_arch4' along with core models
     """
     df = canonicalize_columns(df_in)
     
     # Filter to core models if specified
     if core_models is None:
-        core_models = ['CNN-NCP', 'EEGNet', 'REEGNet']
+        if hydra:
+            core_models = ['CNN-NCP', 'EEGNet', 'REEGNet', 'branched_wiredcfc_arch4']
+        else:
+            core_models = ['CNN-NCP', 'EEGNet', 'REEGNet']
     
     if cfg.model_col in df.columns:
         initial_count = len(df)
@@ -507,7 +513,7 @@ def compute_results_metrics(
         filtered_count = len(df)
         excluded = initial_count - filtered_count
         if excluded > 0:
-            print(f"[INFO] Filtered to core models {core_models}: removed {excluded} rows, kept {filtered_count} rows")
+            print(f"[INFO] Filtered to {'hydra' if hydra else 'core'} models {core_models}: removed {excluded} rows, kept {filtered_count} rows")
     
     # Auto-detect metric column if default doesn't exist
     if cfg.metric_col not in df.columns:
@@ -788,6 +794,7 @@ def load_results_dataframe(
     aggregate_from_directories: bool = True,
     results_dirs: Optional[List[str]] = None,
     core_models: Optional[Sequence[str]] = None,
+    hydra: bool = False,
 ) -> pd.DataFrame:
     """
     Load and aggregate results using the same logic as analyze_results.py and experiment_automation.py.
@@ -857,7 +864,10 @@ def load_results_dataframe(
     
     # Filter to core models if specified
     if core_models is None:
-        core_models = ['CNN-NCP', 'EEGNet', 'REEGNet']
+        if hydra:
+            core_models = ['CNN-NCP', 'EEGNet', 'REEGNet', 'branched_wiredcfc_arch4']
+        else:
+            core_models = ['CNN-NCP', 'EEGNet', 'REEGNet']
     
     model_col = 'model'  # After canonicalization, should be 'model'
     if model_col in df.columns:
@@ -866,7 +876,7 @@ def load_results_dataframe(
         filtered_count = len(df)
         excluded = initial_count - filtered_count
         if excluded > 0:
-            print(f"[INFO] Filtered to core models {core_models}: removed {excluded} rows, kept {filtered_count} rows")
+            print(f"[INFO] Filtered to {'hydra' if hydra else 'core'} models {core_models}: removed {excluded} rows, kept {filtered_count} rows")
     
     # Map column names to expected format
     # Handle 'tuned' -> 'tune' mapping
@@ -1086,6 +1096,7 @@ def main(
     output_dir: str = "./analysis/robustness_results",
     metric_col: str = "corrupted_score",
     aggregate_from_directories: bool = True,
+    hydra: bool = False,
 ) -> None:
     """
     Main function to compute and save robustness metrics.
@@ -1106,11 +1117,18 @@ def main(
         print("ROBUSTNESS METRICS COMPUTATION")
         print("=" * 80)
         
+        # Adjust output directory for hydra mode
+        if hydra:
+            output_dir = os.path.join(output_dir, 'hydra')
+            print(f"[INFO] Hydra mode enabled: Including 'branched_wiredcfc_arch4' with core models")
+            print(f"[INFO] Results will be saved to: {output_dir}")
+        
         # Load results using the aggregation logic
         print("\n[STEP 1] Loading/aggregating results...")
         df = load_results_dataframe(
             results_file=results_file,
-            aggregate_from_directories=aggregate_from_directories
+            aggregate_from_directories=aggregate_from_directories,
+            hydra=hydra
         )
         
         # Configure metric column
@@ -1122,7 +1140,7 @@ def main(
         print("  - Computing AUPC...")
         print("  - Computing RD curves...")
         print("  - Computing CSV_p curves...")
-        results = compute_results_metrics(df, cfg=cfg)
+        results = compute_results_metrics(df, cfg=cfg, hydra=hydra)
         
         # Save results to files
         print("\n[STEP 4] Saving results to files...")
@@ -1208,6 +1226,12 @@ Examples:
         help="Don't aggregate from directories if results file not found"
     )
     
+    parser.add_argument(
+        "--hydra",
+        action="store_true",
+        help="Include 'branched_wiredcfc_arch4' model along with core models (eegnet, reegnet, cnn_ncp) and save to 'hydra' subdirectory"
+    )
+    
     args = parser.parse_args()
     
     main(
@@ -1215,4 +1239,5 @@ Examples:
         output_dir=args.output_dir,
         metric_col=args.metric_col,
         aggregate_from_directories=not args.no_aggregate,
+        hydra=args.hydra,
     )
