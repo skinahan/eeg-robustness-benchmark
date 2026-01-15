@@ -10,8 +10,10 @@ echo "Total ablation jobs to submit: 20"
 echo "Ablations: baseline, 1, 2, 3"
 echo "Seeds: 100, 200, 300, 400, 500"
 echo ""
+echo "Note: This script should be run from the project root directory"
+echo ""
 
-# Create logs directory if it doesn't exist
+# Create logs directory if it doesn't exist (relative to project root)
 mkdir -p ablations/logs
 
 # Ablation Job 1/20

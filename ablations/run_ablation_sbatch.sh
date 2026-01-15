@@ -34,13 +34,8 @@ echo "[MEMORY] MKL_NUM_THREADS=${MKL_NUM_THREADS}"
 module load mamba/latest
 source activate ncp_env
 
-# Get project root (assuming this script is in ablations/ directory)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
-cd "$PROJECT_ROOT"
-
-# Create logs directory if it doesn't exist
-mkdir -p ablations/logs
+# Note: This script assumes it is run from the project root directory
+# Paths are relative to project root, just like unified_eval_script.sh
 
 echo "=========================================="
 echo "Starting Ablation Experiment"
@@ -48,7 +43,6 @@ echo "=========================================="
 echo "Ablation: $ABLATION"
 echo "Seed: $SEED"
 echo "Started at: $(date)"
-echo "Working directory: $PROJECT_ROOT"
 echo "=========================================="
 
 # Run the ablation experiment
