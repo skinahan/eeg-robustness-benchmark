@@ -17,6 +17,7 @@ import torch
 import numpy as np
 import pandas as pd
 import json
+import argparse
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
 from scipy import stats
@@ -24,12 +25,25 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
 import warnings
+import traceback
 warnings.filterwarnings('ignore')
 
-# Add project root to path
-current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.dirname(current_dir)
-sys.path.insert(0, project_root)
+# Add project root to path - use Path.resolve() for robust absolute paths
+# __file__ is the path to this script (run_ablations.py)
+script_file = Path(__file__).resolve()  # Get absolute, normalized path
+current_dir = script_file.parent  # ablations/ directory
+project_root = current_dir.parent  # project root directory
+
+# Convert to string for sys.path (needs string, not Path)
+project_root_str = str(project_root)
+sys.path.insert(0, project_root_str)
+
+# Debug: Print paths
+print(f"[DEBUG] Script file: {script_file}", file=sys.stderr)
+print(f"[DEBUG] Current directory (ablations/): {current_dir}", file=sys.stderr)
+print(f"[DEBUG] Project root: {project_root}", file=sys.stderr)
+print(f"[DEBUG] Project root (string): {project_root_str}", file=sys.stderr)
+print(f"[DEBUG] Python path: {sys.path[:3]}", file=sys.stderr)
 
 from config import (
     MODEL_REGISTRY, 
@@ -54,28 +68,106 @@ try:
 except ImportError:
     # Fallback: import from same directory if running from ablations/
     import importlib.util
-    ablation_models_path = os.path.join(current_dir, "ablation_models.py")
-    spec = importlib.util.spec_from_file_location("ablation_models", ablation_models_path)
+    ablation_models_path = current_dir / "ablation_models.py"
+    if not ablation_models_path.exists():
+        raise ImportError(
+            f"Could not import ablation_models and file not found: {ablation_models_path}\n"
+            f"Current directory: {current_dir}\n"
+            f"Project root: {project_root}"
+        )
+    spec = importlib.util.spec_from_file_location("ablation_models", str(ablation_models_path))
     ablation_models = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(ablation_models)
     create_branched_wiredcfc_no_carry_gate_classifier = ablation_models.create_branched_wiredcfc_no_carry_gate_classifier
     create_branched_wiredcfc_no_branching_classifier = ablation_models.create_branched_wiredcfc_no_branching_classifier
+    print(f"[DEBUG] Loaded ablation_models from fallback location: {ablation_models_path}", file=sys.stderr)
 
 # Configuration
-ARCHITECTURE_FILE = "outputs/architectures/best_architecture_4_trial_178.json"
+ARCHITECTURE_FILE_RELATIVE = "outputs/architectures/best_architecture_4_trial_178.json"
 DATASET = "BNCI2014_001"
 EVAL_MODE = "CrossSubject"
 SEEDS = [100, 200, 300, 400, 500]  # 5 experimental runs
 NUM_RUNS = len(SEEDS)
-OUTPUT_DIR = Path(current_dir)
+
+# Resolve all paths relative to project root using Path objects
+OUTPUT_DIR = current_dir  # ablations/ directory
 RESULTS_DIR = OUTPUT_DIR / "results"
 PLOTS_DIR = OUTPUT_DIR / "plots"
 MODELS_DIR = OUTPUT_DIR / "models"
 
-# Create output directories
-RESULTS_DIR.mkdir(exist_ok=True)
-PLOTS_DIR.mkdir(exist_ok=True)
-MODELS_DIR.mkdir(exist_ok=True)
+# Resolve architecture file path (relative to project root)
+ARCHITECTURE_FILE_PATH = project_root / ARCHITECTURE_FILE_RELATIVE
+
+# Sanity check: Verify project root exists and is a directory
+if not project_root.exists():
+    raise RuntimeError(
+        f"Project root does not exist: {project_root}\n"
+        f"Resolved from script: {script_file}"
+    )
+if not project_root.is_dir():
+    raise RuntimeError(
+        f"Project root is not a directory: {project_root}\n"
+        f"Resolved from script: {script_file}"
+    )
+
+# Sanity check: Verify architecture file exists
+# Try to resolve the path (handles symlinks, relative paths, etc.)
+try:
+    ARCHITECTURE_FILE_PATH = ARCHITECTURE_FILE_PATH.resolve()
+except (OSError, RuntimeError) as e:
+    raise RuntimeError(
+        f"Failed to resolve architecture file path: {ARCHITECTURE_FILE_PATH}\n"
+        f"Error: {e}"
+    )
+
+if not ARCHITECTURE_FILE_PATH.exists():
+    # Provide helpful error message with alternative locations to check
+    alt_locations = [
+        project_root / "outputs" / "architectures" / "best_architecture_4_trial_178.json",
+        current_dir / "best_architecture_4_trial_178.json",
+        Path.cwd() / ARCHITECTURE_FILE_RELATIVE,
+    ]
+    
+    error_msg = (
+        f"Architecture file not found: {ARCHITECTURE_FILE_PATH}\n"
+        f"Expected relative to project root: {ARCHITECTURE_FILE_RELATIVE}\n"
+        f"Project root: {project_root}\n"
+        f"Current working directory: {Path.cwd()}\n"
+        f"\nChecked locations:\n"
+    )
+    for alt in alt_locations:
+        exists = "✓" if alt.exists() else "✗"
+        error_msg += f"  {exists} {alt}\n"
+    
+    raise FileNotFoundError(error_msg)
+
+if not ARCHITECTURE_FILE_PATH.is_file():
+    raise RuntimeError(
+        f"Architecture path exists but is not a file: {ARCHITECTURE_FILE_PATH}"
+    )
+
+print(f"[DEBUG] Architecture file found: {ARCHITECTURE_FILE_PATH}", file=sys.stderr)
+print(f"[DEBUG] Architecture file size: {ARCHITECTURE_FILE_PATH.stat().st_size} bytes", file=sys.stderr)
+
+# Create output directories with error handling
+try:
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    PLOTS_DIR.mkdir(parents=True, exist_ok=True)
+    MODELS_DIR.mkdir(parents=True, exist_ok=True)
+    print(f"[DEBUG] Output directories created/exist:", file=sys.stderr)
+    print(f"[DEBUG]   - Results: {RESULTS_DIR.absolute()}", file=sys.stderr)
+    print(f"[DEBUG]   - Plots: {PLOTS_DIR.absolute()}", file=sys.stderr)
+    print(f"[DEBUG]   - Models: {MODELS_DIR.absolute()}", file=sys.stderr)
+except Exception as e:
+    raise RuntimeError(f"Failed to create output directories: {e}")
+
+# Sanity check: Verify we can write to results directory
+test_file = RESULTS_DIR / ".write_test"
+try:
+    test_file.touch()
+    test_file.unlink()
+except Exception as e:
+    raise RuntimeError(f"Cannot write to results directory {RESULTS_DIR}: {e}")
 
 # Set plotting style
 sns.set_style("whitegrid")
@@ -95,35 +187,92 @@ def run_ablation_experiment(
     model_name: str,
     model_factory,
     ablation_name: str,
-    seeds: List[int]
+    seed: int
 ) -> pd.DataFrame:
     """
-    Run ablation experiment for a given model variant.
+    Run ablation experiment for a given model variant with a single seed.
     
     Args:
         model_name: Name of the model in registry
         model_factory: Function to create the model
         ablation_name: Name of the ablation (for file naming)
-        seeds: List of seeds to run
+        seed: Random seed to use for this run
         
     Returns:
         DataFrame with results
     """
     print(f"\n{'='*60}")
     print(f"Running ablation: {ablation_name}")
+    print(f"Seed: {seed}")
     print(f"{'='*60}\n")
     
-    all_results = []
+    # Sanity check: Validate inputs
+    if not isinstance(seed, int) or seed <= 0:
+        raise ValueError(f"Invalid seed: {seed}. Must be a positive integer.")
     
-    for run_idx, seed in enumerate(seeds):
-        print(f"\nRun {run_idx + 1}/{len(seeds)} (seed={seed})")
+    if not model_name or not isinstance(model_name, str):
+        raise ValueError(f"Invalid model_name: {model_name}")
+    
+    print(f"[DEBUG] Model name: {model_name}")
+    print(f"[DEBUG] Ablation name: {ablation_name}")
+    print(f"[DEBUG] Seed: {seed}")
+    
+    # Sanity check: Verify model is registered
+    if model_name not in MODEL_REGISTRY:
+        available_models = list(MODEL_REGISTRY.keys())
+        raise KeyError(
+            f"Model '{model_name}' not found in MODEL_REGISTRY.\n"
+            f"Available models: {available_models}"
+        )
+    print(f"[DEBUG] Model '{model_name}' found in registry")
+    
+    # Set random seeds
+    print(f"[DEBUG] Setting random seeds to {seed}")
+    try:
         set_seeds(seed)
+        print(f"[DEBUG] Seeds set successfully")
+    except Exception as e:
+        raise RuntimeError(f"Failed to set seeds: {e}")
+    
+    try:
+        # Get subjects for the dataset
+        print(f"[DEBUG] Loading dataset: {DATASET}")
+        try:
+            dataset_obj = BNCI2014_001()
+            print(f"[DEBUG] Dataset loaded successfully")
+        except Exception as e:
+            raise RuntimeError(f"Failed to load dataset {DATASET}: {e}")
+        
+        # Get subjects list
+        if hasattr(dataset_obj, 'subject_list') and dataset_obj.subject_list:
+            subjects = dataset_obj.subject_list
+            print(f"[DEBUG] Using dataset.subject_list: {subjects}")
+        else:
+            subjects = list(range(1, 10))
+            print(f"[DEBUG] Using default subjects (1-9): {subjects}")
+        
+        if not subjects or len(subjects) == 0:
+            raise ValueError(f"No subjects available for dataset {DATASET}")
+        
+        print(f"[DEBUG] Number of subjects: {len(subjects)}")
+        
+        # Sanity check: Verify CUDA availability if using GPU
+        if torch.cuda.is_available():
+            print(f"[DEBUG] CUDA available: {torch.cuda.get_device_name(0)}")
+            print(f"[DEBUG] CUDA memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB")
+        else:
+            print(f"[DEBUG] CUDA not available, using CPU")
+        
+        # Create experiment runner
+        print(f"[DEBUG] Creating UnifiedExperimentRunner...")
+        print(f"[DEBUG]   - Model: {model_name}")
+        print(f"[DEBUG]   - Dataset: {DATASET}")
+        print(f"[DEBUG]   - Subjects: {subjects}")
+        print(f"[DEBUG]   - Mode: test_perturb")
+        print(f"[DEBUG]   - Eval mode: {EVAL_MODE}")
+        print(f"[DEBUG]   - Seed: {seed}")
         
         try:
-            # Get subjects for the dataset
-            dataset_obj = BNCI2014_001()
-            subjects = dataset_obj.subject_list if hasattr(dataset_obj, 'subject_list') else list(range(1, 10))
-            
             runner = UnifiedExperimentRunner(
                 model=model_name,
                 dataset=DATASET,
@@ -136,40 +285,75 @@ def run_ablation_experiment(
                 tune=False,  # No hyperparameter tuning
                 overwrite=False
             )
-            
+            print(f"[DEBUG] UnifiedExperimentRunner created successfully")
+        except Exception as e:
+            raise RuntimeError(f"Failed to create UnifiedExperimentRunner: {e}\n{traceback.format_exc()}")
+        
+        # Run experiment
+        print(f"[DEBUG] Starting experiment run...")
+        try:
             results_df = runner.run_experiment()
+            print(f"[DEBUG] Experiment run completed")
+        except Exception as e:
+            raise RuntimeError(f"Experiment run failed: {e}\n{traceback.format_exc()}")
+        
+        # Sanity check: Verify results
+        if results_df is None:
+            raise RuntimeError("Experiment returned None results")
+        
+        if not isinstance(results_df, pd.DataFrame):
+            raise TypeError(f"Expected DataFrame, got {type(results_df)}")
+        
+        if results_df.empty:
+            raise RuntimeError("Experiment returned empty DataFrame")
+        
+        print(f"[DEBUG] Results DataFrame shape: {results_df.shape}")
+        print(f"[DEBUG] Results columns: {list(results_df.columns)}")
+        
+        # Add metadata
+        results_df['ablation'] = ablation_name
+        results_df['run'] = 1
+        results_df['seed'] = seed
+        
+        print(f"[DEBUG] Added metadata columns: ablation, run, seed")
+        
+        # Save results
+        results_file = RESULTS_DIR / f"{ablation_name}_seed{seed}.csv"
+        print(f"[DEBUG] Saving results to: {results_file.absolute()}")
+        
+        try:
+            results_df.to_csv(results_file, index=False)
+            print(f"[DEBUG] Results saved successfully ({len(results_df)} rows)")
             
-            # Add metadata
-            results_df['ablation'] = ablation_name
-            results_df['run'] = run_idx + 1
-            results_df['seed'] = seed
+            # Sanity check: Verify file was created and readable
+            if not results_file.exists():
+                raise RuntimeError(f"Results file was not created: {results_file}")
             
-            all_results.append(results_df)
-            
-            # Save partial results after each run
-            partial_file = RESULTS_DIR / f"{ablation_name}_partial_run{run_idx+1}.csv"
-            results_df.to_csv(partial_file, index=False)
-            print(f"Saved partial results to {partial_file}")
+            # Verify we can read it back
+            verify_df = pd.read_csv(results_file)
+            if len(verify_df) != len(results_df):
+                raise RuntimeError(
+                    f"File verification failed: saved {len(results_df)} rows, "
+                    f"read back {len(verify_df)} rows"
+                )
+            print(f"[DEBUG] File verification passed")
             
         except Exception as e:
-            print(f"Error in run {run_idx + 1} (seed={seed}): {e}")
-            import traceback
-            traceback.print_exc()
-            continue
-    
-    if not all_results:
-        print(f"Warning: No results collected for {ablation_name}")
+            raise RuntimeError(f"Failed to save results to {results_file}: {e}")
+        
+        print(f"\nSaved results to {results_file}")
+        
+        return results_df
+        
+    except Exception as e:
+        print(f"\n{'='*60}", file=sys.stderr)
+        print(f"ERROR in ablation {ablation_name} (seed={seed})", file=sys.stderr)
+        print(f"{'='*60}", file=sys.stderr)
+        print(f"Error: {e}", file=sys.stderr)
+        print(f"\nFull traceback:", file=sys.stderr)
+        traceback.print_exc()
+        print(f"{'='*60}\n", file=sys.stderr)
         return pd.DataFrame()
-    
-    # Combine all runs
-    combined_results = pd.concat(all_results, ignore_index=True)
-    
-    # Save combined results
-    results_file = RESULTS_DIR / f"{ablation_name}_results.csv"
-    combined_results.to_csv(results_file, index=False)
-    print(f"\nSaved combined results to {results_file}")
-    
-    return combined_results
 
 
 def perform_statistical_tests(
@@ -399,159 +583,218 @@ def create_plots(
         plt.close()
 
 
+def register_model_variants(wiring):
+    """Register all model variants for ablation studies."""
+    print(f"[DEBUG] Registering model variants...")
+    
+    # Sanity check: Verify wiring is valid
+    if wiring is None:
+        raise ValueError("Wiring cannot be None")
+    print(f"[DEBUG] Wiring validated: {type(wiring)}")
+    
+    # 1. Baseline (full model) - should already be registered, but ensure it's there
+    try:
+        add_branched_wiredcfc_architecture("branched_wiredcfc_arch4", wiring)
+        print(f"[DEBUG] Registered: branched_wiredcfc_arch4")
+    except Exception as e:
+        raise RuntimeError(f"Failed to register baseline model: {e}")
+    
+    # 2. No Carry Gate - create factory with proper closure
+    try:
+        def create_no_carry_gate_factory(wiring_ref):
+            def factory(n_chans, n_times, n_outputs, **kwargs):
+                return create_branched_wiredcfc_no_carry_gate_classifier(n_chans, n_times, n_outputs, wiring_ref, **kwargs)
+            return factory
+        MODEL_REGISTRY["branched_wiredcfc_arch4_no_carry_gate"] = create_no_carry_gate_factory(wiring)
+        print(f"[DEBUG] Registered: branched_wiredcfc_arch4_no_carry_gate")
+    except Exception as e:
+        raise RuntimeError(f"Failed to register no_carry_gate model: {e}")
+    
+    # 3. No Branching - create factory with proper closure
+    try:
+        def create_no_branching_factory(wiring_ref):
+            def factory(n_chans, n_times, n_outputs, **kwargs):
+                return create_branched_wiredcfc_no_branching_classifier(n_chans, n_times, n_outputs, wiring_ref, **kwargs)
+            return factory
+        MODEL_REGISTRY["branched_wiredcfc_arch4_no_branching"] = create_no_branching_factory(wiring)
+        print(f"[DEBUG] Registered: branched_wiredcfc_arch4_no_branching")
+    except Exception as e:
+        raise RuntimeError(f"Failed to register no_branching model: {e}")
+    
+    # 4. LSTM Replacement (use BranchedLSTM with equivalent parameters)
+    # Note: This uses BranchedLSTM which doesn't use wiring, so we'll use the standard factory
+    try:
+        MODEL_REGISTRY["branched_lstm_arch4_equivalent"] = create_branched_lstm_classifier
+        print(f"[DEBUG] Registered: branched_lstm_arch4_equivalent")
+    except Exception as e:
+        raise RuntimeError(f"Failed to register LSTM model: {e}")
+    
+    # Sanity check: Verify all models are registered
+    expected_models = [
+        "branched_wiredcfc_arch4",
+        "branched_wiredcfc_arch4_no_carry_gate",
+        "branched_wiredcfc_arch4_no_branching",
+        "branched_lstm_arch4_equivalent"
+    ]
+    missing_models = [m for m in expected_models if m not in MODEL_REGISTRY]
+    if missing_models:
+        raise RuntimeError(f"Failed to register models: {missing_models}")
+    
+    print(f"[DEBUG] All models registered successfully")
+
+
+def get_ablation_config(ablation_num: str):
+    """
+    Get model name and ablation name for a given ablation number.
+    
+    Args:
+        ablation_num: Ablation number as string ("baseline", "1", "2", or "3")
+        
+    Returns:
+        Tuple of (model_name, ablation_name)
+    """
+    ablation_map = {
+        "baseline": ("branched_wiredcfc_arch4", "baseline"),
+        "1": ("branched_wiredcfc_arch4_no_carry_gate", "ablation1_no_carry_gate"),
+        "2": ("branched_wiredcfc_arch4_no_branching", "ablation2_no_branching"),
+        "3": ("branched_lstm_arch4_equivalent", "ablation3_lstm_replacement"),
+    }
+    
+    if ablation_num.lower() not in ablation_map:
+        raise ValueError(f"Invalid ablation number: {ablation_num}. Must be 'baseline', '1', '2', or '3'")
+    
+    return ablation_map[ablation_num.lower()]
+
+
 def main():
-    """Main function to run all ablation experiments."""
+    """Main function to run a single ablation experiment with specified seed."""
+    parser = argparse.ArgumentParser(
+        description="Run ablation study experiment for HYDRA model",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python run_ablations.py --ablation baseline --seed 100
+  python run_ablations.py --ablation 1 --seed 200
+  python run_ablations.py --ablation 2 --seed 300
+  python run_ablations.py --ablation 3 --seed 400
+        """
+    )
+    parser.add_argument(
+        "--ablation",
+        type=str,
+        required=True,
+        choices=["baseline", "1", "2", "3"],
+        help="Ablation number: 'baseline', '1' (No Carry Gate), '2' (No Branching), or '3' (LSTM Replacement)"
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        required=True,
+        help="Random seed for the experiment (e.g., 100, 200, 300, 400, 500)"
+    )
+    
+    args = parser.parse_args()
+    
+    # Sanity check: Validate seed
+    if args.seed <= 0:
+        raise ValueError(f"Invalid seed: {args.seed}. Must be a positive integer.")
+    
     print("="*60)
     print("HYDRA Model Ablation Studies")
     print("="*60)
     print(f"Dataset: {DATASET}")
     print(f"Evaluation Mode: {EVAL_MODE}")
-    print(f"Number of Runs per Ablation: {NUM_RUNS}")
-    print(f"Seeds: {SEEDS}")
+    print(f"Ablation: {args.ablation}")
+    print(f"Seed: {args.seed}")
+    print(f"Python version: {sys.version}")
+    print(f"PyTorch version: {torch.__version__}")
+    print(f"CUDA available: {torch.cuda.is_available()}")
+    if torch.cuda.is_available():
+        print(f"CUDA version: {torch.version.cuda}")
+        print(f"GPU: {torch.cuda.get_device_name(0)}")
     print("="*60)
     
-    # Load architecture 4
-    print(f"\nLoading architecture from {ARCHITECTURE_FILE}...")
-    wiring = load_architecture_from_file(ARCHITECTURE_FILE)
-    
-    # Register model variants
-    print("\nRegistering model variants...")
-    
-    # 1. Baseline (full model) - should already be registered, but ensure it's there
-    add_branched_wiredcfc_architecture("branched_wiredcfc_arch4", wiring)
-    
-    # 2. No Carry Gate - create factory with proper closure
-    def create_no_carry_gate_factory(wiring_ref):
-        def factory(n_chans, n_times, n_outputs, **kwargs):
-            return create_branched_wiredcfc_no_carry_gate_classifier(n_chans, n_times, n_outputs, wiring_ref, **kwargs)
-        return factory
-    MODEL_REGISTRY["branched_wiredcfc_arch4_no_carry_gate"] = create_no_carry_gate_factory(wiring)
-    
-    # 3. No Branching - create factory with proper closure
-    def create_no_branching_factory(wiring_ref):
-        def factory(n_chans, n_times, n_outputs, **kwargs):
-            return create_branched_wiredcfc_no_branching_classifier(n_chans, n_times, n_outputs, wiring_ref, **kwargs)
-        return factory
-    MODEL_REGISTRY["branched_wiredcfc_arch4_no_branching"] = create_no_branching_factory(wiring)
-    
-    # 4. LSTM Replacement (use BranchedLSTM with equivalent parameters)
-    # Note: This uses BranchedLSTM which doesn't use wiring, so we'll use the standard factory
-    MODEL_REGISTRY["branched_lstm_arch4_equivalent"] = create_branched_lstm_classifier
-    
-    print("Model variants registered successfully.")
-    
-    # ========================================================================
-    # PHASE 1: RUN ALL EXPERIMENTS (5 runs per ablation)
-    # ========================================================================
-    print("\n" + "="*60)
-    print("PHASE 1: Running All Experiments")
-    print("="*60)
-    print("This phase will run 5 experimental runs for each ablation.")
-    print("Statistical tests and plotting will be performed after all experiments complete.\n")
-    
-    # Load baseline results if available
-    print("Checking for existing baseline results...")
-    baseline_df = load_baseline_results()
-    
-    if baseline_df is None:
-        print("Baseline results not found. Running baseline experiment...")
-        print(f"Running {NUM_RUNS} runs with seeds {SEEDS}...")
-        baseline_df = run_ablation_experiment(
-            "branched_wiredcfc_arch4",
-            None,
-            "baseline",
-            SEEDS
+    try:
+        # Load architecture 4
+        print(f"\n[DEBUG] Loading architecture from {ARCHITECTURE_FILE_PATH}...")
+        
+        # Convert Path to string for load_architecture_from_file (it expects a string)
+        architecture_file_str = str(ARCHITECTURE_FILE_PATH)
+        print(f"[DEBUG] Architecture file path (string): {architecture_file_str}")
+        
+        # Verify file is readable before attempting to load
+        if not os.access(ARCHITECTURE_FILE_PATH, os.R_OK):
+            raise PermissionError(f"Cannot read architecture file: {ARCHITECTURE_FILE_PATH}")
+        
+        wiring = load_architecture_from_file(architecture_file_str)
+        
+        if wiring is None:
+            raise RuntimeError("Failed to load wiring from architecture file")
+        print(f"[DEBUG] Wiring loaded successfully: {type(wiring)}")
+        
+        # Register model variants
+        print("\n[DEBUG] Registering model variants...")
+        try:
+            register_model_variants(wiring)
+            print("[DEBUG] Model variants registered successfully.")
+        except Exception as e:
+            raise RuntimeError(f"Failed to register model variants: {e}\n{traceback.format_exc()}")
+        
+        # Get model configuration for the specified ablation
+        print(f"\n[DEBUG] Getting configuration for ablation: {args.ablation}")
+        try:
+            model_name, ablation_name = get_ablation_config(args.ablation)
+            print(f"[DEBUG] Model name: {model_name}")
+            print(f"[DEBUG] Ablation name: {ablation_name}")
+        except Exception as e:
+            raise ValueError(f"Invalid ablation configuration: {e}")
+        
+        # Sanity check: Verify model is in registry
+        if model_name not in MODEL_REGISTRY:
+            raise KeyError(
+                f"Model '{model_name}' not found in registry after registration.\n"
+                f"Available models: {list(MODEL_REGISTRY.keys())}"
+            )
+        
+        # Run the experiment
+        print(f"\n{'='*60}")
+        print(f"Running: {ablation_name}")
+        print(f"{'='*60}")
+        
+        results_df = run_ablation_experiment(
+            model_name=model_name,
+            model_factory=None,
+            ablation_name=ablation_name,
+            seed=args.seed
         )
-        if not baseline_df.empty:
-            baseline_file = RESULTS_DIR / "baseline_results.csv"
-            baseline_df.to_csv(baseline_file, index=False)
-            print(f"Baseline experiment complete. Results saved to {baseline_file}")
-    else:
-        print(f"Loaded baseline results from {RESULTS_DIR / 'baseline_results.csv'}")
-        print(f"Baseline has {len(baseline_df)} rows from {baseline_df['run'].nunique()} runs")
-    
-    # Run ablation experiments (5 runs each)
-    ablation_dfs = {}
-    
-    # Ablation 1: No Carry Gate
-    print(f"\n{'='*60}")
-    print("Ablation 1: No Carry Gate")
-    print(f"{'='*60}")
-    ablation1_df = run_ablation_experiment(
-        "branched_wiredcfc_arch4_no_carry_gate",
-        None,
-        "ablation1_no_carry_gate",
-        SEEDS
-    )
-    if not ablation1_df.empty:
-        ablation_dfs["ablation1_no_carry_gate"] = ablation1_df
-        print(f"Ablation 1 complete. Results saved.")
-    
-    # Ablation 2: No Branching
-    print(f"\n{'='*60}")
-    print("Ablation 2: No Branching")
-    print(f"{'='*60}")
-    ablation2_df = run_ablation_experiment(
-        "branched_wiredcfc_arch4_no_branching",
-        None,
-        "ablation2_no_branching",
-        SEEDS
-    )
-    if not ablation2_df.empty:
-        ablation_dfs["ablation2_no_branching"] = ablation2_df
-        print(f"Ablation 2 complete. Results saved.")
-    
-    # Ablation 3: LSTM Replacement
-    print(f"\n{'='*60}")
-    print("Ablation 3: LSTM Replacement")
-    print(f"{'='*60}")
-    ablation3_df = run_ablation_experiment(
-        "branched_lstm_arch4_equivalent",
-        None,
-        "ablation3_lstm_replacement",
-        SEEDS
-    )
-    if not ablation3_df.empty:
-        ablation_dfs["ablation3_lstm_replacement"] = ablation3_df
-        print(f"Ablation 3 complete. Results saved.")
-    
-    # ========================================================================
-    # PHASE 2: STATISTICAL ANALYSIS AND PLOTTING (only after all experiments)
-    # ========================================================================
-    print("\n" + "="*60)
-    print("PHASE 2: Statistical Analysis and Plotting")
-    print("="*60)
-    print("All experiments complete. Now performing statistical tests and creating plots...\n")
-    
-    # Verify we have all required data
-    if baseline_df is None or baseline_df.empty:
-        print("WARNING: No baseline results available. Skipping statistical analysis.")
-    elif not ablation_dfs:
-        print("WARNING: No ablation results available. Skipping statistical analysis.")
-    else:
-        # Perform statistical tests
-        stats_df = perform_statistical_tests(baseline_df, ablation_dfs)
         
-        # Create plots
-        create_plots(baseline_df, ablation_dfs, stats_df)
-        
-        # Combine all results
-        all_results = [baseline_df]
-        all_results.extend(ablation_dfs.values())
-        combined_df = pd.concat(all_results, ignore_index=True)
-        combined_file = RESULTS_DIR / "combined_results.csv"
-        combined_df.to_csv(combined_file, index=False)
-        print(f"\nSaved combined results to {combined_file}")
-    
-    print("\n" + "="*60)
-    print("Ablation Studies Complete!")
-    print("="*60)
-    print(f"\nResults saved to: {RESULTS_DIR}")
-    print(f"Plots saved to: {PLOTS_DIR}")
-    print(f"\nSummary:")
-    print(f"  - Baseline: {len(baseline_df) if baseline_df is not None and not baseline_df.empty else 0} rows")
-    for name, df in ablation_dfs.items():
-        print(f"  - {name}: {len(df)} rows")
+        if not results_df.empty:
+            print(f"\n{'='*60}")
+            print("Experiment Complete!")
+            print("="*60)
+            print(f"Results saved to: {RESULTS_DIR.absolute()}")
+            print(f"Total rows: {len(results_df)}")
+            print(f"Columns: {list(results_df.columns)}")
+            print("="*60)
+            sys.exit(0)
+        else:
+            print("\n" + "="*60, file=sys.stderr)
+            print("ERROR: Experiment completed but no results were collected.", file=sys.stderr)
+            print("="*60, file=sys.stderr)
+            sys.exit(1)
+            
+    except KeyboardInterrupt:
+        print("\n[ERROR] Experiment interrupted by user", file=sys.stderr)
+        sys.exit(130)
+    except Exception as e:
+        print("\n" + "="*60, file=sys.stderr)
+        print("FATAL ERROR in main()", file=sys.stderr)
+        print("="*60, file=sys.stderr)
+        print(f"Error: {e}", file=sys.stderr)
+        print(f"\nFull traceback:", file=sys.stderr)
+        traceback.print_exc()
+        print("="*60, file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
