@@ -1822,9 +1822,9 @@ class ExperimentAutomation:
                             slurm_args = "--time=0-04:00:00 --mem=12G"
                             
                     else:
-                        # CrossSubject with fold-by-fold: Using 64G memory budget
+                        # CrossSubject
                         # Time increased slightly to account for running 3 folds + aggregation
-                        slurm_args = "--time=1-12:00:00 --mem=64G"
+                        slurm_args = "--time=3-00:00:00 --mem=96G"
                 
                 # Format: sbatch {slurm_args} unified_eval_script.sh {subject} {dataset} {eval_mode} {tune_flag} {model} {seed} [legacy_flag]
                 # Use CrossSubject-specific script for CrossSubject eval mode

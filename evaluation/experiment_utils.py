@@ -35,6 +35,7 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
     mode_has_tune = "_tune" in mode
     if tuned and not mode_has_tune:
         # If tuned is True but mode doesn't have "_tune", add it
+        # This ensures tuned results use different paths than non-tuned results
         mode = f"{mode}_tune"
         mode_has_tune = True
     elif not tuned and mode_has_tune:
@@ -384,7 +385,14 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
 
 
 def log_all_subjects(results, subject_list, model_name, mode, noise_type, intensity, seed, eval_mode='CrossSession', paradigm='MotorImagery', dataset='BNCI2014_001'):
-    """Log results for all subjects to individual CSV files."""
+    """
+    Log results for all subjects to individual CSV files.
+    
+    IMPORTANT: The 'mode' parameter determines the output directory and filename.
+    - For non-tuned results: mode = 'test_perturb' (or other mode name)
+    - For tuned results: mode = 'test_perturb_tune' (mode with '_tune' suffix)
+    This ensures tuned and non-tuned results are saved to different paths and don't overwrite each other.
+    """
     # Handle CrossSubject mode differently - results are organized by folds, not individual subjects
     if eval_mode == 'CrossSubjectEvaluation':
         # For CrossSubject, iterate over unique fold sessions
@@ -399,6 +407,9 @@ def log_all_subjects(results, subject_list, model_name, mode, noise_type, intens
                 # Fallback if session format is unexpected
                 representative_subject = session_df['subject'].iloc[0] if 'subject' in session_df.columns else subject_list[0]
             
+            # CRITICAL: The 'mode' parameter is used in create_output_path to create different directories
+            # for tuned vs non-tuned results. This prevents overwriting.
+            # Path structure: results/.../{mode}/ where mode is either 'test_perturb' or 'test_perturb_tune'
             out_dir = create_output_path(model_name, seed, int(representative_subject), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
             os.makedirs(out_dir, exist_ok=True)
             
@@ -413,8 +424,38 @@ def log_all_subjects(results, subject_list, model_name, mode, noise_type, intens
             out_file = os.path.join(out_dir,
                                     f"{model_name}_{mode}{filename_suffix}_{short_session}_seed{seed}.csv")
             
-            session_df.to_csv(out_file, index=False)
-            print(f"Saved: {out_file}")
+            # Log the full path construction for debugging
+            print(f"[LOG_ALL_SUBJECTS] CrossSubject file save:")
+            print(f"  Output directory: {out_dir}")
+            print(f"  Mode: {mode} (this determines the subdirectory)")
+            print(f"  Filename: {os.path.basename(out_file)}")
+            print(f"  Full path: {out_file}")
+            print(f"  Rows to save: {len(session_df)}")
+            
+            # Check if file already exists (to detect potential overwrites)
+            if os.path.exists(out_file):
+                print(f"  WARNING: File already exists and will be overwritten")
+                # Read existing file to check if it's different
+                try:
+                    existing_df = pd.read_csv(out_file)
+                    print(f"  Existing file has {len(existing_df)} rows")
+                    if 'tune' in existing_df.columns and 'tune' in session_df.columns:
+                        existing_tune = existing_df['tune'].iloc[0] if len(existing_df) > 0 else None
+                        new_tune = session_df['tune'].iloc[0] if len(session_df) > 0 else None
+                        if existing_tune != new_tune:
+                            print(f"  ERROR: Tune flag mismatch! Existing: {existing_tune}, New: {new_tune}")
+                            print(f"  This suggests a path collision between tuned and non-tuned results!")
+                except Exception as e:
+                    print(f"  Could not read existing file for comparison: {e}")
+            
+            try:
+                session_df.to_csv(out_file, index=False)
+                print(f"  ✓ Successfully saved: {out_file}")
+            except Exception as e:
+                print(f"  ✗ ERROR saving file: {e}")
+                import traceback
+                traceback.print_exc()
+                raise
     else:
         # Original logic for WithinSession and CrossSession modes
         for subj in subject_list:        

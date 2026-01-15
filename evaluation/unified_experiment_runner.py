@@ -332,6 +332,23 @@ def _verify_and_log_max_epochs(model, dataset: str, training_context: str = ""):
         print(f"Training with max_epochs={actual_epochs} for dataset {dataset}{context_str}")
 
 
+def is_test_perturb_mode(mode: str) -> bool:
+    """
+    Check if a mode is test_perturb (including test_perturb_tune).
+    
+    This helper function ensures that logic that applies to test_perturb mode
+    also applies to test_perturb_tune mode, unless it's appropriate to branch
+    between non-tuned and tuned cases.
+    
+    Args:
+        mode: Mode string (e.g., "test_perturb", "test_perturb_tune")
+        
+    Returns:
+        True if mode is test_perturb or test_perturb_tune, False otherwise
+    """
+    return mode == 'test_perturb' or mode == 'test_perturb_tune' or mode.startswith('test_perturb')
+
+
 class UnifiedExperimentRunner:
     """
     Unified experiment runner that handles all experiment modes and evaluation types.
@@ -390,7 +407,7 @@ class UnifiedExperimentRunner:
         if mode in noise_requiring_modes and (not noise_type or intensity is None):
             raise ValueError(f"Mode '{mode}' requires both --noise_type and --intensity parameters")
         
-        if mode == "test_perturb" and (not noise_type or intensity is None):
+        if is_test_perturb_mode(mode) and (not noise_type or intensity is None):
             noise_type = "gaussian"
             intensity = 10.0
             print(f"Using default noise type and intensity for test_perturb mode: {noise_type} {intensity}")
@@ -404,7 +421,7 @@ class UnifiedExperimentRunner:
         # 2. Noise is only applied during evaluation in _evaluate_perturb
         # Setting noise_dict would disable caching, which we don't want
         self.noise_dict = None
-        if noise_type and intensity and mode not in ["test_perturb", "multirun"]:
+        if noise_type and intensity and not is_test_perturb_mode(mode) and mode != "multirun":
             self.noise_dict = {"noise_type": noise_type, "intensity": intensity}
         
         # Initialize dataset and paradigm
@@ -499,6 +516,8 @@ class UnifiedExperimentRunner:
             paradigm_name = "ERP"
         else:
             paradigm_name = "MotorImagery"
+        # Construct mode_str consistently with other places in the code
+        # If tune flag is set, append "_tune" to mode (e.g., "test_perturb" -> "test_perturb_tune")
         mode_str = self.mode
         if self.tune:
             mode_str = f"{self.mode}_tune"
@@ -692,7 +711,7 @@ class UnifiedExperimentRunner:
                     intensity=self.noise_dict["intensity"],
                     seed=self.seed
                 )
-        elif self.mode == 'test_perturb':
+        elif is_test_perturb_mode(self.mode):
             def wrapped_model_fn(n_chans, n_times, n_outputs=None):
                 if n_outputs is None:
                     if self.dataset == "Lee2019_SSVEP":
@@ -872,7 +891,7 @@ class UnifiedExperimentRunner:
         metrics = compute_classification_metrics(y_valid_all, y_pred_proba_all, num_classes)
         
         # Handle different modes
-        if self.mode == 'test_perturb':
+        if is_test_perturb_mode(self.mode):
             # For test_perturb mode, we need to evaluate on corrupted data
             # This is more complex with chunked evaluation, so for now we'll
             # load validation data once for perturbation evaluation
@@ -967,7 +986,7 @@ class UnifiedExperimentRunner:
             # Apply two-stage hyperparameter optimization on X_train before evaluation on X_valid.
             all_results.extend(self._run_hyperparameter_optimization(X_train, y_train, X_valid, y_valid, fold_idx, metadata_train))
         else:
-            if self.mode == 'test_perturb':
+            if is_test_perturb_mode(self.mode):
                 all_results.extend(self._train_and_evaluate_perturb(X_train, y_train, X_valid, y_valid, fold_idx, session))
             else:
                 # Evaluate on X_valid without tuning.
@@ -986,6 +1005,12 @@ class UnifiedExperimentRunner:
         return all_results
     
     def _tune_and_get_params(self, X_train, y_train, X_valid, y_valid, metadata_train, fold_idx):
+        """
+        Run hyperparameter optimization and return best parameters.
+        
+        IMPORTANT: This method should ONLY be called when self.tune is True.
+        """
+        assert self.tune, f"_tune_and_get_params called but self.tune is False. This is a logic error."
         out_dir = create_output_path(self.model, self.seed, self.current_subject, self.current_session, self.mode, session_type=self.eval_mode)
         fold_output_dir = os.path.join(out_dir, f"Optuna/fold_{fold_idx}")
         os.makedirs(fold_output_dir, exist_ok=True)
@@ -1085,7 +1110,12 @@ class UnifiedExperimentRunner:
         fold_idx: int,
         metadata_train: pd.DataFrame
     ) -> Dict[str, Any]:
-        """Run two-stage hyperparameter optimization."""
+        """
+        Run two-stage hyperparameter optimization.
+        
+        IMPORTANT: This method should ONLY be called when self.tune is True.
+        """
+        assert self.tune, f"_run_hyperparameter_optimization called but self.tune is False. This is a logic error."
         final_params, best_score = self._tune_and_get_params(X_train, y_train, X_valid, y_valid, metadata_train, fold_idx)
 
         # Train final model with best parameters
@@ -1172,7 +1202,7 @@ class UnifiedExperimentRunner:
         evaluation_time = time.time() - start_time
                 
         results = []
-        if self.mode == 'test_perturb':
+        if is_test_perturb_mode(self.mode):
             clean_score = validation_score
             session = self.current_session
             retrain = False
@@ -1270,9 +1300,12 @@ class UnifiedExperimentRunner:
         """
         Evaluate model without hyperparameter tuning.
         
-        IMPORTANT: current_session must be set before calling this method (done in _evaluate_cv_fold).
-        fold_idx is passed to _create_model to ensure proper cache key for WithinSession.
+        IMPORTANT: 
+        - current_session must be set before calling this method (done in _evaluate_cv_fold).
+        - fold_idx is passed to _create_model to ensure proper cache key for WithinSession.
+        - This method should ONLY be called when self.tune is False.
         """
+        assert not self.tune, f"_evaluate_without_tuning called but self.tune is True. This is a logic error."
         n_chans, n_times = self._determine_data_dimensions()        
         model = self._create_model(n_chans, n_times, fold_idx=fold_idx)
         
@@ -1411,9 +1444,14 @@ class UnifiedExperimentRunner:
         """
         Evaluate model with increasing noise perturbations (test_perturb mode).
         
+        IMPORTANT: This method should ONLY be called when self.tune is False.
+        For tuned models, use _run_hyperparameter_optimization instead.
+        
         Note: This method trains on clean data and evaluates on corrupted data.
         Noise intensities are determined dynamically in _evaluate_perturb from
         the saturation file, so self.noise_dict is not required.
+        """
+        assert not self.tune, f"_train_and_evaluate_perturb called but self.tune is True. This is a logic error."
         """
         n_chans, n_times = self._determine_data_dimensions()
         set_seeds(self.seed)
@@ -1515,8 +1553,12 @@ class UnifiedExperimentRunner:
             print(f"  Noise: {self.noise_type} (intensity: {self.intensity})")
         print(f"  Tune: {self.tune}")
 
+        # Construct mode_str to match what will be used in _save_results
+        # This ensures check_skip_eval looks for files in the correct directory
+        # If tune flag is set, append "_tune" to mode (e.g., "test_perturb" -> "test_perturb_tune")
         mode_str = self.mode
         if self.tune:
+            # Make sure the tuned and non-tuned modes are not mixed when creating output paths.
             mode_str = f"{self.mode}_tune"
         
         # Determine paradigm for check_skip_eval (must match log_all_subjects)
@@ -1811,7 +1853,7 @@ class UnifiedExperimentRunner:
             results_df['eval_mode'] = self.eval_mode
             results_df['seed'] = self.seed
             # For test_perturb mode, we don't want to override the noise_type and intensity values
-            if self.mode != 'test_perturb':
+            if not is_test_perturb_mode(self.mode):
                 if self.noise_dict:
                     results_df['intensity'] = self.noise_dict['intensity']
                     results_df['noise_type'] = self.noise_dict['noise_type']
@@ -1903,7 +1945,7 @@ class UnifiedExperimentRunner:
                 results_df['eval_mode'] = self.eval_mode
                 results_df['seed'] = self.seed
                 # For test_perturb mode, we don't want to override the noise_type and intensity values
-                if self.mode != 'test_perturb':
+                if not is_test_perturb_mode(self.mode):
                     if self.noise_dict:
                         results_df['intensity'] = self.noise_dict['intensity']
                         results_df['noise_type'] = self.noise_dict['noise_type']
@@ -1959,8 +2001,9 @@ class UnifiedExperimentRunner:
             paradigm_name = "MotorImagery"
         
         # Determine mode string
+        # If tune flag is set, append "_tune" to mode (e.g., "test_perturb" -> "test_perturb_tune")
         mode_str = self.mode
-        if self.tune and self.mode != "tune":
+        if self.tune:
             mode_str = f"{self.mode}_tune"
         
         # Use first eval subject as representative for path
@@ -2022,7 +2065,7 @@ class UnifiedExperimentRunner:
         fold_df['mode'] = self.mode
         fold_df['eval_mode'] = self.eval_mode
         fold_df['seed'] = self.seed
-        if self.mode != 'test_perturb':
+        if not is_test_perturb_mode(self.mode):
             if self.noise_dict:
                 fold_df['intensity'] = self.noise_dict['intensity']
                 fold_df['noise_type'] = self.noise_dict['noise_type']
@@ -2037,9 +2080,27 @@ class UnifiedExperimentRunner:
             if k in row_headers and k not in fold_df.columns:
                 fold_df[k] = v
         
+        # Determine expected mode string for logging (must match _save_results logic)
+        # If tune flag is set, append "_tune" to mode (e.g., "test_perturb" -> "test_perturb_tune")
+        expected_mode_str = self.mode
+        if self.tune:
+            expected_mode_str = f"{self.mode}_tune"
+        
+        print(f"[CROSSSUBJECT] Saving fold {fold_idx} results:")
+        print(f"  Mode: {self.mode}, Tune: {self.tune}, Expected mode_str: {expected_mode_str}")
+        print(f"  Eval subjects: {eval_subjects}")
+        print(f"  Session: {session}")
+        print(f"  DataFrame shape: {fold_df.shape}")
+        
         # Save results using existing method
-        self._save_results(fold_df)
-        print(f"[CROSSSUBJECT] Saved results for fold {fold_idx} (eval_subjects: {eval_subjects})")
+        try:
+            self._save_results(fold_df)
+            print(f"[CROSSSUBJECT] ✓ Successfully saved results for fold {fold_idx} (eval_subjects: {eval_subjects})")
+        except Exception as e:
+            print(f"[CROSSSUBJECT] ✗ ERROR saving results for fold {fold_idx}: {e}")
+            import traceback
+            traceback.print_exc()
+            raise
     
     def _aggregate_fold_results(self, results_df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -2051,7 +2112,7 @@ class UnifiedExperimentRunner:
         if self.eval_mode == "WithinSession":
             # WithinSession: calculate fold score means for sessions separately
             if 'fold_idx' in results_df.columns:
-                if self.mode == 'test_perturb':
+                if is_test_perturb_mode(self.mode):
                     # test_perturb mode: calculate fold score means for both clean folds and corrupted validation data
                     agg_results = []
                     
@@ -2269,15 +2330,24 @@ class UnifiedExperimentRunner:
         
         # Call log_all_subjects with proper parameters
         # For test_perturb mode, we don't want to override the intensity values
-        if self.mode == 'test_perturb':
+        if is_test_perturb_mode(self.mode):
             intensity_param = 10.0
         else:
             intensity_param = self.noise_dict['intensity'] if self.noise_dict else None
             
+        # If tune flag is set, append "_tune" to mode (e.g., "test_perturb" -> "test_perturb_tune")
         mode_str = self.mode
-        if self.tune and self.mode != "tune":
+        if self.tune:
             # Make sure the tuned and non-tuned modes are not mixed when creating output paths.
             mode_str = f"{self.mode}_tune"
+        
+        # Log the mode string construction for debugging
+        if self.eval_mode == "CrossSubject":
+            print(f"[SAVE_RESULTS] Mode string construction:")
+            print(f"  self.mode: {self.mode}")
+            print(f"  self.tune: {self.tune}")
+            print(f"  Final mode_str: {mode_str}")
+            print(f"  This ensures tuned and non-tuned results use different paths")
 
         # Determine paradigm for log_all_subjects
         if self.dataset == "Lee2019_SSVEP":
@@ -2405,8 +2475,9 @@ def main():
         
         for mode in ["test_perturb"]:
             if not args.overwrite:
+                # If tune flag is set, append "_tune" to mode (e.g., "test_perturb" -> "test_perturb_tune")
                 mode_str = mode
-                if args.tune and mode != "tune":
+                if args.tune:
                     # Make sure the tuned and non-tuned modes are not mixed when creating output paths.
                     mode_str = f"{mode_str}_tune"
                 if check_skip_eval(model, seed, args.subjects, mode_str, args.noise_type, args.intensity, eval_mode, paradigm_name, args.dataset, paradigm_obj=temp_paradigm, dataset_obj=temp_dataset_obj, tuned=args.tune):
@@ -2457,8 +2528,10 @@ def main():
         
         if not args.overwrite:
             # Construct mode_str to match what will be used in run_experiment
+            # If tune flag is set, append "_tune" to mode (e.g., "test_perturb" -> "test_perturb_tune")
             mode_str = args.mode
             if args.tune:
+                # Make sure the tuned and non-tuned modes are not mixed when creating output paths.
                 mode_str = f"{args.mode}_tune"
             if check_skip_eval(args.model, args.seed, args.subjects, mode_str, args.noise_type, args.intensity, args.eval_mode, paradigm_name, args.dataset, paradigm_obj=temp_paradigm, dataset_obj=temp_dataset_obj, tuned=args.tune):
                 sys.exit(0)
