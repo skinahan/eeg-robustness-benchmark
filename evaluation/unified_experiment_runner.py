@@ -1528,7 +1528,7 @@ class UnifiedExperimentRunner:
             paradigm_name = "MotorImagery"
 
         if not self.overwrite:
-            if check_skip_eval(self.model, self.seed, self.subjects, mode_str, self.noise_type, self.intensity, eval_mode=self.eval_mode, paradigm=paradigm_name, dataset=self.dataset, paradigm_obj=self.paradigm, dataset_obj=self.dataset_obj):
+            if check_skip_eval(self.model, self.seed, self.subjects, mode_str, self.noise_type, self.intensity, eval_mode=self.eval_mode, paradigm=paradigm_name, dataset=self.dataset, paradigm_obj=self.paradigm, dataset_obj=self.dataset_obj, tuned=self.tune):
                 print(f"Skipping evaluation due to existing output files.")
                 return None
         
@@ -1740,11 +1740,14 @@ class UnifiedExperimentRunner:
                     eval_subjects_str = ','.join(map(str, eval_subjects_list))
                     session = f"fold_{fold_idx}_eval_subjects_{eval_subjects_str}"
                     
-                    # Check if this fold's results already exist
+                    # Check if this fold's results already exist (before any expensive processing)
+                    # This allows resuming interrupted runs and skipping already-completed folds
                     if not self.overwrite and self._check_fold_result_exists(fold_idx, eval_subjects_list, session):
                         print(f"[CROSSSUBJECT] Skipping fold {fold_idx} - results already exist (eval_subjects: {eval_subjects_list})")
                         fold_idx += 1
                         continue
+                    
+                    print(f"[CROSSSUBJECT] Processing fold {fold_idx} (eval_subjects: {eval_subjects_list})")
                     
                     # Set current_subject to a representative value (first eval subject)
                     self.current_subject = eval_subjects[0]
@@ -1768,7 +1771,8 @@ class UnifiedExperimentRunner:
                         result['eval_subjects'] = eval_subjects_str
                         result['n_eval_subjects'] = len(eval_subjects)
                     
-                    # Save fold results immediately
+                    # Save fold results immediately after processing (before continuing to next fold)
+                    # This ensures results are persisted even if the run is interrupted
                     self._save_fold_results(fold_results, fold_idx, eval_subjects_list, session)
                     
                     # Keep results in memory for final aggregation (if needed)
@@ -1784,7 +1788,7 @@ class UnifiedExperimentRunner:
             # Delete groups array (no longer needed after folds are processed)
             if "groups" in locals():
                 del groups
-            gc.collect()
+                gc.collect()
             
             # Convert results to DataFrame
             results_df = pd.DataFrame(all_results)
@@ -2405,7 +2409,7 @@ def main():
                 if args.tune and mode != "tune":
                     # Make sure the tuned and non-tuned modes are not mixed when creating output paths.
                     mode_str = f"{mode_str}_tune"
-                if check_skip_eval(model, seed, args.subjects, mode_str, args.noise_type, args.intensity, eval_mode, paradigm_name, args.dataset, paradigm_obj=temp_paradigm, dataset_obj=temp_dataset_obj):
+                if check_skip_eval(model, seed, args.subjects, mode_str, args.noise_type, args.intensity, eval_mode, paradigm_name, args.dataset, paradigm_obj=temp_paradigm, dataset_obj=temp_dataset_obj, tuned=args.tune):
                     continue
             try:
                 runner = UnifiedExperimentRunner(
@@ -2452,7 +2456,11 @@ def main():
             print(f"Warning: Could not create temporary dataset/paradigm for session detection: {e}")
         
         if not args.overwrite:
-            if check_skip_eval(args.model, args.seed, args.subjects, args.mode, args.noise_type, args.intensity, args.eval_mode, paradigm_name, args.dataset, paradigm_obj=temp_paradigm, dataset_obj=temp_dataset_obj):
+            # Construct mode_str to match what will be used in run_experiment
+            mode_str = args.mode
+            if args.tune:
+                mode_str = f"{args.mode}_tune"
+            if check_skip_eval(args.model, args.seed, args.subjects, mode_str, args.noise_type, args.intensity, args.eval_mode, paradigm_name, args.dataset, paradigm_obj=temp_paradigm, dataset_obj=temp_dataset_obj, tuned=args.tune):
                 sys.exit(0)
         
         try:

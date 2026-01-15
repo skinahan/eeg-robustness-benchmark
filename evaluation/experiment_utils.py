@@ -29,6 +29,19 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
         eval_mode = f"{eval_mode}Evaluation"
 
     """Check if evaluation should be skipped based on existing output files and model cache."""
+    
+    # Validate that mode matches tuned parameter
+    # If tuned=True, mode should contain "_tune", if tuned=False, mode should not contain "_tune"
+    mode_has_tune = "_tune" in mode
+    if tuned and not mode_has_tune:
+        # If tuned is True but mode doesn't have "_tune", add it
+        mode = f"{mode}_tune"
+        mode_has_tune = True
+    elif not tuned and mode_has_tune:
+        # If tuned is False but mode has "_tune", this is inconsistent
+        # Remove "_tune" from mode to match the tuned=False state
+        mode = mode.replace("_tune", "")
+        mode_has_tune = False
     existing_output_paths = []
     expected_output_paths = []
     
@@ -214,9 +227,22 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
     # Note: mode might be 'test_perturb_tune' if tuning is enabled
     is_test_perturb_mode = mode in ['test_perturb', 'multirun'] or mode.startswith('test_perturb')
     
+    # Filter existing_output_paths to only include files that match the tuned state
+    # If tuned=True, only keep files from directories with "_tune" in the path
+    # If tuned=False, exclude files from directories with "_tune" in the path
+    filtered_existing_paths = []
+    for path in existing_output_paths:
+        path_has_tune = "_tune" in path
+        if tuned and path_has_tune:
+            filtered_existing_paths.append(path)
+        elif not tuned and not path_has_tune:
+            filtered_existing_paths.append(path)
+        # If there's a mismatch (tuned=True but path doesn't have "_tune", or vice versa), skip it
+    existing_output_paths = filtered_existing_paths
+    
     # Debug output
-    print(f"[check_skip_eval] Mode: {mode}, is_test_perturb_mode: {is_test_perturb_mode}")
-    print(f"[check_skip_eval] Existing output paths: {len(existing_output_paths)}, Expected: {len(expected_output_paths)}")
+    print(f"[check_skip_eval] Mode: {mode}, Tuned: {tuned}, is_test_perturb_mode: {is_test_perturb_mode}")
+    print(f"[check_skip_eval] Existing output paths (after tuned filter): {len(existing_output_paths)}, Expected: {len(expected_output_paths)}")
     if existing_output_paths:
         print(f"[check_skip_eval] First existing file: {existing_output_paths[0]}")
     

@@ -1225,18 +1225,61 @@ def spp_ncp_training_space(trial, prefix):
 
 
 def reegnet_architecture_space(trial, prefix):
+    """
+    Architecture parameter space for REEGNet with sanity-checked parameter ranges.
+    
+    Constraints:
+    - F1 * D determines LSTM input size, so we keep these reasonable
+    - pool1_kernel_size should not be too large to avoid very short sequences
+    - kernel_length should be reasonable for temporal filtering
+    - depthwise_kernel_length should be odd for proper padding
+    """
     return {
-        f"{prefix}module__lstm_hidden_size": trial.suggest_categorical(f"{prefix}module__lstm_hidden_size",
-                                                                       [8, 16, 32, 64]),
+        # Temporal convolution parameters (similar to EEGNet)
+        f"{prefix}module__F1": trial.suggest_categorical(
+            f"{prefix}module__F1", [4, 8, 16]
+        ),
+        f"{prefix}module__D": trial.suggest_categorical(
+            f"{prefix}module__D", [1, 2, 4]
+        ),
+        f"{prefix}module__kernel_length": trial.suggest_int(
+            f"{prefix}module__kernel_length", 8, 64, step=8
+        ),
+        
+        # Pooling parameter (keep reasonable to avoid very short sequences)
+        f"{prefix}module__pool1_kernel_size": trial.suggest_categorical(
+            f"{prefix}module__pool1_kernel_size", [2, 4, 8]
+        ),
+        
+        # LSTM parameters
+        f"{prefix}module__lstm_hidden_size": trial.suggest_categorical(
+            f"{prefix}module__lstm_hidden_size", [8, 16, 32, 64]
+        ),
+        f"{prefix}module__lstm_num_layers": trial.suggest_int(
+            f"{prefix}module__lstm_num_layers", 1, 3
+        ),
+        
+        # Separable convolution parameter (must be odd for proper padding)
+        f"{prefix}module__depthwise_kernel_length": trial.suggest_categorical(
+            f"{prefix}module__depthwise_kernel_length", [3, 5, 7]
+        ),
+        
+        # Dropout (architecture-level regularization)
+        f"{prefix}module__drop_prob": trial.suggest_float(
+            f"{prefix}module__drop_prob", 0.1, 0.5
+        ),
     }
 
 
 def reegnet_training_space(trial, prefix):
+    """
+    Training parameter space for REEGNet.
+    Note: drop_prob is optimized in architecture space, not here.
+    """
     return {
         f"{prefix}optimizer__lr": trial.suggest_loguniform(f"{prefix}optimizer__lr", 1e-6, 1e-2),
         f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(f"{prefix}optimizer__weight_decay", 1e-6, 1e-2),
         f"{prefix}batch_size": trial.suggest_categorical(f"{prefix}batch_size", [4, 8, 16, 32, 64]),
-        f"{prefix}module__drop_prob": trial.suggest_float(f"{prefix}module__drop_prob", 0.1, 0.5),
     }
 
 
