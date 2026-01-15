@@ -1782,7 +1782,8 @@ class UnifiedExperimentRunner:
             
             # Memory management: Clear large arrays before creating DataFrame
             # Delete groups array (no longer needed after folds are processed)
-            del groups
+            if "groups" in locals():
+                del groups
             gc.collect()
             
             # Convert results to DataFrame
