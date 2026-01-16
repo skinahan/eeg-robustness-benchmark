@@ -45,6 +45,33 @@ def canonicalize_columns(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def replace_hydra_model_name(df, model_col='model'):
+    """
+    Replace 'branched_wiredcfc_arch4' (and variations) with 'HYDRA' in the model column.
+    Handles various naming formats (with/without hyphens, different cases).
+    
+    Parameters:
+    - df: pd.DataFrame with a model column
+    - model_col: str, name of the model column (default: 'model')
+    
+    Returns:
+    - pd.DataFrame with model names replaced
+    """
+    if model_col not in df.columns:
+        return df
+    
+    df = df.copy()
+    # Normalize model names for comparison (lowercase, hyphens/spaces to underscores)
+    # The canonical form after canonicalize_columns is 'branched_wiredcfc_arch4'
+    df_model_normalized = df[model_col].astype(str).str.lower().str.replace('-', '_').str.replace(' ', '_')
+    
+    # Replace any variant of branched_wiredcfc_arch4 with HYDRA
+    mask = df_model_normalized == 'branched_wiredcfc_arch4'
+    df.loc[mask, model_col] = 'HYDRA'
+    
+    return df
+
+
 def load_results_dataframe(
     results_file: Optional[str] = None,
     aggregate_from_directories: bool = True,
@@ -468,6 +495,8 @@ def compute_clean_scores(
     if save_csv:
         csv_path = os.path.join(output_dir, f'clean_scores_summary_{timestamp}.csv')
         try:
+            # Replace branched_wiredcfc_arch4 with HYDRA in model names before saving
+            formatted_results = replace_hydra_model_name(formatted_results, model_col='model')
             formatted_results.to_csv(csv_path, index=False)
             saved_files['csv'] = csv_path
             print(f"  [OK] Saved CSV to: {csv_path}")

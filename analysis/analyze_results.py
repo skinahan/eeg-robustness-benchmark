@@ -36,6 +36,33 @@ PLOT_YLIM_CONFIG = {
 }
 
 
+def replace_hydra_model_name(df, model_col='model'):
+    """
+    Replace 'branched_wiredcfc_arch4' (and variations) with 'HYDRA' in the model column.
+    Handles various naming formats (with/without hyphens, different cases).
+    
+    Parameters:
+    - df: pd.DataFrame with a model column
+    - model_col: str, name of the model column (default: 'model')
+    
+    Returns:
+    - pd.DataFrame with model names replaced
+    """
+    if model_col not in df.columns:
+        return df
+    
+    df = df.copy()
+    # Normalize model names for comparison (lowercase, hyphens/spaces to underscores)
+    # The canonical form after canonicalize_columns is 'branched_wiredcfc_arch4'
+    df_model_normalized = df[model_col].astype(str).str.lower().str.replace('-', '_').str.replace(' ', '_')
+    
+    # Replace any variant of branched_wiredcfc_arch4 with HYDRA
+    mask = df_model_normalized == 'branched_wiredcfc_arch4'
+    df.loc[mask, model_col] = 'HYDRA'
+    
+    return df
+
+
 def format_noise_type_label(noise_type):
     """
     Format noise type for display in plot titles.
@@ -1274,7 +1301,7 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
         print(f"Saved multisubject {plot_type} plot: {output_file}")
 
 
-def plot_combined_multisubject_comparison(df, noise_type, models=None, dataset='BNCI2014_001', output_dir='plots', plot_type='line'):
+def plot_combined_multisubject_comparison(df, noise_type, models=None, dataset='BNCI2014_001', output_dir='plots', plot_type='line', hydra=False):
     """
     Create a combined multi-subject comparison plot organized in a 3x2 grid:
     - Rows: CrossSession, WithinSession, CrossSubject (eval_modes)
@@ -1305,6 +1332,9 @@ def plot_combined_multisubject_comparison(df, noise_type, models=None, dataset='
     # Filter by specific models if provided
     if models is not None:
         df = df[df['model'].isin(models)]
+    
+    # Replace branched_wiredcfc_arch4 with HYDRA in model names for plotting
+    df = replace_hydra_model_name(df, model_col='model')
     
     # Use legacy column naming for backward compatibility
     clean_col, corrupted_col, y_label = _get_metric_columns_legacy('roc_auc')
@@ -1509,7 +1539,7 @@ def plot_combined_multisubject_comparison(df, noise_type, models=None, dataset='
     print(f"Saved combined multisubject {plot_type} plot: {output_file}")
 
 
-def plot_rd_curves(df, noise_type, models=None, dataset='BNCI2014_001', output_dir='plots', eval_mode=None):
+def plot_rd_curves(df, noise_type, models=None, dataset='BNCI2014_001', output_dir='plots', eval_mode=None, hydra=False):
     """
     Plot Relative Degradation (RD) curves using robustness_metrics.py.
     
@@ -1599,14 +1629,26 @@ def plot_rd_curves(df, noise_type, models=None, dataset='BNCI2014_001', output_d
         if df_eval.empty:
             continue
         
+        # Ensure 'dataset' column exists (add it if missing)
+        if 'dataset' not in df_eval.columns:
+            df_eval['dataset'] = dataset
+        
+        # Filter base_group_cols to only include columns that exist in df_eval
+        base_group_cols_candidates = ['dataset', 'tune', 'eval_mode', 'model', 'noise_type']
+        base_group_cols = [col for col in base_group_cols_candidates if col in df_eval.columns]
+        
         # Compute RD curves
         spec = ResultsSpec(
-            base_group_cols=('dataset', 'tune', 'eval_mode', 'model', 'noise_type'),
+            base_group_cols=tuple(base_group_cols),
             per_instance_cols=('seed',)
         )
         
-        results = compute_results_metrics(df_eval, cfg=cfg, spec=spec)
+        results = compute_results_metrics(df_eval, cfg=cfg, spec=spec, hydra=hydra)
         rd_summary = results.get('rd_summary')
+        
+        # Replace branched_wiredcfc_arch4 with HYDRA in model names for plotting
+        if rd_summary is not None and not rd_summary.empty:
+            rd_summary = replace_hydra_model_name(rd_summary, model_col='model')
         
         if rd_summary is None or rd_summary.empty:
             print(f"No RD summary data for {noise_type}, {eval_mode_val}")
@@ -1670,7 +1712,7 @@ def plot_rd_curves(df, noise_type, models=None, dataset='BNCI2014_001', output_d
         print(f"Saved RD curve plot: {output_file}")
 
 
-def plot_combined_rd_curves(df, noise_type, models=None, dataset='BNCI2014_001', output_dir='plots'):
+def plot_combined_rd_curves(df, noise_type, models=None, dataset='BNCI2014_001', output_dir='plots', hydra=False):
     """
     Create a combined Relative Degradation (RD) curves plot organized in a 3x2 grid:
     - Rows: CrossSession, WithinSession, CrossSubject (eval_modes)
@@ -1800,14 +1842,26 @@ def plot_combined_rd_curves(df, noise_type, models=None, dataset='BNCI2014_001',
                 ax.grid(True, alpha=0.3)
             continue
         
+        # Ensure 'dataset' column exists (add it if missing)
+        if 'dataset' not in df_eval.columns:
+            df_eval['dataset'] = dataset
+        
+        # Filter base_group_cols to only include columns that exist in df_eval
+        base_group_cols_candidates = ['dataset', 'tune', 'eval_mode', 'model', 'noise_type']
+        base_group_cols = [col for col in base_group_cols_candidates if col in df_eval.columns]
+        
         # Compute RD curves
         spec = ResultsSpec(
-            base_group_cols=('dataset', 'tune', 'eval_mode', 'model', 'noise_type'),
+            base_group_cols=tuple(base_group_cols),
             per_instance_cols=('seed',)
         )
         
-        results = compute_results_metrics(df_eval, cfg=cfg, spec=spec)
+        results = compute_results_metrics(df_eval, cfg=cfg, spec=spec, hydra=hydra)
         rd_summary = results.get('rd_summary')
+        
+        # Replace branched_wiredcfc_arch4 with HYDRA in model names for plotting
+        if rd_summary is not None and not rd_summary.empty:
+            rd_summary = replace_hydra_model_name(rd_summary, model_col='model')
         
         if rd_summary is None or rd_summary.empty:
             # Create empty subplots for this row
@@ -1892,7 +1946,7 @@ def plot_combined_rd_curves(df, noise_type, models=None, dataset='BNCI2014_001',
     print(f"Saved combined RD curve plot: {output_file}")
 
 
-def plot_combined_csv_p_curves(df, noise_type, models=None, dataset='BNCI2014_001', output_dir='plots'):
+def plot_combined_csv_p_curves(df, noise_type, models=None, dataset='BNCI2014_001', output_dir='plots', hydra=False):
     """
     Create a combined Cross-Subject Variance (CSV_p) curves plot organized in a 3x2 grid:
     - Rows: CrossSession, WithinSession, CrossSubject (eval_modes)
@@ -1993,12 +2047,23 @@ def plot_combined_csv_p_curves(df, noise_type, models=None, dataset='BNCI2014_00
             if eval_mode_for_filter:
                 df_eval = df_filtered[df_filtered['eval_mode'] == eval_mode_for_filter].copy()
                 if not df_eval.empty:
+                    # Ensure 'dataset' column exists (add it if missing)
+                    if 'dataset' not in df_eval.columns:
+                        df_eval['dataset'] = dataset
+                    
+                    # Filter base_group_cols to only include columns that exist in df_eval
+                    base_group_cols_candidates = ['dataset', 'tune', 'eval_mode', 'model', 'noise_type']
+                    base_group_cols = [col for col in base_group_cols_candidates if col in df_eval.columns]
+                    
                     spec = ResultsSpec(
-                        base_group_cols=('dataset', 'tune', 'eval_mode', 'model', 'noise_type'),
+                        base_group_cols=tuple(base_group_cols),
                         per_instance_cols=('seed',)
                     )
-                    results = compute_results_metrics(df_eval, cfg=cfg, spec=spec)
+                    results = compute_results_metrics(df_eval, cfg=cfg, spec=spec, hydra=hydra)
                     csv_summary = results.get('csv_summary')
+                    # Replace branched_wiredcfc_arch4 with HYDRA in model names for plotting
+                    if csv_summary is not None and not csv_summary.empty:
+                        csv_summary = replace_hydra_model_name(csv_summary, model_col='model')
                     if csv_summary is not None and not csv_summary.empty:
                         csv_data = csv_summary[csv_summary['noise_type'] == noise_type]
                         if not csv_data.empty and 'mean' in csv_data.columns:
@@ -2065,14 +2130,26 @@ def plot_combined_csv_p_curves(df, noise_type, models=None, dataset='BNCI2014_00
                 ax.grid(True, alpha=0.3)
             continue
         
+        # Ensure 'dataset' column exists (add it if missing)
+        if 'dataset' not in df_eval.columns:
+            df_eval['dataset'] = dataset
+        
+        # Filter base_group_cols to only include columns that exist in df_eval
+        base_group_cols_candidates = ['dataset', 'tune', 'eval_mode', 'model', 'noise_type']
+        base_group_cols = [col for col in base_group_cols_candidates if col in df_eval.columns]
+        
         # Compute CSV_p curves
         spec = ResultsSpec(
-            base_group_cols=('dataset', 'tune', 'eval_mode', 'model', 'noise_type'),
+            base_group_cols=tuple(base_group_cols),
             per_instance_cols=('seed',)
         )
         
-        results = compute_results_metrics(df_eval, cfg=cfg, spec=spec)
+        results = compute_results_metrics(df_eval, cfg=cfg, spec=spec, hydra=hydra)
         csv_summary = results.get('csv_summary')
+        
+        # Replace branched_wiredcfc_arch4 with HYDRA in model names for plotting
+        if csv_summary is not None and not csv_summary.empty:
+            csv_summary = replace_hydra_model_name(csv_summary, model_col='model')
         
         if csv_summary is None or csv_summary.empty:
             # Create empty subplots for this row
@@ -2155,7 +2232,7 @@ def plot_combined_csv_p_curves(df, noise_type, models=None, dataset='BNCI2014_00
     print(f"Saved combined CSV_p curve plot: {output_file}")
 
 
-def plot_csv_p_curves(df, noise_type, models=None, dataset='BNCI2014_001', output_dir='plots', eval_mode=None):
+def plot_csv_p_curves(df, noise_type, models=None, dataset='BNCI2014_001', output_dir='plots', eval_mode=None, hydra=False):
     """
     Plot Cross-Subject Variance (CSV_p) curves using robustness_metrics.py.
     
@@ -2245,14 +2322,26 @@ def plot_csv_p_curves(df, noise_type, models=None, dataset='BNCI2014_001', outpu
         if df_eval.empty:
             continue
         
+        # Ensure 'dataset' column exists (add it if missing)
+        if 'dataset' not in df_eval.columns:
+            df_eval['dataset'] = dataset
+        
+        # Filter base_group_cols to only include columns that exist in df_eval
+        base_group_cols_candidates = ['dataset', 'tune', 'eval_mode', 'model', 'noise_type']
+        base_group_cols = [col for col in base_group_cols_candidates if col in df_eval.columns]
+        
         # Compute CSV_p curves
         spec = ResultsSpec(
-            base_group_cols=('dataset', 'tune', 'eval_mode', 'model', 'noise_type'),
+            base_group_cols=tuple(base_group_cols),
             per_instance_cols=('seed',)
         )
         
-        results = compute_results_metrics(df_eval, cfg=cfg, spec=spec)
+        results = compute_results_metrics(df_eval, cfg=cfg, spec=spec, hydra=hydra)
         csv_summary = results.get('csv_summary')
+        
+        # Replace branched_wiredcfc_arch4 with HYDRA in model names for plotting
+        if csv_summary is not None and not csv_summary.empty:
+            csv_summary = replace_hydra_model_name(csv_summary, model_col='model')
         
         if csv_summary is None or csv_summary.empty:
             print(f"No CSV_p summary data for {noise_type}, {eval_mode_val}")
@@ -2317,7 +2406,7 @@ def plot_csv_p_curves(df, noise_type, models=None, dataset='BNCI2014_001', outpu
         print(f"Saved CSV_p curve plot: {output_file}")
 
 
-def generate_organized_test_perturb_plots(df, models=None, dataset='BNCI2014_001', output_dir='plots'):
+def generate_organized_test_perturb_plots(df, models=None, dataset='BNCI2014_001', output_dir='plots', hydra=False):
     """
     Generate all test_perturb plots with organized directory structure.
     Creates separate plots for each eval_mode (CrossSession, WithinSession, CrossSubject).
@@ -2347,18 +2436,18 @@ def generate_organized_test_perturb_plots(df, models=None, dataset='BNCI2014_001
     # Generate combined multi-subject comparison plots (3x2 grid)
     print("\n=== Generating combined multi-subject comparison plots ===")
     for noise_type in noise_types:
-        plot_combined_multisubject_comparison(df, noise_type, models, dataset, output_dir, plot_type='line')
-        plot_combined_multisubject_comparison(df, noise_type, models, dataset, output_dir, plot_type='bar')
+        plot_combined_multisubject_comparison(df, noise_type, models, dataset, output_dir, plot_type='line', hydra=hydra)
+        plot_combined_multisubject_comparison(df, noise_type, models, dataset, output_dir, plot_type='bar', hydra=hydra)
 
     # Generate combined RD curves (3x2 grid)
     print("\n=== Generating combined Relative Degradation (RD) curves ===")
     for noise_type in noise_types:
-        plot_combined_rd_curves(df, noise_type, models, dataset, output_dir)
+        plot_combined_rd_curves(df, noise_type, models, dataset, output_dir, hydra=hydra)
 
     # Generate combined CSV_p curves (3x2 grid)
     print("\n=== Generating combined Cross-Subject Variance (CSV_p) curves ===")
     for noise_type in noise_types:
-        plot_combined_csv_p_curves(df, noise_type, models, dataset, output_dir)
+        plot_combined_csv_p_curves(df, noise_type, models, dataset, output_dir, hydra=hydra)
 
     # DISABLED: Individual plot generation (focused on combined plots only)
     # # Generate multi-subject comparison plots for each eval_mode
@@ -3254,5 +3343,6 @@ if __name__ == '__main__':
                 aggregated_df,
                 models=model_subsets['main_models'],
                 dataset=dataset_name,
-                output_dir=output_dir
+                output_dir=output_dir,
+                hydra=args.hydra
             )

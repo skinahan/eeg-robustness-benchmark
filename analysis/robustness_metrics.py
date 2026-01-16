@@ -84,6 +84,33 @@ def canonicalize_columns(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def replace_hydra_model_name(df, model_col='model'):
+    """
+    Replace 'branched_wiredcfc_arch4' (and variations) with 'HYDRA' in the model column.
+    Handles various naming formats (with/without hyphens, different cases).
+    
+    Parameters:
+    - df: pd.DataFrame with a model column
+    - model_col: str, name of the model column (default: 'model')
+    
+    Returns:
+    - pd.DataFrame with model names replaced
+    """
+    if model_col not in df.columns:
+        return df
+    
+    df = df.copy()
+    # Normalize model names for comparison (lowercase, hyphens/spaces to underscores)
+    # The canonical form after canonicalize_columns is 'branched_wiredcfc_arch4'
+    df_model_normalized = df[model_col].astype(str).str.lower().str.replace('-', '_').str.replace(' ', '_')
+    
+    # Replace any variant of branched_wiredcfc_arch4 with HYDRA
+    mask = df_model_normalized == 'branched_wiredcfc_arch4'
+    df.loc[mask, model_col] = 'HYDRA'
+    
+    return df
+
+
 def find_subject_col(df: pd.DataFrame, cfg: MetricConfig) -> Optional[str]:
     for c in cfg.subject_col_candidates:
         if c in df.columns:
@@ -509,7 +536,14 @@ def compute_results_metrics(
     
     if cfg.model_col in df.columns:
         initial_count = len(df)
-        df = df[df[cfg.model_col].isin(core_models)].copy()
+        # Canonicalize model names for filtering (lowercase, hyphens to underscores)
+        # This handles both the filter list and potential variations in the dataframe
+        canonicalize_model_name = lambda x: str(x).strip().lower().replace(" ", "_").replace("-", "_")
+        core_models_canonical = [canonicalize_model_name(m) for m in core_models]
+        
+        # Also canonicalize the model column values for comparison
+        df_model_values = df[cfg.model_col].apply(canonicalize_model_name)
+        df = df[df_model_values.isin(core_models_canonical)].copy()
         filtered_count = len(df)
         excluded = initial_count - filtered_count
         if excluded > 0:
@@ -674,6 +708,8 @@ def save_robustness_results(
         print(f"\n[INFO] Saving individual CSV files to {output_dir}...")
         for key, df in results.items():
             if df is not None and not df.empty:
+                # Replace branched_wiredcfc_arch4 with HYDRA in model names before saving
+                df = replace_hydra_model_name(df, model_col='model')
                 filename = f"{prefix}_{key}_{timestamp}.csv"
                 filepath = os.path.join(output_dir, filename)
                 df.to_csv(filepath, index=False)
@@ -688,6 +724,8 @@ def save_robustness_results(
             with pd.ExcelWriter(excel_path, engine='openpyxl') as writer:
                 for key, df in results.items():
                     if df is not None and not df.empty:
+                        # Replace branched_wiredcfc_arch4 with HYDRA in model names before saving
+                        df = replace_hydra_model_name(df, model_col='model')
                         # Excel sheet names must be <= 31 characters
                         sheet_name = key[:31] if len(key) > 31 else key
                         df.to_excel(writer, sheet_name=sheet_name, index=False)
@@ -725,7 +763,7 @@ def save_robustness_results(
             
             # AUPC Summary
             if 'aupc_summary' in results and results['aupc_summary'] is not None:
-                df_aupc = results['aupc_summary']
+                df_aupc = replace_hydra_model_name(results['aupc_summary'], model_col='model')
                 if not df_aupc.empty:
                     f.write("-" * 80 + "\n")
                     f.write("AUPC (Area Under Perturbation Curve) SUMMARY\n")
@@ -743,7 +781,7 @@ def save_robustness_results(
             
             # RD Summary (sample)
             if 'rd_summary' in results and results['rd_summary'] is not None:
-                df_rd = results['rd_summary']
+                df_rd = replace_hydra_model_name(results['rd_summary'], model_col='model')
                 if not df_rd.empty:
                     f.write("-" * 80 + "\n")
                     f.write("RD (Relative Degradation) SUMMARY (Sample)\n")
@@ -754,7 +792,7 @@ def save_robustness_results(
             
             # CSV_p Summary (sample)
             if 'csv_summary' in results and results['csv_summary'] is not None:
-                df_csv = results['csv_summary']
+                df_csv = replace_hydra_model_name(results['csv_summary'], model_col='model')
                 if not df_csv.empty:
                     f.write("-" * 80 + "\n")
                     f.write("CSV_p (Cross-Subject Variance) SUMMARY (Sample)\n")
@@ -1164,7 +1202,8 @@ def main(
         
         # Also save AUPC table if available
         if 'aupc_summary' in results and results['aupc_summary'] is not None:
-            aupc_table = make_results_table_aupc(results['aupc_summary'])
+            aupc_summary = replace_hydra_model_name(results['aupc_summary'], model_col='model')
+            aupc_table = make_results_table_aupc(aupc_summary)
             if not aupc_table.empty:
                 table_path = os.path.join(output_dir, f"robustness_metrics_aupc_table_{pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')}.csv")
                 aupc_table.to_csv(table_path)

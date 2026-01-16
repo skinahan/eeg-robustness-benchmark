@@ -97,6 +97,33 @@ MODEL_CANONICAL_MAP = {
 }
 
 
+def replace_hydra_model_name(df, model_col='model'):
+    """
+    Replace 'branched_wiredcfc_arch4' (and variations) with 'HYDRA' in the model column.
+    Handles various naming formats (with/without hyphens, different cases).
+    
+    Parameters:
+    - df: pd.DataFrame with a model column
+    - model_col: str, name of the model column (default: 'model')
+    
+    Returns:
+    - pd.DataFrame with model names replaced
+    """
+    if model_col not in df.columns:
+        return df
+    
+    df = df.copy()
+    # Normalize model names for comparison (lowercase, hyphens/spaces to underscores)
+    # The canonical form after canonicalize_columns is 'branched_wiredcfc_arch4'
+    df_model_normalized = df[model_col].astype(str).str.lower().str.replace('-', '_').str.replace(' ', '_')
+    
+    # Replace any variant of branched_wiredcfc_arch4 with HYDRA
+    mask = df_model_normalized == 'branched_wiredcfc_arch4'
+    df.loc[mask, model_col] = 'HYDRA'
+    
+    return df
+
+
 def canonicalize_model(model_name: str) -> str:
     """Map model name to canonical form."""
     model_lower = str(model_name).lower().strip()
@@ -956,6 +983,9 @@ def run_statistical_analysis(
     # Save subject-level tables
     resolved_path = os.path.join(out_dir, "analysis_subject_level_resolved.csv")
     collapsed_path = os.path.join(out_dir, "analysis_subject_level_collapsed.csv")
+    # Replace branched_wiredcfc_arch4 with HYDRA in model names before saving
+    df_resolved = replace_hydra_model_name(df_resolved, model_col='model')
+    df_collapsed = replace_hydra_model_name(df_collapsed, model_col='model')
     df_resolved.to_csv(resolved_path, index=False)
     df_collapsed.to_csv(collapsed_path, index=False)
     print(f"\n[OK] Saved subject-level tables:")
@@ -1122,11 +1152,15 @@ def run_statistical_analysis(
     
     # Save statistical test results
     if not omnibus_df.empty:
+        # Replace branched_wiredcfc_arch4 with HYDRA in model names before saving
+        omnibus_df = replace_hydra_model_name(omnibus_df, model_col='model')
         omnibus_path = os.path.join(out_dir, "stats_omnibus.csv")
         omnibus_df.to_csv(omnibus_path, index=False)
         print(f"  [OK] Saved omnibus results: {omnibus_path}")
     
     if not pairwise_df.empty:
+        # Replace branched_wiredcfc_arch4 with HYDRA in model names before saving
+        pairwise_df = replace_hydra_model_name(pairwise_df, model_col='model')
         pairwise_path = os.path.join(out_dir, "stats_pairwise.csv")
         pairwise_df.to_csv(pairwise_path, index=False)
         print(f"  [OK] Saved pairwise results: {pairwise_path}")
@@ -1169,6 +1203,8 @@ def run_statistical_analysis(
                 # Drop the rounded column
                 csv_curve = csv_curve.drop(columns=['p_rounded'], errors='ignore')
             
+            # Replace branched_wiredcfc_arch4 with HYDRA in model names before saving
+            csv_curve = replace_hydra_model_name(csv_curve, model_col='model')
             csv_path = os.path.join(out_dir, "csv_by_level.csv")
             csv_curve.to_csv(csv_path, index=False)
             print(f"  [OK] Saved CSV results: {csv_path}")
