@@ -13,8 +13,6 @@ echo ""
 echo "Note: This script should be run from the project root directory"
 echo ""
 
-# Create logs directory if it doesn't exist (relative to project root)
-mkdir -p ablations/logs
 
 # Ablation Job 1/20
 # Ablation: Baseline (Full HYDRA) | Seed: 100

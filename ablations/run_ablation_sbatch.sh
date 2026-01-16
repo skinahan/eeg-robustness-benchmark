@@ -46,7 +46,7 @@ echo "Started at: $(date)"
 echo "=========================================="
 
 # Run the ablation experiment
-python ablations/run_ablations.py --ablation "$ABLATION" --seed "$SEED"
+python run_ablations.py --ablation "$ABLATION" --seed "$SEED"
 
 EXIT_CODE=$?
 
