@@ -2004,7 +2004,7 @@ class ExperimentAutomation:
         
         # Data rows
         for row in completion_data:
-            status = "✓ Complete" if row['complete'] else "✗ Incomplete"
+            status = "[OK] Complete" if row['complete'] else "[ERROR] Incomplete"
             progress = f"{row['complete_jobs']}/{row['total_jobs']} jobs"
             
             print(f"{row['dataset']:<20} {row['model']:<20} {row['tune']:<10} {row['eval_mode']:<15} "
@@ -2038,7 +2038,7 @@ class ExperimentAutomation:
                 model_rows = by_dataset_model[dataset_name][model_name]
                 print(f"  {model_name}:")
                 for row in model_rows:
-                    status_symbol = "✓" if row['complete'] else "✗"
+                    status_symbol = "[OK]" if row['complete'] else "[ERROR]"
                     print(f"    {status_symbol} {row['tune']:<10} {row['eval_mode']:<15} "
                           f"({row['complete_jobs']}/{row['total_jobs']} jobs)")
         

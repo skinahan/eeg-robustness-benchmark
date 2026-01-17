@@ -347,9 +347,9 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
                 # If this file has all intensities, we can skip
                 if file_has_all_intensities:
                     files_with_all_intensities.append(out_file)
-                    print(f"[check_skip_eval] ✓ {out_file} contains all expected intensities")
+                    print(f"[check_skip_eval] OK {out_file} contains all expected intensities")
                 else:
-                    print(f"[check_skip_eval] ✗ {out_file} missing intensities: {', '.join(file_missing_info)}")
+                    print(f"[check_skip_eval] ERROR {out_file} missing intensities: {', '.join(file_missing_info)}")
                         
             except Exception as e:
                 print(f"Warning: Could not read or verify {out_file}: {e}")
@@ -362,13 +362,13 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
         all_intensities_present = len(files_with_all_intensities) > 0
         
         if all_intensities_present:
-            print(f"[check_skip_eval] ✓ All expected intensities found in existing files - SKIPPING job")
+            print(f"[check_skip_eval] OK All expected intensities found in existing files - SKIPPING job")
             print(f"[check_skip_eval] Files with complete intensity data:")
             for out_file in files_with_all_intensities:
                 print(f"  {out_file}")
             return True
         else:
-            print(f"[check_skip_eval] ✗ Missing intensities detected - will RE-RUN job")
+            print(f"[check_skip_eval] ERROR Missing intensities detected - will RE-RUN job")
             print(f"[check_skip_eval] Missing intensity details:")
             for info in missing_intensities_info[:5]:  # Show first 5 missing items
                 print(f"  {info}")
@@ -450,9 +450,9 @@ def log_all_subjects(results, subject_list, model_name, mode, noise_type, intens
             
             try:
                 session_df.to_csv(out_file, index=False)
-                print(f"  ✓ Successfully saved: {out_file}")
+                print(f"  OK Successfully saved: {out_file}")
             except Exception as e:
-                print(f"  ✗ ERROR saving file: {e}")
+                print(f"  ERROR saving file: {e}")
                 import traceback
                 traceback.print_exc()
                 raise

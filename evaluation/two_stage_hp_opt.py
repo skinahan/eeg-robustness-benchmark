@@ -329,7 +329,8 @@ def run_optuna_stage(
         paradigm=None,
         dataset_obj=None,
         train_subjects=None,
-        subject_chunk_size=None
+        subject_chunk_size=None,
+        n_outputs=None
 ):
     # In the old version we explicitly wanted to only use 0train for hyperparameter optimization. That is no longer the case.
     # In the current code version, we can expect X and y to be split before run_optuna_stage is called.
@@ -364,10 +365,22 @@ def run_optuna_stage(
         resample = 250.0
 
     check_time = False
-    model = model_fn(n_chans=22, n_times=int(resample * 4), n_outputs=2)
-    # model.verbose = 0
-    # model.callbacks = []
-    # model.train_split = None
+    
+    # Determine n_chans and n_times from input data
+    # X should have shape (n_samples, n_chans, n_times)
+    n_chans = X_train.shape[1]
+    n_times = X_train.shape[2] if len(X_train.shape) > 2 else int(resample * 4)
+    
+    # Determine n_outputs from y if not provided
+    if n_outputs is None:
+        n_outputs = len(np.unique(y_train))
+        print(f"[INFO] Auto-detected n_outputs={n_outputs} from number of unique classes in y")
+    
+    # Use a mutable container to allow recreating the model inside objective() when wiring_arch_index changes
+    model_container = [model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)]
+    # model_container[0].verbose = 0
+    # model_container[0].callbacks = []
+    # model_container[0].train_split = None
     def objective(trial):
         # Sample hyperparameters
         params = param_space_fn(trial, param_prefix)
@@ -382,6 +395,25 @@ def run_optuna_stage(
         else:
             # Use normal max_epochs for other evaluation modes
             params[f"{param_prefix}max_epochs"] = get_max_epochs_for_dataset(None, eval_mode=eval_mode) if eval_mode else DEFAULT_MAX_EPOCHS
+        
+        # Extract wiring_arch_index if present - it's handled at factory level, not via set_params
+        wiring_arch_index = params.pop(f"{param_prefix}wiring_arch_index", None)
+        # Also check without prefix for compatibility
+        if wiring_arch_index is None:
+            wiring_arch_index = params.pop("wiring_arch_index", None)
+        
+        # If wiring_arch_index is present, recreate the model with the new wiring
+        # This is necessary because wiring_arch_index is a factory-level parameter
+        if wiring_arch_index is not None:
+            # Recreate model with wiring_arch_index passed to factory function
+            model_container[0] = model_fn(
+                n_chans=n_chans, 
+                n_times=n_times, 
+                n_outputs=n_outputs,
+                wiring_arch_index=wiring_arch_index
+            )
+        
+        model = model_container[0]
         
         # Define model
         model.set_params(**params)
@@ -483,7 +515,14 @@ def alternate_optuna_stage(
         # Default to 250 Hz (common for MotorImagery and ERP datasets)
         # Note: Lee2019_SSVEP uses 1000 Hz, so resample should be provided explicitly
         resample = 250.0
-    model = model_fn(n_chans=22, n_times=int(resample * 4), n_outputs=2)
+    
+    # Determine n_chans and n_times from input data
+    n_chans = X_train.shape[1]
+    n_times = X_train.shape[2] if len(X_train.shape) > 2 else int(resample * 4)
+    
+    # Determine n_outputs from y if not provided
+    n_outputs = len(np.unique(y_train))
+    model = model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
     def objective(trial):
         # Sample hyperparameters
         params = param_space_fn(trial, param_prefix)
@@ -825,6 +864,140 @@ def branched_wiredcfc_training_space(trial, prefix):
     }
 
 
+def hydra_v2_architecture_space(trial, prefix):
+    """
+    Architecture parameter space for HYDRAv2 model.
+    
+    Includes wiring selection from the 10 available architectures in outputs/architectures.
+    The wiring's input/output dimensions will be automatically reconfigured based on F1 and D.
+    """
+    import os
+    from pathlib import Path
+    
+    # Find available architecture files
+    architectures_dir = Path("outputs/architectures")
+    architecture_files = sorted(architectures_dir.glob("best_architecture_*.json"))
+    
+    # Create list of architecture indices (1-10)
+    architecture_choices = [i for i in range(1, len(architecture_files) + 1)]
+    
+    if not architecture_choices:
+        raise ValueError("No architecture files found in outputs/architectures")
+    
+    return {
+        # NOTE:
+        # - We intentionally DO NOT tune `recurrent_output_size` here.
+        #   The BranchedWiredCfC base class defaults `recurrent_output_size` to F2
+        #   (the CNN feature dimension) to keep the residual connection valid.
+        #   Tuning it independently caused shape mismatches (H != F2) in the
+        #   residual add. By omitting it from the search space, we keep the
+        #   safe default behaviour for all tuned runs.
+        
+        # Wiring selection: Choose from available architectures (1-10)
+        # This is handled at the model factory level, not as a module parameter
+        # Note: Not using module__ prefix since wiring is selected before module creation
+        f"{prefix}wiring_arch_index": trial.suggest_categorical(
+            f"{prefix}wiring_arch_index", architecture_choices
+        ),
+        
+        # CfC / regularization parameters
+        f"{prefix}module__drop_prob": trial.suggest_float(
+            f"{prefix}module__drop_prob", 0.1, 0.5
+        ),
+        
+        # CNN feature extraction parameters
+        f"{prefix}module__F1": trial.suggest_categorical(
+            f"{prefix}module__F1", [4, 8, 12, 16]
+        ),
+        f"{prefix}module__D": trial.suggest_categorical(
+            f"{prefix}module__D", [1, 2, 4]
+        ),
+        f"{prefix}module__kernel_length": trial.suggest_int(
+            f"{prefix}module__kernel_length", 64, 256, step=32
+        ),
+        
+        # Temporal processing parameters
+        f"{prefix}module__temporal_kernel_size": trial.suggest_categorical(
+            f"{prefix}module__temporal_kernel_size", [3, 5, 7]
+        ),
+        f"{prefix}module__temporal_stride": trial.suggest_categorical(
+            f"{prefix}module__temporal_stride", [2, 4, 6, 8]
+        ),
+        
+        # Fusion type over bins
+        f"{prefix}module__fusion": trial.suggest_categorical(
+            f"{prefix}module__fusion", ["attn", "mean"]
+        ),
+        
+        # HYDRAv2-specific parameters
+        f"{prefix}module__num_attn_queries": trial.suggest_categorical(
+            f"{prefix}module__num_attn_queries", [2, 4, 6, 8]
+        ),
+        f"{prefix}module__attn_dropout": trial.suggest_float(
+            f"{prefix}module__attn_dropout", 0.0, 0.3
+        ),
+        f"{prefix}module__use_adaptive_residual": trial.suggest_categorical(
+            f"{prefix}module__use_adaptive_residual", [True, False]
+        ),
+        f"{prefix}module__use_erp_head": trial.suggest_categorical(
+            f"{prefix}module__use_erp_head", [True, False]
+        ),
+        f"{prefix}module__use_ssvep_head": trial.suggest_categorical(
+            f"{prefix}module__use_ssvep_head", [True, False]
+        ),
+        f"{prefix}module__erp_num_queries": trial.suggest_categorical(
+            f"{prefix}module__erp_num_queries", [2, 4, 6]
+        ),
+        f"{prefix}module__ssvep_num_filters": trial.suggest_categorical(
+            f"{prefix}module__ssvep_num_filters", [2, 4, 6]
+        ),
+        f"{prefix}module__use_cross_bin_context": trial.suggest_categorical(
+            f"{prefix}module__use_cross_bin_context", [True, False]
+        ),
+        f"{prefix}module__context_type": trial.suggest_categorical(
+            f"{prefix}module__context_type", ["transformer", "gru"]
+        ),
+        f"{prefix}module__use_global_skip": trial.suggest_categorical(
+            f"{prefix}module__use_global_skip", [True, False]
+        ),
+        
+        # CfC-specific parameters
+        f"{prefix}module__mixed_memory": trial.suggest_categorical(
+            f"{prefix}module__mixed_memory", [True, False]
+        ),
+        f"{prefix}module__mode": trial.suggest_categorical(
+            f"{prefix}module__mode", ["default", "pure", "no_gate"]
+        ),
+        f"{prefix}module__activation": trial.suggest_categorical(
+            f"{prefix}module__activation", ["lecun_tanh", "silu", "relu", "tanh", "gelu"]
+        ),
+        f"{prefix}module__backbone_units": trial.suggest_int(
+            f"{prefix}module__backbone_units", 64, 256
+        ),
+        f"{prefix}module__backbone_layers": trial.suggest_int(
+            f"{prefix}module__backbone_layers", 1, 3
+        ),
+        f"{prefix}module__backbone_dropout": trial.suggest_float(
+            f"{prefix}module__backbone_dropout", 0.0, 0.5
+        ),
+    }
+
+
+def hydra_v2_training_space(trial, prefix):
+    """Training parameter space for HYDRAv2 model."""
+    return {
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(
+            f"{prefix}optimizer__lr", 1e-6, 1e-2
+        ),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
+            f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
+        ),
+        f"{prefix}batch_size": trial.suggest_categorical(
+            f"{prefix}batch_size", [4, 8, 16, 32, 64]
+        ),
+    }
+
+
 def diva_full_architecture_space(trial, prefix):
     """Architecture parameter space for DIVAInspiredEEG (diva_full) model."""
     return {
@@ -1045,6 +1218,14 @@ def get_model_architecture_space(model_name):
     if model_name.startswith("branched_wiredcfc_arch"):
         return branched_wiredcfc_architecture_space
     
+    # Check if this is a branched_lstm architecture model
+    if model_name.startswith("branched_lstm_arch"):
+        return branched_lstm_architecture_space
+    
+    # Check if this is a hydra_v2 architecture model
+    if model_name.startswith("hydra_v2"):
+        return hydra_v2_architecture_space
+    
     architecture_registry = {
         "eegnet": eegnet_architecture_space,
         "reegnet": reegnet_architecture_space,
@@ -1059,6 +1240,7 @@ def get_model_architecture_space(model_name):
         "branched_diva_ncp": branched_diva_ncp_architecture_space,
         "branched_lstm": branched_lstm_architecture_space,
         "branched_wiredcfc": branched_wiredcfc_architecture_space,
+        "hydra_v2": hydra_v2_architecture_space,
         "diva_full": diva_full_architecture_space,
     }
     return architecture_registry[model_name]
@@ -1072,6 +1254,14 @@ def get_model_training_space(model_name):
     # Check if this is a branched_wiredcfc architecture model
     if model_name.startswith("branched_wiredcfc_arch"):
         return branched_wiredcfc_training_space
+    
+    # Check if this is a branched_lstm architecture model
+    if model_name.startswith("branched_lstm_arch"):
+        return branched_lstm_training_space
+    
+    # Check if this is a hydra_v2 architecture model
+    if model_name.startswith("hydra_v2"):
+        return hydra_v2_training_space
     
     training_registry = {
         "eegnet": eegnet_training_space,
@@ -1087,6 +1277,7 @@ def get_model_training_space(model_name):
         "branched_diva_ncp": branched_diva_ncp_training_space,
         "branched_lstm": branched_lstm_training_space,
         "branched_wiredcfc": branched_wiredcfc_training_space,
+        "hydra_v2": hydra_v2_training_space,
         "diva_full": diva_full_training_space,
     }
     return training_registry[model_name]
@@ -1600,7 +1791,13 @@ def multi_objective_optuna_stage(
     if resample is None:
         resample = 250.0
 
-    model = model_fn(n_chans=22, n_times=int(resample * 4), n_outputs=2)
+    # Determine n_chans and n_times from input data
+    n_chans = X_train.shape[1]
+    n_times = X_train.shape[2] if len(X_train.shape) > 2 else int(resample * 4)
+    
+    # Determine n_outputs from y if not provided
+    n_outputs = len(np.unique(y_train))
+    model = model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
     model.verbose = 1
     model.callbacks = []
     model.train_split = None

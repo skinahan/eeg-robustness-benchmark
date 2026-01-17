@@ -45,7 +45,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.insert(0, project_root)
 
-from config import MODEL_REGISTRY, get_paradigm, get_dataset_sampling_rate
+from config import MODEL_REGISTRY, get_model_registry, get_paradigm, get_dataset_sampling_rate
 from globals import set_seeds, DEFAULT_MAX_EPOCHS, UNDERFITTING_THRESHOLD, get_max_epochs_for_dataset, get_underfitting_threshold_for_dataset
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
 from evaluation.two_stage_hp_opt import alternate_two_stage_optuna, run_two_stage_optuna, format_params, get_all_model_params
@@ -427,8 +427,16 @@ class UnifiedExperimentRunner:
         # Initialize dataset and paradigm
         self._setup_dataset_and_paradigm()
         
-        # Initialize model factory
-        self.model_fn = MODEL_REGISTRY[model]
+        # Initialize model factory - use get_model_registry() to get latest registry
+        # (supports runtime-registered variants)
+        registry = get_model_registry()
+        if model not in registry:
+            available_models = sorted(registry.keys())
+            raise ValueError(
+                f"Model '{model}' not found in registry. "
+                f"Available models: {available_models}"
+            )
+        self.model_fn = registry[model]
         
         # Create output paths
         self._create_output_paths()
@@ -1089,7 +1097,22 @@ class UnifiedExperimentRunner:
         module_prefix = f"{prefix}module__"
         optim_prefix = f"{prefix}optimizer__"
         
+        # Extract wiring_arch_index - it's handled at factory level, not via set_params
+        # Check both with and without prefix
+        wiring_arch_index_to_filter = [
+            'wiring_arch_index',
+            f'{prefix}wiring_arch_index',
+            'module__wiring_arch_index',
+            f'{prefix}module__wiring_arch_index'
+        ]
+        
+        wiring_arch_index = None
         for k, v in best_params.items():
+            # Extract wiring_arch_index - it's used only during model creation, not for set_params
+            if k in wiring_arch_index_to_filter:
+                wiring_arch_index = v
+                continue
+                
             mod_prefixed_key = f"{module_prefix}{k}"
             optim_prefixed_key = f"{optim_prefix}{k}"
             if mod_prefixed_key in module_params:
@@ -1099,7 +1122,7 @@ class UnifiedExperimentRunner:
             else:
                 final_params[k] = v
 
-        return final_params, best_score
+        return final_params, best_score, wiring_arch_index
 
     def _run_hyperparameter_optimization(
         self, 
@@ -1116,17 +1139,37 @@ class UnifiedExperimentRunner:
         IMPORTANT: This method should ONLY be called when self.tune is True.
         """
         assert self.tune, f"_run_hyperparameter_optimization called but self.tune is False. This is a logic error."
-        final_params, best_score = self._tune_and_get_params(X_train, y_train, X_valid, y_valid, metadata_train, fold_idx)
+        final_params, best_score, wiring_arch_index = self._tune_and_get_params(X_train, y_train, X_valid, y_valid, metadata_train, fold_idx)
 
         # Train final model with best parameters
         n_chans, n_times = self._determine_data_dimensions()
+        
+        # If wiring_arch_index was selected during optimization, use it when creating the model
+        # Wrap the model factory to pass wiring_arch_index as a kwarg
+        original_model_fn = self.model_fn
+        if wiring_arch_index is not None:
+            def model_fn_with_wiring(**kwargs):
+                kwargs['wiring_arch_index'] = wiring_arch_index
+                return original_model_fn(**kwargs)
+            self.model_fn = model_fn_with_wiring
+        
         final_model = self._create_model(n_chans, n_times, try_cache=False)
+        
+        # Restore original model_fn
+        self.model_fn = original_model_fn
         final_params['verbose'] = 0
         # Restore max_epochs for final training run after optimization
         # Note: During optimization, CrossSubject uses max_epochs=5 to speed up trials
         # After optimization, CrossSubject uses max_epochs=20 for the full training run
         # Other eval modes use their normal dataset-specific values
         final_params['max_epochs'] = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
+        
+        # Defensive check: Remove wiring_arch_index if it somehow made it into final_params
+        # (it should have been filtered out in _tune_and_get_params, but this ensures safety)
+        wiring_arch_index_keys = ['wiring_arch_index', 'module__wiring_arch_index']
+        for key in wiring_arch_index_keys:
+            final_params.pop(key, None)
+        
         final_model.set_params(**final_params)
         
         # Train final model - use chunked training if enabled
@@ -1451,6 +1494,7 @@ class UnifiedExperimentRunner:
         Noise intensities are determined dynamically in _evaluate_perturb from
         the saturation file, so self.noise_dict is not required.
         """
+        assert not self.tune, f"_train_and_evaluate_perturb called but self.tune is True. This is a logic error."
         n_chans, n_times = self._determine_data_dimensions()
         set_seeds(self.seed)
         model = self._create_model(n_chans, n_times, fold_idx=fold_idx)
@@ -2093,9 +2137,9 @@ class UnifiedExperimentRunner:
         # Save results using existing method
         try:
             self._save_results(fold_df)
-            print(f"[CROSSSUBJECT] ✓ Successfully saved results for fold {fold_idx} (eval_subjects: {eval_subjects})")
+            print(f"[CROSSSUBJECT] OK Successfully saved results for fold {fold_idx} (eval_subjects: {eval_subjects})")
         except Exception as e:
-            print(f"[CROSSSUBJECT] ✗ ERROR saving results for fold {fold_idx}: {e}")
+            print(f"[CROSSSUBJECT] ERROR saving results for fold {fold_idx}: {e}")
             import traceback
             traceback.print_exc()
             raise
@@ -2371,8 +2415,30 @@ class UnifiedExperimentRunner:
 
 def main():
     """Main entry point for the unified experiment runner."""
+    # Load any custom model registrations from .model_registry directory
+    # This allows test scripts to register custom model variants
+    import importlib.util
+    from pathlib import Path
+    reg_dir = Path(__file__).parent.parent / ".model_registry"
+    if reg_dir.exists():
+        for reg_file in sorted(reg_dir.glob("*.py")):
+            if reg_file.name.startswith("_"):
+                continue
+            try:
+                spec = importlib.util.spec_from_file_location(reg_file.stem, reg_file)
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+            except Exception as e:
+                # Print error for debugging
+                print(f"Warning: Failed to load registration file {reg_file.name}: {e}")
+                import traceback
+                traceback.print_exc()
+    
     parser = argparse.ArgumentParser(description="Unified EEG Experiment Runner")
-    parser.add_argument("--model", type=str, required=True, choices=list(MODEL_REGISTRY.keys()))
+    # Get model registry dynamically to support runtime-registered variants
+    # Note: We validate at runtime in UnifiedExperimentRunner.__init__ instead of here
+    # to allow for custom model variants registered after import
+    parser.add_argument("--model", type=str, required=True)
     parser.add_argument("--dataset", type=str, default="BNCI2014_001", choices=["BNCI2014_001", "Lee2019_SSVEP", "BI2015a"])
     parser.add_argument("--subjects", type=int, nargs="+", required=True)
     parser.add_argument("--mode", type=str, required=True, 

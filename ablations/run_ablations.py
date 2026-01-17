@@ -50,7 +50,9 @@ from config import (
     get_paradigm, 
     get_dataset_sampling_rate,
     add_branched_wiredcfc_architecture,
-    get_branched_wiredcfc_architecture_registry
+    get_branched_wiredcfc_architecture_registry,
+    get_model_registry,
+    _runtime_model_registry
 )
 from globals import set_seeds, get_seed
 from models.branched_lstm import create_branched_lstm_classifier
@@ -136,7 +138,7 @@ if not ARCHITECTURE_FILE_PATH.exists():
         f"\nChecked locations:\n"
     )
     for alt in alt_locations:
-        exists = "✓" if alt.exists() else "✗"
+        exists = "[OK]" if alt.exists() else "[ERROR]"
         error_msg += f"  {exists} {alt}\n"
     
     raise FileNotFoundError(error_msg)
@@ -217,14 +219,18 @@ def run_ablation_experiment(
     print(f"[DEBUG] Ablation name: {ablation_name}")
     print(f"[DEBUG] Seed: {seed}")
     
-    # Sanity check: Verify model is registered
-    if model_name not in MODEL_REGISTRY:
-        available_models = list(MODEL_REGISTRY.keys())
+    # Sanity check: Verify model is registered and accessible via get_model_registry()
+    # (this is what UnifiedExperimentRunner uses)
+    registry = get_model_registry()
+    if model_name not in registry:
+        available_models = sorted(registry.keys())
         raise KeyError(
-            f"Model '{model_name}' not found in MODEL_REGISTRY.\n"
-            f"Available models: {available_models}"
+            f"Model '{model_name}' not found in registry.\n"
+            f"Available models: {available_models}\n"
+            f"Runtime registry: {list(_runtime_model_registry.keys())}\n"
+            f"MODEL_REGISTRY: {list(MODEL_REGISTRY.keys())}"
         )
-    print(f"[DEBUG] Model '{model_name}' found in registry")
+    print(f"[DEBUG] Model '{model_name}' found in registry (accessible via get_model_registry())")
     
     # Set random seeds
     print(f"[DEBUG] Setting random seeds to {seed}")
@@ -605,7 +611,11 @@ def register_model_variants(wiring):
             def factory(n_chans, n_times, n_outputs, **kwargs):
                 return create_branched_wiredcfc_no_carry_gate_classifier(n_chans, n_times, n_outputs, wiring_ref, **kwargs)
             return factory
-        MODEL_REGISTRY["branched_wiredcfc_arch4_no_carry_gate"] = create_no_carry_gate_factory(wiring)
+        factory = create_no_carry_gate_factory(wiring)
+        # Register in runtime registry (proper way for runtime-registered models)
+        _runtime_model_registry["branched_wiredcfc_arch4_no_carry_gate"] = factory
+        # Also register in MODEL_REGISTRY for backward compatibility
+        MODEL_REGISTRY["branched_wiredcfc_arch4_no_carry_gate"] = factory
         print(f"[DEBUG] Registered: branched_wiredcfc_arch4_no_carry_gate")
     except Exception as e:
         raise RuntimeError(f"Failed to register no_carry_gate model: {e}")
@@ -616,7 +626,11 @@ def register_model_variants(wiring):
             def factory(n_chans, n_times, n_outputs, **kwargs):
                 return create_branched_wiredcfc_no_branching_classifier(n_chans, n_times, n_outputs, wiring_ref, **kwargs)
             return factory
-        MODEL_REGISTRY["branched_wiredcfc_arch4_no_branching"] = create_no_branching_factory(wiring)
+        factory = create_no_branching_factory(wiring)
+        # Register in runtime registry (proper way for runtime-registered models)
+        _runtime_model_registry["branched_wiredcfc_arch4_no_branching"] = factory
+        # Also register in MODEL_REGISTRY for backward compatibility
+        MODEL_REGISTRY["branched_wiredcfc_arch4_no_branching"] = factory
         print(f"[DEBUG] Registered: branched_wiredcfc_arch4_no_branching")
     except Exception as e:
         raise RuntimeError(f"Failed to register no_branching model: {e}")
@@ -624,23 +638,42 @@ def register_model_variants(wiring):
     # 4. LSTM Replacement (use BranchedLSTM with equivalent parameters)
     # Note: This uses BranchedLSTM which doesn't use wiring, so we'll use the standard factory
     try:
+        # Register in runtime registry (proper way for runtime-registered models)
+        _runtime_model_registry["branched_lstm_arch4_equivalent"] = create_branched_lstm_classifier
+        # Also register in MODEL_REGISTRY for backward compatibility
         MODEL_REGISTRY["branched_lstm_arch4_equivalent"] = create_branched_lstm_classifier
         print(f"[DEBUG] Registered: branched_lstm_arch4_equivalent")
     except Exception as e:
         raise RuntimeError(f"Failed to register LSTM model: {e}")
     
-    # Sanity check: Verify all models are registered
+    # Sanity check: Verify all models are registered in both registries
     expected_models = [
         "branched_wiredcfc_arch4",
         "branched_wiredcfc_arch4_no_carry_gate",
         "branched_wiredcfc_arch4_no_branching",
         "branched_lstm_arch4_equivalent"
     ]
+    
+    # Check runtime registry (used by get_model_registry())
+    missing_runtime = [m for m in expected_models if m not in _runtime_model_registry]
+    if missing_runtime:
+        # branched_wiredcfc_arch4 is registered via add_branched_wiredcfc_architecture, not runtime registry
+        missing_runtime = [m for m in missing_runtime if m != "branched_wiredcfc_arch4"]
+        if missing_runtime:
+            raise RuntimeError(f"Failed to register models in runtime registry: {missing_runtime}")
+    
+    # Check MODEL_REGISTRY (for backward compatibility)
     missing_models = [m for m in expected_models if m not in MODEL_REGISTRY]
     if missing_models:
-        raise RuntimeError(f"Failed to register models: {missing_models}")
+        raise RuntimeError(f"Failed to register models in MODEL_REGISTRY: {missing_models}")
     
-    print(f"[DEBUG] All models registered successfully")
+    # Verify models are accessible via get_model_registry() (what UnifiedExperimentRunner uses)
+    registry = get_model_registry()
+    missing_in_registry = [m for m in expected_models if m not in registry]
+    if missing_in_registry:
+        raise RuntimeError(f"Models not accessible via get_model_registry(): {missing_in_registry}")
+    
+    print(f"[DEBUG] All models registered successfully and verified in all registries")
 
 
 def get_ablation_config(ablation_num: str):
@@ -749,12 +782,18 @@ Examples:
         except Exception as e:
             raise ValueError(f"Invalid ablation configuration: {e}")
         
-        # Sanity check: Verify model is in registry
-        if model_name not in MODEL_REGISTRY:
+        # Sanity check: Verify model is accessible via get_model_registry() 
+        # (this is what UnifiedExperimentRunner uses)
+        registry = get_model_registry()
+        if model_name not in registry:
+            available_models = sorted(registry.keys())
             raise KeyError(
                 f"Model '{model_name}' not found in registry after registration.\n"
-                f"Available models: {list(MODEL_REGISTRY.keys())}"
+                f"Available models: {available_models}\n"
+                f"Runtime registry: {list(_runtime_model_registry.keys())}\n"
+                f"MODEL_REGISTRY: {list(MODEL_REGISTRY.keys())}"
             )
+        print(f"[DEBUG] Model '{model_name}' verified in registry (accessible via get_model_registry())")
         
         # Run the experiment
         print(f"\n{'='*60}")

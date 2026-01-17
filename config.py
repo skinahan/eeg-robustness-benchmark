@@ -1,3 +1,4 @@
+import sys
 from moabb.datasets import BNCI2014_001, Lee2019_SSVEP, BI2015a
 from moabb.paradigms import MotorImagery, SSVEP, P300
 from models.eegnet import create_eegnet_classifier
@@ -11,6 +12,7 @@ from models.diva_ncp import create_diva_ncp_classifier
 from models.branched_diva_ncp import create_branched_diva_ncp_classifier
 from models.branched_lstm import create_branched_lstm_classifier
 from models.branched_wiredcfc import create_branched_wiredcfc_classifier
+from models.hydra import create_hydra_v2_classifier
 from models.diva_full import create_diva_full_classifier
 from models.sppncp import create_sppncp_classifier
 
@@ -62,6 +64,9 @@ _wiredcfc_architecture_registry = {}
 # Module-level registry for BranchedWiredCfC architectures
 _branched_wiredcfc_architecture_registry = {}
 
+# Module-level registry for HYDRAv2 architectures
+_hydra_v2_architecture_registry = {}
+
 # Base model registry without CNNWiredCfC architectures
 def get_base_model_registry():
     """Get the base model registry with standard models."""
@@ -76,6 +81,7 @@ def get_base_model_registry():
         "branched_diva_ncp": create_branched_diva_ncp_classifier,
         "branched_lstm": create_branched_lstm_classifier,
         "branched_wiredcfc": create_branched_wiredcfc_classifier,
+        "hydra_v2": create_hydra_v2_classifier,
         "diva_full": create_diva_full_classifier,
         "cnncfc_compact": create_cnnncfc_compact_classifier,
         "cnn_smallworld": create_cnnsmallworld_classifier,
@@ -151,6 +157,9 @@ def list_wiredcfc_architectures():
     
     return list(_wiredcfc_architecture_registry.keys())
 
+# Module-level dict for runtime-registered models (e.g., from test scripts)
+_runtime_model_registry = {}
+
 def get_model_registry():
     """Get the complete model registry including dynamic CNNWiredCfC and BranchedWiredCfC architectures."""
     # Start with base models
@@ -165,9 +174,32 @@ def get_model_registry():
     # Add dynamic BranchedWiredCfC architectures
     for name, info in _branched_wiredcfc_architecture_registry.items():
         # Create a factory function that uses the registered wiring
-        def create_branched_wiredcfc_with_wiring(wiring=info['wiring'], **kwargs):
-            return create_branched_wiredcfc_classifier(wiring=wiring, **kwargs)
-        registry[name] = create_branched_wiredcfc_with_wiring
+        # Use closure to capture wiring correctly
+        def make_branched_factory(wiring_ref):
+            def create_branched_wiredcfc_with_wiring(**kwargs):
+                return create_branched_wiredcfc_classifier(wiring=wiring_ref, **kwargs)
+            return create_branched_wiredcfc_with_wiring
+        registry[name] = make_branched_factory(info['wiring'])
+    
+    # Add dynamic HYDRAv2 architectures
+    for name, info in _hydra_v2_architecture_registry.items():
+        # Create a factory function that uses the registered wiring
+        # Use closure to capture wiring correctly
+        def make_hydra_factory(wiring_ref):
+            def create_hydra_v2_with_wiring(**kwargs):
+                return create_hydra_v2_classifier(wiring=wiring_ref, **kwargs)
+            return create_hydra_v2_with_wiring
+        registry[name] = make_hydra_factory(info['wiring'])
+    
+    # Add runtime-registered models (from test scripts, registration files, etc.)
+    registry.update(_runtime_model_registry)
+    
+    # Also check MODEL_REGISTRY for any additions made directly
+    # (in case registration files modify it)
+    if hasattr(sys.modules[__name__], 'MODEL_REGISTRY'):
+        for name, factory in MODEL_REGISTRY.items():
+            if name not in registry:
+                registry[name] = factory
     
     return registry
 
@@ -332,6 +364,134 @@ def load_branched_wiredcfc_architectures_from_directory(architectures_dir="outpu
     # verbose_print(f"Successfully loaded {len(loaded_architectures)} BranchedWiredCfC architectures")
     return loaded_architectures
 
+# HYDRAv2 architecture management functions
+def add_hydra_v2_architecture(architecture_name, wiring):
+    """
+    Add a new HYDRAv2 architecture to the registry.
+    
+    Args:
+        architecture_name: Name for the architecture (e.g., "hydra_v2_arch1")
+        wiring: ArbitraryWiring instance or path to architecture file
+    
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        # If wiring is a string, treat it as a file path and load the architecture
+        if isinstance(wiring, str):
+            from architecture_refinement.arbitrary_wiring import load_architecture_from_file
+            wiring = load_architecture_from_file(wiring)
+        
+        # Add to the architecture registry
+        _hydra_v2_architecture_registry[architecture_name] = {
+            'wiring': wiring,
+            'file_path': getattr(wiring, 'file_path', None)
+        }
+        
+        # verbose_print(f"Successfully added {architecture_name}")
+        return True
+        
+    except Exception as e:
+        verbose_print(f"Failed to add {architecture_name}: {e}")
+        return False
+
+def remove_hydra_v2_architecture(architecture_name):
+    """
+    Remove a HYDRAv2 architecture from the registry.
+    
+    Args:
+        architecture_name: Name of the architecture to remove
+    
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        if architecture_name in _hydra_v2_architecture_registry:
+            del _hydra_v2_architecture_registry[architecture_name]
+            verbose_print(f"Successfully removed {architecture_name}")
+            return True
+        else:
+            verbose_print(f"WARNING: Architecture {architecture_name} not found in registry")
+            return False
+        
+    except Exception as e:
+        verbose_print(f"Failed to remove {architecture_name}: {e}")
+        return False
+
+def get_hydra_v2_architecture_registry():
+    """Get the registry of HYDRAv2 models with optimized architectures."""
+    return _hydra_v2_architecture_registry
+
+def load_hydra_v2_architecture_4():
+    """
+    Load and register HYDRAv2 with architecture 4 (same as branched_wiredcfc_arch4).
+    
+    Returns:
+        True if successful, False otherwise
+    """
+    import os
+    from pathlib import Path
+    
+    # Try multiple possible paths for architecture 4
+    possible_paths = [
+        "outputs/architectures/best_architecture_4_trial_178.json",
+        "architecture_refinement/outputs/architectures/best_architecture_4_trial_178.json",
+    ]
+    
+    architecture_path = None
+    for path in possible_paths:
+        full_path = Path(path)
+        if full_path.exists():
+            architecture_path = str(full_path)
+            break
+    
+    if architecture_path is None:
+        verbose_print(f"WARNING: Could not find Architecture 4 file. Tried: {possible_paths}")
+        return False
+    
+    # Register as hydra_v2_arch4 (default HYDRAv2 with architecture 4)
+    return add_hydra_v2_architecture("hydra_v2_arch4", architecture_path)
+
+def load_hydra_v2_architectures_from_directory(architectures_dir="outputs/architectures", prefix="hydra_v2_arch"):
+    """
+    Automatically load all HYDRAv2 architecture files from a directory.
+    
+    Args:
+        architectures_dir: Directory containing architecture JSON files
+        prefix: Prefix for architecture names
+    
+    Returns:
+        List of successfully loaded architecture names
+    """
+    import os
+    from pathlib import Path
+    
+    arch_path = Path(architectures_dir)
+    if not arch_path.exists():
+        verbose_print(f"Architectures directory not found: {architectures_dir}")
+        return []
+    
+    # Find all best_architecture_*.json files (sorted to get 1-10 in order)
+    json_files = sorted(arch_path.glob("best_architecture_*.json"))
+    if not json_files:
+        verbose_print(f"No architecture JSON files found in {architectures_dir}")
+        return []
+    
+    # verbose_print(f"Found {len(json_files)} architecture files in {architectures_dir}")
+    
+    loaded_architectures = []
+    
+    for i, json_file in enumerate(json_files):
+        # Generate architecture name (i+1 for 1-based indexing)
+        architecture_name = f"{prefix}{i+1}"
+        
+        # Add to registry
+        if add_hydra_v2_architecture(architecture_name, str(json_file)):
+            loaded_architectures.append(architecture_name)
+    
+    # verbose_print(f"Successfully loaded {len(loaded_architectures)} HYDRAv2 architectures")
+    return loaded_architectures
+
 # Initialize with some default architectures if they exist
 def initialize_default_architectures():
     """Initialize the registry with default architectures if they exist."""
@@ -360,6 +520,8 @@ try:
     # initialize_default_architectures()
     load_architectures_from_directory()
     load_branched_wiredcfc_architectures_from_directory()
+    # Load all HYDRAv2 architectures (1-10) from directory
+    load_hydra_v2_architectures_from_directory()
 except Exception as e:
     verbose_print(f"WARNING: Could not initialize default architectures: {e}")
 
