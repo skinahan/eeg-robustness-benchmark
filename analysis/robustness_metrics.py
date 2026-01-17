@@ -544,6 +544,25 @@ def compute_results_metrics(
         # Also canonicalize the model column values for comparison
         df_model_values = df[cfg.model_col].apply(canonicalize_model_name)
         df = df[df_model_values.isin(core_models_canonical)].copy()
+        
+        # CRITICAL FIX: Normalize model column values to match the expected core model names
+        # This prevents inconsistent model name formats from causing label mix-ups during grouping
+        # Create a mapping from canonicalized names back to the expected core model names
+        model_name_mapping = {}
+        for core_model in core_models:
+            canonical = canonicalize_model_name(core_model)
+            model_name_mapping[canonical] = core_model
+        
+        # Normalize the model column to use the expected core model names
+        df_model_normalized = df[cfg.model_col].apply(canonicalize_model_name)
+        original_model_values = df[cfg.model_col].copy()  # Keep original for fallback
+        df[cfg.model_col] = df_model_normalized.map(model_name_mapping)
+        # Handle any unmapped values (shouldn't happen after filtering, but safety check)
+        unmapped_mask = df[cfg.model_col].isna()
+        if unmapped_mask.any():
+            print(f"[WARNING] Found {unmapped_mask.sum()} rows with unmapped model names after filtering. Keeping original values.")
+            df.loc[unmapped_mask, cfg.model_col] = original_model_values[unmapped_mask]
+        
         filtered_count = len(df)
         excluded = initial_count - filtered_count
         if excluded > 0:
@@ -910,7 +929,29 @@ def load_results_dataframe(
     model_col = 'model'  # After canonicalization, should be 'model'
     if model_col in df.columns:
         initial_count = len(df)
-        df = df[df[model_col].isin(core_models)].copy()
+        # Canonicalize model names for filtering to handle variations
+        canonicalize_model_name = lambda x: str(x).strip().lower().replace(" ", "_").replace("-", "_")
+        core_models_canonical = [canonicalize_model_name(m) for m in core_models]
+        df_model_values = df[model_col].apply(canonicalize_model_name)
+        df = df[df_model_values.isin(core_models_canonical)].copy()
+        
+        # CRITICAL FIX: Normalize model column values to match the expected core model names
+        # This prevents inconsistent model name formats from causing label mix-ups
+        model_name_mapping = {}
+        for core_model in core_models:
+            canonical = canonicalize_model_name(core_model)
+            model_name_mapping[canonical] = core_model
+        
+        # Normalize the model column to use the expected core model names
+        df_model_normalized = df[model_col].apply(canonicalize_model_name)
+        original_model_values = df[model_col].copy()  # Keep original for fallback
+        df[model_col] = df_model_normalized.map(model_name_mapping)
+        # Handle any unmapped values (shouldn't happen after filtering, but safety check)
+        unmapped_mask = df[model_col].isna()
+        if unmapped_mask.any():
+            print(f"[WARNING] Found {unmapped_mask.sum()} rows with unmapped model names after filtering. Keeping original values.")
+            df.loc[unmapped_mask, model_col] = original_model_values[unmapped_mask]
+        
         filtered_count = len(df)
         excluded = initial_count - filtered_count
         if excluded > 0:

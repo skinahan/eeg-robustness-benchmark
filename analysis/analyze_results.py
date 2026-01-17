@@ -3156,7 +3156,7 @@ def sanity_check_clean_scores(df, clean_col='clean_score', verbose=True, output_
     print(f"\n[STEP 2] Summary")
     print(f"  Total combinations checked: {len(full_combos)}")
     print(f"  Violations found: {num_violations}")
-    print(f"  Status: {'✓ PASSED' if passed else '✗ FAILED'}")
+    print(f"  Status: {'[OK] PASSED' if passed else '[ERROR] FAILED'}")
     
     if num_violations > 0:
         print(f"\n[ERROR] Found {num_violations} combinations with inconsistent clean scores across noise types")
