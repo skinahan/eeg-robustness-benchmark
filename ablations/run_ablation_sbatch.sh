@@ -6,13 +6,17 @@
 # Parse command line arguments
 ABLATION=$1
 SEED=$2
+DATASET=$3
+EVAL_MODE=$4
 
 # Validate required arguments
-if [ -z "$ABLATION" ] || [ -z "$SEED" ]; then
+if [ -z "$ABLATION" ] || [ -z "$SEED" ] || [ -z "$DATASET" ] || [ -z "$EVAL_MODE" ]; then
     echo "Error: Missing required arguments"
-    echo "Usage: sbatch run_ablation_sbatch.sh <ablation> <seed>"
+    echo "Usage: sbatch run_ablation_sbatch.sh <ablation> <seed> <dataset> <eval_mode>"
     echo "  ablation: ablation number ('baseline', '1', '2', or '3')"
     echo "  seed: random seed (e.g., '100', '200', '300', '400', '500')"
+    echo "  dataset: dataset name ('BNCI2014_001', 'Lee2019_SSVEP', or 'BI2015a')"
+    echo "  eval_mode: evaluation mode ('CrossSubject', 'CrossSession', or 'WithinSession')"
     exit 1
 fi
 
@@ -37,16 +41,26 @@ source activate ncp_env
 # Note: This script assumes it is run from the project root directory
 # Paths are relative to project root, just like unified_eval_script.sh
 
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Change to project root to ensure relative paths work
+cd "$PROJECT_ROOT"
+
 echo "=========================================="
 echo "Starting Ablation Experiment"
 echo "=========================================="
 echo "Ablation: $ABLATION"
+echo "Dataset: $DATASET"
+echo "Eval Mode: $EVAL_MODE"
 echo "Seed: $SEED"
+echo "Project Root: $PROJECT_ROOT"
 echo "Started at: $(date)"
 echo "=========================================="
 
 # Run the ablation experiment
-python run_ablations.py --ablation "$ABLATION" --seed "$SEED"
+python ablations/run_ablations.py --ablation "$ABLATION" --seed "$SEED" --dataset "$DATASET" --eval_mode "$EVAL_MODE"
 
 EXIT_CODE=$?
 

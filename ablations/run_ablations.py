@@ -58,7 +58,7 @@ from globals import set_seeds, get_seed
 from models.branched_lstm import create_branched_lstm_classifier
 from architecture_refinement.arbitrary_wiring import load_architecture_from_file
 from evaluation.unified_experiment_runner import UnifiedExperimentRunner
-from moabb.datasets import BNCI2014_001
+from moabb.datasets import BNCI2014_001, Lee2019_SSVEP, BI2015a
 
 # Import ablation model variants (from same directory)
 # Use absolute import since project_root is added to sys.path
@@ -86,8 +86,9 @@ except ImportError:
 
 # Configuration
 ARCHITECTURE_FILE_RELATIVE = "outputs/architectures/best_architecture_4_trial_178.json"
-DATASET = "BNCI2014_001"
-EVAL_MODE = "CrossSubject"
+# Default values (can be overridden by command-line arguments)
+DEFAULT_DATASET = "BNCI2014_001"
+DEFAULT_EVAL_MODE = "CrossSubject"
 SEEDS = [100, 200, 300, 400, 500]  # 5 experimental runs
 NUM_RUNS = len(SEEDS)
 
@@ -189,7 +190,9 @@ def run_ablation_experiment(
     model_name: str,
     model_factory,
     ablation_name: str,
-    seed: int
+    seed: int,
+    dataset: str,
+    eval_mode: str
 ) -> pd.DataFrame:
     """
     Run ablation experiment for a given model variant with a single seed.
@@ -199,12 +202,16 @@ def run_ablation_experiment(
         model_factory: Function to create the model
         ablation_name: Name of the ablation (for file naming)
         seed: Random seed to use for this run
+        dataset: Dataset name (BNCI2014_001, Lee2019_SSVEP, or BI2015a)
+        eval_mode: Evaluation mode (CrossSubject, CrossSession, or WithinSession)
         
     Returns:
         DataFrame with results
     """
     print(f"\n{'='*60}")
     print(f"Running ablation: {ablation_name}")
+    print(f"Dataset: {dataset}")
+    print(f"Eval Mode: {eval_mode}")
     print(f"Seed: {seed}")
     print(f"{'='*60}\n")
     
@@ -242,23 +249,38 @@ def run_ablation_experiment(
     
     try:
         # Get subjects for the dataset
-        print(f"[DEBUG] Loading dataset: {DATASET}")
+        print(f"[DEBUG] Loading dataset: {dataset}")
         try:
-            dataset_obj = BNCI2014_001()
+            if dataset == "BNCI2014_001":
+                dataset_obj = BNCI2014_001()
+            elif dataset == "Lee2019_SSVEP":
+                dataset_obj = Lee2019_SSVEP()
+            elif dataset == "BI2015a":
+                dataset_obj = BI2015a()
+            else:
+                raise ValueError(f"Unsupported dataset: {dataset}")
             print(f"[DEBUG] Dataset loaded successfully")
         except Exception as e:
-            raise RuntimeError(f"Failed to load dataset {DATASET}: {e}")
+            raise RuntimeError(f"Failed to load dataset {dataset}: {e}")
         
-        # Get subjects list
+        # Get subjects list - use all available subjects for the dataset
         if hasattr(dataset_obj, 'subject_list') and dataset_obj.subject_list:
             subjects = dataset_obj.subject_list
             print(f"[DEBUG] Using dataset.subject_list: {subjects}")
         else:
-            subjects = list(range(1, 10))
-            print(f"[DEBUG] Using default subjects (1-9): {subjects}")
+            # Default subjects based on dataset
+            if dataset == "BNCI2014_001":
+                subjects = list(range(1, 10))
+            elif dataset == "Lee2019_SSVEP":
+                subjects = list(range(1, 55))  # 54 subjects
+            elif dataset == "BI2015a":
+                subjects = list(range(1, 44))  # 43 subjects
+            else:
+                subjects = list(range(1, 10))
+            print(f"[DEBUG] Using default subjects for {dataset}: {subjects}")
         
         if not subjects or len(subjects) == 0:
-            raise ValueError(f"No subjects available for dataset {DATASET}")
+            raise ValueError(f"No subjects available for dataset {dataset}")
         
         print(f"[DEBUG] Number of subjects: {len(subjects)}")
         
@@ -272,19 +294,19 @@ def run_ablation_experiment(
         # Create experiment runner
         print(f"[DEBUG] Creating UnifiedExperimentRunner...")
         print(f"[DEBUG]   - Model: {model_name}")
-        print(f"[DEBUG]   - Dataset: {DATASET}")
+        print(f"[DEBUG]   - Dataset: {dataset}")
         print(f"[DEBUG]   - Subjects: {subjects}")
         print(f"[DEBUG]   - Mode: test_perturb")
-        print(f"[DEBUG]   - Eval mode: {EVAL_MODE}")
+        print(f"[DEBUG]   - Eval mode: {eval_mode}")
         print(f"[DEBUG]   - Seed: {seed}")
         
         try:
             runner = UnifiedExperimentRunner(
                 model=model_name,
-                dataset=DATASET,
+                dataset=dataset,
                 subjects=subjects,
                 mode="test_perturb",  # test_perturb mode evaluates on multiple noise types/intensities
-                eval_mode=EVAL_MODE,
+                eval_mode=eval_mode,
                 seed=seed,
                 noise_type="gaussian",  # Placeholder, test_perturb handles all noise types
                 intensity=10.0,  # Placeholder, test_perturb handles all intensities
@@ -320,11 +342,13 @@ def run_ablation_experiment(
         results_df['ablation'] = ablation_name
         results_df['run'] = 1
         results_df['seed'] = seed
+        results_df['dataset'] = dataset
+        results_df['eval_mode'] = eval_mode
         
-        print(f"[DEBUG] Added metadata columns: ablation, run, seed")
+        print(f"[DEBUG] Added metadata columns: ablation, run, seed, dataset, eval_mode")
         
-        # Save results
-        results_file = RESULTS_DIR / f"{ablation_name}_seed{seed}.csv"
+        # Save results with dataset and eval_mode in filename
+        results_file = RESULTS_DIR / f"{dataset}_{eval_mode}_{ablation_name}_seed{seed}.csv"
         print(f"[DEBUG] Saving results to: {results_file.absolute()}")
         
         try:
@@ -725,6 +749,20 @@ Examples:
         required=True,
         help="Random seed for the experiment (e.g., 100, 200, 300, 400, 500)"
     )
+    parser.add_argument(
+        "--dataset",
+        type=str,
+        default=DEFAULT_DATASET,
+        choices=["BNCI2014_001", "Lee2019_SSVEP", "BI2015a"],
+        help="Dataset to use for the experiment"
+    )
+    parser.add_argument(
+        "--eval_mode",
+        type=str,
+        default=DEFAULT_EVAL_MODE,
+        choices=["CrossSubject", "CrossSession", "WithinSession"],
+        help="Evaluation mode for the experiment"
+    )
     
     args = parser.parse_args()
     
@@ -735,8 +773,8 @@ Examples:
     print("="*60)
     print("HYDRA Model Ablation Studies")
     print("="*60)
-    print(f"Dataset: {DATASET}")
-    print(f"Evaluation Mode: {EVAL_MODE}")
+    print(f"Dataset: {args.dataset}")
+    print(f"Evaluation Mode: {args.eval_mode}")
     print(f"Ablation: {args.ablation}")
     print(f"Seed: {args.seed}")
     print(f"Python version: {sys.version}")
@@ -804,7 +842,9 @@ Examples:
             model_name=model_name,
             model_factory=None,
             ablation_name=ablation_name,
-            seed=args.seed
+            seed=args.seed,
+            dataset=args.dataset,
+            eval_mode=args.eval_mode
         )
         
         if not results_df.empty:
