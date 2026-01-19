@@ -10,8 +10,8 @@ Base Model Configuration
 ------------------------
 - Model: branched_wiredcfc
 - Architecture: #4 (from best_architecture_4_trial_178.json)
-- Dataset: BNCI2014_001 (BCI competition IV-2a)
-- Evaluation Mode: CrossSubject
+- Datasets: BNCI2014_001 (BCI competition IV-2a), Lee2019_SSVEP, BI2015a
+- Evaluation Modes: CrossSubject, CrossSession, WithinSession
 - Hyperparameter Optimization: None (no tune mode)
 
 Ablation Studies
@@ -50,37 +50,143 @@ Ablation Studies
    - Hypothesis: Negative impact on model robustness
    - Carry Gate: Enabled
    - Branching: Enabled
+   - SNR Gate: Enabled
    - Recurrent Cell: LSTM (instead of CfC)
+
+5. ABLATION 4: No SNR Gate
+   - Model Variant: branched_wiredcfc_arch4_no_snr_gate
+   - Modification: Disable SNR gate (Wiener-like shrinkage)
+   - Implementation: Skip SNR gate application in forward pass
+   - Hypothesis: Decreased robustness to channel-specific noise
+   - Carry Gate: Enabled
+   - Branching: Enabled
+   - SNR Gate: DISABLED
+   - Recurrent Cell: CfC with ArbitraryWiring (Architecture 4)
+
+COMBINATION ABLATIONS (CfC-based):
+6. ABLATION 5: No Carry Gate + No Branching
+   - Model Variant: branched_wiredcfc_arch4_no_carry_gate_no_branching
+   - Modifications: Disable both carry gate and branching
+   - Carry Gate: DISABLED
+   - Branching: DISABLED
+   - SNR Gate: Enabled
+   - Recurrent Cell: CfC
+
+7. ABLATION 6: No Carry Gate + No SNR Gate
+   - Model Variant: branched_wiredcfc_arch4_no_carry_gate_no_snr_gate
+   - Modifications: Disable both carry gate and SNR gate
+   - Carry Gate: DISABLED
+   - Branching: Enabled
+   - SNR Gate: DISABLED
+   - Recurrent Cell: CfC
+
+8. ABLATION 7: No Branching + No SNR Gate
+   - Model Variant: branched_wiredcfc_arch4_no_branching_no_snr_gate
+   - Modifications: Disable both branching and SNR gate
+   - Carry Gate: Enabled
+   - Branching: DISABLED
+   - SNR Gate: DISABLED
+   - Recurrent Cell: CfC
+
+9. ABLATION 8: No Carry Gate + No Branching + No SNR Gate
+   - Model Variant: branched_wiredcfc_arch4_no_carry_gate_no_branching_no_snr_gate
+   - Modifications: Disable all three mechanisms
+   - Carry Gate: DISABLED
+   - Branching: DISABLED
+   - SNR Gate: DISABLED
+   - Recurrent Cell: CfC
+
+COMBINATION ABLATIONS (LSTM-based):
+10. ABLATION 9: LSTM + No Carry Gate
+    - Model Variant: branched_lstm_arch4_no_carry_gate
+    - Modifications: LSTM with carry gate disabled
+    - Carry Gate: DISABLED
+    - Branching: Enabled
+    - SNR Gate: Enabled
+    - Recurrent Cell: LSTM
+
+11. ABLATION 10: LSTM + No Branching
+    - Model Variant: branched_lstm_arch4_no_branching
+    - Modifications: LSTM with branching disabled
+    - Carry Gate: Enabled
+    - Branching: DISABLED
+    - SNR Gate: Enabled
+    - Recurrent Cell: LSTM
+
+12. ABLATION 11: LSTM + No SNR Gate
+    - Model Variant: branched_lstm_arch4_no_snr_gate
+    - Modifications: LSTM with SNR gate disabled
+    - Carry Gate: Enabled
+    - Branching: Enabled
+    - SNR Gate: DISABLED
+    - Recurrent Cell: LSTM
+
+13. ABLATION 12: LSTM + No Carry Gate + No Branching
+    - Model Variant: branched_lstm_arch4_no_carry_gate_no_branching
+    - Modifications: LSTM with carry gate and branching disabled
+    - Carry Gate: DISABLED
+    - Branching: DISABLED
+    - SNR Gate: Enabled
+    - Recurrent Cell: LSTM
+
+14. ABLATION 13: LSTM + No Carry Gate + No SNR Gate
+    - Model Variant: branched_lstm_arch4_no_carry_gate_no_snr_gate
+    - Modifications: LSTM with carry gate and SNR gate disabled
+    - Carry Gate: DISABLED
+    - Branching: Enabled
+    - SNR Gate: DISABLED
+    - Recurrent Cell: LSTM
+
+15. ABLATION 14: LSTM + No Branching + No SNR Gate
+    - Model Variant: branched_lstm_arch4_no_branching_no_snr_gate
+    - Modifications: LSTM with branching and SNR gate disabled
+    - Carry Gate: Enabled
+    - Branching: DISABLED
+    - SNR Gate: DISABLED
+    - Recurrent Cell: LSTM
+
+16. ABLATION 15: LSTM + No Carry Gate + No Branching + No SNR Gate
+    - Model Variant: branched_lstm_arch4_no_carry_gate_no_branching_no_snr_gate
+    - Modifications: LSTM with all mechanisms disabled
+    - Carry Gate: DISABLED
+    - Branching: DISABLED
+    - SNR Gate: DISABLED
+    - Recurrent Cell: LSTM
 
 Experimental Design
 -------------------
 - Number of Runs: 5 (for statistical significance)
 - Seeds: [100, 200, 300, 400, 500] (fixed seeds for reproducibility)
-- Evaluation: CrossSubject (3-fold split)
+- Datasets: BNCI2014_001, Lee2019_SSVEP, BI2015a
+- Evaluation Modes: CrossSubject (3-fold split), CrossSession, WithinSession
 - Noise Types: Clean, Gaussian, Dropout, EOG
 - Noise Intensities: Standard intensity levels for each noise type
 - Metrics: ROC-AUC, Accuracy, Precision, Recall, F1-Score
 - Additional Metrics: Training time, Inference time, Model stability
+- Total Experiments: 720 (3 datasets × 3 eval_modes × 16 ablations × 5 seeds)
+   - 1 baseline + 15 ablation variants
 
 Execution Flow
 --------------
-1. Phase 1: Run all experiments (5 runs per ablation)
-   - Baseline: 5 runs with seeds [100, 200, 300, 400, 500]
-   - Ablation 1 (No Carry Gate): 5 runs with seeds [100, 200, 300, 400, 500]
-   - Ablation 2 (No Branching): 5 runs with seeds [100, 200, 300, 400, 500]
-   - Ablation 3 (LSTM Replacement): 5 runs with seeds [100, 200, 300, 400, 500]
+1. Phase 1: Run all experiments (5 runs per ablation per dataset per eval_mode)
+   - For each dataset (BNCI2014_001, Lee2019_SSVEP, BI2015a):
+     - For each eval_mode (CrossSubject, CrossSession, WithinSession):
+       - Baseline: 5 runs with seeds [100, 200, 300, 400, 500]
+       - Ablations 1-15: Each with 5 runs (seeds [100, 200, 300, 400, 500])
+   - Total: 3 datasets × 3 eval_modes × 16 ablations × 5 seeds = 720 experiments
    
 2. Phase 2: Statistical analysis and plotting (only after all experiments complete)
-   - Statistical tests comparing each ablation to baseline
-   - Visualization plots
+   - Statistical tests comparing each ablation to baseline (per dataset and eval_mode)
+   - Visualization plots (grouped by dataset and eval_mode)
    - Combined results summary
 
 Data Collection
 ---------------
-- Baseline data: Already collected for branched_wiredcfc_arch4 on BNCI2014_001
-- Ablation data: Will be collected for each ablation variant
+- Baseline data: Will be collected for branched_wiredcfc_arch4 across all datasets and eval_modes
+- Ablation data: Will be collected for each ablation variant across all datasets and eval_modes
 - Results will be saved incrementally after each run
 - Partial results saved after each fold/subject completion
+- Results organized by: dataset/eval_mode/ablation/seed
 
 Statistical Analysis
 --------------------
@@ -88,7 +194,7 @@ Statistical Analysis
   * Paired t-tests (for within-subject comparisons)
   * Wilcoxon signed-rank tests (non-parametric alternative)
   * Effect size calculations (Cohen's d)
-- Multiple comparison correction: Bonferroni correction (3 ablations)
+- Multiple comparison correction: Bonferroni correction (15 ablations)
 - Significance threshold: p < 0.05 (after correction)
 
 Visualization
@@ -107,23 +213,20 @@ ablations/
   ├── run_ablations.py (main experiment script)
   ├── ablation_models.py (model variant definitions)
   ├── results/
-  │   ├── baseline_results.csv
-  │   ├── baseline_partial_run1.csv, ..., baseline_partial_run5.csv
-  │   ├── ablation1_no_carry_gate_results.csv
-  │   ├── ablation1_no_carry_gate_partial_run1.csv, ..., partial_run5.csv
-  │   ├── ablation2_no_branching_results.csv
-  │   ├── ablation2_no_branching_partial_run1.csv, ..., partial_run5.csv
-  │   ├── ablation3_lstm_replacement_results.csv
-  │   ├── ablation3_lstm_replacement_partial_run1.csv, ..., partial_run5.csv
-  │   ├── combined_results.csv
-  │   └── statistical_tests.csv
+  │   ├── {dataset}_{eval_mode}_baseline_seed{seed}.csv
+  │   ├── {dataset}_{eval_mode}_ablation1_no_carry_gate_seed{seed}.csv
+  │   ├── {dataset}_{eval_mode}_ablation2_no_branching_seed{seed}.csv
+  │   ├── {dataset}_{eval_mode}_ablation3_lstm_replacement_seed{seed}.csv
+  │   ├── combined_results.csv (all datasets and eval_modes combined)
+  │   └── statistical_tests.csv (per dataset and eval_mode)
   ├── plots/
-  │   ├── ablation_comparison_boxplot.png
-  │   ├── ablation_comparison_violin.png
-  │   └── statistical_summary.png
+  │   ├── {dataset}_{eval_mode}_ablation_comparison_boxplot.png
+  │   ├── {dataset}_{eval_mode}_ablation_comparison_violin.png
+  │   └── {dataset}_{eval_mode}_statistical_summary.png
   └── models/ (cached models if needed)
 
 Note: Intermediate files from UnifiedExperimentRunner may be written to the base results/ 
 directory, but all final ablation results CSV files are saved exclusively to ablations/results/
-to maintain isolation from primary benchmark results.
+to maintain isolation from primary benchmark results. Results are organized by dataset and 
+eval_mode for easier analysis and comparison.
 
