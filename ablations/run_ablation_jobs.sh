@@ -51,13 +51,19 @@ for dataset in "${DATASETS[@]}"; do
                 echo "  Eval Mode: $eval_mode"
                 echo "  Ablation: $ablation"
                 echo "  Seed: $seed"
-                
-                sbatch --time=3-00:00:00 --mem=32G --job-name="$job_name" \
+                if [ "$eval_mode" == "CrossSubject" ]; then
+                    time_limit="3-00:00:00"
+                    mem="96G"
+                else
+                    time_limit="1-12:00:00"
+                    mem="16G"
+                fi
+
+                sbatch --time="$time_limit" --mem="$mem" --job-name="$job_name" \
                     --output="$log_file" \
                     --error="$err_file" \
                     --mail-type=ALL --mail-user=skinahan@asu.edu \
                     ablations/run_ablation_sbatch.sh "$ablation" "$seed" "$dataset" "$eval_mode"
-                
                 if [ $? -eq 0 ]; then
                     echo "[SUCCESS] Ablation job $JOB_NUM submitted successfully"
                 else
