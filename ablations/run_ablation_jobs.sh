@@ -1,14 +1,14 @@
 #!/bin/bash
 # Generated ablation sbatch automation script
 # This script submits SLURM jobs for all ablation experiments
-# Total jobs: 180 (3 datasets × 3 eval_modes × 4 ablations × 5 seeds)
+# Total jobs: 720 (3 datasets × 3 eval_modes × 16 ablations × 5 seeds)
 
 set -e  # Exit on any error
 
 # Configuration
 DATASETS=("BNCI2014_001" "Lee2019_SSVEP" "BI2015a")
 EVAL_MODES=("CrossSubject" "CrossSession" "WithinSession")
-ABLATIONS=("baseline" "1" "2" "3")
+ABLATIONS=("baseline" "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15")
 SEEDS=(100 200 300 400 500)
 
 # Calculate total jobs

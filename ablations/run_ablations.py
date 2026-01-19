@@ -65,7 +65,20 @@ from moabb.datasets import BNCI2014_001, Lee2019_SSVEP, BI2015a
 try:
     from ablations.ablation_models import (
         create_branched_wiredcfc_no_carry_gate_classifier,
-        create_branched_wiredcfc_no_branching_classifier
+        create_branched_wiredcfc_no_branching_classifier,
+        create_branched_lstm_classifier,
+        create_branched_wiredcfc_no_snr_gate_classifier,
+        create_branched_wiredcfc_no_carry_gate_no_branching_classifier,
+        create_branched_wiredcfc_no_carry_gate_no_snr_gate_classifier,
+        create_branched_wiredcfc_no_branching_no_snr_gate_classifier,
+        create_branched_wiredcfc_no_carry_gate_no_branching_no_snr_gate_classifier,
+        create_branched_lstm_no_carry_gate_classifier,
+        create_branched_lstm_no_branching_classifier,
+        create_branched_lstm_no_snr_gate_classifier,
+        create_branched_lstm_no_carry_gate_no_branching_classifier,
+        create_branched_lstm_no_carry_gate_no_snr_gate_classifier,
+        create_branched_lstm_no_branching_no_snr_gate_classifier,
+        create_branched_lstm_no_carry_gate_no_branching_no_snr_gate_classifier,
     )
 except ImportError:
     # Fallback: import from same directory if running from ablations/
@@ -80,8 +93,22 @@ except ImportError:
     spec = importlib.util.spec_from_file_location("ablation_models", str(ablation_models_path))
     ablation_models = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(ablation_models)
+    # Import all factory functions
     create_branched_wiredcfc_no_carry_gate_classifier = ablation_models.create_branched_wiredcfc_no_carry_gate_classifier
     create_branched_wiredcfc_no_branching_classifier = ablation_models.create_branched_wiredcfc_no_branching_classifier
+    create_branched_lstm_classifier = ablation_models.create_branched_lstm_classifier
+    create_branched_wiredcfc_no_snr_gate_classifier = ablation_models.create_branched_wiredcfc_no_snr_gate_classifier
+    create_branched_wiredcfc_no_carry_gate_no_branching_classifier = ablation_models.create_branched_wiredcfc_no_carry_gate_no_branching_classifier
+    create_branched_wiredcfc_no_carry_gate_no_snr_gate_classifier = ablation_models.create_branched_wiredcfc_no_carry_gate_no_snr_gate_classifier
+    create_branched_wiredcfc_no_branching_no_snr_gate_classifier = ablation_models.create_branched_wiredcfc_no_branching_no_snr_gate_classifier
+    create_branched_wiredcfc_no_carry_gate_no_branching_no_snr_gate_classifier = ablation_models.create_branched_wiredcfc_no_carry_gate_no_branching_no_snr_gate_classifier
+    create_branched_lstm_no_carry_gate_classifier = ablation_models.create_branched_lstm_no_carry_gate_classifier
+    create_branched_lstm_no_branching_classifier = ablation_models.create_branched_lstm_no_branching_classifier
+    create_branched_lstm_no_snr_gate_classifier = ablation_models.create_branched_lstm_no_snr_gate_classifier
+    create_branched_lstm_no_carry_gate_no_branching_classifier = ablation_models.create_branched_lstm_no_carry_gate_no_branching_classifier
+    create_branched_lstm_no_carry_gate_no_snr_gate_classifier = ablation_models.create_branched_lstm_no_carry_gate_no_snr_gate_classifier
+    create_branched_lstm_no_branching_no_snr_gate_classifier = ablation_models.create_branched_lstm_no_branching_no_snr_gate_classifier
+    create_branched_lstm_no_carry_gate_no_branching_no_snr_gate_classifier = ablation_models.create_branched_lstm_no_carry_gate_no_branching_no_snr_gate_classifier
     print(f"[DEBUG] Loaded ablation_models from fallback location: {ablation_models_path}", file=sys.stderr)
 
 # Configuration
@@ -617,10 +644,39 @@ def register_model_variants(wiring):
     """Register all model variants for ablation studies."""
     print(f"[DEBUG] Registering model variants...")
     
-    # Sanity check: Verify wiring is valid
+    # Sanity check: Verify wiring is valid (needed for CFC-based models)
     if wiring is None:
-        raise ValueError("Wiring cannot be None")
+        raise ValueError("Wiring cannot be None for CFC-based models")
     print(f"[DEBUG] Wiring validated: {type(wiring)}")
+    
+    # Define all ablation configurations: (model_name, factory_function, requires_wiring)
+    ablation_configs = [
+        # Baseline (already registered, but we'll verify)
+        ("branched_wiredcfc_arch4", None, True),  # Registered via add_branched_wiredcfc_architecture
+        
+        # Single ablations (CfC-based)
+        ("branched_wiredcfc_arch4_no_carry_gate", create_branched_wiredcfc_no_carry_gate_classifier, True),
+        ("branched_wiredcfc_arch4_no_branching", create_branched_wiredcfc_no_branching_classifier, True),
+        ("branched_wiredcfc_arch4_no_snr_gate", create_branched_wiredcfc_no_snr_gate_classifier, True),
+        
+        # LSTM baseline
+        ("branched_lstm_arch4_equivalent", create_branched_lstm_classifier, False),
+        
+        # Combination ablations (CfC-based)
+        ("branched_wiredcfc_arch4_no_carry_gate_no_branching", create_branched_wiredcfc_no_carry_gate_no_branching_classifier, True),
+        ("branched_wiredcfc_arch4_no_carry_gate_no_snr_gate", create_branched_wiredcfc_no_carry_gate_no_snr_gate_classifier, True),
+        ("branched_wiredcfc_arch4_no_branching_no_snr_gate", create_branched_wiredcfc_no_branching_no_snr_gate_classifier, True),
+        ("branched_wiredcfc_arch4_no_carry_gate_no_branching_no_snr_gate", create_branched_wiredcfc_no_carry_gate_no_branching_no_snr_gate_classifier, True),
+        
+        # Combination ablations (LSTM-based)
+        ("branched_lstm_arch4_no_carry_gate", create_branched_lstm_no_carry_gate_classifier, False),
+        ("branched_lstm_arch4_no_branching", create_branched_lstm_no_branching_classifier, False),
+        ("branched_lstm_arch4_no_snr_gate", create_branched_lstm_no_snr_gate_classifier, False),
+        ("branched_lstm_arch4_no_carry_gate_no_branching", create_branched_lstm_no_carry_gate_no_branching_classifier, False),
+        ("branched_lstm_arch4_no_carry_gate_no_snr_gate", create_branched_lstm_no_carry_gate_no_snr_gate_classifier, False),
+        ("branched_lstm_arch4_no_branching_no_snr_gate", create_branched_lstm_no_branching_no_snr_gate_classifier, False),
+        ("branched_lstm_arch4_no_carry_gate_no_branching_no_snr_gate", create_branched_lstm_no_carry_gate_no_branching_no_snr_gate_classifier, False),
+    ]
     
     # 1. Baseline (full model) - should already be registered, but ensure it's there
     try:
@@ -629,54 +685,36 @@ def register_model_variants(wiring):
     except Exception as e:
         raise RuntimeError(f"Failed to register baseline model: {e}")
     
-    # 2. No Carry Gate - create factory with proper closure
-    try:
-        def create_no_carry_gate_factory(wiring_ref):
-            def factory(n_chans, n_times, n_outputs, **kwargs):
-                return create_branched_wiredcfc_no_carry_gate_classifier(n_chans, n_times, n_outputs, wiring_ref, **kwargs)
-            return factory
-        factory = create_no_carry_gate_factory(wiring)
-        # Register in runtime registry (proper way for runtime-registered models)
-        _runtime_model_registry["branched_wiredcfc_arch4_no_carry_gate"] = factory
-        # Also register in MODEL_REGISTRY for backward compatibility
-        MODEL_REGISTRY["branched_wiredcfc_arch4_no_carry_gate"] = factory
-        print(f"[DEBUG] Registered: branched_wiredcfc_arch4_no_carry_gate")
-    except Exception as e:
-        raise RuntimeError(f"Failed to register no_carry_gate model: {e}")
+    # Register all other ablations
+    registered_models = ["branched_wiredcfc_arch4"]  # Baseline already registered
     
-    # 3. No Branching - create factory with proper closure
-    try:
-        def create_no_branching_factory(wiring_ref):
-            def factory(n_chans, n_times, n_outputs, **kwargs):
-                return create_branched_wiredcfc_no_branching_classifier(n_chans, n_times, n_outputs, wiring_ref, **kwargs)
-            return factory
-        factory = create_no_branching_factory(wiring)
-        # Register in runtime registry (proper way for runtime-registered models)
-        _runtime_model_registry["branched_wiredcfc_arch4_no_branching"] = factory
-        # Also register in MODEL_REGISTRY for backward compatibility
-        MODEL_REGISTRY["branched_wiredcfc_arch4_no_branching"] = factory
-        print(f"[DEBUG] Registered: branched_wiredcfc_arch4_no_branching")
-    except Exception as e:
-        raise RuntimeError(f"Failed to register no_branching model: {e}")
+    for model_name, factory_func, requires_wiring in ablation_configs:
+        if model_name == "branched_wiredcfc_arch4":
+            continue  # Already handled above
+        
+        try:
+            if requires_wiring:
+                # Create factory with wiring closure (use lambda with default arg to capture wiring correctly)
+                def make_factory_with_wiring(wiring_ref, factory):
+                    def factory_wrapped(n_chans, n_times, n_outputs, **kwargs):
+                        return factory(n_chans, n_times, n_outputs, wiring_ref, **kwargs)
+                    return factory_wrapped
+                factory_wrapped = make_factory_with_wiring(wiring, factory_func)
+            else:
+                # LSTM models don't need wiring
+                factory_wrapped = factory_func
+            
+            # Register in runtime registry
+            _runtime_model_registry[model_name] = factory_wrapped
+            # Also register in MODEL_REGISTRY for backward compatibility
+            MODEL_REGISTRY[model_name] = factory_wrapped
+            registered_models.append(model_name)
+            print(f"[DEBUG] Registered: {model_name}")
+        except Exception as e:
+            raise RuntimeError(f"Failed to register {model_name}: {e}")
     
-    # 4. LSTM Replacement (use BranchedLSTM with equivalent parameters)
-    # Note: This uses BranchedLSTM which doesn't use wiring, so we'll use the standard factory
-    try:
-        # Register in runtime registry (proper way for runtime-registered models)
-        _runtime_model_registry["branched_lstm_arch4_equivalent"] = create_branched_lstm_classifier
-        # Also register in MODEL_REGISTRY for backward compatibility
-        MODEL_REGISTRY["branched_lstm_arch4_equivalent"] = create_branched_lstm_classifier
-        print(f"[DEBUG] Registered: branched_lstm_arch4_equivalent")
-    except Exception as e:
-        raise RuntimeError(f"Failed to register LSTM model: {e}")
-    
-    # Sanity check: Verify all models are registered in both registries
-    expected_models = [
-        "branched_wiredcfc_arch4",
-        "branched_wiredcfc_arch4_no_carry_gate",
-        "branched_wiredcfc_arch4_no_branching",
-        "branched_lstm_arch4_equivalent"
-    ]
+    # Sanity check: Verify all models are registered
+    expected_models = [name for name, _, _ in ablation_configs]
     
     # Check runtime registry (used by get_model_registry())
     missing_runtime = [m for m in expected_models if m not in _runtime_model_registry]
@@ -697,7 +735,7 @@ def register_model_variants(wiring):
     if missing_in_registry:
         raise RuntimeError(f"Models not accessible via get_model_registry(): {missing_in_registry}")
     
-    print(f"[DEBUG] All models registered successfully and verified in all registries")
+    print(f"[DEBUG] All {len(registered_models)} models registered successfully and verified in all registries")
 
 
 def get_ablation_config(ablation_num: str):
@@ -705,7 +743,7 @@ def get_ablation_config(ablation_num: str):
     Get model name and ablation name for a given ablation number.
     
     Args:
-        ablation_num: Ablation number as string ("baseline", "1", "2", or "3")
+        ablation_num: Ablation number as string ("baseline", "1"-"15")
         
     Returns:
         Tuple of (model_name, ablation_name)
@@ -715,10 +753,22 @@ def get_ablation_config(ablation_num: str):
         "1": ("branched_wiredcfc_arch4_no_carry_gate", "ablation1_no_carry_gate"),
         "2": ("branched_wiredcfc_arch4_no_branching", "ablation2_no_branching"),
         "3": ("branched_lstm_arch4_equivalent", "ablation3_lstm_replacement"),
+        "4": ("branched_wiredcfc_arch4_no_snr_gate", "ablation4_no_snr_gate"),
+        "5": ("branched_wiredcfc_arch4_no_carry_gate_no_branching", "ablation5_no_carry_gate_no_branching"),
+        "6": ("branched_wiredcfc_arch4_no_carry_gate_no_snr_gate", "ablation6_no_carry_gate_no_snr_gate"),
+        "7": ("branched_wiredcfc_arch4_no_branching_no_snr_gate", "ablation7_no_branching_no_snr_gate"),
+        "8": ("branched_wiredcfc_arch4_no_carry_gate_no_branching_no_snr_gate", "ablation8_no_carry_gate_no_branching_no_snr_gate"),
+        "9": ("branched_lstm_arch4_no_carry_gate", "ablation9_lstm_no_carry_gate"),
+        "10": ("branched_lstm_arch4_no_branching", "ablation10_lstm_no_branching"),
+        "11": ("branched_lstm_arch4_no_snr_gate", "ablation11_lstm_no_snr_gate"),
+        "12": ("branched_lstm_arch4_no_carry_gate_no_branching", "ablation12_lstm_no_carry_gate_no_branching"),
+        "13": ("branched_lstm_arch4_no_carry_gate_no_snr_gate", "ablation13_lstm_no_carry_gate_no_snr_gate"),
+        "14": ("branched_lstm_arch4_no_branching_no_snr_gate", "ablation14_lstm_no_branching_no_snr_gate"),
+        "15": ("branched_lstm_arch4_no_carry_gate_no_branching_no_snr_gate", "ablation15_lstm_no_carry_gate_no_branching_no_snr_gate"),
     }
     
     if ablation_num.lower() not in ablation_map:
-        raise ValueError(f"Invalid ablation number: {ablation_num}. Must be 'baseline', '1', '2', or '3'")
+        raise ValueError(f"Invalid ablation number: {ablation_num}. Must be 'baseline' or '1'-'15'")
     
     return ablation_map[ablation_num.lower()]
 
@@ -740,8 +790,8 @@ Examples:
         "--ablation",
         type=str,
         required=True,
-        choices=["baseline", "1", "2", "3"],
-        help="Ablation number: 'baseline', '1' (No Carry Gate), '2' (No Branching), or '3' (LSTM Replacement)"
+        choices=["baseline", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"],
+        help="Ablation number: 'baseline' or '1'-'15' (see experiment_specification.txt for details)"
     )
     parser.add_argument(
         "--seed",
