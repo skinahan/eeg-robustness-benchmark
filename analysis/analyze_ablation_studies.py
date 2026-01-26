@@ -423,228 +423,358 @@ def compute_ablation_clean_scores(df: pd.DataFrame) -> pd.DataFrame:
 
 
 # ----------------------------
-# Statistical Analysis
+# Statistical Analysis (Subject-Level)
 # ----------------------------
 
-def detect_metric_column(df: pd.DataFrame) -> Optional[str]:
+def prepare_subject_level_data(
+    combined_df: pd.DataFrame,
+    config: AnalysisConfig
+) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
-    Detect the metric column from available columns.
+    Prepare subject-level data for statistical comparisons.
+    
+    This follows the methodology from statistical_analysis.py:
+    1. Aggregate across seeds to get subject-level means
+    2. Compute AUPC per subject
+    3. Compute RD per subject
+    4. Build collapsed inference dataset
     
     Parameters:
     -----------
-    df : pd.DataFrame
-        DataFrame to search
+    combined_df : pd.DataFrame
+        Combined ablation results DataFrame
+    config : AnalysisConfig
+        Analysis configuration
         
     Returns:
     --------
-    str or None
-        Name of the metric column, or None if not found
+    tuple
+        (df_points, df_collapsed, df_resolved)
+        - df_points: seed-aggregated curve points
+        - df_collapsed: subject-level collapsed metrics (primary for inference)
+        - df_resolved: subject-level resolved metrics (by noise type)
     """
-    # Priority order for metric columns
-    metric_candidates = [
-        'corrupted_roc_auc',
-        'corrupted_score',
-        'score',
-        'roc_auc',
-        'validation_roc_auc',
-        'test_roc_auc',
-    ]
+    print("\n[STEP 2a] Preparing subject-level data...")
     
-    for candidate in metric_candidates:
-        if candidate in df.columns:
-            return candidate
+    # Work on a copy to avoid modifying the original
+    df = combined_df.copy()
     
-    return None
+    # Ensure required columns exist
+    required_cols = ['ablation', 'subject', 'model']
+    missing_cols = [c for c in required_cols if c not in df.columns]
+    if missing_cols:
+        print(f"  [WARNING] Missing required columns: {missing_cols}")
+        return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
+    
+    # Add default columns if missing (for compatibility with statistical_analysis functions)
+    if 'dataset' not in df.columns:
+        df['dataset'] = 'BNCI2014_001'  # Default for ablation studies
+    if 'eval_mode' not in df.columns:
+        df['eval_mode'] = 'CrossSubject'  # Default for ablation studies
+    if 'tune' not in df.columns:
+        df['tune'] = False  # Ablation studies don't use tuning
+    
+    # Ensure we have clean_roc_auc and corrupted_roc_auc
+    if 'clean_roc_auc' not in df.columns:
+        # Try to infer from clean_score or intensity=0
+        if 'clean_score' in df.columns:
+            df['clean_roc_auc'] = df['clean_score']
+        elif 'intensity' in df.columns:
+            clean_data = df[df['intensity'] == 0.0].copy()
+            if not clean_data.empty:
+                # Map clean scores back to all rows
+                metric_col = None
+                for col in ['corrupted_roc_auc', 'corrupted_score', 'score', 'roc_auc']:
+                    if col in clean_data.columns:
+                        metric_col = col
+                        break
+                
+                if metric_col:
+                    # Group by subject/seed to get clean scores
+                    group_cols = ['ablation', 'subject']
+                    if 'seed' in df.columns:
+                        group_cols.append('seed')
+                    
+                    for keys, group_df in clean_data.groupby(group_cols):
+                        if not isinstance(keys, tuple):
+                            keys = (keys,)
+                        clean_val = group_df[metric_col].mean()
+                        # Map to all rows with matching keys
+                        mask = True
+                        for i, col in enumerate(group_cols):
+                            mask = mask & (df[col] == keys[i])
+                        df.loc[mask, 'clean_roc_auc'] = clean_val
+    
+    if 'corrupted_roc_auc' not in df.columns:
+        # Try to infer from available metric columns
+        for col in ['corrupted_score', 'score', 'roc_auc']:
+            if col in df.columns:
+                df['corrupted_roc_auc'] = df[col]
+                break
+    
+    # Ensure relative_drop exists for RD computation
+    if 'relative_drop' not in df.columns:
+        if 'clean_roc_auc' in df.columns and 'corrupted_roc_auc' in df.columns:
+            df['relative_drop'] = (
+                (df['clean_roc_auc'] - df['corrupted_roc_auc']) / 
+                df['clean_roc_auc']
+            )
+            df['relative_drop'] = df['relative_drop'].replace([np.inf, -np.inf], np.nan)
+    
+    # Step 1: Aggregate across seeds
+    group_cols = ['dataset', 'eval_mode', 'tune', 'subject', 'model', 'noise_type', 'intensity', 'ablation']
+    group_cols = [c for c in group_cols if c in df.columns]
+    
+    if 'seed' in df.columns:
+        df_points = aggregate_seeds(df, group_cols)
+    else:
+        print("  [INFO] No seed column found, skipping seed aggregation")
+        df_points = df.copy()
+    
+    # Step 2: Compute AUPC per subject
+    df_aupc = compute_aupc_per_subject(df_points, config)
+    
+    # Step 3: Compute RD per subject
+    df_rd = compute_rd_per_subject(df_points, config)
+    
+    # Step 4: Build inference dataset (collapsed and resolved)
+    # Note: We'll merge 'ablation' back after this step to avoid duplicate column issues
+    df_resolved, df_collapsed = build_inference_dataset(df_aupc, df_rd, config)
+    
+    # Preserve 'ablation' column: merge it back from df_points
+    # The AUPC/RD functions and build_inference_dataset don't include 'ablation' in grouping,
+    # so we need to merge it back using the common grouping columns
+    if 'ablation' in df_points.columns:
+        # For resolved dataset: merge on ['dataset', 'eval_mode', 'tune', 'subject', 'model', 'noise_type']
+        merge_cols = ['dataset', 'eval_mode', 'tune', 'subject', 'model', 'noise_type']
+        merge_cols = [c for c in merge_cols if c in df_points.columns]
+        
+        if not df_resolved.empty and all(c in df_resolved.columns for c in merge_cols):
+            # Get unique ablation values per group from df_points
+            ablation_map = df_points.groupby(merge_cols)['ablation'].first().reset_index()
+            df_resolved = df_resolved.merge(ablation_map, on=merge_cols, how='left')
+            ablation_count = df_resolved['ablation'].notna().sum() if 'ablation' in df_resolved.columns else 0
+            print(f"  [INFO] Merged 'ablation' to resolved: {ablation_count}/{len(df_resolved)} rows")
+        
+        # For collapsed dataset: merge on ['dataset', 'eval_mode', 'tune', 'subject', 'model']
+        collapse_merge_cols = ['dataset', 'eval_mode', 'tune', 'subject', 'model']
+        collapse_merge_cols = [c for c in collapse_merge_cols if c in df_points.columns]
+        
+        if not df_collapsed.empty and all(c in df_collapsed.columns for c in collapse_merge_cols):
+            ablation_map_collapsed = df_points.groupby(collapse_merge_cols)['ablation'].first().reset_index()
+            df_collapsed = df_collapsed.merge(ablation_map_collapsed, on=collapse_merge_cols, how='left')
+            ablation_count = df_collapsed['ablation'].notna().sum() if 'ablation' in df_collapsed.columns else 0
+            print(f"  [INFO] Merged 'ablation' to collapsed: {ablation_count}/{len(df_collapsed)} rows")
+    
+    print(f"  [OK] Prepared subject-level data:")
+    print(f"    - Curve points: {len(df_points)} rows")
+    print(f"    - Resolved (by noise type): {len(df_resolved)} rows")
+    print(f"    - Collapsed (over noise types): {len(df_collapsed)} rows")
+    
+    return df_points, df_collapsed, df_resolved
 
 
-def compute_ablation_statistics(
-    baseline_df: pd.DataFrame,
-    ablation_dfs: Dict[str, pd.DataFrame],
-    metric_col: Optional[str] = None
+def compute_subject_level_statistics(
+    df_collapsed: pd.DataFrame,
+    primary_metrics: List[str] = ['aupc_collapsed', 'rd_collapsed'],
+    secondary_metrics: List[str] = ['clean_roc_auc'],
 ) -> pd.DataFrame:
     """
-    Compute statistical comparisons between baseline and each ablation.
+    Compute subject-level statistical comparisons between baseline and each ablation.
+    
+    This uses the correct methodology: subjects as the inferential unit, with paired
+    comparisons at the subject level (not n=15 summary statistics).
     
     Parameters:
     -----------
-    baseline_df : pd.DataFrame
-        Baseline results DataFrame (may be empty)
-    ablation_dfs : dict
-        Dictionary mapping ablation keys to their DataFrames
-    metric_col : str, optional
-        Metric column to compare. If None, will be auto-detected.
+    df_collapsed : pd.DataFrame
+        Subject-level collapsed metrics (from prepare_subject_level_data)
+    primary_metrics : list
+        Primary metrics to compare (RD/AUPC)
+    secondary_metrics : list
+        Secondary metrics to compare (clean ROC-AUC)
         
     Returns:
     --------
     pd.DataFrame
-        Statistical test results
+        Statistical test results for each ablation and metric
     """
-    print("\n[STEP 2] Computing statistical comparisons...")
+    print("\n[STEP 2b] Computing subject-level statistical comparisons...")
     
-    # If no baseline data, we can't do comparisons
-    if baseline_df.empty:
-        print("  [INFO] No baseline data available - skipping statistical comparisons")
-        print("  [INFO] Statistical comparisons require baseline results to compare against")
+    if df_collapsed.empty:
+        print("  [WARNING] No collapsed data available")
         return pd.DataFrame()
     
-    # Detect metric column if not provided
-    if metric_col is None:
-        metric_col = detect_metric_column(baseline_df)
-        if metric_col is None:
-            # Try to detect from ablation data
-            for ablation_df in ablation_dfs.values():
-                if not ablation_df.empty:
-                    metric_col = detect_metric_column(ablation_df)
-                    if metric_col:
-                        break
-        
-        if metric_col is None:
-            print("  [WARNING] Could not detect metric column")
-            print(f"  [INFO] Available columns in baseline: {list(baseline_df.columns)}")
-            return pd.DataFrame()
-        
-        print(f"  [INFO] Using metric column: {metric_col}")
-    
-    # Check if metric column exists in baseline
-    if metric_col not in baseline_df.columns:
-        print(f"  [WARNING] Metric column '{metric_col}' not found in baseline data")
-        print(f"  [INFO] Available columns: {list(baseline_df.columns)}")
+    # Check if we have baseline
+    if 'ablation' not in df_collapsed.columns:
+        print("  [WARNING] No 'ablation' column found")
         return pd.DataFrame()
     
-    # Prepare baseline scores (aggregate across seeds/subjects if needed)
-    if 'subject' in baseline_df.columns and 'seed' in baseline_df.columns:
-        # Group by subject and seed to get unique evaluations
-        baseline_scores = baseline_df.groupby(['subject', 'seed'])[metric_col].mean().values
-    elif 'subject' in baseline_df.columns:
-        baseline_scores = baseline_df.groupby('subject')[metric_col].mean().values
-    elif 'seed' in baseline_df.columns:
-        baseline_scores = baseline_df.groupby('seed')[metric_col].mean().values
-    else:
-        baseline_scores = baseline_df[metric_col].dropna().values
-    
-    baseline_scores = baseline_scores[np.isfinite(baseline_scores)]
-    
-    if len(baseline_scores) == 0:
-        print("  [WARNING] No valid baseline scores found")
+    baseline_mask = df_collapsed['ablation'] == 'baseline'
+    if not baseline_mask.any():
+        print("  [WARNING] No baseline data found")
         return pd.DataFrame()
+    
+    # Get all metrics to test
+    all_metrics = []
+    for metric in primary_metrics + secondary_metrics:
+        if metric in df_collapsed.columns:
+            all_metrics.append(metric)
+    
+    if not all_metrics:
+        print("  [WARNING] No valid metrics found for comparison")
+        print(f"  [INFO] Available columns: {list(df_collapsed.columns)}")
+        return pd.DataFrame()
+    
+    print(f"  [INFO] Primary metrics: {[m for m in primary_metrics if m in all_metrics]}")
+    print(f"  [INFO] Secondary metrics: {[m for m in secondary_metrics if m in all_metrics]}")
     
     test_results = []
     
-    for ablation_key, ablation_df in ablation_dfs.items():
-        if ablation_key == 'baseline' or ablation_df.empty:
-            continue
-        
+    # Get unique ablations (excluding baseline)
+    ablation_keys = [k for k in df_collapsed['ablation'].unique() if k != 'baseline']
+    
+    for ablation_key in ablation_keys:
         ablation_name = ABLATION_NAMES.get(ablation_key, ablation_key)
         
-        # Check if metric column exists in ablation data
-        if metric_col not in ablation_df.columns:
-            print(f"  [WARNING] Metric column '{metric_col}' not found in {ablation_name}")
-            print(f"  [INFO] Available columns: {list(ablation_df.columns)}")
+        # Filter to baseline and this ablation
+        comparison_mask = (df_collapsed['ablation'] == 'baseline') | (df_collapsed['ablation'] == ablation_key)
+        comparison_df = df_collapsed[comparison_mask].copy()
+        
+        if comparison_df.empty:
+            print(f"  [WARNING] No data for {ablation_name}")
             continue
         
-        # Prepare ablation scores (same aggregation as baseline)
-        if 'subject' in ablation_df.columns and 'seed' in ablation_df.columns:
-            ablation_scores = ablation_df.groupby(['subject', 'seed'])[metric_col].mean().values
-        elif 'subject' in ablation_df.columns:
-            ablation_scores = ablation_df.groupby('subject')[metric_col].mean().values
-        elif 'seed' in ablation_df.columns:
-            ablation_scores = ablation_df.groupby('seed')[metric_col].mean().values
-        else:
-            ablation_scores = ablation_df[metric_col].dropna().values
-        
-        ablation_scores = ablation_scores[np.isfinite(ablation_scores)]
-        
-        if len(ablation_scores) == 0:
-            print(f"  [WARNING] No valid scores for {ablation_name}")
-            continue
-        
-        # Match sample sizes (use minimum length)
-        min_len = min(len(baseline_scores), len(ablation_scores))
-        if min_len < 2:
-            print(f"  [WARNING] Insufficient data for {ablation_name} (n={min_len})")
-            continue
-        
-        baseline_subset = baseline_scores[:min_len]
-        ablation_subset = ablation_scores[:min_len]
-        
-        # Paired t-test
-        try:
-            t_stat, t_pvalue = ttest_rel(baseline_subset, ablation_subset)
-        except Exception as e:
-            print(f"  [WARNING] T-test failed for {ablation_name}: {e}")
-            t_stat, t_pvalue = np.nan, np.nan
-        
-        # Wilcoxon signed-rank test (non-parametric)
-        try:
-            w_stat, w_pvalue = wilcoxon(baseline_subset, ablation_subset)
-        except Exception as e:
-            print(f"  [WARNING] Wilcoxon test failed for {ablation_name}: {e}")
-            w_stat, w_pvalue = np.nan, np.nan
-        
-        # Effect size (Cohen's dz)
-        cohens_dz = compute_cohens_dz(baseline_subset, ablation_subset)
-        
-        # Bootstrap CI for Cohen's dz
-        try:
-            ci_low, ci_high = bootstrap_ci_cohens_dz(baseline_subset, ablation_subset, n_reps=10000)
-        except Exception as e:
-            print(f"  [WARNING] Bootstrap CI failed for {ablation_name}: {e}")
-            ci_low, ci_high = np.nan, np.nan
-        
-        # Summary statistics
-        baseline_mean = float(np.mean(baseline_subset))
-        baseline_std = float(np.std(baseline_subset, ddof=1))
-        ablation_mean = float(np.mean(ablation_subset))
-        ablation_std = float(np.std(ablation_subset, ddof=1))
-        mean_diff = baseline_mean - ablation_mean
-        
-        test_results.append({
-            'ablation': ablation_key,
-            'ablation_name': ablation_name,
-            'baseline_mean': baseline_mean,
-            'baseline_std': baseline_std,
-            'ablation_mean': ablation_mean,
-            'ablation_std': ablation_std,
-            'mean_difference': mean_diff,
-            't_statistic': float(t_stat) if np.isfinite(t_stat) else np.nan,
-            't_pvalue': float(t_pvalue) if np.isfinite(t_pvalue) else np.nan,
-            'wilcoxon_statistic': float(w_stat) if np.isfinite(w_stat) else np.nan,
-            'wilcoxon_pvalue': float(w_pvalue) if np.isfinite(w_pvalue) else np.nan,
-            'cohens_dz': float(cohens_dz) if np.isfinite(cohens_dz) else np.nan,
-            'cohens_dz_ci_low': float(ci_low) if np.isfinite(ci_low) else np.nan,
-            'cohens_dz_ci_high': float(ci_high) if np.isfinite(ci_high) else np.nan,
-            'n_samples': min_len,
-        })
-        
-        print(f"  {ablation_name}:")
-        print(f"    Baseline: {baseline_mean:.4f} ± {baseline_std:.4f}")
-        print(f"    Ablation: {ablation_mean:.4f} ± {ablation_std:.4f}")
-        print(f"    Difference: {mean_diff:.4f}")
-        if np.isfinite(t_pvalue):
-            print(f"    T-test p-value: {t_pvalue:.4f} {'*' if t_pvalue < 0.05 else ''}")
-        if np.isfinite(w_pvalue):
-            print(f"    Wilcoxon p-value: {w_pvalue:.4f} {'*' if w_pvalue < 0.05 else ''}")
-        if np.isfinite(cohens_dz):
-            print(f"    Cohen's dz: {cohens_dz:.4f}")
+        # For each metric, do subject-level comparison
+        for metric in all_metrics:
+            if metric not in comparison_df.columns:
+                continue
+            
+            # Pivot to wide format: subjects as rows, models (baseline/ablation) as columns
+            # Group by subject to ensure we have paired data
+            group_cols = ['dataset', 'eval_mode', 'tune', 'subject']
+            group_cols = [c for c in group_cols if c in comparison_df.columns]
+            
+            # Create pivot table - use group_cols as index (already includes 'subject')
+            pivot_df = comparison_df.pivot_table(
+                index=group_cols,
+                columns='ablation',
+                values=metric,
+                aggfunc='first'
+            ).reset_index()
+            
+            # Check if we have both baseline and ablation columns
+            if 'baseline' not in pivot_df.columns or ablation_key not in pivot_df.columns:
+                print(f"  [WARNING] Missing paired data for {ablation_name} - {metric}")
+                continue
+            
+            # Extract paired data
+            baseline_values = pivot_df['baseline'].values
+            ablation_values = pivot_df[ablation_key].values
+            
+            # Remove pairs with any NaN
+            valid_mask = ~(np.isnan(baseline_values) | np.isnan(ablation_values))
+            baseline_paired = baseline_values[valid_mask]
+            ablation_paired = ablation_values[valid_mask]
+            
+            if len(baseline_paired) < 2:
+                print(f"  [WARNING] Insufficient paired data for {ablation_name} - {metric} (n={len(baseline_paired)})")
+                continue
+            
+            # Check normality of differences
+            diffs = baseline_paired - ablation_paired
+            is_normal = check_normality(diffs)
+            parametric = is_normal
+            
+            # Run paired test
+            if parametric:
+                try:
+                    statistic, p_value = ttest_rel(baseline_paired, ablation_paired)
+                    test_type = 'paired_ttest'
+                except Exception as e:
+                    print(f"  [WARNING] T-test failed for {ablation_name} - {metric}: {e}")
+                    statistic, p_value = np.nan, np.nan
+                    test_type = 'failed'
+            else:
+                try:
+                    statistic, p_value = wilcoxon(baseline_paired, ablation_paired, alternative='two-sided')
+                    test_type = 'wilcoxon'
+                except Exception as e:
+                    print(f"  [WARNING] Wilcoxon test failed for {ablation_name} - {metric}: {e}")
+                    statistic, p_value = np.nan, np.nan
+                    test_type = 'failed'
+            
+            # Compute effect size
+            cohens_dz = compute_cohens_dz(baseline_paired, ablation_paired)
+            
+            # Bootstrap CI for Cohen's dz
+            try:
+                data_hash = hash((tuple(baseline_paired), tuple(ablation_paired))) % (2**31)
+                ci_low, ci_high = bootstrap_ci_cohens_dz(
+                    baseline_paired, ablation_paired, 
+                    n_reps=10000, 
+                    random_seed=int(data_hash)
+                )
+            except Exception as e:
+                print(f"  [WARNING] Bootstrap CI failed for {ablation_name} - {metric}: {e}")
+                ci_low, ci_high = np.nan, np.nan
+            
+            # Summary statistics
+            baseline_mean = float(np.mean(baseline_paired))
+            baseline_std = float(np.std(baseline_paired, ddof=1))
+            ablation_mean = float(np.mean(ablation_paired))
+            ablation_std = float(np.std(ablation_paired, ddof=1))
+            mean_diff = baseline_mean - ablation_mean
+            
+            # Determine if primary or secondary
+            is_primary = metric in primary_metrics
+            
+            test_results.append({
+                'ablation': ablation_key,
+                'ablation_name': ablation_name,
+                'metric': metric,
+                'metric_type': 'primary' if is_primary else 'secondary',
+                'baseline_mean': baseline_mean,
+                'baseline_std': baseline_std,
+                'ablation_mean': ablation_mean,
+                'ablation_std': ablation_std,
+                'mean_difference': mean_diff,
+                'test_type': test_type,
+                'parametric': parametric,
+                'statistic': float(statistic) if np.isfinite(statistic) else np.nan,
+                'p_value': float(p_value) if np.isfinite(p_value) else np.nan,
+                'cohens_dz': float(cohens_dz) if np.isfinite(cohens_dz) else np.nan,
+                'cohens_dz_ci_low': float(ci_low) if np.isfinite(ci_low) else np.nan,
+                'cohens_dz_ci_high': float(ci_high) if np.isfinite(ci_high) else np.nan,
+                'n_subjects': len(baseline_paired),
+            })
+            
+            print(f"  {ablation_name} - {metric} ({'primary' if is_primary else 'secondary'}):")
+            print(f"    Baseline: {baseline_mean:.4f} ± {baseline_std:.4f}")
+            print(f"    Ablation: {ablation_mean:.4f} ± {ablation_std:.4f}")
+            print(f"    Difference: {mean_diff:.4f}")
+            print(f"    n={len(baseline_paired)} subjects, {test_type}")
+            if np.isfinite(p_value):
+                print(f"    p-value: {p_value:.4f} {'*' if p_value < 0.05 else ''}")
+            if np.isfinite(cohens_dz):
+                print(f"    Cohen's dz: {cohens_dz:.4f} [{ci_low:.4f}, {ci_high:.4f}]")
     
     if not test_results:
         return pd.DataFrame()
     
     stats_df = pd.DataFrame(test_results)
     
-    # Apply Bonferroni correction for multiple comparisons
-    num_tests = len(stats_df)
-    if num_tests > 0:
-        stats_df['t_pvalue_corrected'] = stats_df['t_pvalue'].apply(
-            lambda p: min(p * num_tests, 1.0) if np.isfinite(p) else np.nan
-        )
-        stats_df['wilcoxon_pvalue_corrected'] = stats_df['wilcoxon_pvalue'].apply(
-            lambda p: min(p * num_tests, 1.0) if np.isfinite(p) else np.nan
-        )
-        stats_df['significant_t_test'] = stats_df['t_pvalue_corrected'] < 0.05
-        stats_df['significant_wilcoxon'] = stats_df['wilcoxon_pvalue_corrected'] < 0.05
+    # Apply Bonferroni correction separately for primary and secondary metrics
+    for metric_type in ['primary', 'secondary']:
+        mask = stats_df['metric_type'] == metric_type
+        num_tests = mask.sum()
+        if num_tests > 0:
+            stats_df.loc[mask, 'p_value_corrected'] = stats_df.loc[mask, 'p_value'].apply(
+                lambda p: min(p * num_tests, 1.0) if np.isfinite(p) else np.nan
+            )
+            stats_df.loc[mask, 'significant'] = stats_df.loc[mask, 'p_value_corrected'] < 0.05
     
-    print(f"  [OK] Computed statistics for {len(stats_df)} ablations")
+    print(f"  [OK] Computed statistics for {len(stats_df)} ablation/metric combinations")
     return stats_df
 
 
@@ -853,28 +983,37 @@ def analyze_ablation_studies(
     print(f"\n[INFO] Available columns in combined DataFrame: {list(combined_df.columns)}")
     print(f"[INFO] DataFrame shape: {combined_df.shape}")
     
-    # Compute clean scores
+    # Compute clean scores (secondary outcome)
     clean_scores_df = compute_ablation_clean_scores(combined_df)
     
-    # Compute statistical comparisons
-    baseline_df = ablation_results.get('baseline', pd.DataFrame())
-    ablation_dfs = {k: v for k, v in ablation_results.items() if k != 'baseline'}
+    # Prepare subject-level data and compute robustness metrics (primary outcomes)
+    config = AnalysisConfig(normalize_aupc=True, rd_summary='mean')
+    df_points, df_collapsed, df_resolved = prepare_subject_level_data(combined_df, config)
     
-    # Detect metric column from available data
-    metric_col = None
-    if not baseline_df.empty:
-        metric_col = detect_metric_column(baseline_df)
-    if metric_col is None:
-        for ablation_df in ablation_dfs.values():
-            if not ablation_df.empty:
-                metric_col = detect_metric_column(ablation_df)
-                if metric_col:
-                    break
+    # Compute subject-level statistical comparisons
+    # Primary metrics: RD and AUPC (robustness endpoints)
+    # Secondary metrics: clean ROC-AUC
+    primary_metrics = ['aupc_collapsed', 'rd_collapsed']
+    secondary_metrics = []
     
-    stats_df = compute_ablation_statistics(baseline_df, ablation_dfs, metric_col=metric_col)
+    # Add clean_roc_auc as secondary if available in collapsed data
+    if 'clean_roc_auc' in df_collapsed.columns:
+        # Need to aggregate clean_roc_auc to subject level
+        # Clean ROC-AUC should be constant per subject/model, so we can take first value
+        if 'subject' in df_collapsed.columns and 'ablation' in df_collapsed.columns:
+            # Get clean ROC-AUC from the original data (it's constant per subject/model)
+            clean_by_subject = combined_df.groupby(['ablation', 'subject'])['clean_roc_auc'].first().reset_index()
+            clean_by_subject = clean_by_subject.rename(columns={'clean_roc_auc': 'clean_roc_auc_subject'})
+            df_collapsed = df_collapsed.merge(clean_by_subject, on=['ablation', 'subject'], how='left')
+            if 'clean_roc_auc_subject' in df_collapsed.columns:
+                df_collapsed['clean_roc_auc'] = df_collapsed['clean_roc_auc_subject']
+                secondary_metrics.append('clean_roc_auc')
     
-    # Compute robustness metrics
-    robustness_results = compute_ablation_robustness_metrics(combined_df)
+    stats_df = compute_subject_level_statistics(
+        df_collapsed, 
+        primary_metrics=primary_metrics,
+        secondary_metrics=secondary_metrics
+    )
     
     # Save results
     print("\n[STEP 4] Saving results...")
@@ -896,13 +1035,24 @@ def analyze_ablation_studies(
         saved_files['statistical_tests'] = stats_path
         print(f"  [OK] Saved statistical tests: {stats_path}")
     
-    # Save robustness metrics
-    for key, df in robustness_results.items():
-        if not df.empty:
-            metric_path = os.path.join(output_dir, f"{key}_{timestamp}.csv")
-            df.to_csv(metric_path, index=False)
-            saved_files[key] = metric_path
-            print(f"  [OK] Saved {key}: {metric_path}")
+    # Save subject-level data
+    if not df_points.empty:
+        points_path = os.path.join(output_dir, f"subject_level_points_{timestamp}.csv")
+        df_points.to_csv(points_path, index=False)
+        saved_files['subject_level_points'] = points_path
+        print(f"  [OK] Saved subject-level curve points: {points_path}")
+    
+    if not df_collapsed.empty:
+        collapsed_path = os.path.join(output_dir, f"subject_level_collapsed_{timestamp}.csv")
+        df_collapsed.to_csv(collapsed_path, index=False)
+        saved_files['subject_level_collapsed'] = collapsed_path
+        print(f"  [OK] Saved subject-level collapsed metrics: {collapsed_path}")
+    
+    if not df_resolved.empty:
+        resolved_path = os.path.join(output_dir, f"subject_level_resolved_{timestamp}.csv")
+        df_resolved.to_csv(resolved_path, index=False)
+        saved_files['subject_level_resolved'] = resolved_path
+        print(f"  [OK] Saved subject-level resolved metrics: {resolved_path}")
     
     # Save combined results
     combined_path = os.path.join(output_dir, f"combined_results_{timestamp}.csv")
@@ -919,20 +1069,34 @@ def analyze_ablation_studies(
         f.write(f"Generated: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
         f.write(f"Output directory: {output_dir}\n\n")
         
-        # Clean scores summary
+        # Primary outcomes (RD/AUPC) - robustness endpoints
+        if not stats_df.empty:
+            primary_stats = stats_df[stats_df['metric_type'] == 'primary'].copy()
+            if not primary_stats.empty:
+                f.write("-" * 80 + "\n")
+                f.write("PRIMARY OUTCOMES: ROBUSTNESS METRICS (RD/AUPC)\n")
+                f.write("Subject-level comparisons (n=subjects, not n=15 summary statistics)\n")
+                f.write("-" * 80 + "\n")
+                f.write(primary_stats.to_string(index=False))
+                f.write("\n\n")
+        
+        # Secondary outcomes (clean ROC-AUC)
+        if not stats_df.empty:
+            secondary_stats = stats_df[stats_df['metric_type'] == 'secondary'].copy()
+            if not secondary_stats.empty:
+                f.write("-" * 80 + "\n")
+                f.write("SECONDARY OUTCOMES: CLEAN ROC-AUC\n")
+                f.write("Subject-level comparisons\n")
+                f.write("-" * 80 + "\n")
+                f.write(secondary_stats.to_string(index=False))
+                f.write("\n\n")
+        
+        # Clean scores summary (descriptive only)
         if not clean_scores_df.empty:
             f.write("-" * 80 + "\n")
-            f.write("CLEAN SCORES (Baseline Performance)\n")
+            f.write("CLEAN SCORES SUMMARY (Descriptive Statistics)\n")
             f.write("-" * 80 + "\n")
             f.write(clean_scores_df.to_string(index=False))
-            f.write("\n\n")
-        
-        # Statistical tests summary
-        if not stats_df.empty:
-            f.write("-" * 80 + "\n")
-            f.write("STATISTICAL COMPARISONS (vs Baseline)\n")
-            f.write("-" * 80 + "\n")
-            f.write(stats_df.to_string(index=False))
             f.write("\n\n")
         
         # File locations
@@ -954,7 +1118,9 @@ def analyze_ablation_studies(
     return {
         'clean_scores': clean_scores_df,
         'statistical_tests': stats_df,
-        'robustness_metrics': robustness_results,
+        'subject_level_points': df_points,
+        'subject_level_collapsed': df_collapsed,
+        'subject_level_resolved': df_resolved,
         'combined_results': combined_df,
     }
 

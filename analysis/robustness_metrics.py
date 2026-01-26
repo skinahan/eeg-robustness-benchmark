@@ -289,11 +289,34 @@ def compute_aupc(
         # trapezoidal integral (using trapezoid instead of deprecated trapz)
         return float(np.trapezoid(y=y, x=p))
 
-    out = (
-        df.groupby(list(group_cols), as_index=False)
-        .apply(lambda g: pd.Series({"aupc": _aupc_for_group(g)}), include_groups=False)
-        .reset_index(drop=True)
-    )
+    # Use manual loop to ensure group columns are preserved (similar to compute_rd_curve)
+    grouped = df.groupby(list(group_cols), as_index=True)
+    
+    aupc_list = []
+    for group_keys, group_df in grouped:
+        # Extract group key values
+        if not isinstance(group_keys, tuple):
+            group_keys = (group_keys,)
+        
+        # Create a dictionary of group column values
+        group_values = {}
+        for i, col in enumerate(group_cols):
+            if i < len(group_keys):
+                group_values[col] = group_keys[i]
+        
+        # Compute AUPC for this group
+        aupc_value = _aupc_for_group(group_df.reset_index(drop=True))
+        
+        # Create result row with group columns + aupc
+        result_row = group_values.copy()
+        result_row['aupc'] = aupc_value
+        aupc_list.append(result_row)
+    
+    # Combine all results
+    if aupc_list:
+        out = pd.DataFrame(aupc_list)
+    else:
+        out = pd.DataFrame(columns=list(group_cols) + ["aupc"])
     return out
 
 
@@ -458,7 +481,28 @@ def summarize_mean_ci(
     """
     Summarize a value with mean, std, sem, and normal-approx 95% CI.
     """
+    # Check if DataFrame is empty or missing required columns
+    if df.empty:
+        # Return empty DataFrame with expected structure
+        return pd.DataFrame(columns=list(group_cols) + ["n", "mean", "std", "sem", "ci_low", "ci_high"])
+    
+    if value_col not in df.columns:
+        raise KeyError(
+            f"Column '{value_col}' not found in DataFrame. "
+            f"Available columns: {list(df.columns)}. "
+            f"This may indicate that compute_aupc or similar function returned an empty or malformed result."
+        )
+    
     group_cols_list = list(group_cols)
+    
+    # Check that all group columns exist
+    missing_group_cols = [col for col in group_cols_list if col not in df.columns]
+    if missing_group_cols:
+        raise KeyError(
+            f"Missing group columns: {missing_group_cols}. "
+            f"Available columns: {list(df.columns)}. "
+            f"This may indicate that group columns were not preserved in the aggregation step."
+        )
     
     # Use a more explicit approach to avoid column naming issues
     # Group by the columns and compute statistics separately
@@ -530,7 +574,8 @@ def compute_results_metrics(
     # Filter to core models if specified
     if core_models is None:
         if hydra:
-            core_models = ['CNN-NCP', 'EEGNet', 'REEGNet', 'branched_wiredcfc_arch4']
+            # Include both 'branched_wiredcfc_arch4' and 'HYDRA' to catch data that may have either name
+            core_models = ['CNN-NCP', 'EEGNet', 'REEGNet', 'branched_wiredcfc_arch4', 'HYDRA']
         else:
             core_models = ['CNN-NCP', 'EEGNet', 'REEGNet']
     
@@ -543,7 +588,36 @@ def compute_results_metrics(
         
         # Also canonicalize the model column values for comparison
         df_model_values = df[cfg.model_col].apply(canonicalize_model_name)
-        df = df[df_model_values.isin(core_models_canonical)].copy()
+        
+        # CRITICAL: Explicitly exclude hydra_v2 and other hydra variants
+        # Only include models that match exactly: cnn_ncp, eegnet, reegnet, or branched_wiredcfc_arch4
+        # Exclude anything with 'hydra_v' or other variants (but allow 'branched_wiredcfc_arch4')
+        if hydra:
+            # For hydra mode, exclude any model containing 'hydra_v' (which would catch hydra_v2, hydra_v3, etc.)
+            # This must be done BEFORE filtering to core_models_canonical
+            exclude_mask = df_model_values.str.contains('hydra_v', na=False, regex=False)
+            excluded_count = exclude_mask.sum()
+            if excluded_count > 0:
+                excluded_models = df.loc[exclude_mask, cfg.model_col].unique()
+                print(f"[INFO] Excluding {excluded_count} rows with hydra variants (e.g., {list(excluded_models[:3])}): not part of core experiment")
+            df = df[~exclude_mask].copy()
+            # Recompute df_model_values after exclusion
+            df_model_values = df[cfg.model_col].apply(canonicalize_model_name)
+        
+        # Filter to only core models (exact matches only)
+        # When hydra=True, allow both 'branched_wiredcfc_arch4' and 'hydra' (HYDRA)
+        # because the data may have already been renamed to 'HYDRA' by load_results_dataframe
+        if hydra and 'hydra' in core_models_canonical:
+            # Allow both 'branched_wiredcfc_arch4' and 'hydra' (HYDRA after canonicalization)
+            # This handles the case where data was already renamed to 'HYDRA' in load_results_dataframe
+            core_models_canonical_strict = [c for c in core_models_canonical if c != 'hydra']
+            core_models_canonical_strict.append('branched_wiredcfc_arch4')  # Ensure it's in the list
+            core_models_canonical_strict.append('hydra')  # Also allow 'hydra' (HYDRA after canonicalization)
+            df = df[df_model_values.isin(core_models_canonical_strict)].copy()
+            # Recompute df_model_values after filtering
+            df_model_values = df[cfg.model_col].apply(canonicalize_model_name)
+        else:
+            df = df[df_model_values.isin(core_models_canonical)].copy()
         
         # CRITICAL FIX: Normalize model column values to match the expected core model names
         # This prevents inconsistent model name formats from causing label mix-ups during grouping
@@ -551,7 +625,15 @@ def compute_results_metrics(
         model_name_mapping = {}
         for core_model in core_models:
             canonical = canonicalize_model_name(core_model)
-            model_name_mapping[canonical] = core_model
+            # For HYDRA, map both 'branched_wiredcfc_arch4' and 'hydra' to 'branched_wiredcfc_arch4'
+            # (they will be renamed to 'HYDRA' later)
+            if canonical == 'branched_wiredcfc_arch4':
+                model_name_mapping[canonical] = 'branched_wiredcfc_arch4'
+            elif canonical == 'hydra':
+                # Map 'hydra' (HYDRA) to 'branched_wiredcfc_arch4' so it gets renamed to 'HYDRA' consistently
+                model_name_mapping[canonical] = 'branched_wiredcfc_arch4'
+            else:
+                model_name_mapping[canonical] = core_model
         
         # Normalize the model column to use the expected core model names
         df_model_normalized = df[cfg.model_col].apply(canonicalize_model_name)
@@ -562,6 +644,11 @@ def compute_results_metrics(
         if unmapped_mask.any():
             print(f"[WARNING] Found {unmapped_mask.sum()} rows with unmapped model names after filtering. Keeping original values.")
             df.loc[unmapped_mask, cfg.model_col] = original_model_values[unmapped_mask]
+        
+        # Replace branched_wiredcfc_arch4 with HYDRA early in the pipeline
+        # This ensures consistent naming throughout the analysis
+        if hydra:
+            df = replace_hydra_model_name(df, model_col=cfg.model_col)
         
         filtered_count = len(df)
         excluded = initial_count - filtered_count
@@ -628,16 +715,34 @@ def compute_results_metrics(
 
     # ---------------- AUPC ----------------
     # Compute per-instance AUPC (e.g., per seed) so you can average/CI in Results.
+    # Exclude 'spike' noise type from AUPC calculations
+    df_aupc = df.copy()
+    if cfg.noise_col in df_aupc.columns:
+        initial_count = len(df_aupc)
+        df_aupc = df_aupc[df_aupc[cfg.noise_col] != 'spike'].copy()
+        excluded_count = initial_count - len(df_aupc)
+        if excluded_count > 0:
+            print(f"[INFO] Excluding 'spike' noise type from AUPC: removed {excluded_count} rows")
+    
     aupc_group_cols = base_group + per_instance
-    aupc_raw = compute_aupc(df, cfg, group_cols=aupc_group_cols)
+    aupc_raw = compute_aupc(df_aupc, cfg, group_cols=aupc_group_cols)
 
     # Summarize over per_instance
     aupc_summary_group = base_group
     aupc_summary = summarize_mean_ci(aupc_raw, "aupc", aupc_summary_group, cfg)
 
     # ---------------- RD curve ----------------
+    # Exclude 'spike' noise type from RD calculations
+    df_rd = df.copy()
+    if cfg.noise_col in df_rd.columns:
+        initial_count = len(df_rd)
+        df_rd = df_rd[df_rd[cfg.noise_col] != 'spike'].copy()
+        excluded_count = initial_count - len(df_rd)
+        if excluded_count > 0:
+            print(f"[INFO] Excluding 'spike' noise type from RD: removed {excluded_count} rows")
+    
     rd_group_cols = base_group + per_instance
-    rd_curve = compute_rd_curve(df, cfg, group_cols=rd_group_cols, baseline_p=0.0)
+    rd_curve = compute_rd_curve(df_rd, cfg, group_cols=rd_group_cols, baseline_p=0.0)
 
     # Summarize RD at each p (and base_group)
     rd_summary_group = base_group + [cfg.p_col]
@@ -645,9 +750,18 @@ def compute_results_metrics(
 
     # ---------------- CSV_p curve ----------------
     # CSV is defined across subjects; we can still compute it per seed (then summarize across seeds).
-    subject_col = find_subject_col(df, cfg)
+    # Exclude 'spike' noise type from CSV calculations
+    df_csv = df.copy()
+    if cfg.noise_col in df_csv.columns:
+        initial_count = len(df_csv)
+        df_csv = df_csv[df_csv[cfg.noise_col] != 'spike'].copy()
+        excluded_count = initial_count - len(df_csv)
+        if excluded_count > 0:
+            print(f"[INFO] Excluding 'spike' noise type from CSV: removed {excluded_count} rows")
+    
+    subject_col = find_subject_col(df_csv, cfg)
     csv_group_cols = base_group + per_instance
-    csv_curve = compute_csv_p_curve(df, cfg, group_cols=csv_group_cols, subject_col=subject_col)
+    csv_curve = compute_csv_p_curve(df_csv, cfg, group_cols=csv_group_cols, subject_col=subject_col)
 
     csv_summary_group = base_group + [cfg.p_col]
     csv_summary = summarize_mean_ci(csv_curve, "csv_p", csv_summary_group, cfg)
@@ -922,7 +1036,8 @@ def load_results_dataframe(
     # Filter to core models if specified
     if core_models is None:
         if hydra:
-            core_models = ['CNN-NCP', 'EEGNet', 'REEGNet', 'branched_wiredcfc_arch4']
+            # Include both 'branched_wiredcfc_arch4' and 'HYDRA' to catch data that may have either name
+            core_models = ['CNN-NCP', 'EEGNet', 'REEGNet', 'branched_wiredcfc_arch4', 'HYDRA']
         else:
             core_models = ['CNN-NCP', 'EEGNet', 'REEGNet']
     
@@ -933,14 +1048,42 @@ def load_results_dataframe(
         canonicalize_model_name = lambda x: str(x).strip().lower().replace(" ", "_").replace("-", "_")
         core_models_canonical = [canonicalize_model_name(m) for m in core_models]
         df_model_values = df[model_col].apply(canonicalize_model_name)
-        df = df[df_model_values.isin(core_models_canonical)].copy()
+        
+        # CRITICAL: Explicitly exclude hydra_v2 and other hydra variants
+        if hydra:
+            # Exclude any model containing 'hydra_v' (which would catch hydra_v2, hydra_v3, etc.)
+            exclude_mask = df_model_values.str.contains('hydra_v', na=False, regex=False)
+            excluded_count = exclude_mask.sum()
+            if excluded_count > 0:
+                excluded_models = df.loc[exclude_mask, model_col].unique()
+                print(f"[INFO] Excluding {excluded_count} rows with hydra variants (e.g., {list(excluded_models[:3])}): not part of core experiment")
+            df = df[~exclude_mask].copy()
+            # Recompute df_model_values after exclusion
+            df_model_values = df[model_col].apply(canonicalize_model_name)
+            # Remove 'hydra' from allowed models - only allow 'branched_wiredcfc_arch4'
+            if 'hydra' in core_models_canonical:
+                core_models_canonical_strict = [c for c in core_models_canonical if c != 'hydra']
+                core_models_canonical_strict.append('branched_wiredcfc_arch4')
+                df = df[df_model_values.isin(core_models_canonical_strict)].copy()
+                df_model_values = df[model_col].apply(canonicalize_model_name)
+            else:
+                df = df[df_model_values.isin(core_models_canonical)].copy()
+        else:
+            df = df[df_model_values.isin(core_models_canonical)].copy()
         
         # CRITICAL FIX: Normalize model column values to match the expected core model names
         # This prevents inconsistent model name formats from causing label mix-ups
         model_name_mapping = {}
         for core_model in core_models:
             canonical = canonicalize_model_name(core_model)
-            model_name_mapping[canonical] = core_model
+            # For HYDRA, only map 'branched_wiredcfc_arch4' (not generic 'hydra')
+            if canonical == 'branched_wiredcfc_arch4':
+                model_name_mapping[canonical] = 'branched_wiredcfc_arch4'
+            elif canonical == 'hydra':
+                # Skip generic 'hydra' - we only want 'branched_wiredcfc_arch4'
+                continue
+            else:
+                model_name_mapping[canonical] = core_model
         
         # Normalize the model column to use the expected core model names
         df_model_normalized = df[model_col].apply(canonicalize_model_name)
@@ -951,6 +1094,11 @@ def load_results_dataframe(
         if unmapped_mask.any():
             print(f"[WARNING] Found {unmapped_mask.sum()} rows with unmapped model names after filtering. Keeping original values.")
             df.loc[unmapped_mask, model_col] = original_model_values[unmapped_mask]
+        
+        # Replace branched_wiredcfc_arch4 with HYDRA early in the pipeline
+        # This ensures consistent naming throughout the analysis
+        if hydra:
+            df = replace_hydra_model_name(df, model_col=model_col)
         
         filtered_count = len(df)
         excluded = initial_count - filtered_count

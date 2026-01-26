@@ -998,6 +998,117 @@ def hydra_v2_training_space(trial, prefix):
     }
 
 
+def hydra_v3_architecture_space(trial, prefix):
+    """
+    Architecture parameter space for HYDRAv3 model.
+    
+    HYDRAv3 uses CfC-based carry controller instead of explicit adaptive gates.
+    Simplified architecture based on analysis recommendations.
+    """
+    import os
+    from pathlib import Path
+    
+    # Find available architecture files
+    architectures_dir = Path("outputs/architectures")
+    architecture_files = sorted(architectures_dir.glob("best_architecture_*.json"))
+    
+    # Create list of architecture indices (1-10)
+    architecture_choices = [i for i in range(1, len(architecture_files) + 1)]
+    
+    if not architecture_choices:
+        raise ValueError("No architecture files found in outputs/architectures")
+    
+    return {
+        # NOTE:
+        # - We intentionally DO NOT tune `recurrent_output_size` here.
+        #   The BranchedWiredCfC base class defaults `recurrent_output_size` to F2
+        #   (the CNN feature dimension) to keep the residual connection valid.
+        
+        # Wiring selection: Choose from available architectures (1-10)
+        f"{prefix}wiring_arch_index": trial.suggest_categorical(
+            f"{prefix}wiring_arch_index", architecture_choices
+        ),
+        
+        # CfC / regularization parameters
+        f"{prefix}module__drop_prob": trial.suggest_float(
+            f"{prefix}module__drop_prob", 0.1, 0.5
+        ),
+        
+        # CNN feature extraction parameters
+        f"{prefix}module__F1": trial.suggest_categorical(
+            f"{prefix}module__F1", [4, 8, 12, 16]
+        ),
+        f"{prefix}module__D": trial.suggest_categorical(
+            f"{prefix}module__D", [1, 2, 4]
+        ),
+        f"{prefix}module__kernel_length": trial.suggest_int(
+            f"{prefix}module__kernel_length", 64, 256, step=32
+        ),
+        
+        # Temporal processing parameters
+        f"{prefix}module__temporal_kernel_size": trial.suggest_categorical(
+            f"{prefix}module__temporal_kernel_size", [3, 5, 7]
+        ),
+        f"{prefix}module__temporal_stride": trial.suggest_categorical(
+            f"{prefix}module__temporal_stride", [2, 4, 6, 8]
+        ),
+        
+        # Fusion type over bins
+        f"{prefix}module__fusion": trial.suggest_categorical(
+            f"{prefix}module__fusion", ["attn", "mean"]
+        ),
+        
+        # HYDRAv3-specific parameters
+        f"{prefix}module__use_cfc_carry_controller": trial.suggest_categorical(
+            f"{prefix}module__use_cfc_carry_controller", [True, False]
+        ),
+        f"{prefix}module__controller_dim": trial.suggest_categorical(
+            f"{prefix}module__controller_dim", [1, 2]  # d_c ∈ {1, 2} per spec
+        ),
+        f"{prefix}module__use_ssvep_head": trial.suggest_categorical(
+            f"{prefix}module__use_ssvep_head", [True, False]
+        ),
+        f"{prefix}module__ssvep_num_filters": trial.suggest_categorical(
+            f"{prefix}module__ssvep_num_filters", [2, 4, 6]
+        ),
+        
+        # CfC-specific parameters
+        f"{prefix}module__mixed_memory": trial.suggest_categorical(
+            f"{prefix}module__mixed_memory", [True, False]
+        ),
+        f"{prefix}module__mode": trial.suggest_categorical(
+            f"{prefix}module__mode", ["default", "pure", "no_gate"]
+        ),
+        f"{prefix}module__activation": trial.suggest_categorical(
+            f"{prefix}module__activation", ["lecun_tanh", "silu", "relu", "tanh", "gelu"]
+        ),
+        f"{prefix}module__backbone_units": trial.suggest_int(
+            f"{prefix}module__backbone_units", 64, 256
+        ),
+        f"{prefix}module__backbone_layers": trial.suggest_int(
+            f"{prefix}module__backbone_layers", 1, 3
+        ),
+        f"{prefix}module__backbone_dropout": trial.suggest_float(
+            f"{prefix}module__backbone_dropout", 0.0, 0.5
+        ),
+    }
+
+
+def hydra_v3_training_space(trial, prefix):
+    """Training parameter space for HYDRAv3 model."""
+    return {
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(
+            f"{prefix}optimizer__lr", 1e-6, 1e-2
+        ),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
+            f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
+        ),
+        f"{prefix}batch_size": trial.suggest_categorical(
+            f"{prefix}batch_size", [4, 8, 16, 32, 64]
+        ),
+    }
+
+
 def diva_full_architecture_space(trial, prefix):
     """Architecture parameter space for DIVAInspiredEEG (diva_full) model."""
     return {
@@ -1226,6 +1337,10 @@ def get_model_architecture_space(model_name):
     if model_name.startswith("hydra_v2"):
         return hydra_v2_architecture_space
     
+    # Check if this is a hydra_v3 architecture model
+    if model_name.startswith("hydra_v3"):
+        return hydra_v3_architecture_space
+    
     architecture_registry = {
         "eegnet": eegnet_architecture_space,
         "reegnet": reegnet_architecture_space,
@@ -1241,6 +1356,7 @@ def get_model_architecture_space(model_name):
         "branched_lstm": branched_lstm_architecture_space,
         "branched_wiredcfc": branched_wiredcfc_architecture_space,
         "hydra_v2": hydra_v2_architecture_space,
+        "hydra_v3": hydra_v3_architecture_space,
         "diva_full": diva_full_architecture_space,
     }
     return architecture_registry[model_name]
@@ -1263,6 +1379,10 @@ def get_model_training_space(model_name):
     if model_name.startswith("hydra_v2"):
         return hydra_v2_training_space
     
+    # Check if this is a hydra_v3 architecture model
+    if model_name.startswith("hydra_v3"):
+        return hydra_v3_training_space
+    
     training_registry = {
         "eegnet": eegnet_training_space,
         "reegnet": reegnet_training_space,
@@ -1278,6 +1398,7 @@ def get_model_training_space(model_name):
         "branched_lstm": branched_lstm_training_space,
         "branched_wiredcfc": branched_wiredcfc_training_space,
         "hydra_v2": hydra_v2_training_space,
+        "hydra_v3": hydra_v3_training_space,
         "diva_full": diva_full_training_space,
     }
     return training_registry[model_name]

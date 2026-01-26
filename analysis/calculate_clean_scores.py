@@ -220,6 +220,10 @@ def compute_clean_scores_summary(
     Clean scores are aggregated across seeds/subjects/sessions to get statistics.
     Note: Clean scores should be the same across noise types, so we don't group by noise_type.
     
+    CRITICAL: n_samples is computed from a reference set of unique seed/subject/session
+    combinations across ALL models for each dataset/eval_mode/tune combination. This ensures
+    consistent n_samples across all models for the same experimental condition.
+    
     Parameters:
     -----------
     df : pd.DataFrame
@@ -247,6 +251,21 @@ def compute_clean_scores_summary(
         print("[WARNING] No rows with valid clean scores found")
         return pd.DataFrame()
     
+    # CRITICAL FIX: First, determine reference sets of unique seed/subject/session combinations
+    # for each dataset/eval_mode/tune combination (across ALL models)
+    # This ensures n_samples is consistent across models
+    group_cols = [col for col in group_by_cols if col in df_filtered.columns]
+    
+    reference_sets = {}
+    for (dataset, eval_mode, tune), group_df in df_filtered.groupby(['dataset', 'eval_mode', 'tune']):
+        # Get all unique seed/subject/session combinations across all models for this condition
+        if group_cols:
+            unique_combos = set(group_df.groupby(group_cols).groups.keys())
+        else:
+            # Fallback: use all rows (shouldn't happen with proper data)
+            unique_combos = set(range(len(group_df)))
+        reference_sets[(dataset, eval_mode, tune)] = unique_combos
+    
     # Get unique combinations of dataset, model, eval_mode, tune
     unique_combos = df_filtered.groupby([
         'dataset', 'model', 'eval_mode', 'tune'
@@ -272,8 +291,6 @@ def compute_clean_scores_summary(
             continue
         
         # Extract clean scores - group by seed/subject/session to get unique evaluations
-        group_cols = [col for col in group_by_cols if col in combo_df.columns]
-        
         clean_score_values = []
         
         if group_cols:
@@ -299,7 +316,15 @@ def compute_clean_scores_summary(
         # Calculate mean and std
         mean_clean_score = np.mean(clean_score_values)
         std_clean_score = np.std(clean_score_values, ddof=1) if len(clean_score_values) > 1 else 0.0
-        n_samples = len(clean_score_values)
+        
+        # CRITICAL FIX: Use reference set size for n_samples to ensure consistency across models
+        ref_key = (dataset, eval_mode, tune)
+        if ref_key in reference_sets:
+            n_samples = len(reference_sets[ref_key])
+        else:
+            # Fallback to model-specific count if reference set not found
+            n_samples = len(clean_score_values)
+            print(f"[WARNING] Reference set not found for {ref_key}, using model-specific count: {n_samples}")
         
         results.append({
             'dataset': dataset,
@@ -458,6 +483,17 @@ def compute_clean_scores(
             initial_count = len(df)
             # Normalize model names for comparison (case-insensitive, handle underscores/hyphens)
             df['model_normalized'] = df['model'].astype(str).str.lower().str.strip().str.replace('-', '_')
+            
+            # CRITICAL: Explicitly exclude hydra_v2 and other hydra variants
+            # Exclude any model containing 'hydra_v' (which would catch hydra_v2, hydra_v3, etc.)
+            exclude_mask = df['model_normalized'].str.contains('hydra_v', na=False, regex=False)
+            excluded_count = exclude_mask.sum()
+            if excluded_count > 0:
+                excluded_models = df.loc[exclude_mask, 'model'].unique()
+                print(f"[INFO] Excluding {excluded_count} rows with hydra variants (e.g., {list(excluded_models[:3])}): not part of core experiment")
+            df = df[~exclude_mask].copy()
+            
+            # Filter to only allowed models
             hydra_patterns_normalized = [p.lower().strip().replace('-', '_') for p in hydra_model_patterns]
             df = df[df['model_normalized'].isin(hydra_patterns_normalized)].copy()
             df = df.drop(columns=['model_normalized'])
@@ -465,6 +501,9 @@ def compute_clean_scores(
             excluded = initial_count - filtered_count
             if excluded > 0:
                 print(f"[INFO] Filtered to hydra models (eegnet, reegnet, cnn_ncp, branched_wiredcfc_arch4): removed {excluded} rows, kept {filtered_count} rows")
+            # Replace branched_wiredcfc_arch4 with HYDRA early in the pipeline
+            # This ensures consistent naming throughout the analysis
+            df = replace_hydra_model_name(df, model_col='model')
     
     # Compute clean scores summary
     print("\n[STEP 2] Computing clean scores summary...")

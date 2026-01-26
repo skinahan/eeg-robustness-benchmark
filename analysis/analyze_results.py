@@ -5,6 +5,11 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import itertools
 import numpy as np
+try:
+    from scipy import stats
+    HAS_SCIPY = True
+except ImportError:
+    HAS_SCIPY = False
 
 
 class SanityCheckError(Exception):
@@ -89,6 +94,57 @@ def format_noise_type_label(noise_type):
     else:
         # Default: capitalize first letter
         return noise_type.capitalize()
+
+
+def format_model_name_for_display(model_name):
+    """
+    Format model name for display in plots and figures.
+    Maps internal model names to their publication-ready display names.
+    
+    Parameters:
+    - model_name: str, internal model name (e.g., 'cnn_ncp', 'eegnet', 'reegnet')
+    
+    Returns:
+    - str, formatted display name (e.g., 'CNN-NCPv2', 'EEGNet', 'REEGNet')
+    """
+    if model_name is None:
+        return ''
+    
+    # Normalize input (lowercase, handle hyphens/spaces)
+    model_normalized = str(model_name).lower().strip().replace('-', '_').replace(' ', '_')
+    
+    # Mapping of normalized model names to display names
+    MODEL_DISPLAY_MAP = {
+        'cnn_ncp': 'CNN-NCPv2',
+        'eegnet': 'EEGNet',
+        'reegnet': 'REEGNet',
+        'branched_wiredcfc_arch4': 'HYDRA',
+        'hydra': 'HYDRA',
+    }
+    
+    # Return mapped name, or original if not in map
+    return MODEL_DISPLAY_MAP.get(model_normalized, model_name)
+
+
+def format_model_names_in_df(df, model_col='model'):
+    """
+    Format model names in a DataFrame column for display in plots.
+    Similar to replace_hydra_model_name(), but formats all model names
+    to their publication-ready display format.
+    
+    Parameters:
+    - df: pd.DataFrame with a model column
+    - model_col: str, name of the model column (default: 'model')
+    
+    Returns:
+    - pd.DataFrame with model names formatted for display
+    """
+    if model_col not in df.columns:
+        return df
+    
+    df = df.copy()
+    df[model_col] = df[model_col].apply(format_model_name_for_display)
+    return df
 
 
 def get_plot_ylim_config(dataset, plot_type='performance'):
@@ -2422,12 +2478,14 @@ def generate_organized_test_perturb_plots(df, models=None, dataset='BNCI2014_001
         models = df[df['mode'] == 'test_perturb']['model'].unique()
     
     noise_types = df[df['mode'] == 'test_perturb']['noise_type'].unique()
+    # Exclude 'spike' from the list of noise_types
+    noise_types = [nt for nt in noise_types if nt != 'spike']
     tune_settings = [False, True]#df[df['mode'] == 'test_perturb']['tune'].unique()
     
     # Get available eval_modes (use original values from dataframe)
     available_eval_modes = df[df['mode'] == 'test_perturb']['eval_mode'].unique()
     eval_modes = sorted(set(available_eval_modes))  # Remove duplicates and sort
-    
+    generate_all_compact_plots(df, models, dataset, output_dir, eval_modes=eval_modes, tune_settings=tune_settings)
     print(f"Generating organized plots for {len(models)} models, {len(noise_types)} noise types, {len(tune_settings)} tune settings, {len(eval_modes)} eval modes")
     print(f"Models: {list(models)}")
     print(f"Noise types: {list(noise_types)}")
@@ -2827,6 +2885,398 @@ def extract_custom_data(df, filters=None, columns=None, aggregate=None, group_by
         raise ValueError("aggregate requires group_by to be specified")
     
     return df_filtered
+
+
+def plot_compact_clean_perturbed_comparison(df, noise_type, dataset='BNCI2014_001', models=None, 
+                                           output_dir='plots', metric='roc_auc', eval_mode=None,
+                                           tune_setting=None):
+    """
+    Create a compact bar plot comparing clean scores vs corrupted scores at maximum perturbation intensity.
+    
+    This plot is designed for single-column figures in two-column scientific journal format.
+    Shows clean score (ROC-AUC) and corrupted score (ROC-AUC) at maximum perturbation intensity
+    for each model, grouped by clean/perturbed condition.
+    
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        DataFrame with test_perturb results
+    noise_type : str
+        Noise type ('dropout', 'gaussian', 'eog', 'spike')
+    dataset : str, default='BNCI2014_001'
+        Dataset name
+    models : list, optional
+        Specific models to include (if None, uses all available models)
+    output_dir : str, default='plots'
+        Directory to save plots
+    metric : str, default='roc_auc'
+        Metric to use ('roc_auc' or other metrics)
+    eval_mode : str, optional
+        Evaluation mode ('CrossSession', 'WithinSession', 'CrossSubject'). If None, uses all available.
+    tune_setting : bool, optional
+        Tune setting (True for tuned, False for baseline). If None, creates separate plots for both.
+    
+    Returns:
+    --------
+    None
+        Saves plot to file
+    """
+    # Load saturation points to get maximum intensity
+    saturation_dict = load_saturation_points()
+    valid_seeds = [100, 200, 300, 400, 500]
+    
+    # Get metric columns
+    clean_col, corrupted_col, y_label = _get_metric_columns_legacy(metric)
+    
+    # Get maximum intensity for this dataset and noise type
+    if dataset in saturation_dict and noise_type in saturation_dict[dataset]:
+        max_intensity = saturation_dict[dataset][noise_type]
+    else:
+        # Try to infer from data
+        df_filtered_temp = df[
+            (df['dataset'] == dataset) &
+            (df['noise_type'] == noise_type) &
+            (df['mode'].astype(str).str.contains('test_perturb', na=False))
+        ]
+        if 'intensity' in df_filtered_temp.columns and len(df_filtered_temp) > 0:
+            max_intensity = df_filtered_temp['intensity'].max()
+        else:
+            max_intensity = 50.0  # Default fallback
+        print(f"[WARNING] No saturation point found for {dataset}/{noise_type}, using inferred max_intensity={max_intensity}")
+    
+    # Handle eval_mode
+    if eval_mode is None:
+        available_modes = df[df['mode'].astype(str).str.contains('test_perturb', na=False)]['eval_mode'].unique()
+        eval_modes = sorted(set(available_modes))
+    else:
+        eval_modes = [eval_mode]
+    
+    # Handle tune_setting
+    if tune_setting is None:
+        tune_settings = [False, True]
+    else:
+        tune_settings = [tune_setting]
+    
+    # Process each eval_mode and tune_setting combination
+    for eval_mode_for_filter in eval_modes:
+        # Normalize eval_mode format
+        if eval_mode_for_filter.endswith('Evaluation'):
+            eval_mode_short = eval_mode_for_filter.replace('Evaluation', '')
+        else:
+            eval_mode_short = eval_mode_for_filter
+        
+        for tune_setting in tune_settings:
+            # Filter data
+            df_filtered = df[
+                (df['mode'].astype(str).str.contains('test_perturb', na=False)) &
+                (df['eval_mode'] == eval_mode_for_filter) &
+                (df['noise_type'] == noise_type) &
+                (df['tune'] == tune_setting) &
+                (df['seed'].isin(valid_seeds))
+            ].copy()
+            
+            # Replace HYDRA model name if needed (before filtering)
+            df_filtered = replace_hydra_model_name(df_filtered, model_col='model')
+            
+            # Filter by specific models if provided
+            # Handle both original and formatted model names by normalizing for comparison
+            if models is not None:
+                # Normalize both the models list and dataframe column for comparison
+                def normalize_for_comparison(name):
+                    return str(name).lower().strip().replace('-', '_').replace(' ', '_')
+                
+                df_model_normalized = df_filtered['model'].apply(normalize_for_comparison)
+                models_normalized = [normalize_for_comparison(m) for m in models]
+                df_filtered = df_filtered[df_model_normalized.isin(models_normalized)]
+            
+            # DO NOT format model names here - keep original names for data processing
+            # We'll format them only at display time (in plot labels)
+            
+            if df_filtered.empty:
+                print(f"[WARNING] No data found for compact plot: {noise_type}, dataset={dataset}, "
+                      f"tune={tune_setting}, eval_mode={eval_mode_for_filter}")
+                continue
+            
+            # Extract clean scores
+            clean_data = df_filtered.dropna(subset=[clean_col]).copy()
+            clean_data = clean_data[clean_data['noise_type'] == noise_type]
+            
+            # Extract corrupted scores at maximum intensity
+            # First, try to find data at the saturation point (max_intensity)
+            max_intensity_data = df_filtered[
+                intensity_matches(df_filtered['intensity'], [max_intensity])
+            ].copy()
+            
+            # If no data found at saturation point, use the actual maximum intensity in the data
+            if max_intensity_data.empty and 'intensity' in df_filtered.columns:
+                actual_max_intensity = df_filtered['intensity'].max()
+                if not pd.isna(actual_max_intensity) and actual_max_intensity > 0:
+                    print(f"[INFO] No data at saturation point {max_intensity} for {noise_type}, "
+                          f"using actual max intensity {actual_max_intensity}")
+                    max_intensity_data = df_filtered[
+                        intensity_matches(df_filtered['intensity'], [actual_max_intensity])
+                    ].copy()
+            
+            max_intensity_data = max_intensity_data.dropna(subset=[corrupted_col])
+            
+            if clean_data.empty and max_intensity_data.empty:
+                print(f"[WARNING] No clean or max intensity data found for {noise_type}, dataset={dataset}")
+                continue
+            
+            # Prepare data for plotting
+            plot_data = []
+            
+            # Get unique models
+            all_models = set()
+            if not clean_data.empty:
+                all_models.update(clean_data['model'].unique())
+            if not max_intensity_data.empty:
+                all_models.update(max_intensity_data['model'].unique())
+            all_models = sorted(all_models)
+            
+            for model in all_models:
+                # Clean scores
+                model_clean = clean_data[clean_data['model'] == model][clean_col]
+                if len(model_clean) > 0:
+                    mean_clean = model_clean.mean()
+                    std_clean = model_clean.std()
+                    n_clean = len(model_clean)
+                    # Calculate 95% CI (using t-distribution approximation for small samples)
+                    if n_clean > 1:
+                        if HAS_SCIPY:
+                            sem = stats.sem(model_clean)
+                            ci_95 = stats.t.interval(0.95, n_clean - 1, loc=mean_clean, scale=sem)
+                            ci_lower = ci_95[0]
+                            ci_upper = ci_95[1]
+                        else:
+                            # Fallback: use normal approximation (1.96 * SEM)
+                            sem = std_clean / np.sqrt(n_clean)
+                            ci_lower = mean_clean - 1.96 * sem
+                            ci_upper = mean_clean + 1.96 * sem
+                    else:
+                        ci_lower = mean_clean
+                        ci_upper = mean_clean
+                    
+                    plot_data.append({
+                        'model': model,
+                        'condition': 'Clean',
+                        'mean': mean_clean,
+                        'ci_lower': ci_lower,
+                        'ci_upper': ci_upper,
+                        'std': std_clean
+                    })
+                
+                # Corrupted scores at max intensity
+                model_corrupted = max_intensity_data[max_intensity_data['model'] == model][corrupted_col]
+                if len(model_corrupted) > 0:
+                    mean_corrupted = model_corrupted.mean()
+                    std_corrupted = model_corrupted.std()
+                    n_corrupted = len(model_corrupted)
+                    # Calculate 95% CI
+                    if n_corrupted > 1:
+                        if HAS_SCIPY:
+                            sem = stats.sem(model_corrupted)
+                            ci_95 = stats.t.interval(0.95, n_corrupted - 1, loc=mean_corrupted, scale=sem)
+                            ci_lower = ci_95[0]
+                            ci_upper = ci_95[1]
+                        else:
+                            # Fallback: use normal approximation (1.96 * SEM)
+                            sem = std_corrupted / np.sqrt(n_corrupted)
+                            ci_lower = mean_corrupted - 1.96 * sem
+                            ci_upper = mean_corrupted + 1.96 * sem
+                    else:
+                        ci_lower = mean_corrupted
+                        ci_upper = mean_corrupted
+                    
+                    plot_data.append({
+                        'model': model,
+                        'condition': 'Perturbed',
+                        'mean': mean_corrupted,
+                        'ci_lower': ci_lower,
+                        'ci_upper': ci_upper,
+                        'std': std_corrupted
+                    })
+            
+            if not plot_data:
+                print(f"[WARNING] No plot data prepared for {noise_type}, dataset={dataset}")
+                continue
+            
+            plot_df = pd.DataFrame(plot_data)
+            
+            # Create the plot
+            # Compact size for single-column figure (typically 3.5 inches wide)
+            fig, ax = plt.subplots(figsize=(3.5, 4.0), dpi=300)
+            
+            # Create grouped bar plot
+            x_pos = np.arange(len(all_models))
+            width = 0.35  # Width of bars
+            
+            # Get colors for clean and perturbed
+            clean_color = '#2E86AB'  # Blue for clean
+            perturbed_color = '#A23B72'  # Purple/red for perturbed
+            
+            # Track if we've added labels to legend
+            clean_label_added = False
+            perturbed_label_added = False
+            
+            # Plot bars with error bars
+            for i, model in enumerate(all_models):
+                model_data = plot_df[plot_df['model'] == model]
+                
+                # Clean bar
+                clean_data_model = model_data[model_data['condition'] == 'Clean']
+                if not clean_data_model.empty:
+                    clean_mean = clean_data_model['mean'].iloc[0]
+                    clean_ci_lower = clean_data_model['ci_lower'].iloc[0]
+                    clean_ci_upper = clean_data_model['ci_upper'].iloc[0]
+                    # Error bars: [lower_error, upper_error] format for asymmetric error bars
+                    clean_error_lower = clean_mean - clean_ci_lower
+                    clean_error_upper = clean_ci_upper - clean_mean
+                    clean_error = np.array([[clean_error_lower], [clean_error_upper]])
+                    
+                    label = 'Clean' if not clean_label_added else ''
+                    if not clean_label_added:
+                        clean_label_added = True
+                    
+                    ax.bar(i - width/2, clean_mean, width, label=label,
+                          color=clean_color, alpha=0.8, edgecolor='black', linewidth=0.5,
+                          yerr=clean_error, capsize=3, error_kw={'elinewidth': 0.5, 'capthick': 0.5})
+                
+                # Perturbed bar
+                perturbed_data_model = model_data[model_data['condition'] == 'Perturbed']
+                if not perturbed_data_model.empty:
+                    perturbed_mean = perturbed_data_model['mean'].iloc[0]
+                    perturbed_ci_lower = perturbed_data_model['ci_lower'].iloc[0]
+                    perturbed_ci_upper = perturbed_data_model['ci_upper'].iloc[0]
+                    # Error bars: [lower_error, upper_error] format for asymmetric error bars
+                    perturbed_error_lower = perturbed_mean - perturbed_ci_lower
+                    perturbed_error_upper = perturbed_ci_upper - perturbed_mean
+                    perturbed_error = np.array([[perturbed_error_lower], [perturbed_error_upper]])
+                    
+                    label = 'Perturbed' if not perturbed_label_added else ''
+                    if not perturbed_label_added:
+                        perturbed_label_added = True
+                    
+                    ax.bar(i + width/2, perturbed_mean, width, label=label,
+                          color=perturbed_color, alpha=0.8, edgecolor='black', linewidth=0.5,
+                          yerr=perturbed_error, capsize=3, error_kw={'elinewidth': 0.5, 'capthick': 0.5})
+            
+            # Customize plot according to publication guidelines
+            ax.set_xlabel('Model', fontsize=10, fontweight='normal')
+            ax.set_ylabel('ROC-AUC', fontsize=10, fontweight='normal')
+            ax.set_xticks(x_pos)
+            # Format model names for display only at this point (not in the data)
+            formatted_model_labels = [format_model_name_for_display(model) for model in all_models]
+            ax.set_xticklabels(formatted_model_labels, rotation=45, ha='right', fontsize=9)
+            
+            # Set y-axis limits based on dataset
+            ylim_config = get_plot_ylim_config(dataset, plot_type='performance')
+            if ylim_config:
+                ax.set_ylim(ylim_config['min'], ylim_config['max'])
+            else:
+                y_min = 0.4 if dataset == 'BNCI2014_001' else 0.0
+                ax.set_ylim(y_min, 1.0)
+            
+            # Add legend (required by publication guidelines)
+            ax.legend(title='Condition', fontsize=9, title_fontsize=9, 
+                     frameon=True, fancybox=False, edgecolor='black', framealpha=1.0)
+            
+            # Grid for better readability
+            ax.grid(True, alpha=0.3, linestyle='--', linewidth=0.5)
+            ax.set_axisbelow(True)
+            
+            # Ensure all lines are at least 0.5 points thick (publication requirement)
+            for spine in ax.spines.values():
+                spine.set_linewidth(0.5)
+            
+            # Remove gray background (publication requirement)
+            ax.set_facecolor('white')
+            fig.patch.set_facecolor('white')
+            
+            # Tight layout for compact figure
+            plt.tight_layout()
+            
+            # Create output directory
+            tune_label = "tuned" if tune_setting else "baseline"
+            output_subdir = os.path.join(output_dir, dataset, eval_mode_short, 'compact')
+            os.makedirs(output_subdir, exist_ok=True)
+            
+            # Save plot
+            noise_label = format_noise_type_label(noise_type)
+            filename = f"compact_clean_perturbed_{noise_type}_{dataset}_{eval_mode_short}_{tune_label}.pdf"
+            output_file = os.path.join(output_subdir, filename)
+            plt.savefig(output_file, dpi=300, bbox_inches='tight', format='pdf', 
+                       facecolor='white', edgecolor='none')
+            plt.close()
+            
+            print(f"Saved compact clean/perturbed comparison plot: {output_file}")
+
+
+def generate_all_compact_plots(df, models=None, dataset='BNCI2014_001', output_dir='plots', 
+                               metric='roc_auc', eval_modes=None, tune_settings=None):
+    """
+    Generate all compact clean/perturbed comparison plots for all noise types.
+    
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        DataFrame with test_perturb results
+    models : list, optional
+        Specific models to include (if None, uses all available models)
+    dataset : str, default='BNCI2014_001'
+        Dataset name
+    output_dir : str, default='plots'
+        Directory to save plots
+    metric : str, default='roc_auc'
+        Metric to use ('roc_auc' or other metrics)
+    eval_modes : list, optional
+        List of evaluation modes to process. If None, processes all available.
+    tune_settings : list, optional
+        List of tune settings to process. If None, processes both baseline and tuned.
+    
+    Returns:
+    --------
+    None
+        Saves plots to files
+    """
+    # Get unique values
+    if models is None:
+        models = df[df['mode'].astype(str).str.contains('test_perturb', na=False)]['model'].unique()
+    
+    noise_types = df[df['mode'].astype(str).str.contains('test_perturb', na=False)]['noise_type'].dropna().unique()
+    # Exclude 'spike' if present (optional, based on your needs)
+    # noise_types = [nt for nt in noise_types if nt != 'spike']
+    
+    if eval_modes is None:
+        available_eval_modes = df[df['mode'].astype(str).str.contains('test_perturb', na=False)]['eval_mode'].dropna().unique()
+        eval_modes = sorted(set(available_eval_modes))
+    
+    if tune_settings is None:
+        tune_settings = [False, True]
+    
+    print(f"Generating compact plots for {len(models)} models, {len(noise_types)} noise types, "
+          f"{len(eval_modes)} eval modes, {len(tune_settings)} tune settings")
+    print(f"Models: {list(models)}")
+    print(f"Noise types: {list(noise_types)}")
+    print(f"Eval modes: {eval_modes}")
+    
+    # Generate compact plots for each combination
+    print("\n=== Generating compact clean/perturbed comparison plots ===")
+    for noise_type in noise_types:
+        for eval_mode in eval_modes:
+            for tune_setting in tune_settings:
+                try:
+                    plot_compact_clean_perturbed_comparison(
+                        df, noise_type, dataset, models, output_dir, 
+                        metric, eval_mode, tune_setting
+                    )
+                except Exception as e:
+                    print(f"[ERROR] Failed to generate compact plot for {noise_type}, "
+                          f"dataset={dataset}, eval_mode={eval_mode}, tune={tune_setting}: {e}")
+                    import traceback
+                    traceback.print_exc()
+    
+    print(f"\nAll compact plots generated and saved to {output_dir}")
 
 
 def sanity_check_clean_scores(df, clean_col='clean_score', verbose=True, output_file=None):
@@ -3280,12 +3730,13 @@ if __name__ == '__main__':
 
     # Define model subsets for comparison
     if args.hydra:
-        # Include branched_wiredcfc_arch4 along with core models
+        # Include HYDRA (branched_wiredcfc_arch4) along with core models
+        # Note: Use 'HYDRA' here since replace_hydra_model_name converts branched_wiredcfc_arch4 to HYDRA
         model_subsets = {
-            'main_models': ['eegnet', 'reegnet', 'cnn_ncp', 'branched_wiredcfc_arch4'],
+            'main_models': ['eegnet', 'reegnet', 'cnn_ncp', 'HYDRA'],
             'all_models': None  # Will use all available models
         }
-        print("[INFO] Hydra mode enabled: Including 'branched_wiredcfc_arch4' with core models")
+        print("[INFO] Hydra mode enabled: Including 'HYDRA' (branched_wiredcfc_arch4) with core models")
     else:
         model_subsets = {
             'main_models': ['eegnet', 'reegnet', 'cnn_ncp'],
@@ -3297,6 +3748,32 @@ if __name__ == '__main__':
     legacy_mode = False
 
     for config, aggregated_df in available_datasets:
+        # CRITICAL: Explicitly exclude hydra_v2 and other hydra variants
+        # Also ensure seed filtering is applied (should already be done, but verify)
+        if 'model' in aggregated_df.columns:
+            # Exclude any model containing 'hydra_v' (which would catch hydra_v2, hydra_v3, etc.)
+            model_normalized = aggregated_df['model'].astype(str).str.lower().str.strip().str.replace('-', '_')
+            exclude_mask = model_normalized.str.contains('hydra_v', na=False, regex=False)
+            excluded_count = exclude_mask.sum()
+            if excluded_count > 0:
+                excluded_models = aggregated_df.loc[exclude_mask, 'model'].unique()
+                print(f"[INFO] Excluding {excluded_count} rows with hydra variants (e.g., {list(excluded_models[:3])}): not part of core experiment")
+            aggregated_df = aggregated_df[~exclude_mask].copy()
+        
+        # Verify seed filtering (should already be done in aggregation, but double-check)
+        if 'seed' in aggregated_df.columns:
+            valid_seeds = [100, 200, 300, 400, 500]
+            initial_count = len(aggregated_df)
+            aggregated_df['seed'] = pd.to_numeric(aggregated_df['seed'], errors='coerce')
+            aggregated_df = aggregated_df[aggregated_df['seed'].isin(valid_seeds)].copy()
+            if len(aggregated_df) < initial_count:
+                print(f"[INFO] Additional seed filtering: removed {initial_count - len(aggregated_df)} rows with invalid seeds")
+        
+        # Replace branched_wiredcfc_arch4 with HYDRA early in the pipeline
+        # This ensures consistent naming throughout the analysis
+        if args.hydra:
+            aggregated_df = replace_hydra_model_name(aggregated_df, model_col='model')
+        
         dataset_name = aggregated_df['dataset'].iloc[0] if 'dataset' in aggregated_df.columns else None
         if dataset_name is None:
             raise ValueError(f"Dataset name could not be determined for {config['label']}")

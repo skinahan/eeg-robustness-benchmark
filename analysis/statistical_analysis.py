@@ -6,8 +6,8 @@ Implements the statistical analysis pipeline specified in analysis_schema.md.
 This script:
 1. Loads and filters results data
 2. Aggregates across seeds to get subject-level metrics
-3. Computes AUPC and RD robustness summaries per subject
-4. Performs omnibus tests (RM-ANOVA or Friedman) across models
+3. Computes clean ROC-AUC, AUPC, and RD summaries per subject
+4. Performs omnibus tests (RM-ANOVA or Friedman) across models for each metric
 5. Performs planned pairwise tests (conditional on omnibus significance)
 6. Computes CSV under perturbation
 7. Exports all results to CSV and JSON
@@ -206,18 +206,48 @@ def load_and_filter_data(
             else:
                 raise KeyError(f"Missing corrupted_roc_auc, corrupted_score, or score column")
     
-    # Drop rows with missing values
-    initial_len = len(df)
-    df = df.dropna(subset=['clean_roc_auc', 'corrupted_roc_auc', 'intensity']).copy()
-    if len(df) < initial_len:
-        print(f"  Dropped {initial_len - len(df)} rows with missing values")
-    
     # Canonicalize model names
     if 'model' in df.columns:
         df['model'] = df['model'].apply(canonicalize_model)
+        # Replace branched_wiredcfc_arch4 with HYDRA early in the pipeline
+        # This ensures consistent naming throughout the analysis
+        if config.hydra:
+            df = replace_hydra_model_name(df, model_col='model')
     
-    # Ensure intensity is numeric
+    # Ensure intensity is numeric (do this BEFORE dropping NaN values)
     df['intensity'] = pd.to_numeric(df['intensity'], errors='coerce')
+    
+    # Drop rows with missing values
+    # For rows with intensity > 0, we need corrupted_roc_auc
+    # For rows with intensity = 0, we only need clean_roc_auc (corrupted_roc_auc may be NaN or equal to clean)
+    initial_len = len(df)
+    
+    # First, drop rows with missing intensity (NaN from coercion) or clean_roc_auc (always required)
+    df = df.dropna(subset=['intensity', 'clean_roc_auc']).copy()
+    
+    # For perturbation rows (intensity > 0), also require corrupted_roc_auc
+    # Keep rows where intensity is 0 OR (intensity > 0 AND corrupted_roc_auc is not NaN)
+    mask = (df['intensity'] == 0) | (~df['corrupted_roc_auc'].isna())
+    df = df[mask].copy()
+    
+    if len(df) < initial_len:
+        print(f"  Dropped {initial_len - len(df)} rows with missing values")
+        # Diagnostic: show what was dropped
+        dropped_count_by_intensity = initial_len - len(df)
+        if dropped_count_by_intensity > 0:
+            # Check how many had intensity > 0 but missing corrupted_roc_auc
+            # (We can't check this directly since we already dropped them, but we can log)
+            print(f"    Note: Rows with intensity > 0 require non-null corrupted_roc_auc")
+    
+    # Diagnostic: Report intensity distribution
+    if 'intensity' in df.columns:
+        intensity_0_count = len(df[df['intensity'] == 0])
+        intensity_gt0_count = len(df[df['intensity'] > 0])
+        intensity_nan_count = len(df[df['intensity'].isna()])
+        print(f"  Intensity distribution: {intensity_0_count} rows with intensity=0, "
+              f"{intensity_gt0_count} rows with intensity>0, {intensity_nan_count} rows with NaN intensity")
+        if intensity_nan_count > 0:
+            print(f"    [WARNING] {intensity_nan_count} rows have NaN intensity (should be dropped)")
     
     print(f"  [OK] Final data shape: {df.shape}")
     return df
@@ -375,19 +405,32 @@ def check_completeness(
     
     # Check 2: For each (dataset, eval_mode, tune, subject, model, noise_type),
     # verify there are >= 2 intensity points (>0) for AUPC
+    # Note: 'spike' noise type is excluded from AUPC calculations
     aupc_check_cols = ['dataset', 'eval_mode', 'tune', 'subject', 'model', 'noise_type']
     incomplete_units = []
     
-    for keys, group_df in df.groupby(aupc_check_cols):
+    # Exclude 'spike' noise type from AUPC completeness check
+    df_aupc_check = df[df['noise_type'] != 'spike'].copy() if 'noise_type' in df.columns else df.copy()
+    
+    for keys, group_df in df_aupc_check.groupby(aupc_check_cols):
         if not isinstance(keys, tuple):
             keys = (keys,)
         
         # Count intensity points > 0
         intensities = group_df[group_df['intensity'] > 0]['intensity'].unique()
+        intensity_0_count = len(group_df[group_df['intensity'] == 0])
+        total_rows = len(group_df)
+        
         if len(intensities) < 2:
             incomplete_units.append(keys)
+            # Add diagnostic info
+            diagnostic_info = f"only {len(intensities)} intensity points > 0"
+            if intensity_0_count > 0:
+                diagnostic_info += f" (has {intensity_0_count} intensity=0 rows, {total_rows} total rows)"
+            else:
+                diagnostic_info += f" (no intensity=0 rows, {total_rows} total rows)"
             dropped_log.append(
-                f"INCOMPLETE_AUPC: {dict(zip(aupc_check_cols, keys))} - only {len(intensities)} intensity points > 0"
+                f"INCOMPLETE_AUPC: {dict(zip(aupc_check_cols, keys))} - {diagnostic_info}"
             )
     
     # Filter out incomplete units (only for AUPC analysis, keep for other analyses)
@@ -422,14 +465,23 @@ def compute_aupc_per_subject(
     Compute AUPC for each (dataset, eval_mode, tune, subject, model, noise_type).
     
     Uses intensity directly (not normalized p) as specified in schema.
+    Excludes 'spike' noise type from AUPC calculations.
     """
     print("[STEP 4] Computing AUPC per subject/model/noise_type...")
+    
+    # Exclude 'spike' noise type from AUPC calculations
+    df = df.copy()
+    if 'noise_type' in df.columns:
+        initial_count = len(df)
+        df = df[df['noise_type'] != 'spike'].copy()
+        excluded_count = initial_count - len(df)
+        if excluded_count > 0:
+            print(f"  Excluding 'spike' noise type from AUPC: removed {excluded_count} rows")
     
     # Create MetricConfig for AUPC computation
     cfg = MetricConfig(metric_col='corrupted_roc_auc', intensity_col='intensity')
     
     # Add normalized p column (using intensity directly, normalized by max per group)
-    df = df.copy()
     normalize_within = ['dataset', 'noise_type']
     df = add_normalized_p(df, cfg, normalize_within=normalize_within, clip=True)
     
@@ -500,6 +552,75 @@ def compute_aupc_per_subject(
 
 
 # ----------------------------
+# Compute clean ROC-AUC per subject/model
+# ----------------------------
+
+def compute_clean_scores_per_subject(
+    df: pd.DataFrame,
+    config: AnalysisConfig,
+) -> pd.DataFrame:
+    """
+    Extract clean ROC-AUC scores for each subject/model.
+    
+    Clean scores are duplicated across noise types and intensities, so we extract
+    one value per (dataset, eval_mode, tune, subject, model) combination.
+    After seed aggregation, clean_roc_auc should be constant across noise types
+    and intensities for each subject/model. We use the mean (standard practice
+    for statistical analysis, consistent with other metrics) and check for
+    unexpected variation as a data quality indicator.
+    """
+    print("[STEP 5] Computing clean ROC-AUC per subject/model...")
+    
+    # Group by subject-level identifiers (no noise_type needed since clean is same across noise types)
+    group_cols = ['dataset', 'eval_mode', 'tune', 'subject', 'model']
+    
+    result_rows = []
+    
+    for keys, group_df in df.groupby(group_cols):
+        if not isinstance(keys, tuple):
+            keys = (keys,)
+        
+        row_dict = dict(zip(group_cols, keys))
+        
+        # Extract clean_roc_auc values
+        # Since clean scores are duplicated across noise types and intensities,
+        # and already aggregated across seeds, we just need to get one value per subject/model
+        clean_scores = group_df['clean_roc_auc'].dropna().values
+        
+        if len(clean_scores) > 0:
+            # Use mean (standard practice for statistical analysis, consistent with other metrics)
+            # Clean scores should be identical across noise types/intensities, so mean = median
+            # But we check for variation as a data quality check
+            clean_val = float(np.mean(clean_scores))
+            clean_std = float(np.std(clean_scores)) if len(clean_scores) > 1 else 0.0
+            
+            # Warn if there's unexpected variation (indicates potential data issue)
+            if clean_std > 1e-6:  # Threshold for floating point precision
+                print(f"  [WARNING] Clean score variation detected for {dict(zip(group_cols, keys))}: "
+                      f"std={clean_std:.6f} (expected ~0)")
+            
+            if np.isfinite(clean_val):
+                row_dict['clean_roc_auc'] = clean_val
+            else:
+                row_dict['clean_roc_auc'] = np.nan
+        else:
+            row_dict['clean_roc_auc'] = np.nan
+        
+        result_rows.append(row_dict)
+    
+    df_clean = pd.DataFrame(result_rows)
+    
+    # Drop rows with NaN clean scores
+    initial_len = len(df_clean)
+    df_clean = df_clean.dropna(subset=['clean_roc_auc']).copy()
+    if len(df_clean) < initial_len:
+        print(f"  Dropped {initial_len - len(df_clean)} rows with missing clean scores")
+    
+    print(f"  [OK] Computed clean ROC-AUC for {len(df_clean)} subject/model combinations")
+    return df_clean
+
+
+# ----------------------------
 # Compute RD per subject/model/noise_type
 # ----------------------------
 
@@ -511,8 +632,18 @@ def compute_rd_per_subject(
     Compute RD (relative degradation) for each subject/model/noise_type.
     
     Summarizes RD across intensities into rd_mean and rd_worst.
+    Excludes 'spike' noise type from RD calculations.
     """
-    print("[STEP 5] Computing RD per subject/model/noise_type...")
+    print("[STEP 6] Computing RD per subject/model/noise_type...")
+    
+    # Exclude 'spike' noise type from RD calculations
+    df = df.copy()
+    if 'noise_type' in df.columns:
+        initial_count = len(df)
+        df = df[df['noise_type'] != 'spike'].copy()
+        excluded_count = initial_count - len(df)
+        if excluded_count > 0:
+            print(f"  Excluding 'spike' noise type from RD: removed {excluded_count} rows")
     
     group_cols = ['dataset', 'eval_mode', 'tune', 'subject', 'model', 'noise_type']
     
@@ -579,19 +710,24 @@ def compute_rd_per_subject(
 def build_inference_dataset(
     df_aupc: pd.DataFrame,
     df_rd: pd.DataFrame,
+    df_clean: pd.DataFrame,
     config: AnalysisConfig,
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Merge AUPC and RD, create collapsed versions over noise types.
+    Merge AUPC, RD, and clean scores, create collapsed versions over noise types.
     
     Returns:
         (df_resolved, df_collapsed)
     """
-    print("[STEP 6] Building inference dataset...")
+    print("[STEP 7] Building inference dataset...")
     
-    # Merge AUPC and RD
+    # Merge AUPC and RD (both have noise_type)
     merge_cols = ['dataset', 'eval_mode', 'tune', 'subject', 'model', 'noise_type']
     df_resolved = pd.merge(df_aupc, df_rd, on=merge_cols, how='outer')
+    
+    # Merge clean scores (no noise_type, so merge on subject-level cols)
+    clean_merge_cols = ['dataset', 'eval_mode', 'tune', 'subject', 'model']
+    df_resolved = pd.merge(df_resolved, df_clean, on=clean_merge_cols, how='left')
     
     # Create collapsed version (mean/median over noise types)
     collapse_cols = ['dataset', 'eval_mode', 'tune', 'subject', 'model']
@@ -621,6 +757,13 @@ def build_inference_dataset(
             row_dict['rd_collapsed'] = float(getattr(rd_values, agg_func)())
         else:
             row_dict['rd_collapsed'] = np.nan
+        
+        # Clean ROC-AUC (should be constant across noise types, so just take first non-nan)
+        clean_values = group_df['clean_roc_auc'].dropna()
+        if len(clean_values) > 0:
+            row_dict['clean_roc_auc'] = float(clean_values.iloc[0])  # Should be same across noise types
+        else:
+            row_dict['clean_roc_auc'] = np.nan
         
         collapsed_rows.append(row_dict)
     
@@ -974,11 +1117,14 @@ def run_statistical_analysis(
     # Step 4: Compute AUPC
     df_aupc = compute_aupc_per_subject(df_points, config)
     
-    # Step 5: Compute RD
+    # Step 5: Compute clean ROC-AUC
+    df_clean = compute_clean_scores_per_subject(df_points, config)
+    
+    # Step 6: Compute RD
     df_rd = compute_rd_per_subject(df_points, config)
     
-    # Step 6: Build inference dataset
-    df_resolved, df_collapsed = build_inference_dataset(df_aupc, df_rd, config)
+    # Step 7: Build inference dataset
+    df_resolved, df_collapsed = build_inference_dataset(df_aupc, df_rd, df_clean, config)
     
     # Save subject-level tables
     resolved_path = os.path.join(out_dir, "analysis_subject_level_resolved.csv")
@@ -992,8 +1138,8 @@ def run_statistical_analysis(
     print(f"  - {resolved_path}")
     print(f"  - {collapsed_path}")
     
-    # Step 7-9: Statistical tests
-    print("\n[STEP 7-9] Running statistical tests...")
+    # Step 8-10: Statistical tests
+    print("\n[STEP 8-10] Running statistical tests...")
     
     # Get unique combinations for testing
     test_group_cols = ['dataset', 'eval_mode', 'tune']
@@ -1034,7 +1180,7 @@ def run_statistical_analysis(
             continue
         
         # Test each metric
-        for metric in ['aupc_collapsed', 'rd_collapsed']:
+        for metric in ['clean_roc_auc', 'aupc_collapsed', 'rd_collapsed']:
             if metric not in combo_df.columns:
                 continue
             
@@ -1049,8 +1195,9 @@ def run_statistical_analysis(
             
             # Filter to core models (or hydra models if hydra mode is enabled)
             # This ensures omnibus and pairwise tests only compare the specified models
+            # Note: branched_wiredcfc_arch4 has already been converted to HYDRA earlier in the pipeline
             if config.hydra:
-                core_models = ['CNN-NCP', 'EEGNet', 'REEGNet', 'branched_wiredcfc_arch4']
+                core_models = ['CNN-NCP', 'EEGNet', 'REEGNet', 'HYDRA']
             else:
                 core_models = ['CNN-NCP', 'EEGNet', 'REEGNet']
             model_cols = [col for col in all_model_cols if col in core_models]
@@ -1170,11 +1317,21 @@ def run_statistical_analysis(
     csv_curve = pd.DataFrame()
     try:
         cfg = MetricConfig(metric_col='corrupted_roc_auc', intensity_col='intensity')
-        subject_col = find_subject_col(df_points, cfg)
+        
+        # Exclude 'spike' noise type from CSV calculations
+        df_points_csv = df_points.copy()
+        if 'noise_type' in df_points_csv.columns:
+            initial_count = len(df_points_csv)
+            df_points_csv = df_points_csv[df_points_csv['noise_type'] != 'spike'].copy()
+            excluded_count = initial_count - len(df_points_csv)
+            if excluded_count > 0:
+                print(f"  Excluding 'spike' noise type from CSV: removed {excluded_count} rows")
+        
+        subject_col = find_subject_col(df_points_csv, cfg)
         
         if subject_col:
             # Add normalized p
-            df_points_p = add_normalized_p(df_points, cfg, normalize_within=['dataset', 'noise_type'], clip=True)
+            df_points_p = add_normalized_p(df_points_csv, cfg, normalize_within=['dataset', 'noise_type'], clip=True)
             
             csv_group_cols = ['dataset', 'eval_mode', 'tune', 'model', 'noise_type']
             csv_curve = compute_csv_p_curve(df_points_p, cfg, group_cols=csv_group_cols, subject_col=subject_col)
