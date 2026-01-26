@@ -16,3 +16,7 @@ output/
 .DS_Store
 .idea/
 .vscode/
+
+# Exempt .model_registry from gitignore (track model registration files)
+!.model_registry/
+!.model_registry/**
