@@ -20,3 +20,6 @@ output/
 # Exempt .model_registry from gitignore (track model registration files)
 !.model_registry/
 !.model_registry/**
+# But still ignore __pycache__ within .model_registry
+.model_registry/**/__pycache__/
+.model_registry/__pycache__/
