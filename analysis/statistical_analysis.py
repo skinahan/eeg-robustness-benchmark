@@ -1263,20 +1263,37 @@ def run_statistical_analysis(
             
             # Run pairwise tests if omnibus significant
             if omnibus_result['p_value'] < config.alpha:
-                # Compare primary model to others
-                for other_model in model_cols:
-                    if other_model != primary_model_actual:
-                        pairwise_result = run_pairwise_tests(
-                            pivot_df, primary_model_actual, other_model, parametric, config
-                        )
-                        pairwise_result.update({
-                            'dataset': dataset,
-                            'eval_mode': eval_mode,
-                            'tune': tune,
-                            'metric': metric,
-                            'omnibus_p': omnibus_result['p_value'],
-                        })
-                        pairwise_results.append(pairwise_result)
+                if config.hydra:
+                    # When hydra flag is passed, compute ALL pairwise tests
+                    # Compare every model to every other model (no special reference model)
+                    for i, model1 in enumerate(model_cols):
+                        for model2 in model_cols[i+1:]:
+                            pairwise_result = run_pairwise_tests(
+                                pivot_df, model1, model2, parametric, config
+                            )
+                            pairwise_result.update({
+                                'dataset': dataset,
+                                'eval_mode': eval_mode,
+                                'tune': tune,
+                                'metric': metric,
+                                'omnibus_p': omnibus_result['p_value'],
+                            })
+                            pairwise_results.append(pairwise_result)
+                else:
+                    # Default behavior: Compare primary model (CNN-NCP) to others
+                    for other_model in model_cols:
+                        if other_model != primary_model_actual:
+                            pairwise_result = run_pairwise_tests(
+                                pivot_df, primary_model_actual, other_model, parametric, config
+                            )
+                            pairwise_result.update({
+                                'dataset': dataset,
+                                'eval_mode': eval_mode,
+                                'tune': tune,
+                                'metric': metric,
+                                'omnibus_p': omnibus_result['p_value'],
+                            })
+                            pairwise_results.append(pairwise_result)
     
     # Apply Holm correction to pairwise p-values within each family
     if pairwise_results:

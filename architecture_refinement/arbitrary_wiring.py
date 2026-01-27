@@ -181,18 +181,27 @@ class WsFlexHiddenWiring(Wiring):
 
         return W
 
-    def build(self, input_size: int) -> ArbitraryWiring:
+    def build(self, input_size: int, use_legacy_behavior: bool = None) -> ArbitraryWiring:
         """
         Return an ArbitraryWiring instance initialized with the full wiring matrix.
+        
+        Args:
+            input_size: Input dimension (must match self.input_size)
+            use_legacy_behavior: If True, use incorrect legacy behavior for testing/comparison.
+                                If None, uses value set on WsFlexHiddenWiring instance (default False).
         """
         if input_size != self.input_size:
             raise ValueError(f"Input size mismatch: expected {self.input_size}, got {input_size}")
         W = self.full_wiring_matrix()
+        # Use instance attribute if not explicitly provided
+        if use_legacy_behavior is None:
+            use_legacy_behavior = getattr(self, '_use_legacy_behavior', False)
         return ArbitraryWiring(
             wiring_matrix=W,
             input_size=self.input_size,
             hidden_size=self._hidden_size(),
             output_size=self.output_size,
+            use_legacy_behavior=use_legacy_behavior,
         )
 
     # -------------------------- Internals ----------------------------
@@ -356,6 +365,9 @@ class ArbitraryWiring(Wiring):
     
     This class takes a wiring matrix and neuron configuration from the architecture
     search outputs and creates a compatible wiring structure for NCP models.
+    
+    IMPORTANT: In ncps, 'units' refers to internal neurons only (hidden + output),
+    NOT including inputs. Inputs are external and connected via sensory_adjacency_matrix.
     """
     
     def __init__(self, 
@@ -366,22 +378,29 @@ class ArbitraryWiring(Wiring):
                  neuron_types: Optional[List[str]] = None,
                  connection_weights: Optional[np.ndarray] = None,
                  metadata: Optional[Dict[str, Any]] = None,
-                 logger: Optional[logging.Logger] = None):
+                 logger: Optional[logging.Logger] = None,
+                 use_legacy_behavior: bool = False):
         """
         Initialize the arbitrary wiring.
         
         Args:
-            wiring_matrix: Connection matrix from architecture search
-            input_size: Number of input features
-            hidden_size: Number of hidden neurons
-            output_size: Number of output classes
+            wiring_matrix: Connection matrix from architecture search of shape (I+H+O, I+H+O)
+            input_size: Number of input features (I)
+            hidden_size: Number of hidden neurons (H)
+            output_size: Number of output classes (O)
             neuron_types: List of neuron types ('sensory', 'inter', 'motor')
             connection_weights: Optional connection weights
             metadata: Additional metadata about the architecture
             logger: Optional logger for output
+            use_legacy_behavior: If True, use incorrect legacy behavior (for testing/comparison)
         """
-        # Total units is the sum of all layers
-        total_units = input_size + hidden_size + output_size
+        # In ncps, 'units' = internal neurons only (hidden + output), NOT inputs
+        # Legacy behavior incorrectly includes inputs in units
+        if use_legacy_behavior:
+            total_units = input_size + hidden_size + output_size
+        else:
+            total_units = hidden_size + output_size  # Internal neurons only
+        
         super().__init__(units=total_units)
         
         # Set the output dimension (number of motor neurons)
@@ -391,7 +410,8 @@ class ArbitraryWiring(Wiring):
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.output_size = output_size
-        self.total_units = total_units
+        self.total_units_in_matrix = input_size + hidden_size + output_size  # Full matrix size
+        self.use_legacy_behavior = use_legacy_behavior
         
         # Store the wiring matrix and metadata
         self.wiring_matrix = wiring_matrix
@@ -411,9 +431,14 @@ class ArbitraryWiring(Wiring):
         self._validate_wiring_matrix()
         
         # Build the wiring structure
-        self._build_wiring_from_matrix()
+        if use_legacy_behavior:
+            # Legacy: incorrect behavior that includes inputs in units
+            self._build_wiring_from_matrix_legacy()
+        else:
+            # Correct: split wiring matrix into sensory_adjacency_matrix and adjacency_matrix
+            self._build_wiring_from_matrix_correct()
         
-        self.logger.info(f"ArbitraryWiring initialized: {input_size}->{hidden_size}->{output_size}")
+        self.logger.info(f"ArbitraryWiring initialized: {input_size}->{hidden_size}->{output_size} (legacy={use_legacy_behavior})")
     
     def _create_default_neuron_types(self) -> List[str]:
         """Create default neuron types based on layer structure."""
@@ -425,7 +450,7 @@ class ArbitraryWiring(Wiring):
     
     def _validate_wiring_matrix(self):
         """Validate the wiring matrix dimensions and structure."""
-        expected_shape = (self.total_units, self.total_units)
+        expected_shape = (self.total_units_in_matrix, self.total_units_in_matrix)
         if self.wiring_matrix.shape != expected_shape:
             raise ValueError(f"Wiring matrix shape mismatch: expected {expected_shape}, got {self.wiring_matrix.shape}")
         
@@ -434,8 +459,72 @@ class ArbitraryWiring(Wiring):
             # self.logger.warning("Found negative weights in wiring matrix - converting to absolute values")
             self.wiring_matrix = np.abs(self.wiring_matrix)
     
-    def _build_wiring_from_matrix(self):
-        """Build the wiring structure from the wiring matrix."""
+    def _build_wiring_from_matrix_correct(self):
+        """
+        Build the wiring structure correctly by splitting the wiring matrix.
+        
+        In ncps:
+        - sensory_adjacency_matrix: [input_dim, units] - connections from inputs to internal neurons
+        - adjacency_matrix: [units, units] - connections between internal neurons
+        
+        Our wiring_matrix has shape [I+H+O, I+H+O] where:
+        - I = input_size (external inputs, not part of units)
+        - H = hidden_size (internal neurons)
+        - O = output_size (internal neurons)
+        
+        We need to extract:
+        - sensory_adjacency_matrix: wiring_matrix[0:I, I:I+H+O] (I->H and I->O)
+        - adjacency_matrix: wiring_matrix[I:I+H+O, I:I+H+O] (H->H, H->O, but NOT I->anything)
+        """
+        # Matrix indices
+        I = self.input_size
+        H = self.hidden_size
+        O = self.output_size
+        I_start, I_end = 0, I
+        H_start, H_end = I, I + H
+        O_start, O_end = I + H, I + H + O
+        
+        # Initialize matrices (will be set by parent class methods)
+        # But we need to ensure they're the right size
+        
+        # Extract sensory_adjacency_matrix: [I, H+O] = connections from inputs to internal neurons
+        # This includes I->H and I->O connections
+        sensory_to_internal = self.wiring_matrix[I_start:I_end, H_start:O_end]  # [I, H+O]
+        
+        # Extract adjacency_matrix: [H+O, H+O] = connections between internal neurons
+        # This includes H->H, H->O, and potentially O->H, O->O if present in the wiring matrix
+        internal_to_internal = self.wiring_matrix[H_start:O_end, H_start:O_end].copy()  # [H+O, H+O]
+        
+        # Note: We preserve all connections from the wiring matrix, including any O->H or O->O
+        # connections that might exist. Standard NCP doesn't have these, but our wiring might.
+        
+        # Now populate the ncps matrices using the parent class methods
+        # Note: We need to call build() first to initialize sensory_adjacency_matrix
+        # But we'll populate it manually here since we have the full matrix
+        
+        # For sensory_adjacency_matrix, we need to add synapses using add_sensory_synapse
+        # But that requires input_dim to be set, which happens in build()
+        # So we'll store the matrix and populate it in build()
+        self._sensory_matrix_to_populate = sensory_to_internal
+        self._adjacency_matrix_to_populate = internal_to_internal
+        
+        # Populate adjacency_matrix using add_synapse
+        # Map internal neuron indices: H neurons are 0..H-1, O neurons are H..H+O-1
+        for src_internal_idx in range(H + O):
+            for dest_internal_idx in range(H + O):
+                weight = internal_to_internal[src_internal_idx, dest_internal_idx]
+                if weight != 0:
+                    polarity = 1 if weight > 0 else -1
+                    self.add_synapse(src_internal_idx, dest_internal_idx, polarity)
+        
+        self.logger.info(f"Built correct wiring: sensory_matrix {sensory_to_internal.shape} ({np.count_nonzero(sensory_to_internal)} connections), "
+                        f"adjacency_matrix {internal_to_internal.shape} ({np.count_nonzero(internal_to_internal)} connections)")
+    
+    def _build_wiring_from_matrix_legacy(self):
+        """
+        Legacy (incorrect) method that treats inputs as part of units.
+        This creates dense weight matrices instead of sparse ones.
+        """
         # Clear any existing synapses
         self._synapses = []
         
@@ -445,17 +534,17 @@ class ArbitraryWiring(Wiring):
         hidden_start = self.input_size
         hidden_end = self.input_size + self.hidden_size
         output_start = self.input_size + self.hidden_size
-        output_end = self.total_units
+        output_end = self.total_units_in_matrix
         
         # Build synapses based on the wiring matrix
-        for i in range(self.total_units):
-            for j in range(self.total_units):
+        for i in range(self.total_units_in_matrix):
+            for j in range(self.total_units_in_matrix):
                 weight = self.wiring_matrix[i, j]
                 if weight > 0:  # Connection exists
                     # Determine connection type and add synapse
                     self._add_synapse_from_matrix(i, j, weight)
         
-        self.logger.info(f"Built wiring with {len(self._synapses)} synapses")
+        self.logger.info(f"Built legacy wiring with {len(self._synapses)} synapses (INCORRECT - creates dense matrices)")
     
     def _add_synapse_from_matrix(self, src_idx: int, dest_idx: int, weight: float):
         """Add a synapse based on the wiring matrix."""
@@ -493,44 +582,101 @@ class ArbitraryWiring(Wiring):
         """Build the wiring with input shape - required by NCPs."""
         super().build(input_shape)
         
-        # Connect sensory inputs to the appropriate neurons
-        # This maps the input features to the sensory neurons in our wiring
-        for src in range(self.input_dim):
-            # Connect each input to the corresponding sensory neuron
-            if src < self.input_size:
-                # Add sensory synapse from input to sensory neuron
-                self.add_sensory_synapse(src, src, 1.0)
+        if self.use_legacy_behavior:
+            # Legacy behavior: incorrect mapping
+            for src in range(self.input_dim):
+                # Connect each input to the corresponding sensory neuron
+                if src < self.input_size:
+                    # Add sensory synapse from input to sensory neuron
+                    self.add_sensory_synapse(src, src, 1.0)
+                else:
+                    # If we have more inputs than sensory neurons, distribute them
+                    target_neuron = src % self.input_size
+                    self.add_sensory_synapse(src, target_neuron, 1.0)
+            self.logger.info(f"Connected {self.input_dim} inputs to sensory neurons (legacy)")
+        else:
+            # Correct behavior: populate sensory_adjacency_matrix from pre-computed matrix
+            if hasattr(self, '_sensory_matrix_to_populate'):
+                sensory_matrix = self._sensory_matrix_to_populate
+                # sensory_matrix is [I, H+O] where I=input_size, H+O=units
+                # Map each input to each internal neuron based on the matrix
+                for input_idx in range(min(self.input_dim, self.input_size)):
+                    for internal_neuron_idx in range(self.units):  # units = H+O
+                        weight = sensory_matrix[input_idx, internal_neuron_idx]
+                        if weight != 0:
+                            polarity = 1 if weight > 0 else -1
+                            self.add_sensory_synapse(input_idx, internal_neuron_idx, polarity)
+                
+                # If input_dim > input_size, map extra inputs (shouldn't happen normally)
+                if self.input_dim > self.input_size:
+                    for input_idx in range(self.input_size, self.input_dim):
+                        # Distribute to internal neurons (use modulo to cycle)
+                        target_neuron = input_idx % self.units
+                        self.add_sensory_synapse(input_idx, target_neuron, 1)
+                
+                self.logger.info(f"Connected {self.input_dim} inputs to {self.units} internal neurons "
+                               f"({np.count_nonzero(sensory_matrix)} connections)")
             else:
-                # If we have more inputs than sensory neurons, distribute them
-                target_neuron = src % self.input_size
-                self.add_sensory_synapse(src, target_neuron, 1.0)
-        
-        self.logger.info(f"Connected {self.input_dim} inputs to sensory neurons")
+                # Fallback if _sensory_matrix_to_populate not set
+                self.logger.warning("_sensory_matrix_to_populate not set, using fallback")
+                for src in range(self.input_dim):
+                    target_neuron = src % self.units if self.units > 0 else 0
+                    self.add_sensory_synapse(src, target_neuron, 1.0)
     
     @property
     def num_layers(self):
         """Return the number of layers - required by WiredCfCCell."""
-        return 3  # Sensory -> Inter -> Motor
+        if self.use_legacy_behavior:
+            return 3  # Legacy: includes inputs as layer 0
+        else:
+            return 2  # Correct: hidden (layer 0) and output (layer 1), inputs are external
     
     def get_neurons_of_layer(self, layer_id):
-        """Return neurons for each layer - required by WiredCfCCell."""
-        if layer_id == 0:
-            return list(range(self.input_size))  # Sensory neurons
-        elif layer_id == 1:
-            return list(range(self.input_size, self.input_size + self.hidden_size))  # Inter neurons
-        elif layer_id == 2:
-            return list(range(self.input_size + self.hidden_size, self.total_units))  # Motor neurons (outputs)
+        """Return neurons for each layer - required by WiredCfCCell.
+        
+        Returns indices relative to 'units' (internal neurons only, not including inputs).
+        """
+        if self.use_legacy_behavior:
+            # Legacy: incorrect - includes inputs in units
+            if layer_id == 0:
+                return list(range(self.input_size))  # Sensory neurons (WRONG - these are external)
+            elif layer_id == 1:
+                return list(range(self.input_size, self.input_size + self.hidden_size))  # Inter neurons
+            elif layer_id == 2:
+                return list(range(self.input_size + self.hidden_size, self.total_units_in_matrix))  # Motor neurons
+            else:
+                raise ValueError(f"Unknown layer {layer_id}")
         else:
-            raise ValueError(f"Unknown layer {layer_id}")
+            # Correct: indices relative to units (H+O), inputs are external
+            if layer_id == 0:
+                # Layer 0: Hidden/inter neurons (indices 0..H-1 within units)
+                return list(range(self.hidden_size))
+            elif layer_id == 1:
+                # Layer 1: Motor/output neurons (indices H..H+O-1 within units)
+                return list(range(self.hidden_size, self.hidden_size + self.output_size))
+            else:
+                raise ValueError(f"Unknown layer {layer_id} (valid: 0-1)")
     
     def get_type_of_neuron(self, neuron_id):
-        """Return the type of neuron as expected by NCPs."""
-        if neuron_id < self.input_size:
-            return "sensory"
-        elif neuron_id < self.input_size + self.hidden_size:
-            return "inter"
+        """Return the type of neuron as expected by NCPs.
+        
+        Args:
+            neuron_id: Index relative to 'units' (internal neurons only)
+        """
+        if self.use_legacy_behavior:
+            # Legacy: incorrect indexing
+            if neuron_id < self.input_size:
+                return "sensory"
+            elif neuron_id < self.input_size + self.hidden_size:
+                return "inter"
+            else:
+                return "motor"
         else:
-            return "motor"
+            # Correct: neuron_id is relative to units (H+O)
+            if neuron_id < self.hidden_size:
+                return "inter"
+            else:
+                return "motor"
     
     def get_wiring_summary(self) -> Dict[str, Any]:
         """Get a summary of the wiring structure."""
@@ -583,7 +729,7 @@ class ArbitraryWiring(Wiring):
         }
 
 
-def load_architecture_from_file(filepath: str, logger: Optional[logging.Logger] = None) -> ArbitraryWiring:
+def load_architecture_from_file(filepath: str, logger: Optional[logging.Logger] = None, use_legacy_behavior: bool = False) -> ArbitraryWiring:
     """
     Load an architecture from a JSON file and create an ArbitraryWiring instance.
     
@@ -610,25 +756,56 @@ def load_architecture_from_file(filepath: str, logger: Optional[logging.Logger] 
         connection_weights = data.get('connection_weights')
         metadata = data.get('metadata', {})
         
-        wiring = WsFlexHiddenWiring(
-            input_size=input_size,
-            hidden_graph=wiring_matrix,
-            output_size=output_size,
-            input_strategy="degree_proportional",
-            output_strategy="uniform",
-            hidden_edge_orientation="random_oriented",
-            add_hidden_self_loops=True,
-            fan_in_inputs=None,
-            fan_in_hidden_per_output=None,
-            allow_signed_hidden_edges=True,
-            inhibitory_ratio=0.2,
-            seed=seed
-        )
-
-        if logger:
-            logger.info(f"Successfully loaded architecture from {filepath}")
+        # CRITICAL FIX: Determine if wiring_matrix is full [I+H+O, I+H+O] or just hidden [H, H]
+        total_expected = input_size + hidden_size + output_size
+        matrix_size = wiring_matrix.shape[0]
         
-        return wiring
+        if matrix_size == total_expected:
+            # Full matrix: Create ArbitraryWiring directly using original sizes
+            # Size mismatches will be handled by projection layers in the model
+            if logger:
+                logger.info(f"Detected full [I+H+O, I+H+O] matrix ({matrix_size}x{matrix_size}), "
+                          f"creating ArbitraryWiring with original sizes (I={input_size}, H={hidden_size}, O={output_size})")
+            
+            # Create ArbitraryWiring directly with original sizes from the matrix
+            # This preserves the exact wiring graph that was optimized
+            return ArbitraryWiring(
+                wiring_matrix=wiring_matrix,
+                input_size=input_size,
+                hidden_size=hidden_size,
+                output_size=output_size,
+                use_legacy_behavior=use_legacy_behavior,
+                metadata=metadata
+            )
+            
+        elif matrix_size == hidden_size:
+            # Hidden-only graph: Use WsFlexHiddenWiring (original behavior)
+            hidden_graph = wiring_matrix
+            if logger:
+                logger.info(f"Detected hidden-only [H, H] matrix ({matrix_size}x{matrix_size}), using WsFlexHiddenWiring")
+            
+            wiring = WsFlexHiddenWiring(
+                input_size=input_size,
+                hidden_graph=hidden_graph,
+                output_size=output_size,
+                input_strategy="degree_proportional",
+                output_strategy="uniform",
+                hidden_edge_orientation="random_oriented",
+                add_hidden_self_loops=True,
+                fan_in_inputs=None,
+                fan_in_hidden_per_output=None,
+                allow_signed_hidden_edges=True,
+                inhibitory_ratio=0.2,
+                seed=seed
+            )
+            wiring._use_legacy_behavior = use_legacy_behavior
+            return wiring
+        else:
+            raise ValueError(
+                f"Wiring matrix size ({matrix_size}) doesn't match expected sizes: "
+                f"full matrix should be {total_expected}x{total_expected}, "
+                f"hidden-only should be {hidden_size}x{hidden_size}"
+            )
         
     except Exception as e:
         if logger:

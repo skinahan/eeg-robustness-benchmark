@@ -8,6 +8,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau, ExponentialLR
 from braindecode import EEGClassifier
 from models.branched_diva_base import BranchedDIVABase
 from ncps.torch import CfC
+from ncps.wirings import Wiring
 from architecture_refinement.arbitrary_wiring import ArbitraryWiring
 
 
@@ -31,7 +32,7 @@ class BranchedWiredCfC(BranchedDIVABase):
         n_chans: int,
         n_times: int,
         n_outputs: int,
-        wiring: ArbitraryWiring,  # ArbitraryWiring instance
+        wiring: ArbitraryWiring,  # ArbitraryWiring instance (or WsFlexHiddenWiring that builds to ArbitraryWiring)
         # --- CNN (EEGNet-like) front-end ---
         F1: int = 8,                 # temporal filter count
         D: int = 2,                  # depthwise multiplier -> F2 = F1*D
@@ -114,6 +115,9 @@ class BranchedWiredCfC(BranchedDIVABase):
         """
         Create the CfC recurrent cell using ArbitraryWiring.
         
+        Uses projection layers to handle input/output size mismatches, preserving
+        the exact wiring graph that was optimized.
+        
         Args:
             mixed_memory: Whether to use mixed memory in CfC
             mode: CfC mode ("default", "pure", etc.)
@@ -124,47 +128,76 @@ class BranchedWiredCfC(BranchedDIVABase):
             **kwargs: Additional parameters (ignored for CfC)
             
         Returns:
-            The CfC cell with ArbitraryWiring
+            The CfC cell with original wiring sizes
         """
-        # Ensure wiring is compatible with expected input and output sizes
-        # The wiring should be configured for input_size=F2 and output_size=recurrent_output_size
-        ncp_input_size = self.F2
-        ncp_output_size = self.recurrent_output_size
+        # Get the original wiring sizes (from the architecture file)
+        wiring_input_size = self.wiring.input_size
+        wiring_output_size = self.wiring.output_size
         
-        # Configure the wiring for the expected input/output sizes
-        self.wiring.input_size = ncp_input_size
-        self.wiring.output_size = ncp_output_size
-        built_wiring = self.wiring.build(ncp_input_size)
+        # Get the model's expected sizes
+        model_input_size = self.F2  # What we actually have
+        model_output_size = self.recurrent_output_size  # What we need
         
-        # Create CfC with the arbitrary wiring
+        # Build wiring with its original input size (preserves exact wiring graph)
+        # The wiring might be a WsFlexHiddenWiring (needs build) or already an ArbitraryWiring
+        if hasattr(self.wiring, 'build') and not isinstance(self.wiring, ArbitraryWiring):
+            # It's a WsFlexHiddenWiring - build it to get ArbitraryWiring
+            built_wiring = self.wiring.build(wiring_input_size)
+            if built_wiring is not None:
+                built_wiring.build(wiring_input_size)
+            else:
+                raise ValueError("wiring.build() returned None")
+        else:
+            # Already an ArbitraryWiring - just build it
+            built_wiring = self.wiring
+            if not built_wiring.is_built():
+                built_wiring.build(wiring_input_size)
+        
+        # Create projection layers if sizes don't match (store as instance attributes)
+        if model_input_size != wiring_input_size:
+            self.input_proj = nn.Linear(model_input_size, wiring_input_size, bias=False)
+        else:
+            self.input_proj = None
+        
+        if model_output_size != wiring_output_size:
+            self.output_proj = nn.Linear(wiring_output_size, model_output_size, bias=False)
+        else:
+            self.output_proj = None
+        
+        # Create CfC with the original wiring sizes
         return CfC(
-            input_size=ncp_input_size,
+            input_size=wiring_input_size,
             units=built_wiring,
-            proj_size=ncp_output_size,
+            proj_size=wiring_output_size,  # Use wiring's original output size
             return_sequences=True,
             batch_first=True,
             mixed_memory=mixed_memory,
             mode=mode,
             activation=activation,
-            # These are not valid in wired mode
-            # backbone_units=backbone_units,
-            # backbone_layers=backbone_layers,
-            # backbone_dropout=backbone_dropout
         )
 
     def _process_bins(self, x_bins, residual):
         """
-        Process temporal bins through the CfC cell.
+        Process temporal bins through the CfC cell with projection layers if needed.
         
         Args:
             x_bins: [B*NB, L, F2] - reshaped bins for parallel processing
             residual: [B*NB, L, F2] - residual connection data (not used in processing)
             
         Returns:
-            x_seq: [B*NB, L, H] - processed sequences from CfC
+            x_seq: [B*NB, L, recurrent_output_size] - processed sequences from CfC
         """
+        # Project input if needed (F2 -> wiring input_size)
+        if self.input_proj is not None:
+            x_bins = self.input_proj(x_bins)  # [B*NB, L, wiring_input_size]
+        
         # CfC over each bin (return sequences)
-        x_seq, _ = self.recurrent_cell(x_bins)             # [B*NB, L, H]
+        x_seq, _ = self.recurrent_cell(x_bins)  # [B*NB, L, wiring_output_size]
+        
+        # Project output if needed (wiring output_size -> recurrent_output_size)
+        if self.output_proj is not None:
+            x_seq = self.output_proj(x_seq)  # [B*NB, L, recurrent_output_size]
+        
         return x_seq
 
     def get_wiring_info(self):

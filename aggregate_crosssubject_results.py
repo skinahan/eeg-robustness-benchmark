@@ -126,7 +126,7 @@ def aggregate_results(model, dataset, subjects, mode, seed, eval_mode="CrossSubj
     if missing_folds:
         print(f"WARNING: Missing results for fold(s): {sorted(missing_folds)}")
     else:
-        print(f"✓ All {len(expected_folds)} folds present")
+        print(f"[OK] All {len(expected_folds)} folds present")
     
     # Determine paradigm for logging
     if dataset == "Lee2019_SSVEP":
@@ -157,7 +157,7 @@ def aggregate_results(model, dataset, subjects, mode, seed, eval_mode="CrossSubj
         dataset=dataset
     )
     
-    print(f"\n✓ Results aggregated and logged successfully")
+    print(f"\n[OK] Results aggregated and logged successfully")
     print(f"  Total rows: {len(combined_df)}")
     print(f"  Folds: {unique_folds}")
     
