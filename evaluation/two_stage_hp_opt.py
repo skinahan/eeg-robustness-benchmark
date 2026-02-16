@@ -1321,6 +1321,15 @@ def get_all_model_params(model_name):
 
 
 def get_model_architecture_space(model_name):
+    # NAS pilot study runtime-registered models
+    if model_name.startswith("nas_pilot_"):
+        return cnn_wiredcfc_architecture_space
+    # Plot 2 topology study runtime-registered models
+    if model_name.startswith("plot2_"):
+        return cnn_wiredcfc_architecture_space
+    if model_name == "cnn_wiredcfc_min":
+        return cnn_wiredcfc_architecture_space
+
     # Check if this is a wiredcfc architecture model
     if model_name.startswith("wiredcfc_arch"):
         return cnn_wiredcfc_architecture_space
@@ -1358,11 +1367,27 @@ def get_model_architecture_space(model_name):
         "hydra_v2": hydra_v2_architecture_space,
         "hydra_v3": hydra_v3_architecture_space,
         "diva_full": diva_full_architecture_space,
+        "cnn_wiredcfc_min": cnn_wiredcfc_architecture_space,
     }
+    if model_name not in architecture_registry:
+        raise KeyError(
+            f"Unknown model_name for architecture space: {model_name}. "
+            f"Known models: {sorted(architecture_registry.keys())} "
+            f"(plus dynamic prefixes: wiredcfc_arch*, branched_wiredcfc_arch*, branched_lstm_arch*, hydra_v2*, hydra_v3*, nas_pilot_*, plot2_*)"
+        )
     return architecture_registry[model_name]
 
 
 def get_model_training_space(model_name):
+    # NAS pilot study runtime-registered models
+    if model_name.startswith("nas_pilot_"):
+        return cnn_wiredcfc_training_space
+    # Plot 2 topology study runtime-registered models
+    if model_name.startswith("plot2_"):
+        return cnn_wiredcfc_training_space
+    if model_name == "cnn_wiredcfc_min":
+        return cnn_wiredcfc_training_space
+
     # Check if this is a wiredcfc architecture model
     if model_name.startswith("wiredcfc_arch"):
         return cnn_wiredcfc_training_space
@@ -1400,7 +1425,14 @@ def get_model_training_space(model_name):
         "hydra_v2": hydra_v2_training_space,
         "hydra_v3": hydra_v3_training_space,
         "diva_full": diva_full_training_space,
+        "cnn_wiredcfc_min": cnn_wiredcfc_training_space,
     }
+    if model_name not in training_registry:
+        raise KeyError(
+            f"Unknown model_name for training space: {model_name}. "
+            f"Known models: {sorted(training_registry.keys())} "
+            f"(plus dynamic prefixes: wiredcfc_arch*, branched_wiredcfc_arch*, branched_lstm_arch*, hydra_v2*, hydra_v3*, nas_pilot_*, plot2_*)"
+        )
     return training_registry[model_name]
 
 

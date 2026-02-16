@@ -1,0 +1,132 @@
+====================================================================
+Feature Request / Patch Note
+Plot 2 Candidate Selection: ORC-Aware, Regime-Covered Selection
+====================================================================
+
+Context
+-------
+In the current Plot 2 implementation, candidate WS-Flex graphs are
+selected for training via a global top-B ranking using a scalar score:
+    S = TE_norm + ORC_norm
+
+Recent diagnostics indicate that this selection strategy can collapse
+the trained candidate set toward high-TE / low-ORC regions of the
+search space, even when ORC is included as a search objective.
+
+This behavior arises when ORC exhibits lower variance or compressed
+scale relative to TE, causing ORC to be under-utilized during candidate
+selection despite normalization.
+
+--------------------------------------------------------------------
+Problem Summary
+--------------------------------------------------------------------
+
+1) ORC Under-Representation
+---------------------------
+- Normalization alone does not guarantee equal influence of TE and ORC.
+- If ORC occupies a narrow range after normalization, TE dominates the
+  scalar score and selected candidates may systematically ignore ORC.
+
+2) Scalar Top-B Selection Ignores Pareto Geometry
+-------------------------------------------------
+- Global top-B selection by sum does not respect the shape of the
+  Pareto front.
+- Candidates near one extreme (e.g., high TE) can crowd out candidates
+  that represent meaningful TE–ORC trade-offs.
+
+3) Misalignment with Plot 2 Objectives
+--------------------------------------
+- Plot 2 aims to evaluate topology-driven robustness across regimes,
+  not simply maximize TE.
+- Selection must ensure that both objectives and structural regimes
+  are represented in the trained set.
+
+--------------------------------------------------------------------
+Implemented Change (Selection Logic Revision)
+--------------------------------------------------------------------
+
+Implementation Status (2026-02-01)
+---------------------------------
+- Implemented in: architecture_refinement/run_plot2_topology_study.py
+- Control flag: --selection_strategy
+- Default: pareto_farthest_regime
+
+This replaces the prior global top-B selection by scalar score with a
+Pareto-aware, diversity-preserving selection procedure that ensures ORC
+influence and k-regime coverage.
+
+### Implemented Selection Procedure (default: pareto_farthest_regime)
+
+1) Fixed Normalization
+----------------------
+- Normalize TE and ORC using fixed bounds derived from a reference set
+  of feasible WS-Flex graphs (e.g., 1st–99th percentile).
+- Do not renormalize dynamically during selection.
+
+2) Pareto Filtering
+-------------------
+- Compute the Pareto-optimal candidate set in (TE, ORC) space using
+  fixed-normalized values.
+
+3) Diversity-Aware Selection within Regimes
+-------------------------------------------
+- Define scalar score for tie-breaking only:
+      S = TE' + ORC'
+- Partition Pareto candidates into predefined k-regimes.
+- Allocate deterministic per-regime quotas (e.g., B/4 each, with remainder
+  assigned in regime order).
+- Within each regime, select up to the quota using greedy farthest-point
+  sampling in (TE', ORC') space relative to the already-selected set:
+    - seed: if there are already-selected points, pick the point farthest
+      from them; otherwise pick the highest-S point
+    - iterate: pick the point that maximizes min-distance to the selected
+      set (ties: higher S, then lower idx)
+
+4) Regime Shortfall Backfill (Pareto-only)
+-----------------------------------------
+- If a regime lacks sufficient Pareto candidates to satisfy its quota,
+  fill remaining slots by drawing from adjacent regimes (by regime index
+  distance) while logging:
+    - shortfall per regime
+    - number of backfilled selections per regime
+
+5) Safety Backfill
+------------------
+- If the total Pareto pool is still insufficient to reach B:
+    - fill remaining slots from remaining Pareto candidates globally using
+      farthest-point diversity
+    - then, if still needed, fall back to non-Pareto candidates using the
+      legacy global score order
+
+--------------------------------------------------------------------
+Expected Impact
+--------------------------------------------------------------------
+
+- Ensures ORC contributes meaningfully to trained candidate selection.
+- Prevents collapse to high-TE / low-ORC regions.
+- Aligns selection with Plot 2’s causal objective:
+  evaluating robustness across topological regimes.
+- Improves interpretability and reviewer defensibility.
+
+--------------------------------------------------------------------
+Notes
+--------------------------------------------------------------------
+
+- This change affects Plot 2 selection only; Plot 1 (search efficiency)
+  may continue using scalar ranking if desired.
+- Plot 2 runner diagnostics now record selection metadata (strategy,
+  Pareto availability by regime, quotas/shortfalls, backfill counts).
+- Guardrails (unless --selection_allow_missing_regimes):
+  - assert candidate-level k-regime coverage (detects search space collapse)
+  - do not hard-fail solely because a regime has zero Pareto candidates
+
+CLI Summary (Plot 2 runner)
+---------------------------
+- --selection_strategy: pareto_farthest_regime (default), pareto_farthest_global,
+  pareto_score_regime, pareto_score_global, score
+- --selection_coverage_level: none|regime
+- --selection_allow_missing_regimes: disable coverage guardrails (log only)
+
+--------------------------------------------------------------------
+End of Patch Note
+====================================================================

@@ -1,0 +1,207 @@
+====================================================================
+Plot 2 – One-Model Perturbation Pilot Specification
+====================================================================
+
+Purpose
+-------
+This document specifies a fast, single-model pilot experiment designed
+to validate whether newly proposed correlated perturbations sufficiently
+stress MI EEG decoding models before running the full Plot 2 evaluation.
+
+The goal is to detect clear performance degradation as perturbation
+intensity approaches its maximum, avoiding wasted compute on full
+multi-model sweeps if perturbations are too weak.
+
+This pilot is intentionally isolated from:
+- NAS Pilot / Plot 1 studies
+- Training-free Optuna search
+- Full Plot 2 multi-model evaluation
+
+--------------------------------------------------------------------
+Core Question
+--------------------------------------------------------------------
+
+Does the proposed perturbation induce a monotonic and substantial
+decrease in MI decoding performance as intensity increases?
+
+If not, perturbation severity must be increased before proceeding.
+
+--------------------------------------------------------------------
+Experimental Scope
+--------------------------------------------------------------------
+
+- One fixed trained model
+- One fixed training seed
+- Cross-session evaluation only
+- No retraining
+- No NAS involvement
+- No candidate selection logic
+
+This experiment validates *perturbations*, not architectures.
+
+--------------------------------------------------------------------
+Inputs and Fixed Choices
+--------------------------------------------------------------------
+
+Dataset:
+- BNCI2014_001
+
+Evaluation protocol:
+- Cross-session evaluation
+- Identical preprocessing and data splits as Plot 2
+
+Model:
+- CNN–CfC (or CNN–NCP) architecture
+- Hidden dimension H = 32
+- Moderate WS-Flex wiring (recommended):
+    k = 12
+    p = 0.4
+- Alternatively: canonical NCP wiring at H = 32
+
+Training:
+- One pre-trained checkpoint
+- Single trusted training seed (e.g., seed = 0)
+- Model weights frozen
+
+--------------------------------------------------------------------
+Perturbations Evaluated
+--------------------------------------------------------------------
+
+Each perturbation is evaluated independently using the same intensity
+grid and metrics.
+
+1) Spatially Correlated Gaussian Noise
+   - Zero-mean Gaussian noise with spatial covariance:
+       Σ_ij = exp(−d_ij / ℓ)
+   - d_ij: inter-electrode Euclidean distance
+   - ℓ: spatial correlation length
+
+2) Temporally Correlated Drift (AR(1))
+   - Autoregressive noise:
+       ε_t = ρ ε_{t−1} + η_t
+       η_t ~ N(0, σ²)
+
+3) Band-Limited EMG-Like Noise
+   - White noise band-pass filtered to 20–80 Hz
+   - Optional slow amplitude envelope
+
+--------------------------------------------------------------------
+Default Perturbation Parameters
+--------------------------------------------------------------------
+
+Spatially Correlated Gaussian:
+- Kernel: exponential
+- ℓ: median inter-electrode distance
+
+AR(1) Drift:
+- ρ = 0.97
+
+EMG-Like Noise:
+- Band: 20–80 Hz
+- Envelope: optional (off by default)
+
+--------------------------------------------------------------------
+Intensity Calibration
+--------------------------------------------------------------------
+
+All perturbations use the same SNR-based scaling mechanism.
+
+Let X ∈ ℝ^{T×C} be the clean EEG signal and ε the perturbation.
+
+Perturbed signal:
+    X̃ = X + α · ε
+
+Maximum intensity α_max is chosen such that:
+    SNR_dB ≈ 0 dB
+
+where:
+    SNR_dB = 10 log10( E[||X||_F²] / E[||α_max ε||_F²] )
+
+Intensity grid:
+    α ∈ {0, 0.25, 0.5, 0.75, 1.0} · α_max
+
+This grid and calibration match the existing Plot 2 AUPC setup.
+
+--------------------------------------------------------------------
+Metrics Computed
+--------------------------------------------------------------------
+
+For each perturbation and each α:
+- ROC-AUC on perturbed test data
+
+Derived quantities:
+- ΔROC-AUC at α_max
+- AUPC over the 5-point grid
+- Spearman correlation between α and ROC-AUC
+
+--------------------------------------------------------------------
+Success Criteria (Pass / Fail)
+--------------------------------------------------------------------
+
+For a perturbation to be considered valid:
+
+1) Sufficient degradation at maximum intensity:
+   ΔROC-AUC = ROC-AUC(α=0) − ROC-AUC(α=α_max) ≥ 0.05
+
+2) Monotonic trend:
+   Spearman(α, ROC-AUC) ≤ −0.7
+   (Non-monotonicity at low α is acceptable if max drop criterion is met.)
+
+At least one perturbation must pass these criteria for Plot 2 to proceed.
+
+--------------------------------------------------------------------
+Escalation Strategy if Criteria Are Not Met
+--------------------------------------------------------------------
+
+If a perturbation fails:
+
+Step 1: Increase severity via SNR
+- Recompute α_max for target SNR = −5 dB
+- Re-evaluate using the same grid
+
+If still insufficient:
+
+Step 2: Increase correlation strength (one parameter only)
+- Spatial noise: increase ℓ by 2×
+- AR(1): increase ρ to 0.99
+- EMG: widen band to 20–100 Hz or enable envelope
+
+Re-evaluate only the failing perturbation.
+
+--------------------------------------------------------------------
+Integration and Isolation Requirements
+--------------------------------------------------------------------
+
+- All outputs must be written to a separate namespace, e.g.:
+    results/plot2_perturbation_pilot/<model_id>/seed0/<perturbation>/
+
+- Do NOT write to:
+    - Optuna study directories
+    - Plot 1 result caches
+    - Full Plot 2 evaluation directories
+
+- RNG seeds for perturbation generation must be fixed for reproducibility.
+
+--------------------------------------------------------------------
+Expected Output Artifact
+--------------------------------------------------------------------
+
+A small summary table:
+
+| Perturbation | SNR_max (dB) | ROC-AUC clean | ROC-AUC at max | ΔROC-AUC | AUPC |
+
+This table determines whether the perturbation is sufficiently
+stressful to justify full Plot 2 evaluation.
+
+--------------------------------------------------------------------
+Interpretation
+--------------------------------------------------------------------
+
+Failure of Gaussian i.i.d. noise is expected and serves as a negative
+control. This pilot ensures that new correlated perturbations genuinely
+probe topology-dependent robustness mechanisms before committing to
+full experiments.
+
+--------------------------------------------------------------------
+End of Specification
+====================================================================

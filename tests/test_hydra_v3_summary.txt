@@ -1,0 +1,78 @@
+================================================================================
+HYDRAv3 SYSTEMATIC FEATURE EVALUATION - COMPREHENSIVE SUMMARY
+================================================================================
+
+
+================================================================================
+DATASET: BNCI2014_001
+================================================================================
+
+TEST STATUS:
+--------------------------------------------------------------------------------
+branched_wiredcfc_arch4: PASSED
+hydra_v3_default: PASSED
+hydra_v3_no_carry_controller: PASSED
+hydra_v3_controller_dim2: PASSED
+hydra_v3_no_ssvep: PASSED
+hydra_v3_minimal: PASSED
+
+--------------------------------------------------------------------------------
+CLEAN ACCURACY COMPARISON
+--------------------------------------------------------------------------------
+Model                                    Accuracy     vs Baseline     Change    
+--------------------------------------------------------------------------------
+branched_wiredcfc_arch4 (baseline)       0.7431      (baseline)                
+hydra_v3_controller_dim2                 0.8264      +0.0833 (+11.21%)
+hydra_v3_default                         0.7569      +0.0139 (+1.87%)
+hydra_v3_no_carry_controller             0.7083      -0.0347 (-4.67%)
+hydra_v3_no_ssvep                        0.6736      -0.0694 (-9.35%)
+hydra_v3_minimal                         0.5000      -0.2431 (-32.71%)
+
+--------------------------------------------------------------------------------
+CLEAN ROC-AUC COMPARISON
+--------------------------------------------------------------------------------
+Model                                    ROC-AUC      vs Baseline     Change    
+--------------------------------------------------------------------------------
+branched_wiredcfc_arch4 (baseline)       0.7953      (baseline)                
+hydra_v3_controller_dim2                 0.9159      +0.1206 (+15.16%)
+hydra_v3_default                         0.8873      +0.0920 (+11.57%)
+hydra_v3_no_ssvep                        0.8428      +0.0475 (+5.97%)
+hydra_v3_no_carry_controller             0.8347      +0.0394 (+4.95%)
+hydra_v3_minimal                         0.6551      -0.1402 (-17.63%)
+
+--------------------------------------------------------------------------------
+NOISE ROBUSTNESS COMPARISON (sample)
+--------------------------------------------------------------------------------
+
+gaussian @ intensity 53.1:
+  Model                                    Accuracy     vs Baseline    
+  branched_wiredcfc_arch4 (baseline)       0.6736      (baseline)     
+  hydra_v3_controller_dim2                 0.7500      +0.0764        
+  hydra_v3_default                         0.7361      +0.0625        
+  hydra_v3_no_carry_controller             0.7153      +0.0417        
+  hydra_v3_no_ssvep                        0.6042      -0.0694        
+  hydra_v3_minimal                         0.5000      -0.1736        
+
+dropout @ intensity 39.9:
+  Model                                    Accuracy     vs Baseline    
+  branched_wiredcfc_arch4 (baseline)       0.5208      (baseline)     
+  hydra_v3_no_carry_controller             0.6667      +0.1458        
+  hydra_v3_default                         0.5764      +0.0556        
+  hydra_v3_controller_dim2                 0.5764      +0.0556        
+  hydra_v3_no_ssvep                        0.5556      +0.0347        
+  hydra_v3_minimal                         0.5000      -0.0208        
+
+eog @ intensity 49.8:
+  Model                                    Accuracy     vs Baseline    
+  branched_wiredcfc_arch4 (baseline)       0.7014      (baseline)     
+  hydra_v3_default                         0.7639      +0.0625        
+  hydra_v3_no_ssvep                        0.6806      -0.0208        
+  hydra_v3_controller_dim2                 0.6528      -0.0486        
+  hydra_v3_no_carry_controller             0.5486      -0.1528        
+  hydra_v3_minimal                         0.5000      -0.2014        
+
+================================================================================
+
+================================================================================
+END OF SUMMARY
+================================================================================

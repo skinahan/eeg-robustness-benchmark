@@ -79,15 +79,23 @@ class TopologyAnalyzer:
     def _compute_entropy_metrics(self, graph: nx.Graph) -> Dict[str, float]:
         """Compute entropy-based metrics for diversity assessment."""
         try:
-            degrees = [d for n, d in graph.degree()]
-            if len(set(degrees)) > 1:
-                hist_result = np.histogram(degrees, bins=min(20, len(set(degrees))))
-                if len(hist_result) >= 2 and hist_result[0].size > 0:
-                    degree_entropy = stats.entropy(hist_result[0] + 1e-10)
-                else:
-                    degree_entropy = 0.0
+            # Canonical TE (Waqas et al., 2022): exact entropy of empirical degree distribution
+            n = int(graph.number_of_nodes())
+            if n <= 1:
+                degree_entropy_raw = 0.0
+                te = 0.0
+                te_norm_const = 1.0
             else:
-                degree_entropy = 0.0
+                degrees = np.fromiter((d for _, d in graph.degree()), dtype=int)
+                _, counts = np.unique(degrees, return_counts=True)
+                p = counts.astype(float) / float(n)
+                degree_entropy_raw = float(-np.sum(p * np.log(p)))
+                te_norm_const = float(np.log(n))
+                te = float(degree_entropy_raw / te_norm_const) if te_norm_const > 0.0 else 0.0
+                te = float(np.clip(te, 0.0, 1.0))
+
+            # Keep legacy key name but make it the exact (raw) entropy (nats).
+            degree_entropy = float(degree_entropy_raw)
                 
             # Weight entropy (if weights exist)
             weights = [graph[u][v].get('weight', 1.0) for u, v in graph.edges()]
@@ -125,11 +133,17 @@ class TopologyAnalyzer:
             if self.logger:
                 self.logger.warning(f"Error computing entropy metrics: {e}")
             degree_entropy = 0.0
+            degree_entropy_raw = 0.0
+            te = 0.0
+            te_norm_const = 1.0
             weight_entropy = 0.0
             path_entropy = 0.0
             
         return {
             'degree_entropy': float(degree_entropy),
+            'degree_entropy_raw': float(degree_entropy_raw),
+            'te': float(te),
+            'te_norm_const': float(te_norm_const),
             'weight_entropy': float(weight_entropy),
             'path_entropy': float(path_entropy)
         }
@@ -137,21 +151,51 @@ class TopologyAnalyzer:
     def _compute_curvature_metrics(self, graph: nx.Graph) -> Dict[str, float]:
         """Compute curvature metrics for robustness assessment."""
         try:
-            # Ollivier-Ricci curvature (simplified approximation)
-            curvatures = []
-            edges = list(graph.edges())[:min(100, graph.number_of_edges())]
-            for u, v in edges:
-                deg_u = graph.degree(u)
-                deg_v = graph.degree(v)
-                common_neighbors = len(list(nx.common_neighbors(graph, u, v)))
-                curvature = 1.0 - (deg_u + deg_v - 2 * common_neighbors) / (deg_u + deg_v)
-                curvatures.append(curvature)
-            
-            avg_ricci_curvature = np.mean(curvatures) if curvatures else 0.0
-            ricci_curvature_std = np.std(curvatures) if curvatures else 0.0
+            # Canonical ORC: signed mean Ollivier–Ricci curvature via optimal transport
+            # Fall back to the historical heuristic only if dependencies are unavailable.
+            orc_alpha = 0.5
+            cfg_alpha = getattr(self.config, "orc_alpha", None)
+            if cfg_alpha is None:
+                topo_cfg = getattr(self.config, "topology", None)
+                cfg_alpha = getattr(topo_cfg, "orc_alpha", None) if topo_cfg is not None else None
+            if cfg_alpha is not None:
+                orc_alpha = float(cfg_alpha)
+
+            orc_max_edges = getattr(self.config, "orc_max_edges", None)
+            if orc_max_edges is None:
+                topo_cfg = getattr(self.config, "topology", None)
+                orc_max_edges = getattr(topo_cfg, "orc_max_edges", None) if topo_cfg is not None else None
+            if orc_max_edges is None:
+                orc_max_edges = 200  # safe default for general analysis
+
+            try:
+                from .metrics_te_orc import ollivier_ricci_mean
+
+                avg_ricci_curvature, orc_debug = ollivier_ricci_mean(
+                    graph,
+                    alpha=float(orc_alpha),
+                    max_edges=int(orc_max_edges) if orc_max_edges is not None else None,
+                    return_edge_curvatures=False,
+                )
+                ricci_curvature_std = float(orc_debug.get("orc_std", 0.0))
+            except Exception as e:
+                if self.logger:
+                    self.logger.warning(f"Falling back to heuristic Ricci curvature (exact ORC unavailable): {e}")
+                # Historical heuristic (non-canonical)
+                curvatures = []
+                edges = list(graph.edges())[: min(100, graph.number_of_edges())]
+                for u, v in edges:
+                    deg_u = graph.degree(u)
+                    deg_v = graph.degree(v)
+                    common_neighbors = len(list(nx.common_neighbors(graph, u, v)))
+                    curvature = 1.0 - (deg_u + deg_v - 2 * common_neighbors) / (deg_u + deg_v)
+                    curvatures.append(curvature)
+                avg_ricci_curvature = float(np.mean(curvatures)) if curvatures else 0.0
+                ricci_curvature_std = float(np.std(curvatures)) if curvatures else 0.0
             
             # Forman-Ricci curvature
             forman_curvatures = []
+            edges = list(graph.edges())[:min(100, graph.number_of_edges())]
             for u, v in edges:
                 deg_u = graph.degree(u)
                 deg_v = graph.degree(v)
@@ -170,6 +214,7 @@ class TopologyAnalyzer:
         return {
             'avg_ricci_curvature': float(avg_ricci_curvature),
             'ricci_curvature_std': float(ricci_curvature_std),
+            'orc': float(avg_ricci_curvature),
             'avg_forman_curvature': float(avg_forman_curvature)
         }
 
@@ -307,6 +352,23 @@ class TopologyAnalyzer:
             'spectral_gap': spectral_gap,
             'laplacian_spectral_gap': laplacian_spectral_gap
         }
+
+
+def compute_spectral_radius_directed(adj_directed: np.ndarray) -> float:
+    """
+    Compute spectral radius rho(A) of a directed adjacency matrix.
+    For directed graphs, rho = max(|eigenvalues|). The model uses oriented (directed)
+    adjacency; rho(A_dir) is a more appropriate proxy than rho(A_undir) from analyze_graph.
+    """
+    try:
+        adj = np.asarray(adj_directed, dtype=float)
+        if adj.size == 0:
+            return float("nan")
+        eigenvalues = np.linalg.eigvals(adj)
+        eigenvalues = np.real(eigenvalues)
+        return float(np.max(np.abs(eigenvalues)))
+    except Exception:
+        return float("nan")
 
     def _compute_modularity_metrics(self, graph: nx.Graph) -> Dict[str, float]:
         """Compute modularity metrics for regional/functional subnetworks."""
@@ -571,8 +633,11 @@ class TopologyAnalyzer:
         }
         
         # Normalize and combine scores
-        entropy_score = min(1.0, max(0.0, metrics.get('degree_entropy', 0.0) / 5.0))  # Normalize by expected max
-        curvature_score = min(1.0, max(0.0, abs(metrics.get('avg_ricci_curvature', 0.0))))
+        # TE is already normalized to [0,1] by definition.
+        entropy_score = float(np.clip(metrics.get('te', 0.0), 0.0, 1.0))
+        # ORC is signed; map to (0,1) monotonically for a bounded composite score.
+        orc_val = float(metrics.get('orc', metrics.get('avg_ricci_curvature', 0.0)))
+        curvature_score = float(1.0 / (1.0 + np.exp(-orc_val)))
         # connectivity_score = min(1.0, max(0.0, metrics.get('algebraic_connectivity', 0.0) / 2.0))
         # efficiency_score = min(1.0, max(0.0, metrics.get('global_efficiency', 0.0)))
         

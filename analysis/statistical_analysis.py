@@ -815,6 +815,15 @@ def compute_cohens_dz(
     return mean_diff / std_diff
 
 
+def _clip_ci_cohens_dz(ci_low: float, ci_high: float, dz: float) -> Tuple[float, float]:
+    """Clip CI to reasonable bounds (±10 * max(|dz|, 0.5)) to avoid bootstrap artifacts."""
+    if not (np.isfinite(ci_low) and np.isfinite(ci_high)):
+        return (ci_low, ci_high)
+    scale = max(abs(dz), 0.5) if np.isfinite(dz) else 1.0
+    max_bound = min(10.0 * scale, 50.0)  # cap at ±50 to avoid absurd extremes
+    return (max(ci_low, -max_bound), min(ci_high, max_bound))
+
+
 def bootstrap_ci_cohens_dz(
     x: np.ndarray,
     y: np.ndarray,
@@ -822,32 +831,48 @@ def bootstrap_ci_cohens_dz(
     ci_level: float = 0.95,
     random_seed: Optional[int] = None,
 ) -> Tuple[float, float]:
-    """Bootstrap 95% CI for Cohen's dz."""
+    """Bootstrap 95% CI for Cohen's dz.
+
+    For n < 10, uses analytical (t-based) CI because bootstrap is unreliable.
+    For n >= 10, uses bootstrap; results are clipped to ±10 * max(|dz|, 0.5)
+    to avoid extreme artifacts from small samples or near-zero variance.
+    """
     if len(x) != len(y):
         return (np.nan, np.nan)
-    
+
     n = len(x)
+    dz = compute_cohens_dz(x, y)
+    alpha = 1 - ci_level
+
+    # Small samples: use analytical CI (bootstrap too unstable)
+    if n < 10:
+        if not np.isfinite(dz) or abs(dz) > 50.0:
+            # Near-zero variance or extreme dz: effect size unreliable
+            return (np.nan, np.nan)
+        t_crit = float(stats.t.ppf(1 - alpha / 2, n - 1))
+        se_dz = 1.0 / np.sqrt(n)  # approximate SE for Cohen's dz
+        ci_low = float(dz - t_crit * se_dz)
+        ci_high = float(dz + t_crit * se_dz)
+        return _clip_ci_cohens_dz(ci_low, ci_high, dz)
+
+    # Bootstrap for n >= 10
     dz_bootstrap = []
-    
-    # Set random seed for reproducibility if provided
     rng = np.random.RandomState(random_seed) if random_seed is not None else np.random
-    
+
     for _ in range(n_reps):
         indices = rng.choice(n, size=n, replace=True)
         x_boot = x[indices]
         y_boot = y[indices]
-        dz = compute_cohens_dz(x_boot, y_boot)
-        if np.isfinite(dz):
-            dz_bootstrap.append(dz)
-    
+        d = compute_cohens_dz(x_boot, y_boot)
+        if np.isfinite(d):
+            dz_bootstrap.append(d)
+
     if len(dz_bootstrap) == 0:
         return (np.nan, np.nan)
-    
-    alpha = 1 - ci_level
-    ci_low = np.percentile(dz_bootstrap, 100 * alpha / 2)
-    ci_high = np.percentile(dz_bootstrap, 100 * (1 - alpha / 2))
-    
-    return (ci_low, ci_high)
+
+    ci_low = float(np.percentile(dz_bootstrap, 100 * alpha / 2))
+    ci_high = float(np.percentile(dz_bootstrap, 100 * (1 - alpha / 2)))
+    return _clip_ci_cohens_dz(ci_low, ci_high, dz)
 
 
 def prepare_wide_format(
@@ -1264,21 +1289,26 @@ def run_statistical_analysis(
             # Run pairwise tests if omnibus significant
             if omnibus_result['p_value'] < config.alpha:
                 if config.hydra:
-                    # When hydra flag is passed, compute ALL pairwise tests
-                    # Compare every model to every other model (no special reference model)
-                    for i, model1 in enumerate(model_cols):
-                        for model2 in model_cols[i+1:]:
-                            pairwise_result = run_pairwise_tests(
-                                pivot_df, model1, model2, parametric, config
-                            )
-                            pairwise_result.update({
-                                'dataset': dataset,
-                                'eval_mode': eval_mode,
-                                'tune': tune,
-                                'metric': metric,
-                                'omnibus_p': omnibus_result['p_value'],
-                            })
-                            pairwise_results.append(pairwise_result)
+                    # When hydra flag is passed, only compare HYDRA to other models
+                    hydra_model = None
+                    for model in model_cols:
+                        if 'HYDRA' in model.upper() or 'hydra' in model.lower():
+                            hydra_model = model
+                            break
+                    if hydra_model:
+                        for other_model in model_cols:
+                            if other_model != hydra_model:
+                                pairwise_result = run_pairwise_tests(
+                                    pivot_df, hydra_model, other_model, parametric, config
+                                )
+                                pairwise_result.update({
+                                    'dataset': dataset,
+                                    'eval_mode': eval_mode,
+                                    'tune': tune,
+                                    'metric': metric,
+                                    'omnibus_p': omnibus_result['p_value'],
+                                })
+                                pairwise_results.append(pairwise_result)
                 else:
                     # Default behavior: Compare primary model (CNN-NCP) to others
                     for other_model in model_cols:

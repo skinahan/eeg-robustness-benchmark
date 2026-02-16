@@ -1,0 +1,23 @@
+PLOT 2 TOPOLOGY STUDY REPORT
+plot2_dir: E:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments\architecture_refinement\outputs\plot2_smoke
+repo_root: E:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments
+dataset: BNCI2014_001
+perturbation_types: ['ar1_drift']
+primary_perturbation_type: ar1_drift
+alpha_max (ar1_drift, data-derived): 8.719746286148025
+target_snr_db (ar1_drift): -5.0
+empirical_snr_db (ar1_drift): -5.0
+n_boot: 5000
+
+Primary comparison (NAS vs Random) on AUPC_alpha — ar1_drift (higher is better):
+  mean diff (NAS - Random): nan
+  95% CI: [nan, nan]
+  Cohen's d (per-graph means): nan
+
+Success criteria (ar1_drift):
+  (1) CI excludes 0: False
+  (2) frac(NAS graphs > Random median): nan  (>= 0.667? False)
+
+Clean ROC-AUC summary (per-graph mean, ar1_drift):
+
+Sanity checks:

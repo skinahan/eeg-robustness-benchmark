@@ -9,6 +9,7 @@ from mne.io import RawArray
 from mne.channels import make_standard_montage
 from mne.preprocessing import compute_current_source_density
 from scipy.interpolate import griddata
+from scipy.signal import butter, filtfilt
 from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
@@ -671,17 +672,20 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
     """
     Enhanced EEG noise augmentation transformer for MOABB pipelines.
 
-    Supports five noise types:
+    Supports eight noise types:
     - 'dropout': Randomly zero out a percentage of EEG channels.
-    - 'gaussian': Add Gaussian noise with magnitude-aware scaling.
+    - 'gaussian': Add Gaussian noise with magnitude-aware scaling (i.i.d.).
     - 'eog': Add realistic EOG artifacts using learned template.
     - 'realistic_eog': Add realistic EOG artifacts using learned template (legacy).
     - 'spike': Add transient spike artifacts with configurable intensity and duration.
+    - 'spatial_gaussian': Spatially correlated Gaussian (10-20 montage, exp(-d/l) cov).
+    - 'ar1_drift': AR(1) temporal drift (rho=0.97), unit variance per channel.
+    - 'emg_band': Band-limited [20, 80] Hz noise (EMG-like).
 
     Parameters
     ----------
     noise_type : str
-    One of ['dropout', 'gaussian', 'eog', 'realistic_eog', 'spike'].
+    One of ['dropout', 'gaussian', 'eog', 'realistic_eog', 'spike', 'spatial_gaussian', 'ar1_drift', 'emg_band'].
     intensity : float
     Noise severity/intensity. Meaning depends on noise_type and mode:
     - For 'dropout': percentage of channels to drop (0-100).
@@ -714,10 +718,12 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
     For EOG noise: whether to include blink clusters (rapid successive blinks) (default: True).
     """
 
-    def __init__(self, noise_type='dropout', intensity=10.0, seed=42, 
+    def __init__(self, noise_type='dropout', intensity=10.0, seed=42,
     eog_template_path='notebooks/eog_mixing_results/generic_eog_mixing_template.npz', montage_name='standard_1020',
     artifact_scale_factor=10000.0, use_improved_gaussian=True, allow_boundary_intersection=True,
-    include_slow_drift=True, include_microsaccades=True, include_blink_clusters=True):
+    include_slow_drift=True, include_microsaccades=True, include_blink_clusters=True,
+    spatial_ell_multiplier=1.0, emg_f_low=20.0, emg_f_high=80.0, emg_use_envelope=False, ar1_rho=0.97,
+    gain_drift_rho=0.995, offset_drift_rho=0.995, jitter_sfreq=250.0, jitter_max_ms=None, spatial_dropout_cluster_size=0.25):
         self.noise_type = noise_type
         self.intensity = intensity
         self.seed = seed
@@ -729,7 +735,17 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         self.include_slow_drift = include_slow_drift
         self.include_microsaccades = include_microsaccades
         self.include_blink_clusters = include_blink_clusters
-        
+        self.spatial_ell_multiplier = float(spatial_ell_multiplier)
+        self.emg_f_low = float(emg_f_low)
+        self.emg_f_high = float(emg_f_high)
+        self.emg_use_envelope = bool(emg_use_envelope)
+        self.ar1_rho = float(ar1_rho)
+        self.gain_drift_rho = float(gain_drift_rho)
+        self.offset_drift_rho = float(offset_drift_rho)
+        self.jitter_sfreq = float(jitter_sfreq)
+        self.jitter_max_ms = float(jitter_max_ms) if jitter_max_ms is not None else None
+        self.spatial_dropout_cluster_size = float(spatial_dropout_cluster_size)
+
         # Validate parameters
         if noise_type == 'eog' and eog_template_path is None:
             raise ValueError("eog_template_path is required for 'eog' noise type")
@@ -756,6 +772,24 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
             return self._apply_realistic_eog_noise(X)
         elif self.noise_type == 'spike':
             return self._apply_spike_noise(X)
+        elif self.noise_type == 'spatial_gaussian':
+            return self._apply_spatial_gaussian_noise(X)
+        elif self.noise_type == 'ar1_drift':
+            return self._apply_ar1_drift(X)
+        elif self.noise_type == 'emg_band':
+            return self._apply_emg_band_noise(X)
+        elif self.noise_type == 'gain_drift':
+            return self._apply_gain_drift(X)
+        elif self.noise_type == 'offset_drift':
+            return self._apply_offset_drift(X)
+        elif self.noise_type == 'temporal_jitter':
+            return self._apply_temporal_jitter(X)
+        elif self.noise_type == 'spatial_dropout':
+            return self._apply_spatial_dropout(X)
+        elif self.noise_type == 'ar1_plus_gain_drift':
+            return self._apply_ar1_plus_gain_drift(X)
+        elif self.noise_type == 'ar1_plus_offset_drift':
+            return self._apply_ar1_plus_offset_drift(X)
         else:
             raise ValueError(f"Unsupported noise type: {self.noise_type}")
 
@@ -980,6 +1014,229 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
                 for ch in affected_channels:
                     data_aug[i, ch, spike_start:spike_end] += spike_amplitude * spike_shape
         
+        return data_aug
+
+    def _get_spatial_covariance_cholesky(self, n_channels, ch_names):
+        """
+        Build spatial covariance Sigma_s from 10-20 montage distances and return
+        Cholesky L such that Sigma_s = L L^T. Cached per (n_channels, tuple(ch_names)).
+        Falls back to identity (i.i.d.) when montage positions are unavailable.
+        """
+        cache = getattr(self, "_spatial_gaussian_chol_cache", None)
+        if cache is None:
+            self._spatial_gaussian_chol_cache = {}
+            cache = self._spatial_gaussian_chol_cache
+        ell_mult = getattr(self, "spatial_ell_multiplier", 1.0)
+        key = (n_channels, tuple(ch_names), ell_mult)
+        if key in cache:
+            return cache[key]
+
+        montage = make_standard_montage("standard_1020")
+        ch_pos = montage.get_positions()["ch_pos"]
+        positions = []
+        for name in ch_names:
+            if name in ch_pos:
+                positions.append(ch_pos[name])
+            else:
+                # Fallback: cannot build spatial cov; return None to use i.i.d.
+                self._spatial_gaussian_chol_cache[key] = None
+                return None
+        positions = np.array(positions)
+        if len(positions) != n_channels:
+            self._spatial_gaussian_chol_cache[key] = None
+            return None
+
+        # Pairwise Euclidean distances
+        d = np.zeros((n_channels, n_channels))
+        for i in range(n_channels):
+            for j in range(n_channels):
+                d[i, j] = np.sqrt(np.sum((positions[i] - positions[j]) ** 2))
+        off_diag = d[np.triu_indices(n_channels, k=1)]
+        ell = float(np.median(off_diag)) if off_diag.size > 0 else 1.0
+        if ell <= 0:
+            ell = 1.0
+        ell = ell * float(getattr(self, "spatial_ell_multiplier", 1.0))
+        Sigma_s = np.exp(-d / ell)
+        # Ensure positive definite
+        Sigma_s += 1e-8 * np.eye(n_channels)
+        try:
+            L = np.linalg.cholesky(Sigma_s)
+        except np.linalg.LinAlgError:
+            self._spatial_gaussian_chol_cache[key] = None
+            return None
+        self._spatial_gaussian_chol_cache[key] = L
+        return L
+
+    def _apply_spatial_gaussian_noise(self, data):
+        """
+        Spatially correlated Gaussian noise: epsilon ~ N(0, Sigma_s) with
+        (Sigma_s)_{ij} = exp(-d_ij / ell), ell = median inter-electrode distance.
+        intensity = alpha * alpha_max (scale factor). Falls back to i.i.d. Gaussian
+        when montage positions are unavailable.
+        """
+        rng = np.random.default_rng(self.seed)
+        n_epochs, n_channels, n_times = data.shape
+        ch_names = self._generate_channel_names(n_channels)
+        L = self._get_spatial_covariance_cholesky(n_channels, ch_names)
+        data_aug = data.copy()
+        for i in range(n_epochs):
+            Z = rng.standard_normal((n_channels, n_times))
+            if L is not None:
+                # epsilon = L @ Z so cov(epsilon) = L I L^T = Sigma_s
+                epsilon = (L @ Z).astype(data.dtype, copy=False)
+            else:
+                epsilon = Z.astype(data.dtype, copy=False)
+            data_aug[i] += self.intensity * epsilon
+        return data_aug
+
+    def _apply_ar1_drift(self, data):
+        """
+        Temporally correlated drift: epsilon_t = rho * epsilon_{t-1} + eta_t,
+        eta_t ~ N(0, sigma_eta^2), rho from self.ar1_rho (default 0.97), sigma_eta chosen so var(epsilon)=1.
+        Applied per channel. intensity = alpha * alpha_max.
+        """
+        rho = float(getattr(self, "ar1_rho", 0.97))
+        sigma_eta = np.sqrt(1.0 - rho ** 2)
+        rng = np.random.default_rng(self.seed)
+        n_epochs, n_channels, n_times = data.shape
+        data_aug = data.copy()
+        for i in range(n_epochs):
+            eps = np.zeros((n_channels, n_times), dtype=data.dtype)
+            Z = rng.standard_normal((n_channels, n_times))
+            eps[:, 0] = sigma_eta * Z[:, 0]
+            for t in range(1, n_times):
+                eps[:, t] = rho * eps[:, t - 1] + sigma_eta * Z[:, t]
+            data_aug[i] += self.intensity * eps
+        return data_aug
+
+    def _apply_emg_band_noise(self, data):
+        """
+        Band-limited [20, f_high] Hz noise (EMG-like). White noise filtered with
+        bandpass. Optional low-frequency Gaussian-smoothed envelope (bursty EMG).
+        intensity = alpha * alpha_max. Assumes sfreq=250 Hz if not provided.
+        """
+        sfreq = 250.0
+        f_low = float(getattr(self, "emg_f_low", 20.0))
+        f_high = float(getattr(self, "emg_f_high", 80.0))
+        use_envelope = bool(getattr(self, "emg_use_envelope", False))
+        rng = np.random.default_rng(self.seed)
+        n_epochs, n_channels, n_times = data.shape
+        nyq = sfreq / 2.0
+        low = max(0.1, f_low / nyq)
+        high = min(0.99, f_high / nyq)
+        if low >= high:
+            b, a = butter(4, high, btype="low")
+        else:
+            b, a = butter(4, [low, high], btype="band")
+        data_aug = data.copy()
+        for i in range(n_epochs):
+            eta = rng.standard_normal((n_channels, n_times))
+            eps = filtfilt(b, a, eta, axis=1)
+            # Optional: scale so typical variance is ~1 (bandpass changes variance)
+            var_eps = np.var(eps)
+            if var_eps > 0:
+                eps = eps / np.sqrt(var_eps)
+            if use_envelope:
+                # Low-frequency Gaussian-smoothed envelope (bursty EMG)
+                env_raw = rng.standard_normal(n_times)
+                sigma_samp = max(1, int(0.05 * n_times))
+                from scipy.ndimage import gaussian_filter1d
+                env = gaussian_filter1d(env_raw, sigma=sigma_samp, mode="nearest")
+                env = env - np.mean(env)
+                std_env = np.std(env)
+                if std_env > 0:
+                    env = env / std_env
+                env = np.clip(0.3 + 0.7 * (env + 1) / 2, 0.2, 1.0)
+                eps = eps * env[np.newaxis, :]
+            data_aug[i] += self.intensity * eps.astype(data.dtype, copy=False)
+        return data_aug
+
+    def _apply_gain_drift(self, data):
+        """Per-channel multiplicative slow drift. intensity scales drift magnitude (0.01-0.5 typical)."""
+        rho = float(getattr(self, "gain_drift_rho", 0.995))
+        sigma_eta = np.sqrt(1.0 - rho ** 2)
+        rng = np.random.default_rng(self.seed)
+        n_epochs, n_channels, n_times = data.shape
+        data_aug = data.copy()
+        for i in range(n_epochs):
+            log_gain = np.zeros((n_channels, n_times), dtype=np.float64)
+            Z = rng.standard_normal((n_channels, n_times))
+            log_gain[:, 0] = sigma_eta * Z[:, 0]
+            for t in range(1, n_times):
+                log_gain[:, t] = rho * log_gain[:, t - 1] + sigma_eta * Z[:, t]
+            gain = 1.0 + self.intensity * log_gain
+            data_aug[i] = data_aug[i] * gain.astype(data.dtype, copy=False)
+        return data_aug
+
+    def _apply_offset_drift(self, data):
+        """Per-channel additive slow drift. intensity scales drift magnitude."""
+        rho = float(getattr(self, "offset_drift_rho", 0.995))
+        sigma_eta = np.sqrt(1.0 - rho ** 2)
+        rng = np.random.default_rng(self.seed)
+        n_epochs, n_channels, n_times = data.shape
+        data_aug = data.copy()
+        std_per_ch = np.std(data_aug, axis=2) + 1e-10
+        for i in range(n_epochs):
+            offset = np.zeros((n_channels, n_times), dtype=data.dtype)
+            Z = rng.standard_normal((n_channels, n_times))
+            offset[:, 0] = sigma_eta * Z[:, 0]
+            for t in range(1, n_times):
+                offset[:, t] = rho * offset[:, t - 1] + sigma_eta * Z[:, t]
+            data_aug[i] += self.intensity * std_per_ch[i:i + 1, :] * offset
+        return data_aug
+
+    def _apply_temporal_jitter(self, data):
+        """Circular shift time axis by +/- intensity. intensity in samples, or ms if jitter_max_ms set."""
+        rng = np.random.default_rng(self.seed)
+        n_epochs, n_channels, n_times = data.shape
+        sfreq = float(getattr(self, "jitter_sfreq", 250.0))
+        if getattr(self, "jitter_max_ms", None) is not None:
+            max_shift_samp = int(self.jitter_max_ms * sfreq / 1000.0)
+            max_shift = min(max_shift_samp, n_times // 2)
+        else:
+            max_shift = int(min(abs(self.intensity), n_times // 2))
+        if max_shift < 1:
+            return data.copy()
+        data_aug = data.copy()
+        for i in range(n_epochs):
+            shift = int(rng.integers(-max_shift, max_shift + 1))
+            if shift != 0:
+                data_aug[i] = np.roll(data_aug[i], shift, axis=1)
+        return data_aug
+
+    def _apply_spatial_dropout(self, data):
+        """Contiguous channel-region dropout (electrode cluster failure). intensity = fraction of channels to drop."""
+        rng = np.random.default_rng(self.seed)
+        n_epochs, n_channels, n_times = data.shape
+        cluster_frac = float(getattr(self, "spatial_dropout_cluster_size", 0.25))
+        n_drop = max(1, int(n_channels * self.intensity))
+        n_drop = min(n_drop, n_channels)
+        cluster_size = max(1, int(n_drop * cluster_frac))
+        data_aug = data.copy()
+        for i in range(n_epochs):
+            start = int(rng.integers(0, n_channels - cluster_size + 1)) if n_channels > cluster_size else 0
+            end = min(start + cluster_size, n_channels)
+            data_aug[i, start:end, :] = 0.0
+        return data_aug
+
+    def _apply_ar1_plus_gain_drift(self, data):
+        """Apply AR(1) drift then gain drift (combined for Plot2 diagnostic). intensity scales both."""
+        data_aug = self._apply_ar1_drift(data)
+        gain_int = float(getattr(self, "gain_drift_intensity", self.intensity * 0.5))
+        orig = self.intensity
+        self.intensity = gain_int
+        data_aug = self._apply_gain_drift(data_aug)
+        self.intensity = orig
+        return data_aug
+
+    def _apply_ar1_plus_offset_drift(self, data):
+        """Apply AR(1) drift then offset drift (combined for Plot2 diagnostic)."""
+        data_aug = self._apply_ar1_drift(data)
+        offset_int = float(getattr(self, "offset_drift_intensity", self.intensity * 0.5))
+        orig = self.intensity
+        self.intensity = offset_int
+        data_aug = self._apply_offset_drift(data_aug)
+        self.intensity = orig
         return data_aug
 
 # Creates an augmented sample for every sample in the set X

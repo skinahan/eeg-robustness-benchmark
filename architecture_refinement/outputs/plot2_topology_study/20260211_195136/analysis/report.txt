@@ -1,0 +1,45 @@
+PLOT 2 TOPOLOGY STUDY REPORT
+plot2_dir: E:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments\architecture_refinement\outputs\plot2_topology_study\20260211_195136
+repo_root: E:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments
+dataset: BNCI2014_001
+perturbation_types: ['ar1_drift']
+primary_perturbation_type: ar1_drift
+alpha_max (ar1_drift, data-derived): 9.783716249889093
+target_snr_db (ar1_drift): -6.0
+empirical_snr_db (ar1_drift): -5.999999999999997
+n_boot: 5000
+bootstrap_hierarchy: graph->seed (F7: resample graphs, then seeds within graph)
+Note: Inference is conditional on chosen subjects.
+
+PRIMARY METRIC: max_drop (lower is better) — spec §2.4
+  (baseline_a - tpe) in max_drop [F1: baseline_a=Random]: mean=-0.004623, 95% CI=[-0.021449, 0.012335], Cohen's d=-0.690
+  (external_random - tpe) in max_drop: mean=0.014059, 95% CI=[-0.001348, 0.029779]
+  B−A (proxy validity): mean(max_drop_B - max_drop_A)=0.002396, 95% CI=[-0.014099, 0.019051], Cohen's d=0.410 (negative => proxy helps)
+  Stage 2 gate (proxy usefulness): False
+  C−B (adaptive benefit): mean(max_drop_C - max_drop_B)=0.002288, 95% CI=[-0.014378, 0.019252], Cohen's d=0.372 (negative => TPE helps)
+  Stage 3 gate (adaptive benefit): False
+  Mini-scale: CI width <= 0.10? True; directional (>=2 subjects same sign)? False
+
+SECONDARY METRIC: AUPC_alpha (higher is better)
+  (NAS - baseline_a) [F1: baseline_a=Random]: mean diff=-0.000098, 95% CI=[-0.013053, 0.013293], Cohen's d=-0.064
+  Success: CI excludes 0? False; frac(NAS > baseline_a median)? 0.333 (>= 0.667? False)
+
+Clean ROC-AUC summary (per-graph mean, ar1_drift):
+  baseline_a: mean(clean_roc_auc_mean)=0.694
+  baseline_b: mean(clean_roc_auc_mean)=0.696
+  tpe: mean(clean_roc_auc_mean)=0.696
+  baseline: mean(clean_roc_auc_mean)=0.695
+  external_random: mean(clean_roc_auc_mean)=0.710
+
+Sanity checks:
+
+Selected architecture k/regime distribution (ws_flex only):
+  baseline_a: n=12 unique_k=[2, 4, 6, 8, 12, 14, 16, 18, 20, 22, 24]
+    counts_by_regime={'super_sparse': 3, 'sparse': 3, 'moderate': 3, 'near_dense': 3}
+    counts_by_k={'2': 1, '4': 1, '6': 1, '8': 1, '12': 2, '14': 1, '16': 1, '18': 1, '20': 1, '22': 1, '24': 1}
+  baseline_b: n=12 unique_k=[2, 4, 6, 10, 12, 14, 16, 18, 20, 22, 26]
+    counts_by_regime={'super_sparse': 3, 'sparse': 3, 'moderate': 3, 'near_dense': 3}
+    counts_by_k={'2': 1, '4': 1, '6': 1, '10': 1, '12': 2, '14': 1, '16': 1, '18': 1, '20': 1, '22': 1, '26': 1}
+  tpe: n=12 unique_k=[2, 6, 10, 12, 14, 16, 18, 22, 24]
+    counts_by_regime={'super_sparse': 3, 'sparse': 3, 'moderate': 3, 'near_dense': 3}
+    counts_by_k={'2': 1, '6': 2, '10': 1, '12': 2, '14': 1, '16': 1, '18': 1, '22': 1, '24': 2}

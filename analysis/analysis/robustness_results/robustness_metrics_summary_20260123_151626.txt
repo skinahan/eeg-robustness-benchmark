@@ -1,0 +1,263 @@
+================================================================================
+ROBUSTNESS METRICS SUMMARY REPORT
+================================================================================
+Generated: 2026-01-23 15:16:34
+Output directory: ./analysis/robustness_results
+
+--------------------------------------------------------------------------------
+OVERVIEW
+--------------------------------------------------------------------------------
+aupc_raw            :    810 rows,  7 columns
+aupc_summary        :    162 rows, 11 columns
+rd_curve            : 973137 rows, 10 columns
+rd_summary          :   3294 rows, 12 columns
+csv_curve           :  16470 rows,  8 columns
+csv_summary         :   3294 rows, 12 columns
+
+--------------------------------------------------------------------------------
+AUPC (Area Under Perturbation Curve) SUMMARY
+--------------------------------------------------------------------------------
+
+Statistics by grouping:
+      dataset  tune     eval_mode   model noise_type  n     mean      std      sem   ci_low  ci_high
+      BI2015a False  CrossSession CNN-NCP    dropout  5 0.582507 0.009446 0.004224 0.574227 0.590787
+      BI2015a False  CrossSession CNN-NCP        eog  5 0.586758 0.013240 0.005921 0.575153 0.598364
+      BI2015a False  CrossSession CNN-NCP   gaussian  5 0.576119 0.007439 0.003327 0.569599 0.582639
+      BI2015a False  CrossSession  EEGNet    dropout  5 0.738818 0.002166 0.000969 0.736920 0.740716
+      BI2015a False  CrossSession  EEGNet        eog  5 0.689541 0.007450 0.003332 0.683011 0.696071
+      BI2015a False  CrossSession  EEGNet   gaussian  5 0.834057 0.002209 0.000988 0.832121 0.835994
+      BI2015a False  CrossSession REEGNet    dropout  5 0.518416 0.001625 0.000727 0.516992 0.519840
+      BI2015a False  CrossSession REEGNet        eog  5 0.522786 0.003590 0.001606 0.519639 0.525933
+      BI2015a False  CrossSession REEGNet   gaussian  5 0.513545 0.002358 0.001055 0.511478 0.515612
+      BI2015a False  CrossSubject CNN-NCP    dropout  5 0.682791 0.001369 0.000612 0.681592 0.683991
+      BI2015a False  CrossSubject CNN-NCP        eog  5 0.665089 0.019514 0.008727 0.647985 0.682194
+      BI2015a False  CrossSubject CNN-NCP   gaussian  5 0.662064 0.019638 0.008783 0.644850 0.679278
+      BI2015a False  CrossSubject  EEGNet    dropout  5 0.684623 0.002638 0.001180 0.682311 0.686936
+      BI2015a False  CrossSubject  EEGNet        eog  5 0.644011 0.004099 0.001833 0.640418 0.647604
+      BI2015a False  CrossSubject  EEGNet   gaussian  5 0.718803 0.002639 0.001180 0.716490 0.721117
+      BI2015a False  CrossSubject REEGNet    dropout  5 0.670875 0.020706 0.009260 0.652726 0.689025
+      BI2015a False  CrossSubject REEGNet        eog  5 0.662550 0.023022 0.010296 0.642371 0.682730
+      BI2015a False  CrossSubject REEGNet   gaussian  5 0.601384 0.018383 0.008221 0.585270 0.617497
+      BI2015a False WithinSession CNN-NCP    dropout  5 0.508711 0.003953 0.001768 0.505246 0.512176
+      BI2015a False WithinSession CNN-NCP        eog  5 0.516516 0.005337 0.002387 0.511837 0.521194
+      BI2015a False WithinSession CNN-NCP   gaussian  5 0.502967 0.003808 0.001703 0.499629 0.506304
+      BI2015a False WithinSession  EEGNet    dropout  5 0.731393 0.001115 0.000498 0.730416 0.732370
+      BI2015a False WithinSession  EEGNet        eog  5 0.700718 0.008330 0.003725 0.693416 0.708020
+      BI2015a False WithinSession  EEGNet   gaussian  5 0.824092 0.003149 0.001408 0.821332 0.826852
+      BI2015a False WithinSession REEGNet    dropout  5 0.502138 0.006028 0.002696 0.496854 0.507421
+      BI2015a False WithinSession REEGNet        eog  5 0.501747 0.005636 0.002520 0.496807 0.506687
+      BI2015a False WithinSession REEGNet   gaussian  5 0.497303 0.005876 0.002628 0.492152 0.502454
+      BI2015a  True  CrossSession CNN-NCP    dropout  5 0.686253 0.002966 0.001326 0.683653 0.688853
+      BI2015a  True  CrossSession CNN-NCP        eog  5 0.672414 0.001423 0.000636 0.671167 0.673661
+      BI2015a  True  CrossSession CNN-NCP   gaussian  5 0.698582 0.005490 0.002455 0.693769 0.703395
+      BI2015a  True  CrossSession  EEGNet    dropout  5 0.751263 0.000899 0.000402 0.750475 0.752050
+      BI2015a  True  CrossSession  EEGNet        eog  5 0.693163 0.001643 0.000735 0.691723 0.694603
+      BI2015a  True  CrossSession  EEGNet   gaussian  5 0.843753 0.000929 0.000416 0.842938 0.844567
+      BI2015a  True  CrossSession REEGNet    dropout  5 0.517741 0.001390 0.000622 0.516522 0.518960
+      BI2015a  True  CrossSession REEGNet        eog  5 0.520830 0.003829 0.001712 0.517474 0.524186
+      BI2015a  True  CrossSession REEGNet   gaussian  5 0.513542 0.001714 0.000766 0.512040 0.515044
+      BI2015a  True  CrossSubject CNN-NCP    dropout  5 0.689671 0.002653 0.001186 0.687346 0.691997
+      BI2015a  True  CrossSubject CNN-NCP        eog  5 0.665631 0.013059 0.005840 0.654185 0.677078
+      BI2015a  True  CrossSubject CNN-NCP   gaussian  5 0.709483 0.003437 0.001537 0.706470 0.712495
+      BI2015a  True  CrossSubject  EEGNet    dropout  5 0.687520 0.001583 0.000708 0.686132 0.688908
+      BI2015a  True  CrossSubject  EEGNet        eog  5 0.629754 0.007676 0.003433 0.623026 0.636482
+      BI2015a  True  CrossSubject  EEGNet   gaussian  5 0.722914 0.002213 0.000990 0.720974 0.724853
+      BI2015a  True  CrossSubject REEGNet    dropout  5 0.548058 0.033024 0.014769 0.519111 0.577005
+      BI2015a  True  CrossSubject REEGNet        eog  5 0.538692 0.029406 0.013151 0.512917 0.564467
+      BI2015a  True  CrossSubject REEGNet   gaussian  5 0.539188 0.039575 0.017698 0.504499 0.573877
+      BI2015a  True WithinSession CNN-NCP    dropout  5 0.608514 0.002038 0.000911 0.606728 0.610301
+      BI2015a  True WithinSession CNN-NCP        eog  5 0.603634 0.001665 0.000745 0.602175 0.605094
+      BI2015a  True WithinSession CNN-NCP   gaussian  5 0.609808 0.001933 0.000865 0.608114 0.611503
+      BI2015a  True WithinSession  EEGNet    dropout  5 0.742816 0.001678 0.000750 0.741345 0.744287
+      BI2015a  True WithinSession  EEGNet        eog  5 0.705706 0.008361 0.003739 0.698378 0.713035
+      BI2015a  True WithinSession  EEGNet   gaussian  5 0.831327 0.001568 0.000701 0.829952 0.832701
+      BI2015a  True WithinSession REEGNet    dropout  5 0.500194 0.000452 0.000202 0.499797 0.500591
+      BI2015a  True WithinSession REEGNet        eog  5 0.500464 0.000229 0.000102 0.500264 0.500665
+      BI2015a  True WithinSession REEGNet   gaussian  5 0.494548 0.000620 0.000277 0.494005 0.495091
+ BNCI2014_001 False  CrossSession CNN-NCP    dropout  5 0.577129 0.007834 0.003504 0.570262 0.583996
+ BNCI2014_001 False  CrossSession CNN-NCP        eog  5 0.614880 0.018968 0.008483 0.598253 0.631506
+ BNCI2014_001 False  CrossSession CNN-NCP   gaussian  5 0.580364 0.012625 0.005646 0.569298 0.591430
+ BNCI2014_001 False  CrossSession  EEGNet    dropout  5 0.606490 0.005354 0.002394 0.601797 0.611183
+ BNCI2014_001 False  CrossSession  EEGNet        eog  5 0.586135 0.018870 0.008439 0.569594 0.602675
+ BNCI2014_001 False  CrossSession  EEGNet   gaussian  5 0.631183 0.008425 0.003768 0.623798 0.638569
+ BNCI2014_001 False  CrossSession REEGNet    dropout  5 0.555101 0.006657 0.002977 0.549266 0.560936
+ BNCI2014_001 False  CrossSession REEGNet        eog  5 0.626045 0.014360 0.006422 0.613458 0.638632
+ BNCI2014_001 False  CrossSession REEGNet   gaussian  5 0.550422 0.006765 0.003025 0.544492 0.556352
+ BNCI2014_001 False  CrossSubject CNN-NCP    dropout  5 0.556695 0.003285 0.001469 0.553815 0.559574
+ BNCI2014_001 False  CrossSubject CNN-NCP        eog  5 0.623445 0.020400 0.009123 0.605563 0.641327
+ BNCI2014_001 False  CrossSubject CNN-NCP   gaussian  5 0.557191 0.009386 0.004197 0.548964 0.565418
+ BNCI2014_001 False  CrossSubject  EEGNet    dropout  5 0.577516 0.006885 0.003079 0.571481 0.583551
+ BNCI2014_001 False  CrossSubject  EEGNet        eog  5 0.603616 0.028074 0.012555 0.579008 0.628224
+ BNCI2014_001 False  CrossSubject  EEGNet   gaussian  5 0.598828 0.014104 0.006308 0.586465 0.611191
+ BNCI2014_001 False  CrossSubject REEGNet    dropout  5 0.555107 0.005228 0.002338 0.550525 0.559690
+ BNCI2014_001 False  CrossSubject REEGNet        eog  5 0.679415 0.020466 0.009153 0.661476 0.697354
+ BNCI2014_001 False  CrossSubject REEGNet   gaussian  5 0.565964 0.004993 0.002233 0.561588 0.570341
+ BNCI2014_001 False WithinSession CNN-NCP    dropout  5 0.573785 0.010007 0.004475 0.565014 0.582557
+ BNCI2014_001 False WithinSession CNN-NCP        eog  5 0.618778 0.018425 0.008240 0.602627 0.634928
+ BNCI2014_001 False WithinSession CNN-NCP   gaussian  5 0.596258 0.013996 0.006259 0.583990 0.608526
+ BNCI2014_001 False WithinSession  EEGNet    dropout  5 0.608900 0.006117 0.002736 0.603537 0.614262
+ BNCI2014_001 False WithinSession  EEGNet        eog  5 0.588469 0.026039 0.011645 0.565645 0.611293
+ BNCI2014_001 False WithinSession  EEGNet   gaussian  5 0.634766 0.011799 0.005276 0.624424 0.645108
+ BNCI2014_001 False WithinSession REEGNet    dropout  5 0.550169 0.004369 0.001954 0.546340 0.553999
+ BNCI2014_001 False WithinSession REEGNet        eog  5 0.622866 0.012977 0.005804 0.611491 0.634241
+ BNCI2014_001 False WithinSession REEGNet   gaussian  5 0.564587 0.012040 0.005385 0.554033 0.575141
+ BNCI2014_001  True  CrossSession CNN-NCP    dropout  5 0.568128 0.002871 0.001284 0.565611 0.570645
+ BNCI2014_001  True  CrossSession CNN-NCP        eog  5 0.598702 0.012231 0.005470 0.587981 0.609422
+ BNCI2014_001  True  CrossSession CNN-NCP   gaussian  5 0.570786 0.006614 0.002958 0.564988 0.576583
+ BNCI2014_001  True  CrossSession  EEGNet    dropout  5 0.603473 0.006871 0.003073 0.597450 0.609496
+ BNCI2014_001  True  CrossSession  EEGNet        eog  5 0.611855 0.012306 0.005503 0.601068 0.622641
+ BNCI2014_001  True  CrossSession  EEGNet   gaussian  5 0.637485 0.007202 0.003221 0.631172 0.643798
+ BNCI2014_001  True  CrossSession REEGNet    dropout  5 0.562533 0.009026 0.004036 0.554621 0.570444
+ BNCI2014_001  True  CrossSession REEGNet        eog  5 0.647377 0.014886 0.006657 0.634329 0.660425
+ BNCI2014_001  True  CrossSession REEGNet   gaussian  5 0.558018 0.008689 0.003886 0.550402 0.565635
+ BNCI2014_001  True  CrossSubject CNN-NCP    dropout  5 0.561566 0.012216 0.005463 0.550858 0.572273
+ BNCI2014_001  True  CrossSubject CNN-NCP        eog  5 0.622726 0.025127 0.011237 0.600701 0.644751
+ BNCI2014_001  True  CrossSubject CNN-NCP   gaussian  5 0.566875 0.012980 0.005805 0.555497 0.578253
+ BNCI2014_001  True  CrossSubject  EEGNet    dropout  5 0.603358 0.005491 0.002456 0.598544 0.608171
+ BNCI2014_001  True  CrossSubject  EEGNet        eog  5 0.669700 0.025489 0.011399 0.647358 0.692043
+ BNCI2014_001  True  CrossSubject  EEGNet   gaussian  5 0.671080 0.007429 0.003322 0.664568 0.677592
+ BNCI2014_001  True  CrossSubject REEGNet    dropout  5 0.552068 0.005903 0.002640 0.546894 0.557242
+ BNCI2014_001  True  CrossSubject REEGNet        eog  5 0.651886 0.013476 0.006027 0.640073 0.663699
+ BNCI2014_001  True  CrossSubject REEGNet   gaussian  5 0.561054 0.010999 0.004919 0.551413 0.570694
+ BNCI2014_001  True WithinSession CNN-NCP    dropout  5 0.568561 0.003834 0.001715 0.565200 0.571922
+ BNCI2014_001  True WithinSession CNN-NCP        eog  5 0.604423 0.009990 0.004468 0.595667 0.613180
+ BNCI2014_001  True WithinSession CNN-NCP   gaussian  5 0.582937 0.007341 0.003283 0.576503 0.589372
+ BNCI2014_001  True WithinSession  EEGNet    dropout  5 0.590764 0.007798 0.003488 0.583929 0.597600
+ BNCI2014_001  True WithinSession  EEGNet        eog  5 0.599979 0.012372 0.005533 0.589135 0.610823
+ BNCI2014_001  True WithinSession  EEGNet   gaussian  5 0.623478 0.006776 0.003030 0.617539 0.629417
+ BNCI2014_001  True WithinSession REEGNet    dropout  5 0.549529 0.005566 0.002489 0.544650 0.554408
+ BNCI2014_001  True WithinSession REEGNet        eog  5 0.627668 0.005921 0.002648 0.622477 0.632858
+ BNCI2014_001  True WithinSession REEGNet   gaussian  5 0.574728 0.009683 0.004331 0.566240 0.583216
+Lee2019_SSVEP False  CrossSession CNN-NCP    dropout  5 0.575848 0.007373 0.003297 0.569385 0.582310
+Lee2019_SSVEP False  CrossSession CNN-NCP        eog  5 0.553228 0.010371 0.004638 0.544138 0.562318
+Lee2019_SSVEP False  CrossSession CNN-NCP   gaussian  5 0.567096 0.005890 0.002634 0.561933 0.572259
+Lee2019_SSVEP False  CrossSession  EEGNet    dropout  5 0.846605 0.007965 0.003562 0.839623 0.853586
+Lee2019_SSVEP False  CrossSession  EEGNet        eog  5 0.594283 0.017881 0.007997 0.578609 0.609957
+Lee2019_SSVEP False  CrossSession  EEGNet   gaussian  5 0.917425 0.006632 0.002966 0.911613 0.923238
+Lee2019_SSVEP False  CrossSession REEGNet    dropout  5 0.557739 0.002416 0.001081 0.555621 0.559857
+Lee2019_SSVEP False  CrossSession REEGNet        eog  5 0.561477 0.002903 0.001298 0.558932 0.564022
+Lee2019_SSVEP False  CrossSession REEGNet   gaussian  5 0.540987 0.010995 0.004917 0.531350 0.550624
+Lee2019_SSVEP False  CrossSubject CNN-NCP    dropout  5 0.691140 0.019864 0.008883 0.673728 0.708551
+Lee2019_SSVEP False  CrossSubject CNN-NCP        eog  5 0.617987 0.046750 0.020907 0.577008 0.658965
+Lee2019_SSVEP False  CrossSubject CNN-NCP   gaussian  5 0.629279 0.023299 0.010420 0.608856 0.649701
+Lee2019_SSVEP False  CrossSubject  EEGNet    dropout  5 0.803708 0.007509 0.003358 0.797126 0.810290
+Lee2019_SSVEP False  CrossSubject  EEGNet        eog  5 0.557461 0.008612 0.003851 0.549912 0.565009
+Lee2019_SSVEP False  CrossSubject  EEGNet   gaussian  5 0.970436 0.001330 0.000595 0.969270 0.971602
+Lee2019_SSVEP False  CrossSubject REEGNet    dropout  5 0.546972 0.001717 0.000768 0.545466 0.548477
+Lee2019_SSVEP False  CrossSubject REEGNet        eog  5 0.583942 0.009335 0.004175 0.575760 0.592124
+Lee2019_SSVEP False  CrossSubject REEGNet   gaussian  5 0.520195 0.003886 0.001738 0.516789 0.523601
+Lee2019_SSVEP False WithinSession CNN-NCP    dropout  5 0.582895 0.009582 0.004285 0.574497 0.591294
+Lee2019_SSVEP False WithinSession CNN-NCP        eog  5 0.594955 0.009222 0.004124 0.586872 0.603039
+Lee2019_SSVEP False WithinSession CNN-NCP   gaussian  5 0.579954 0.009135 0.004085 0.571947 0.587961
+Lee2019_SSVEP False WithinSession  EEGNet    dropout  5 0.848420 0.009791 0.004379 0.839838 0.857002
+Lee2019_SSVEP False WithinSession  EEGNet        eog  5 0.695270 0.021708 0.009708 0.676242 0.714298
+Lee2019_SSVEP False WithinSession  EEGNet   gaussian  5 0.911296 0.010890 0.004870 0.901751 0.920841
+Lee2019_SSVEP False WithinSession REEGNet    dropout  5 0.568953 0.002922 0.001307 0.566392 0.571514
+Lee2019_SSVEP False WithinSession REEGNet        eog  5 0.584013 0.008132 0.003637 0.576884 0.591141
+Lee2019_SSVEP False WithinSession REEGNet   gaussian  5 0.551342 0.011336 0.005070 0.541405 0.561278
+Lee2019_SSVEP  True  CrossSession CNN-NCP    dropout  5 0.624222 0.002873 0.001285 0.621704 0.626740
+Lee2019_SSVEP  True  CrossSession CNN-NCP        eog  5 0.565677 0.000929 0.000415 0.564863 0.566491
+Lee2019_SSVEP  True  CrossSession CNN-NCP   gaussian  5 0.612515 0.002189 0.000979 0.610596 0.614434
+Lee2019_SSVEP  True  CrossSession  EEGNet    dropout  5 0.853834 0.000508 0.000227 0.853389 0.854279
+Lee2019_SSVEP  True  CrossSession  EEGNet        eog  5 0.593792 0.003987 0.001783 0.590297 0.597287
+Lee2019_SSVEP  True  CrossSession  EEGNet   gaussian  5 0.935312 0.002481 0.001110 0.933138 0.937487
+Lee2019_SSVEP  True  CrossSession REEGNet    dropout  5 0.564289 0.001174 0.000525 0.563260 0.565318
+Lee2019_SSVEP  True  CrossSession REEGNet        eog  5 0.602038 0.001874 0.000838 0.600395 0.603680
+Lee2019_SSVEP  True  CrossSession REEGNet   gaussian  5 0.534405 0.002551 0.001141 0.532169 0.536641
+Lee2019_SSVEP  True  CrossSubject CNN-NCP    dropout  5 0.787798 0.015616 0.006984 0.774110 0.801486
+Lee2019_SSVEP  True  CrossSubject CNN-NCP        eog  5 0.605906 0.028894 0.012922 0.580579 0.631233
+Lee2019_SSVEP  True  CrossSubject CNN-NCP   gaussian  5 0.843690 0.057036 0.025507 0.793695 0.893684
+Lee2019_SSVEP  True  CrossSubject  EEGNet    dropout  5 0.806835 0.003814 0.001706 0.803491 0.810178
+Lee2019_SSVEP  True  CrossSubject  EEGNet        eog  5 0.562231 0.006577 0.002941 0.556466 0.567995
+Lee2019_SSVEP  True  CrossSubject  EEGNet   gaussian  5 0.973418 0.000818 0.000366 0.972701 0.974135
+Lee2019_SSVEP  True  CrossSubject REEGNet    dropout  5 0.678634 0.027998 0.012521 0.654093 0.703175
+Lee2019_SSVEP  True  CrossSubject REEGNet        eog  5 0.626418 0.015718 0.007029 0.612641 0.640195
+Lee2019_SSVEP  True  CrossSubject REEGNet   gaussian  5 0.613223 0.027818 0.012441 0.588839 0.637606
+Lee2019_SSVEP  True WithinSession CNN-NCP    dropout  5 0.614872 0.002135 0.000955 0.613000 0.616743
+Lee2019_SSVEP  True WithinSession CNN-NCP        eog  5 0.604842 0.003402 0.001522 0.601860 0.607825
+Lee2019_SSVEP  True WithinSession CNN-NCP   gaussian  5 0.609612 0.001949 0.000872 0.607903 0.611320
+Lee2019_SSVEP  True WithinSession  EEGNet    dropout  5 0.860735 0.003481 0.001557 0.857684 0.863786
+Lee2019_SSVEP  True WithinSession  EEGNet        eog  5 0.717713 0.011448 0.005120 0.707679 0.727748
+Lee2019_SSVEP  True WithinSession  EEGNet   gaussian  5 0.931894 0.001734 0.000775 0.930375 0.933414
+Lee2019_SSVEP  True WithinSession REEGNet    dropout  5 0.579811 0.004018 0.001797 0.576289 0.583333
+Lee2019_SSVEP  True WithinSession REEGNet        eog  5 0.610138 0.005120 0.002290 0.605651 0.614626
+Lee2019_SSVEP  True WithinSession REEGNet   gaussian  5 0.547884 0.002628 0.001175 0.545580 0.550187
+
+Top 10 Best AUPC (by mean):
+ model       dataset noise_type     mean   ci_low  ci_high
+EEGNet Lee2019_SSVEP   gaussian 0.973418 0.972701 0.974135
+EEGNet Lee2019_SSVEP   gaussian 0.970436 0.969270 0.971602
+EEGNet Lee2019_SSVEP   gaussian 0.935312 0.933138 0.937487
+EEGNet Lee2019_SSVEP   gaussian 0.931894 0.930375 0.933414
+EEGNet Lee2019_SSVEP   gaussian 0.917425 0.911613 0.923238
+EEGNet Lee2019_SSVEP   gaussian 0.911296 0.901751 0.920841
+EEGNet Lee2019_SSVEP    dropout 0.860735 0.857684 0.863786
+EEGNet Lee2019_SSVEP    dropout 0.853834 0.853389 0.854279
+EEGNet Lee2019_SSVEP    dropout 0.848420 0.839838 0.857002
+EEGNet Lee2019_SSVEP    dropout 0.846605 0.839623 0.853586
+
+--------------------------------------------------------------------------------
+RD (Relative Degradation) SUMMARY (Sample)
+--------------------------------------------------------------------------------
+Showing first 20 rows:
+dataset  tune    eval_mode   model noise_type        p    n     mean      std      sem   ci_low  ci_high
+BI2015a False CrossSession CNN-NCP    dropout 0.000000 1108 0.000000 0.000000 0.000000 0.000000 0.000000
+BI2015a False CrossSession CNN-NCP    dropout 0.010000  645 0.001863 0.009022 0.000355 0.001167 0.002560
+BI2015a False CrossSession CNN-NCP    dropout 0.062105  645 0.001863 0.009022 0.000355 0.001167 0.002560
+BI2015a False CrossSession CNN-NCP    dropout 0.114211  645 0.003247 0.014077 0.000554 0.002160 0.004333
+BI2015a False CrossSession CNN-NCP    dropout 0.166316  645 0.004708 0.015780 0.000621 0.003490 0.005926
+BI2015a False CrossSession CNN-NCP    dropout 0.218421  645 0.005356 0.019455 0.000766 0.003855 0.006858
+BI2015a False CrossSession CNN-NCP    dropout 0.270526  645 0.005056 0.015970 0.000629 0.003824 0.006289
+BI2015a False CrossSession CNN-NCP    dropout 0.322632  645 0.008056 0.021910 0.000863 0.006365 0.009747
+BI2015a False CrossSession CNN-NCP    dropout 0.374737  645 0.007282 0.022567 0.000889 0.005540 0.009023
+BI2015a False CrossSession CNN-NCP    dropout 0.426842  645 0.008319 0.023233 0.000915 0.006526 0.010112
+BI2015a False CrossSession CNN-NCP    dropout 0.478947  645 0.011417 0.026630 0.001049 0.009362 0.013472
+BI2015a False CrossSession CNN-NCP    dropout 0.531053  645 0.012640 0.028828 0.001135 0.010415 0.014865
+BI2015a False CrossSession CNN-NCP    dropout 0.583158  645 0.013486 0.027916 0.001099 0.011332 0.015641
+BI2015a False CrossSession CNN-NCP    dropout 0.635263  645 0.015327 0.031213 0.001229 0.012918 0.017735
+BI2015a False CrossSession CNN-NCP    dropout 0.687368  645 0.018283 0.033619 0.001324 0.015688 0.020877
+BI2015a False CrossSession CNN-NCP    dropout 0.739474  645 0.018602 0.034315 0.001351 0.015954 0.021251
+BI2015a False CrossSession CNN-NCP    dropout 0.791579  645 0.023733 0.039477 0.001554 0.020687 0.026780
+BI2015a False CrossSession CNN-NCP    dropout 0.843684  645 0.023372 0.038758 0.001526 0.020381 0.026363
+BI2015a False CrossSession CNN-NCP    dropout 0.895789  645 0.030854 0.043113 0.001698 0.027526 0.034181
+BI2015a False CrossSession CNN-NCP    dropout 0.947895  645 0.037862 0.045660 0.001798 0.034338 0.041385
+
+--------------------------------------------------------------------------------
+CSV_p (Cross-Subject Variance) SUMMARY (Sample)
+--------------------------------------------------------------------------------
+Showing first 20 rows:
+dataset  tune    eval_mode   model noise_type        p  n         mean      std      sem       ci_low      ci_high
+BI2015a False CrossSession CNN-NCP    dropout 0.000000  5 1.232595e-32 0.000000 0.000000 1.232595e-32 1.232595e-32
+BI2015a False CrossSession CNN-NCP    dropout 0.010000  5 6.653639e-03 0.002237 0.001001 4.692503e-03 8.614774e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.062105  5 6.653639e-03 0.002237 0.001001 4.692503e-03 8.614774e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.114211  5 5.874313e-03 0.002291 0.001025 3.865960e-03 7.882666e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.166316  5 4.926975e-03 0.001651 0.000738 3.479780e-03 6.374169e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.218421  5 4.642647e-03 0.001503 0.000672 3.324830e-03 5.960464e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.270526  5 3.984564e-03 0.001520 0.000680 2.652214e-03 5.316915e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.322632  5 3.529771e-03 0.001076 0.000481 2.586710e-03 4.472832e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.374737  5 3.337185e-03 0.001204 0.000538 2.282021e-03 4.392348e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.426842  5 3.107638e-03 0.001127 0.000504 2.119420e-03 4.095856e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.478947  5 2.571349e-03 0.000844 0.000377 1.831907e-03 3.310790e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.531053  5 2.625534e-03 0.000848 0.000379 1.882636e-03 3.368432e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.583158  5 2.177637e-03 0.001026 0.000459 1.278324e-03 3.076951e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.635263  5 2.012448e-03 0.000673 0.000301 1.422341e-03 2.602555e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.687368  5 1.792841e-03 0.000601 0.000269 1.265919e-03 2.319764e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.739474  5 1.472925e-03 0.000679 0.000304 8.774360e-04 2.068414e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.791579  5 1.268175e-03 0.000416 0.000186 9.032262e-04 1.633123e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.843684  5 1.041095e-03 0.000393 0.000176 6.962453e-04 1.385944e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.895789  5 9.179299e-04 0.000379 0.000169 5.861057e-04 1.249754e-03
+BI2015a False CrossSession CNN-NCP    dropout 0.947895  5 5.908582e-04 0.000104 0.000047 4.997121e-04 6.820042e-04
+
+--------------------------------------------------------------------------------
+SAVED FILES
+--------------------------------------------------------------------------------
+aupc_raw            : ./analysis/robustness_results\robustness_metrics_aupc_raw_20260123_151626.csv
+aupc_summary        : ./analysis/robustness_results\robustness_metrics_aupc_summary_20260123_151626.csv
+rd_curve            : ./analysis/robustness_results\robustness_metrics_rd_curve_20260123_151626.csv
+rd_summary          : ./analysis/robustness_results\robustness_metrics_rd_summary_20260123_151626.csv
+csv_curve           : ./analysis/robustness_results\robustness_metrics_csv_curve_20260123_151626.csv
+csv_summary         : ./analysis/robustness_results\robustness_metrics_csv_summary_20260123_151626.csv
+
+================================================================================
+END OF REPORT
+================================================================================

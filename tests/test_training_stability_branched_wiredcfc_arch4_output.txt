@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "E:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments\evaluation\unified_experiment_runner.py", line 18, in <module>
+    import torch
+  File "C:\Users\Sean\anaconda3\envs\ncp_robustness_proj\lib\site-packages\torch\__init__.py", line 37, in <module>
+    from typing_extensions import ParamSpec as _ParamSpec, TypeGuard as _TypeGuard
+  File "C:\Users\Sean\AppData\Roaming\Python\Python310\site-packages\typing_extensions.py", line 3883, in <module>
+    import _socket
+KeyboardInterrupt

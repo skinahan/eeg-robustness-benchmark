@@ -1,0 +1,134 @@
+====================================================================
+Bug Report: Plot 2 Search Space Collapse (k Locked to Single Regime)
+====================================================================
+
+Summary
+-------
+The current Plot 2 results show negligible differences between
+NAS-selected, Random-selected, and NCP wiring in Gaussian AUPC.
+While initially suggestive of weak signal, further inspection reveals
+a critical implementation issue: the WS-Flex degree parameter (k) is
+effectively fixed across all evaluated graphs.
+
+As a result, the intended expanded search space (super-sparse → near-
+dense regimes) was not exercised, rendering the current Plot 2 results
+non-diagnostic with respect to topology-driven robustness.
+
+--------------------------------------------------------------------
+Observed Symptoms
+--------------------------------------------------------------------
+
+1) Identical Robustness Across Methods
+--------------------------------------
+- NAS, Random, and NCP exhibit nearly identical mean Gaussian AUPC.
+- Bootstrap confidence intervals for NAS–Random differences cross zero.
+- Effect sizes are negligible.
+
+2) Lack of Structural Diversity in Trained Graphs
+--------------------------------------------------
+- Inspection of per-graph and per-seed logs shows that all trained
+  graphs (NAS and Random) use the same degree value:
+      k = 26
+- No trained graph uses super-sparse, sparse, or moderate k-regimes.
+
+3) Random Baseline Not Stratifying
+----------------------------------
+- Despite a stratified random design, the realized samples do not span
+  multiple k-buckets.
+- Random-selected graphs collapse to the same effective regime as NAS.
+
+--------------------------------------------------------------------
+Likely Root Cause
+--------------------------------------------------------------------
+
+The WS-Flex generator search space is unintentionally constrained such
+that k is effectively fixed (or clamped) to a single value during
+candidate generation.
+
+This may arise from one or more of the following implementation issues:
+
+1) Hard-Coded or Overwritten k
+------------------------------
+- k may be hard-coded in the WS-Flex generator constructor.
+- Optuna-suggested k values may be overwritten downstream before graph
+  construction.
+
+2) Incorrect Optuna Search Space Definition
+-------------------------------------------
+- k may be defined as a fixed integer instead of a categorical or
+  stepped integer variable.
+- Bounds or step size may collapse the space to a single valid value.
+
+3) Stratified Random Sampler Bug
+--------------------------------
+- The stratified random sampler may incorrectly select only one bucket.
+- Bucket definitions may be ignored or mis-indexed.
+- Constraint rejection may eliminate all but one k-regime.
+
+4) Silent Generator Constraints
+-------------------------------
+- The WS-Flex implementation may silently adjust invalid k values
+  (e.g., snapping to nearest valid degree).
+- This adjustment may not be reflected in logged metadata.
+
+--------------------------------------------------------------------
+Why This Invalidates the Current Plot 2 Results
+--------------------------------------------------------------------
+
+Plot 2 is explicitly designed to test robustness differences across
+topological regimes (super-sparse → near-dense) under fixed capacity.
+
+If k is fixed:
+- The search only explores rewiring randomness (p), not sparsity.
+- TE and ORC variation is artificially compressed.
+- NAS and Random search are effectively operating in the same narrow
+  subspace.
+- Selection by TE/ORC cannot meaningfully differentiate candidates.
+- Robustness comparisons become uninformative.
+
+Therefore, the current Plot 2 results do NOT reflect a failure of the
+NAS method or TE/ORC proxies; they reflect a failure to realize the
+specified search space.
+
+--------------------------------------------------------------------
+Required Diagnostics
+--------------------------------------------------------------------
+
+Before rerunning Plot 2, the following MUST be verified:
+
+1) Candidate-Level k Distribution
+---------------------------------
+- Log histogram of sampled k values for all feasible candidates
+  (training-free, before selection).
+- Confirm presence of all intended k-regimes.
+
+2) Effective Degree Verification
+--------------------------------
+- Compute effective mean degree from adjacency matrices:
+      d̄ = (1/H) * sum_{i,j} A_ij
+- Confirm d̄ spans sparse → near-dense regimes.
+
+3) Optuna Trial Logging
+----------------------
+- Log Optuna-suggested k values before graph construction.
+- Confirm they match realized graph degrees.
+
+4) Stratified Random Allocation Check
+-------------------------------------
+- Log target vs realized counts per k-bucket.
+- Enforce assertions to prevent single-bucket collapse.
+
+--------------------------------------------------------------------
+Conclusion
+--------------------------------------------------------------------
+
+The near-identical Plot 2 robustness results are best explained by an
+unintended collapse of the WS-Flex search space to a single degree
+regime (k = 26). Until this issue is resolved, Plot 2 results should
+be treated as non-diagnostic and should not be interpreted as evidence
+against the proposed NAS approach or the relevance of topology-driven
+robustness.
+
+--------------------------------------------------------------------
+End of Bug Report
+====================================================================

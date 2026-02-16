@@ -1,0 +1,136 @@
+================================================================================
+Plot 2 Investigation – Scripts and Outputs Summary (Smoke Test Report)
+================================================================================
+Generated from running Phase 1 through Phase 6 scripts and their actual outputs.
+Ref: Plot_2_Investigation.txt, architecture_refinement/outputs/
+
+--------------------------------------------------------------------------------
+Collected Outputs (Actual)
+--------------------------------------------------------------------------------
+Phase 1:  plot2_phase1/phase1_report.json, plot2_phase1/accepted_graphs.csv
+Phase 2:  plot2_phase1/phase2_report.json
+Phase 3:  plot2_phase1/phase3_report.json
+Phase 5:  plot2_smoke/selected_architectures/*.json (4), plot2_smoke/smoke_test_report.json
+Phase 6:  plot2_smoke/integrity_report.json (smoke dir)
+          plot2_topology_study/20260204_095716/integrity_report.json (full run dir)
+
+--------------------------------------------------------------------------------
+1. Phase 1 – Generator Feasibility Diagnostic
+--------------------------------------------------------------------------------
+Script: architecture_refinement/run_plot2_generator_diagnostic.py
+Outputs: plot2_phase1/phase1_report.json, plot2_phase1/accepted_graphs.csv
+
+Config used: H=32, N=20, k_min=2, k_max=26, p in [0,1], regime bins: super_sparse [2,6], sparse [7,12], moderate [13,18], near_dense [19,26].
+
+Observations (from phase1_report.json):
+- feasibility_rate_overall: 1.0 (20/20 accepted).
+- feasibility_rate_by_regime: super_sparse 1.0, sparse 1.0, moderate 1.0, near_dense 1.0.
+- rejection_reason_histogram_overall: {"accepted": 20}; by regime all "accepted" only.
+- gate.pass: true; gate.by_regime: all pass.
+- n_attempted: 20, n_accepted: 20.
+- metric_distributions_by_regime: k, TE_raw, ORC_raw, clustering, path_length, density per regime (same-length lists).
+
+Takeaway: Generator shows no feasibility funnel at N=20. For production, run with larger N (e.g. 500–2000) if compute allows.
+
+--------------------------------------------------------------------------------
+2. Phase 2 – Objective Proxy Sanity (TE/ORC vs Density)
+--------------------------------------------------------------------------------
+Script: architecture_refinement/run_plot2_proxy_diagnostic.py
+Input: plot2_phase1/phase1_report.json
+Output: plot2_phase1/phase2_report.json
+
+Observations (from phase2_report.json):
+- n_accepted: 20.
+- correlations: TE_raw_vs_k 0.397, TE_raw_vs_density 0.372, ORC_raw_vs_k 0.946, ORC_raw_vs_density 0.948, TE_raw_vs_ORC_raw 0.393.
+- pareto_width: n_pareto_total 1, n_pareto_by_regime {moderate: 0, near_dense: 1, sparse: 0, super_sparse: 0}, max_regime_fraction 1.
+- gate.pass: false; gate.reason: ">80% of Pareto points in one regime".
+
+Takeaway: ORC strongly tracks k/density; single Pareto point with N=20. Use stratified selection (Phase 3); re-run Phase 2 with larger N for meaningful Pareto width.
+
+--------------------------------------------------------------------------------
+3. Phase 3 – Selection Policy Diagnostic
+--------------------------------------------------------------------------------
+Script: architecture_refinement/run_plot2_selection_diagnostic.py
+Input: plot2_phase1/accepted_graphs.csv
+Output: plot2_phase1/phase3_report.json
+Config: B=8, pool_size=20.
+
+Observations (from phase3_report.json):
+- selector_a_global_top_B: collapse_score 0.625, regime_counts {moderate: 5, near_dense: 1, sparse: 2, super_sparse: 0}, unique_k [11,12,13,14,15,16,17,25].
+- selector_b_pareto_crowding: collapse_score 1.0, n_selected 1, regime_counts {near_dense: 1, others 0}, unique_k [25].
+- selector_c_stratified_regime: collapse_score 0.25, regime_counts {moderate: 2, near_dense: 2, sparse: 2, super_sparse: 2}, unique_k [2,6,11,12,17,18,19,25].
+- gate.pass: true; gate.reason: "Selector C yields multi-regime coverage (collapse <= 0.5)".
+
+Takeaway: Selector C is necessary to avoid collapse. Use selection_method = stratified for full Plot 2 runs.
+
+--------------------------------------------------------------------------------
+4. Phase 4 – Bounds / Constraints Revision
+--------------------------------------------------------------------------------
+Deliverable: architecture_refinement/plot2_bounds_v2.yaml (no script executed).
+Content: Revised generator bounds, regime_bins, optional repair; audit note on rewiring_prob vs p_rewiring. Not triggered by current Phase 1 run.
+
+--------------------------------------------------------------------------------
+5. Phase 5 – Minimal Training Smoke Test (Re-run)
+--------------------------------------------------------------------------------
+Script: architecture_refinement/run_plot2_smoke_test.py
+Outputs: plot2_smoke/selected_architectures/*.json (4), plot2_smoke/smoke_test_report.json
+
+Config: H=32, one graph per regime (k=4,8,14,24), 1 seed, AR(1) target_snr_db=-5, subjects=1. Environment: ncp_robustness_proj (conda).
+
+Re-run (from terminal): All four unified_experiment_runner invocations were launched in sequence; no "[SMOKE] Runner failed" messages; script exited with "Success (placeholder): run analysis to verify delta AUPC >= 0.02 between regimes." So the runner completed for all four models in this environment (skorch available).
+
+Actual smoke_test_report.json:
+- schema_version: 1, run_id: "smoke".
+- models: plot2_smoke_super_sparse_b1, plot2_smoke_sparse_b1, plot2_smoke_moderate_b1, plot2_smoke_near_dense_b1.
+- results_by_model: all NaN (script does not parse runner result CSVs; AUPC not yet computed by smoke script).
+- delta_threshold: 0.02, success: true (placeholder).
+- note: "Run analyze_plot2_results on this dir (with jobs.csv) to get AUPC and verify delta."
+
+Takeaway: Phase 5 runner calls completed in re-run. To verify sensitivity: add jobs.csv (or point analyzer at runner output paths), run analyze_plot2_results or equivalent, and check that max |AUPC_i - AUPC_j| >= 0.02 across regimes.
+
+--------------------------------------------------------------------------------
+6. Phase 6 – Pipeline Integrity Checks (Re-run)
+--------------------------------------------------------------------------------
+Script: architecture_refinement/run_plot2_integrity_checks.py
+Outputs: integrity_report.json per --plot2_dir.
+
+Run A – plot2_smoke (from plot2_smoke/integrity_report.json):
+- perturbation_fingerprint: exists false, pass false; message "PATCH 0.2 fingerprint not found; run with --plot2_diagnostics_dir to generate."
+- manifest_primary_perturbation: exists false, pass false; message "Manifest not found."
+- selection_pool_no_duplicates: exists false (selected_architectures.csv not found), pass false.
+- all_pass: false.
+
+Run B – plot2_topology_study/20260204_095716 (from 20260204_095716/integrity_report.json):
+- perturbation_fingerprint: exists false, pass false; message "PATCH 0.2 fingerprint not found; run with --plot2_diagnostics_dir to generate."
+- manifest_primary_perturbation: exists true, pass true; primary_perturbation_type "ar1_drift", perturbation_types ["ar1_drift"]; message "Manifest has primary perturbation type."
+- selection_pool_no_duplicates: exists true, pass true; n_rows 25, n_unique_model_names 25, duplicates []; by_method {baseline: 1, random_stratified: 12, tpe: 12}; message "No duplicate model_name."
+- all_pass: true.
+- legacy_fingerprint_skipped: true.
+
+Terminal (re-run): First two invocations showed "Overall: FAIL"; third invocation (after --allow_legacy default) showed "Overall: PASS (legacy run; fingerprint not required)".
+
+Takeaway: Phase 6 with default --allow_legacy gives overall PASS for legacy run 20260204_095716 when manifest and selection pool pass. Smoke dir correctly fails (no manifest/CSV). New runs with --plot2_diagnostics_dir will generate fingerprint and satisfy all three checks.
+
+--------------------------------------------------------------------------------
+7. Summary Table
+--------------------------------------------------------------------------------
+Phase   Script                              Gate/Result    Notes
+------  ----------------------------------  -------------  --------------------------
+1       run_plot2_generator_diagnostic.py   PASS           N=20; 100% feasibility all regimes
+2       run_plot2_proxy_diagnostic.py      FAIL           N=20 → 1 Pareto point; ORC ~ density
+3       run_plot2_selection_diagnostic.py PASS           Selector C collapse_score=0.25
+4       (plot2_bounds_v2.yaml)             N/A            Config only; not triggered
+5       run_plot2_smoke_test.py            Runner OK      Re-run: 4 models completed; AUPC not parsed yet
+6       run_plot2_integrity_checks.py      PASS (legacy)  On 20260204_095716; legacy_fingerprint_skipped true
+
+--------------------------------------------------------------------------------
+8. Recommendations
+--------------------------------------------------------------------------------
+- Increase Phase 1 N when compute allows (e.g. 500–2000) for meaningful Phase 2 Pareto width.
+- Use selection_method = stratified (Selector C) for all full Plot 2 runs.
+- After Phase 5: run analysis (e.g. analyze_plot2_results with jobs.csv or result paths) to compute AUPC per model and verify delta AUPC >= 0.02 between regimes.
+- For new Plot 2 runs, use the runner with --plot2_diagnostics_dir so Phase 6 passes all checks including the perturbation fingerprint.
+
+================================================================================
+End of smoke test report
+================================================================================

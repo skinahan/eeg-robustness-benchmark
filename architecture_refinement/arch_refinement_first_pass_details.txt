@@ -1,0 +1,138 @@
+Architecture Refinement (First Pass) — Original Search Formulation
+==================================================================
+
+Scope note
+----------
+This document summarizes the *original* `architecture_refinement` formulation as implemented in:
+- `architecture_refinement/optimizer.py`
+- `architecture_refinement/config.py`
+- `architecture_refinement/graph_generator.py`
+
+It intentionally ignores later NAS pilot / Plot2 runner scripts.
+
+
+High-level goal
+---------------
+Run a reproducible, training-free, multi-objective Optuna search over graph-generation parameters for a
+Watts–Strogatz “flex” graph constructor, aiming to discover candidate wiring graphs with favorable:
+- TE proxy: degree entropy (normalized)
+- ORC proxy: average Ollivier–Ricci curvature magnitude (normalized)
+
+
+Optimization algorithm + objectives
+----------------------------------
+Study setup (`optimizer.py`):
+- Optuna sampler: TPE
+- Study directions: `["maximize", "maximize"]`
+- Objectives (as logged): “maximize entropy and Ollivier-Ricci curvature”
+
+Objective computation (exact formulation on `optimizer.py` lines 145–148):
+
+1) Entropy objective:
+   - Pull from topology metrics: `metrics['degree_entropy']` (default 0.0 if missing)
+   - Normalize and clip to [0, 1] using a hard divisor 5.0:
+       entropy = clip(metrics['degree_entropy'] / 5.0, 0, 1)
+
+2) Curvature objective:
+   - Pull from topology metrics: `metrics['avg_ricci_curvature']` (default 0.0 if missing)
+   - Take absolute value, then clip to [0, 1]:
+       curvature = clip(abs(metrics['avg_ricci_curvature']), 0, 1)
+
+Where “clip(a, 0, 1)” is implemented via:
+  min(1.0, max(0.0, a))
+
+Important implication:
+- The curvature objective is magnitude-only (sign information is discarded by `abs()`).
+
+
+Search space (Optuna parameters)
+-------------------------------
+The Optuna trial suggests the following parameters in `MultiObjectiveOptimizer._suggest_parameters()`:
+
+1) `units` (int)
+   - Trial call:
+       trial.suggest_int('units', graph_generation.min_units, graph_generation.max_units)
+   - Default bounds (from `GraphGenerationConfig` in `config.py`): 10 .. 128
+
+2) `output_size` (int)
+   - Trial call:
+       trial.suggest_int('output_size', max(2, units//10), min(units//3, 20))
+   - Bounds depend on `units` (dynamic per trial).
+
+3) `rewiring_prob` (float)
+   - Trial call:
+       trial.suggest_float('rewiring_prob', 0.05, 0.8)
+   - NOTE: In the WS-flex path used by the objective function, the graph constructor is called with
+     `p_rewiring` (below), not `rewiring_prob`. As implemented, `rewiring_prob` is stored in the
+     returned `GraphParameters` but is not passed into `_create_watts_strogatz_flex_graph(...)`.
+
+4) `target_clustering` (float)
+   - Trial call:
+       trial.suggest_float('target_clustering', 0.01, 1.0)
+   - Passed into `_create_watts_strogatz_flex_graph(...)` as the target clustering coefficient.
+
+5) `target_path_length` (float)
+   - Trial call:
+       trial.suggest_float('target_path_length', 1.0, 4.5)
+   - Passed into `_create_watts_strogatz_flex_graph(...)` as the target average path length.
+
+6) `k_degree` (int)
+   - Trial call:
+       trial.suggest_int('k_degree', optimization.min_k_degree, optimization.max_k_degree)
+   - Default bounds (from `OptimizationConfig` in `config.py`): 2 .. 24
+
+7) `p_rewiring` (float)
+   - Trial call:
+       trial.suggest_float('p_rewiring', optimization.min_p_rewiring, optimization.max_p_rewiring)
+   - Default bounds (from `OptimizationConfig` in `config.py`): 0.0 .. 1.0
+   - This value IS passed into `_create_watts_strogatz_flex_graph(...)` as the WS rewiring probability.
+
+Parameters that were present but not active in this formulation:
+- `n_modules`, `connection_density`, `module_connectivity`, `inter_module_connectivity` appear as commented-out
+  Optuna suggestions / fields in `optimizer.py` and `graph_generator.py` (not part of the active WS-flex objective path).
+
+
+How seeds are handled (and whether “seed search” existed)
+--------------------------------------------------------
+The formulation varied seeds for reproducibility, but did NOT treat seed as an Optuna-tuned hyperparameter.
+
+There are two distinct “seed origins” in the original implementation:
+
+1) Optuna sampler seed (controls Optuna’s stochastic sampling)
+   - Fixed at 42:
+       optuna.samplers.TPESampler(seed=42)
+   - This is constant across the whole study and makes the sampler’s behavior reproducible.
+
+2) Per-trial graph-generation seed (controls randomness inside graph construction)
+   - Set deterministically to the trial number:
+       seed = trial.number
+   - This seed is passed into:
+       graph_generator._create_watts_strogatz_flex_graph(..., seed=params.seed)
+   - Consequence:
+       Each trial uses a different graph seed (0, 1, 2, ...), but the seed values are not “searched”
+       by Optuna (they’re a fixed mapping from trial index → seed).
+
+Therefore:
+- Original formulation allowed *variation across seeds per trial* (trial-number-based),
+  but did not include “seed” as a tunable trial parameter (no `trial.suggest_*('seed', ...)`).
+
+
+Execution flow (end-to-end)
+---------------------------
+For each Optuna trial:
+1) Sample parameters (`units`, `output_size`, `rewiring_prob`, `target_clustering`, `target_path_length`, `k_degree`, `p_rewiring`).
+2) Construct a Watts–Strogatz “flex” graph using:
+   - `units`, `k_degree`, `p_rewiring`, `target_clustering`, `target_path_length`, and `seed=trial.number`.
+3) Compute topology metrics via `TopologyAnalyzer.analyze_graph(graph)`.
+4) Compute two objective values:
+   - entropy = clip(degree_entropy / 5.0, 0, 1)
+   - curvature = clip(abs(avg_ricci_curvature), 0, 1)
+5) Return `(entropy, curvature)` to Optuna for Pareto optimization.
+
+
+Key caveats / implementation notes
+---------------------------------
+- `rewiring_prob` is optimized but (in the WS-flex objective path) is not passed into the WS-flex graph constructor;
+  the constructor uses `p_rewiring` as its rewiring probability argument.
+- Curvature uses absolute value: the objective ignores whether curvature is positive or negative.
+

@@ -1,0 +1,272 @@
+====================================================================
+Pilot Experiment Specification
+Paper 3 (NeurIPS): Constrained NAS for Robust CfC Architectures
+====================================================================
+
+Purpose
+-------
+This pilot study exists to validate the central premise of Paper 3:
+
+Under a fixed training budget, constrained Bayesian optimization (TPE)
+over WS-Flex graph generator parameters—guided by training-free
+topological metrics (TE, ORC)—identifies more robust recurrent
+architectures than random exploration of the same generator space.
+
+This pilot DOES NOT aim to:
+- establish state-of-the-art MI performance,
+- prove topology causality in isolation,
+- evaluate multiple datasets or perturbation families.
+
+Its sole function is to decide whether the full experimental program
+is justified.
+
+--------------------------------------------------------------------
+1. Hypothesis (Pre-Registered)
+--------------------------------------------------------------------
+
+H1 (Search Efficiency Hypothesis):
+Given an equal training budget B, BO-guided selection of WS-Flex
+topologies yields higher best-so-far robustness than random exploration,
+measured by AUPC under Gaussian noise.
+
+Formally:
+E[max_{b <= B} AUPC_BO(b)] > E[max_{b <= B} AUPC_Random(b)]
+
+Early dominance (b <= 3–4) is considered strong supporting evidence.
+
+Failure to satisfy H1 invalidates proceeding to full-scale experiments.
+
+--------------------------------------------------------------------
+2. Dataset and Evaluation Protocol
+--------------------------------------------------------------------
+
+Dataset:
+- BNCI2014_001 (Motor Imagery)
+
+Evaluation Mode:
+- Cross-session only
+
+Rationale:
+- Cross-session evaluation reflects realistic deployment conditions.
+- Avoids in-session robustness artifacts.
+- Dataset already fully supported in benchmark pipeline.
+
+Performance Metric:
+- ROC-AUC (consistent with existing MI benchmark usage)
+
+No changes to preprocessing, splitting, or evaluation logic are
+permitted during the pilot.
+
+--------------------------------------------------------------------
+3. Model: CNN–WiredCfC-Min (Topology-Dominant Testbed)
+--------------------------------------------------------------------
+
+Objective:
+Isolate the effect of recurrent wiring topology on robustness.
+
+Architecture Skeleton (Fixed Across All Conditions):
+1. CNN front-end (EEGNet-style or existing CNN-NCP front-end)
+2. Single WiredCfC recurrent chamber
+3. Linear classification head
+
+Explicit Exclusions:
+- No HYDRA multi-scale temporal blocks (MTB)
+- No adaptive skip/carry gates
+- No branching or hierarchical aggregation
+- No auxiliary temporal filters beyond the CNN front-end
+
+Hidden Size:
+- Fixed H across all models
+
+Capacity Constraint:
+- Parameter count must match within ±2% across all trained models
+
+If full connectivity violates the budget constraint, it is excluded
+from the pilot (can reappear later in appendix analyses).
+
+--------------------------------------------------------------------
+4. Graph Generator: WS-Flex
+--------------------------------------------------------------------
+
+Generator Family:
+- WS-Flex small-world-style generator over H recurrent nodes
+
+Search Parameters (Pilot):
+- k : mean degree / neighborhood size
+- p : rewiring probability
+
+Fixed:
+- H (number of recurrent nodes)
+- Graph orientation rule (must be deterministic and documented)
+
+Constraints:
+- Sparsity: k <= k_max
+- Connectivity: graph must be weakly connected
+
+Disconnected graphs are rejected.
+
+--------------------------------------------------------------------
+5. Search Methods Compared
+--------------------------------------------------------------------
+
+Both methods operate over identical generator bounds and constraints.
+
+--------------------------------------------------
+Method A: Random Metric-Guided Exploration
+--------------------------------------------------
+1. Sample WS-Flex parameters (k, p) uniformly
+2. Generate graph
+3. Compute TE and ORC
+4. Repeat until M candidate graphs are collected
+5. Select top B graphs using the same selection rule as Method B
+6. Train only those B models
+
+--------------------------------------------------
+Method B: BO-Guided Exploration (TPE / Optuna)
+--------------------------------------------------
+1. Run Optuna TPE for M trials over (k, p)
+2. For each trial:
+   - generate graph
+   - compute TE and ORC
+   - enforce constraints
+3. Select top B graphs using the same selection rule
+4. Train only those B models
+
+--------------------------------------------------
+Selection Rule (Identical for A and B)
+--------------------------------------------------
+For the pilot, use a simple and reproducible rule:
+
+Let TE and ORC be normalized to [0, 1] across the M candidates.
+Define score:
+S = TE_norm + ORC_norm
+
+Select the top B graphs by S.
+
+This rule is intentionally simple for pilot validation.
+
+--------------------------------------------------------------------
+6. Budgets and Repetitions
+--------------------------------------------------------------------
+
+Candidate Graph Budget:
+- M = 80 training-free evaluations per method
+
+Training Budget:
+- B = 8 trained models per method
+
+Repetitions:
+- R = 3 independent repetitions with different:
+  - random seeds for sampling
+  - Optuna sampler seeds
+  - training seeds
+
+Total trained models:
+2 * B * R = 48
+
+--------------------------------------------------------------------
+7. Robustness Perturbation: Gaussian Noise (SNR-Anchored)
+--------------------------------------------------------------------
+
+Primary Robustness Metric:
+- Area Under the Perturbation Curve (AUPC)
+
+Perturbation Definition:
+Additive zero-mean Gaussian noise:
+x_tilde = x + ε,   ε ~ N(0, σ^2 I)
+
+--------------------------------------------------
+Maximum Perturbation Definition
+--------------------------------------------------
+The benchmark already defines a maximum Gaussian perturbation level.
+Denote this as σ_max.
+
+Compute its effective signal-to-noise ratio (SNR):
+
+SNR_dB = 10 log10 ( E[||x||_2^2] / E[||ε||_2^2] )
+
+Expectations are taken over channels, timepoints, and test samples.
+
+--------------------------------------------------
+Perturbation Grid (Pilot)
+--------------------------------------------------
+Define noise levels as fractions of σ_max:
+
+α ∈ {0, 0.25, 0.50, 0.75, 1.00}
+σ_α = α · σ_max
+
+For each α:
+- inject noise
+- evaluate model
+- record performance
+
+AUPC is computed via trapezoidal integration:
+
+AUPC = ∫_{0}^{σ_max} Perf(σ) dσ
+
+Approximated numerically on the discrete grid.
+
+--------------------------------------------------------------------
+8. Outputs to Record
+--------------------------------------------------------------------
+
+For each trained model:
+- WS-Flex parameters (k, p)
+- adjacency matrix
+- training seed
+- clean performance
+- performance at each α
+- Gaussian AUPC
+
+For each repetition:
+- best-so-far AUPC curve over b = 1..B
+
+--------------------------------------------------------------------
+9. Pilot Success Criteria (Hard Gates)
+--------------------------------------------------------------------
+
+The pilot is SUCCESSFUL if:
+
+1. Final best-so-far AUPC:
+   E[max_{b <= B} AUPC_BO(b)] >
+   E[max_{b <= B} AUPC_Random(b)]
+   with a non-trivial margin (~0.5 std of random baseline)
+
+2. Early advantage:
+   BO best-so-far exceeds Random by b <= 3–4 on average
+
+3. Perturbation sanity:
+   Performance degrades monotonically with α (no degenerate curves)
+
+Failure of any condition halts progression to the full study.
+
+--------------------------------------------------------------------
+10. Forward-Looking Extensions (Not in Pilot)
+--------------------------------------------------------------------
+
+These are explicitly OUT OF SCOPE for the pilot, but planned next:
+
+1. Spatially Correlated Gaussian Noise:
+   ε ~ N(0, Σ), where:
+   Σ_ij = exp(-d_ij / ℓ)
+   with d_ij electrode distances and ℓ a fixed correlation length.
+
+2. Physiological Artifact Models:
+   - Synthetic EOG (already supported)
+   - Synthetic EMG (high-frequency, bursty noise)
+
+3. Nonstationary Perturbations:
+   - Temporal jitter (time-warping or latency shifts)
+   - Frequency band-specific noise:
+     ε_band = BP_filter(ε, [f_low, f_high])
+
+4. Structured Channel Dropout:
+   - Spatially clustered electrode removal
+
+These extensions directly address known failure modes of SMR MI
+models under physiological artifacts and acquisition-induced
+distribution shifts, per current literature.
+
+--------------------------------------------------------------------
+End of Pilot Specification
+====================================================================

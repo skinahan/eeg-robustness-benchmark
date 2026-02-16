@@ -1,0 +1,18 @@
+Best Graph Summary (Trial 365)
+==================================================
+
+Robustness Score: 0.4905
+Entropy Objective: 0.3296
+Curvature Objective: 0.6513
+
+Parameters:
+  units: 61
+  output_size: 8
+  n_modules: None
+  rewiring_prob: 0.5165086275734624
+  connection_density: None
+  target_clustering: 0.4734075936760559
+  target_path_length: 3.625103761814349
+  k_degree: 24
+  p_rewiring: 0.02015972782002872
+  seed: 365

@@ -1,0 +1,49 @@
+# Plot2_revision3: Most-Damaging Perturbation Diagnostic sweep config
+# Sweep order for identifying P* that maximizes S_topo subject to:
+#   max_drop_max(P*) >= 0.15, S_topo(P*) >= 0.05
+
+sweep_order:
+  - id: A
+    name: AR1_drift_SNR
+    perturbation_type: ar1_drift
+    snr_db_grid: [0, -3, -6, -9, -12]
+    ar1_rho: 0.97
+
+  - id: B
+    name: AR1_plus_gain_drift
+    perturbation_type: ar1_drift
+    combine_with: gain_drift
+    snr_db_grid: [-6]
+    gain_drift_intensity_range: [0.05, 0.1, 0.2, 0.3]
+
+  - id: C
+    name: AR1_plus_offset_drift
+    perturbation_type: ar1_drift
+    combine_with: offset_drift
+    snr_db_grid: [-6]
+    offset_drift_intensity_range: [0.05, 0.1, 0.2, 0.3]
+
+  - id: D
+    name: temporal_jitter
+    perturbation_type: temporal_jitter
+    jitter_ms_grid: [0, 10, 20, 40]
+    sfreq: 250
+
+  - id: E
+    name: spatial_dropout
+    perturbation_type: spatial_dropout
+    cluster_sizes: [small, medium, large]
+    # small=0.15, medium=0.25, large=0.4 of channels
+    intensity_range: [0.15, 0.25, 0.4]
+
+diagnostic_defaults:
+  n_graphs: 4
+  regimes: [super_sparse, sparse, moderate, near_dense]
+  k_per_regime: [4, 10, 16, 22]
+  n_subjects: 1
+  n_seeds: 1
+  dataset: BNCI2014_001
+
+go_criteria:
+  max_drop_min: 0.15
+  s_topo_min: 0.05

@@ -49,7 +49,14 @@ from config import MODEL_REGISTRY, get_model_registry, get_paradigm, get_dataset
 from globals import set_seeds, DEFAULT_MAX_EPOCHS, UNDERFITTING_THRESHOLD, get_max_epochs_for_dataset, get_underfitting_threshold_for_dataset
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
 from evaluation.two_stage_hp_opt import alternate_two_stage_optuna, run_two_stage_optuna, format_params, get_all_model_params
-from utils import create_output_path, create_hdf5_model_path, get_noise_intensities, get_short_session_id
+from utils import (
+    create_output_path,
+    create_hdf5_model_path,
+    get_noise_intensities,
+    get_noise_perturbation_bounds,
+    get_short_session_id,
+    _CORRELATED_NOISE_TYPES,
+)
 from evaluation.experiment_utils import check_skip_eval, log_all_subjects, collect_all_results
 from evaluation.metrics import compute_classification_metrics
 from evaluation.model_cache_manager import ModelCacheManager
@@ -69,6 +76,103 @@ try:
     _carbonfootprint = True
 except ImportError:
     _carbonfootprint = False
+
+
+# Fixed seed for alpha_max calibration so that re-running yields identical alpha_max (Spec 3 PATCH 2).
+_CALIBRATION_SEED = 202602
+
+
+def _compute_lag1_autocorr_diagnostic(
+    noise_type: str,
+    X_clean: np.ndarray,
+    X_corrupted: np.ndarray,
+    max_epochs: int = 10,
+) -> Optional[float]:
+    """
+    Compute mean lag-1 autocorrelation of injected noise (epsilon = X_corrupted - X_clean).
+    For AR(1) noise this should be ~rho; for Gaussian ~0. Used as a diagnostic that the
+    correct perturbation was applied (Plot 2 bug fix).
+    """
+    try:
+        eps = X_corrupted[:max_epochs] - X_clean[:max_epochs]
+        n_epochs, n_chans, n_times = eps.shape
+        lag1_list = []
+        for c in range(n_chans):
+            flat = eps[:, c, :].ravel()
+            if len(flat) < 3:
+                continue
+            with np.errstate(invalid="ignore"):
+                corr = np.corrcoef(flat[:-1], flat[1:])[0, 1]
+            if np.isfinite(corr):
+                lag1_list.append(float(corr))
+        return float(np.mean(lag1_list)) if lag1_list else None
+    except Exception:
+        return None
+
+
+def _compute_perturbation_fingerprint(
+    noise_type: str,
+    X_clean: np.ndarray,
+    X_corrupted: np.ndarray,
+    max_epochs: int = 10,
+) -> Dict[str, Any]:
+    """
+    PATCH 0.2: Compute lag-1 autocorrelation and residual (X̃ − X) mean/std for perturbation diagnostic.
+    Prevents 'plot says ar1_drift but run is Gaussian' regressions.
+    """
+    out = {
+        "perturbation_type": noise_type,
+        "lag1_autocorrelation": None,
+        "residual_mean": None,
+        "residual_std": None,
+    }
+    try:
+        eps = X_corrupted[:max_epochs] - X_clean[:max_epochs]
+        out["residual_mean"] = float(np.mean(eps))
+        out["residual_std"] = float(np.std(eps))
+        lag1 = _compute_lag1_autocorr_diagnostic(noise_type, X_clean, X_corrupted, max_epochs=max_epochs)
+        out["lag1_autocorrelation"] = lag1
+    except Exception as e:
+        out["error"] = str(e)
+    return out
+
+
+def _get_test_perturb_expected_scope(
+    dataset: str,
+    test_perturb_noise_types: Optional[List[str]] = None,
+    test_perturb_gaussian_only: bool = False,
+    test_perturb_gaussian_alpha_grid: Optional[List[float]] = None,
+    test_perturb_num_steps: int = 20,
+    saturation_file: Optional[str] = None,
+):
+    """Return (expected_noise_types, expected_intensities_by_noise) for check_skip_eval.
+    Matches the logic in _evaluate_perturb so the skip check only requires what this run will produce
+    (e.g. gaussian + alpha grid for Plot2), not all four noise types and full saturation steps.
+    """
+    sat_file = saturation_file or "saturation_results/saturation_points_summary.csv"
+    if test_perturb_noise_types:
+        noise_types = list(test_perturb_noise_types)
+    elif test_perturb_gaussian_only:
+        noise_types = ["gaussian"]
+    else:
+        noise_types = ["eog", "gaussian", "dropout", "spike"]
+
+    expected_intensities_by_noise = {}
+    for nt in noise_types:
+        if nt == "gaussian" and test_perturb_gaussian_alpha_grid and len(test_perturb_gaussian_alpha_grid) > 0:
+            _, sigma_max = get_noise_perturbation_bounds(dataset, "gaussian", saturation_file=sat_file)
+            intensities = [float(alpha) * float(sigma_max) for alpha in test_perturb_gaussian_alpha_grid]
+            expected_intensities_by_noise[nt] = sorted(set(float(x) for x in intensities))
+        elif nt in _CORRELATED_NOISE_TYPES and test_perturb_gaussian_alpha_grid and len(test_perturb_gaussian_alpha_grid) > 0:
+            _, nominal_max = get_noise_perturbation_bounds(dataset, nt, saturation_file=sat_file)
+            intensities = [float(alpha) * float(nominal_max) for alpha in test_perturb_gaussian_alpha_grid]
+            expected_intensities_by_noise[nt] = sorted(set(float(x) for x in intensities))
+        else:
+            intensities = get_noise_intensities(
+                dataset, nt, num_steps=test_perturb_num_steps, saturation_file=sat_file
+            )
+            expected_intensities_by_noise[nt] = [float(x) for x in intensities]
+    return noise_types, expected_intensities_by_noise
 
 
 def get_memory_usage_mb():
@@ -370,7 +474,25 @@ class UnifiedExperimentRunner:
         train_subjects: Optional[List[int]] = None,
         eval_subjects: Optional[List[int]] = None,
         subject_chunk_size: Optional[int] = None,
-        legacy: bool = False
+        legacy: bool = False,
+        # Disable the underfitting-based retraining pass (keeps training protocol fixed).
+        disable_underfitting_retrain: bool = False,
+        # ---- test_perturb configuration (pilot-safe; defaults preserve old behavior) ----
+        test_perturb_noise_types: Optional[List[str]] = None,
+        test_perturb_num_steps: int = 20,
+        # If provided, will be used to (a) derive bounds, and (b) restrict evaluated noise types
+        # to those listed in the file (instead of the full benchmark list).
+        test_perturb_saturation_file: Optional[str] = None,
+        test_perturb_gaussian_only: bool = False,
+        test_perturb_gaussian_alpha_grid: Optional[List[float]] = None,
+        test_perturb_target_snr_db: float = 0.0,
+        test_perturb_spatial_ell_multiplier: float = 1.0,
+        test_perturb_emg_f_high: float = 80.0,
+        test_perturb_emg_use_envelope: bool = False,
+        test_perturb_ar1_rho: float = 0.97,
+        test_perturb_emg_f_low: float = 20.0,
+        # Plot 2 PATCH 0.2: optional dir to write perturbation_fingerprint.json
+        plot2_diagnostics_dir: Optional[str] = None,
     ):
         self.model = model
         self.dataset = dataset
@@ -389,6 +511,24 @@ class UnifiedExperimentRunner:
         self.eval_subjects = eval_subjects
         self.subject_chunk_size = subject_chunk_size
         self.legacy = legacy
+        self.disable_underfitting_retrain = bool(disable_underfitting_retrain)
+
+        # test_perturb settings (used only in _evaluate_perturb)
+        self.test_perturb_noise_types = test_perturb_noise_types
+        self.test_perturb_num_steps = int(test_perturb_num_steps)
+        self.test_perturb_saturation_file = test_perturb_saturation_file
+        self.test_perturb_gaussian_only = bool(test_perturb_gaussian_only)
+        self.test_perturb_gaussian_alpha_grid = test_perturb_gaussian_alpha_grid
+        self.test_perturb_target_snr_db = float(test_perturb_target_snr_db)
+        self.test_perturb_spatial_ell_multiplier = float(test_perturb_spatial_ell_multiplier)
+        self.test_perturb_emg_f_high = float(test_perturb_emg_f_high)
+        self.test_perturb_emg_use_envelope = bool(test_perturb_emg_use_envelope)
+        self.test_perturb_ar1_rho = float(test_perturb_ar1_rho)
+        self.test_perturb_emg_f_low = float(test_perturb_emg_f_low)
+        self.plot2_diagnostics_dir = plot2_diagnostics_dir
+        self._perturbation_fingerprint_written = False
+        # Cache for alpha_max per (dataset, noise_type, split_id, params) for correlated perturbations (Spec 3 PATCH 2)
+        self._correlated_alpha_max_cache = {}
 
         self.current_subject = -1
         self.current_session = -1
@@ -440,7 +580,95 @@ class UnifiedExperimentRunner:
         
         # Create output paths
         self._create_output_paths()
-    
+
+    def _get_test_perturb_saturation_file(self) -> str:
+        # Match utils.py defaults to preserve legacy behavior when not explicitly set.
+        return self.test_perturb_saturation_file or "saturation_results/saturation_points_summary.csv"
+
+    def _get_perturbation_params_dict(self, noise_type: str) -> Dict[str, Any]:
+        """Return a JSON-serializable dict of perturbation params for this noise type (for result rows/manifests)."""
+        if noise_type == "ar1_drift":
+            return {"rho": float(getattr(self, "test_perturb_ar1_rho", 0.97))}
+        if noise_type == "spatial_gaussian":
+            return {"ell_multiplier": float(getattr(self, "test_perturb_spatial_ell_multiplier", 1.0))}
+        if noise_type == "emg_band":
+            return {
+                "f_low": float(getattr(self, "test_perturb_emg_f_low", 20.0)),
+                "f_high": float(getattr(self, "test_perturb_emg_f_high", 80.0)),
+                "envelope_on": bool(getattr(self, "test_perturb_emg_use_envelope", False)),
+            }
+        return {}
+
+    def _get_correlated_noise_params_key(self, noise_type: str) -> tuple:
+        """Return a hashable key of perturbation parameters for cache key (Spec 3 PATCH 2)."""
+        rho = float(getattr(self, "test_perturb_ar1_rho", 0.97))
+        ell = float(getattr(self, "test_perturb_spatial_ell_multiplier", 1.0))
+        emg_high = float(getattr(self, "test_perturb_emg_f_high", 80.0))
+        emg_env = bool(getattr(self, "test_perturb_emg_use_envelope", False))
+        emg_low = float(getattr(self, "test_perturb_emg_f_low", 20.0))
+        return (noise_type, rho, ell, emg_low, emg_high, emg_env)
+
+    def _get_alpha_max_for_correlated_noise(
+        self, noise_type: str, X_sample: np.ndarray, split_id: Optional[Tuple[str, ...]] = None
+    ) -> float:
+        """
+        Compute alpha_max so that at intensity=alpha_max, SNR_dB ~ target (E[||X||^2] / E[||alpha*eps||^2]).
+        Target SNR_dB is test_perturb_target_snr_db (default 0). Formula: alpha_max = alpha_max_0dB * 10^(-target_snr_db/20).
+        Cached per (dataset, noise_type, split_id, params). Uses a fixed calibration seed for reproducibility (Spec 3 PATCH 2).
+        """
+        params_key = self._get_correlated_noise_params_key(noise_type)
+        key = (self.dataset, noise_type, split_id or (getattr(self, "eval_mode", "CrossSession"),), params_key)
+        if key in self._correlated_alpha_max_cache:
+            return self._correlated_alpha_max_cache[key]
+        augmentor = self._make_correlated_noise_augmentor(noise_type, intensity=1.0, seed=_CALIBRATION_SEED)
+        X_aug = augmentor.transform(X_sample)
+        eps = X_aug - X_sample
+        n_epochs = X_sample.shape[0]
+        mean_X_sq = float(np.sum(X_sample ** 2) / n_epochs)
+        mean_eps_sq = float(np.sum(eps ** 2) / n_epochs)
+        if mean_eps_sq <= 0 or not np.isfinite(mean_eps_sq):
+            alpha_max_0db = 1.0
+        else:
+            alpha_max_0db = float(np.sqrt(mean_X_sq / mean_eps_sq))
+            if not np.isfinite(alpha_max_0db) or alpha_max_0db <= 0:
+                alpha_max_0db = 1.0
+        # Scale so that at alpha_max we get target_snr_db: alpha_max = alpha_max_0db * 10^(-target_snr_db/20)
+        target_db = self.test_perturb_target_snr_db
+        alpha_max = alpha_max_0db * (10.0 ** (-target_db / 20.0))
+        if not np.isfinite(alpha_max) or alpha_max <= 0:
+            alpha_max = 1.0
+        self._correlated_alpha_max_cache[key] = alpha_max
+        return alpha_max
+
+    def _make_correlated_noise_augmentor(self, noise_type: str, intensity: float, seed: Optional[int] = None):
+        """Build EEGNoiseAugmentor for correlated noise with optional escalation params. seed=None uses self.seed (Spec 3)."""
+        rng = seed if seed is not None else self.seed
+        kwargs = {"noise_type": noise_type, "intensity": intensity, "seed": rng}
+        if noise_type == "ar1_drift":
+            kwargs["ar1_rho"] = float(getattr(self, "test_perturb_ar1_rho", 0.97))
+        if noise_type == "spatial_gaussian" and getattr(self, "test_perturb_spatial_ell_multiplier", None) is not None:
+            kwargs["spatial_ell_multiplier"] = float(self.test_perturb_spatial_ell_multiplier)
+        if noise_type == "emg_band":
+            if getattr(self, "test_perturb_emg_f_high", None) is not None:
+                kwargs["emg_f_high"] = float(self.test_perturb_emg_f_high)
+            if getattr(self, "test_perturb_emg_f_low", None) is not None:
+                kwargs["emg_f_low"] = float(self.test_perturb_emg_f_low)
+            if getattr(self, "test_perturb_emg_use_envelope", False):
+                kwargs["emg_use_envelope"] = True
+        if noise_type in ("gain_drift", "offset_drift"):
+            pass  # use default gain_drift_rho, offset_drift_rho
+        if noise_type == "temporal_jitter":
+            kwargs["jitter_sfreq"] = float(getattr(self, "test_perturb_jitter_sfreq", 250.0))
+        if noise_type == "spatial_dropout":
+            kwargs["spatial_dropout_cluster_size"] = float(getattr(self, "test_perturb_spatial_dropout_cluster_size", 0.25))
+        if noise_type == "ar1_plus_gain_drift":
+            kwargs["ar1_rho"] = float(getattr(self, "test_perturb_ar1_rho", 0.97))
+            kwargs["gain_drift_intensity"] = float(getattr(self, "test_perturb_gain_drift_intensity", intensity * 0.5))
+        if noise_type == "ar1_plus_offset_drift":
+            kwargs["ar1_rho"] = float(getattr(self, "test_perturb_ar1_rho", 0.97))
+            kwargs["offset_drift_intensity"] = float(getattr(self, "test_perturb_offset_drift_intensity", intensity * 0.5))
+        return EEGNoiseAugmentor(**kwargs)
+
     def _setup_dataset_and_paradigm(self):
         """Setup dataset and paradigm based on configuration."""
         if self.dataset == "BNCI2014_001":
@@ -1406,8 +1634,44 @@ class UnifiedExperimentRunner:
             'total_time': evaluation_time
         }
     
-    def _evaluate_perturb(self, trained_model, X_valid, y_valid, fold_idx, session, clean_score, training_time):        
-        noise_types = ['eog', 'gaussian', 'dropout', 'spike']
+    def _evaluate_perturb(self, trained_model, X_valid, y_valid, fold_idx, session, clean_score, training_time):
+        # Normalize: iid_gaussian (spec name) -> gaussian for evaluation (Spec 3 PATCH 3)
+        def _norm_nt(nt: str) -> str:
+            return "gaussian" if nt == "iid_gaussian" else nt
+
+        # Precedence:
+        # 1) explicit override via --test_perturb_noise_types
+        # 2) gaussian-only flag
+        # 3) if a saturation file was explicitly provided, evaluate only types present in that file
+        # 4) fallback to benchmark default list
+        noise_types: List[str]
+        if self.test_perturb_noise_types:
+            noise_types = [_norm_nt(nt) for nt in self.test_perturb_noise_types]
+        elif self.test_perturb_gaussian_only:
+            noise_types = ["gaussian"]
+        elif self.test_perturb_saturation_file:
+            try:
+                sat = pd.read_csv(self.test_perturb_saturation_file)
+                if "dataset" not in sat.columns or "noise_type" not in sat.columns:
+                    raise ValueError(
+                        f"Saturation file missing required columns: {self.test_perturb_saturation_file} "
+                        f"(need 'dataset' and 'noise_type'; got {list(sat.columns)})"
+                    )
+                sat = sat[sat["dataset"].astype(str) == str(self.dataset)]
+                # Preserve file order (stable unique)
+                noise_types = [_norm_nt(nt) for nt in dict.fromkeys(sat["noise_type"].astype(str).tolist())]
+                if not noise_types:
+                    raise ValueError(
+                        f"Saturation file has no rows for dataset='{self.dataset}': {self.test_perturb_saturation_file}"
+                    )
+            except Exception as e:
+                print(f"[WARNING] Failed to derive noise types from saturation file: {e}")
+                noise_types = ["eog", "gaussian", "dropout", "spike"]
+        else:
+            noise_types = ["eog", "gaussian", "dropout", "spike"]
+
+        split_id = (getattr(self, "eval_mode", "CrossSession"), str(session))
+        target_snr_db = float(self.test_perturb_target_snr_db)
 
         results = []
         trained_model.module_.eval()
@@ -1421,18 +1685,111 @@ class UnifiedExperimentRunner:
             gc.collect()
             
             for noise_type in noise_types:
-                # Use dynamic bounds based on dataset and noise type
-                intensities = get_noise_intensities(self.dataset, noise_type, num_steps=20)            
-                for intensity in intensities:
-                    # Create corrupted validation data
-                    noise_augmentor = EEGNoiseAugmentor(
-                        noise_type=noise_type,
-                        intensity=intensity,
-                        seed=self.seed
+                # Runtime assertion: ar1_drift must use correlated path and valid rho (Plot 2 bug fix)
+                if noise_type == "ar1_drift":
+                    rho = float(getattr(self, "test_perturb_ar1_rho", 0.97))
+                    assert 0 < rho < 1, (
+                        f"ar1_drift requires test_perturb_ar1_rho in (0, 1), got {rho}"
                     )
-                    
+                # Per-noise-type SNR/alpha_max for result rows (Spec 3 PATCH 1)
+                this_empirical_snr_db = float("nan")
+                this_alpha_max = None
+                # Use dynamic bounds based on dataset and noise type.
+                # Defaults preserve historical behavior (num_steps=20, default saturation file),
+                # but pilot studies can override to Gaussian-only alpha grids.
+                sigma_max = None
+                if (
+                    noise_type == "gaussian"
+                    and self.test_perturb_gaussian_alpha_grid is not None
+                    and len(self.test_perturb_gaussian_alpha_grid) > 0
+                ):
+                    _, sigma_max = get_noise_perturbation_bounds(
+                        self.dataset, "gaussian", saturation_file=self._get_test_perturb_saturation_file()
+                    )
+                    intensities = [
+                        float(alpha) * float(sigma_max) for alpha in self.test_perturb_gaussian_alpha_grid
+                    ]
+                    # de-duplicate while preserving sorted order
+                    intensities = sorted(set(float(x) for x in intensities))
+                    this_alpha_max = sigma_max
+                elif (
+                    noise_type in _CORRELATED_NOISE_TYPES
+                    and self.test_perturb_gaussian_alpha_grid is not None
+                    and len(self.test_perturb_gaussian_alpha_grid) > 0
+                ):
+                    alpha_max = self._get_alpha_max_for_correlated_noise(noise_type, X_valid, split_id=split_id)
+                    sigma_max = alpha_max
+                    this_alpha_max = alpha_max
+                    intensities = [
+                        float(alpha) * float(alpha_max) for alpha in self.test_perturb_gaussian_alpha_grid
+                    ]
+                    intensities = sorted(set(float(x) for x in intensities))
+                    # Empirical SNR at alpha_max (Spec 3 PATCH 1): same formula as calibration
+                    augmentor_calib = self._make_correlated_noise_augmentor(
+                        noise_type, intensity=1.0, seed=_CALIBRATION_SEED
+                    )
+                    X_calib = augmentor_calib.transform(X_valid)
+                    eps_calib = X_calib - X_valid
+                    n_ep = X_valid.shape[0]
+                    mean_X_sq = float(np.sum(X_valid ** 2) / n_ep)
+                    mean_eps_sq = float(np.sum(eps_calib ** 2) / n_ep)
+                    if mean_eps_sq > 0 and np.isfinite(mean_eps_sq) and alpha_max > 0:
+                        this_empirical_snr_db = float(10.0 * np.log10(mean_X_sq / (alpha_max ** 2 * mean_eps_sq)))
+                    del X_calib, eps_calib
+                else:
+                    intensities = get_noise_intensities(
+                        self.dataset,
+                        noise_type,
+                        num_steps=self.test_perturb_num_steps,
+                        saturation_file=self._get_test_perturb_saturation_file(),
+                    )
+                    this_alpha_max = float(np.max(intensities)) if len(intensities) and np.isfinite(intensities).any() else None
+
+                # Assert ar1_drift used correlated path (alpha_max), not gaussian sigma_max
+                if noise_type == "ar1_drift":
+                    assert this_alpha_max is not None and (
+                        noise_type in _CORRELATED_NOISE_TYPES
+                    ), "ar1_drift must use correlated path and data-derived alpha_max, not gaussian sigma_max"
+
+                for intensity in intensities:
+                    # Create corrupted validation data (use escalation params for correlated types)
+                    if noise_type in _CORRELATED_NOISE_TYPES:
+                        noise_augmentor = self._make_correlated_noise_augmentor(noise_type, intensity=intensity)
+                        assert getattr(noise_augmentor, "noise_type", None) == noise_type, (
+                            f"Augmentor noise_type must be {noise_type!r} for correlated path"
+                        )
+                    else:
+                        noise_augmentor = EEGNoiseAugmentor(
+                            noise_type=noise_type,
+                            intensity=intensity,
+                            seed=self.seed
+                        )
                     X_valid_corrupted = noise_augmentor.transform(X_valid)
-                    
+                    # PATCH 0.2: Perturbation fingerprint diagnostic (lag-1 + residual mean/std)
+                    if intensity == intensities[-1]:
+                        fp = _compute_perturbation_fingerprint(
+                            noise_type, X_valid, X_valid_corrupted, max_epochs=10
+                        )
+                        lag1 = fp.get("lag1_autocorrelation")
+                        if lag1 is not None:
+                            print(
+                                f"[test_perturb] {noise_type} lag1_autocorr={lag1:.4f} "
+                                "(expected ~rho for AR1, ~0 for gaussian)"
+                            )
+                        if getattr(self, "plot2_diagnostics_dir", None) and not getattr(self, "_perturbation_fingerprint_written", False):
+                            try:
+                                import os
+                                ddir = self.plot2_diagnostics_dir
+                                os.makedirs(ddir, exist_ok=True)
+                                # Spec §6.3 NEW 2: fingerprint must include target_snr_db and empirical_snr_db
+                                fp["target_snr_db"] = target_snr_db
+                                fp["empirical_snr_db"] = this_empirical_snr_db
+                                path = os.path.join(ddir, "perturbation_fingerprint.json")
+                                with open(path, "w", encoding="utf-8") as f:
+                                    json.dump(fp, f, indent=2)
+                                self._perturbation_fingerprint_written = True
+                            except Exception as e:
+                                print(f"[WARNING] Could not write perturbation_fingerprint.json: {e}")
                     # Evaluate on corrupted data
                     start_time = time.time()                
                     y_pred_proba_corrupted = trained_model.predict_proba(X_valid_corrupted)
@@ -1447,7 +1804,13 @@ class UnifiedExperimentRunner:
                     results.append({
                         'fold_idx': fold_idx,
                         'noise_type': noise_type,
+                        'perturbation_type': noise_type,
+                        'params': self._get_perturbation_params_dict(noise_type),
                         'intensity': intensity,
+                        'alpha': (float(intensity) / float(sigma_max)) if (sigma_max and float(sigma_max) != 0.0) else None,
+                        'target_snr_db': target_snr_db,
+                        'empirical_snr_db': this_empirical_snr_db,
+                        'alpha_max': this_alpha_max,
                         'clean_score': clean_score,
                         'corrupted_score': corrupted_score,
                         'clean_roc_auc': clean_score,
@@ -1537,7 +1900,7 @@ class UnifiedExperimentRunner:
 
         # If we are tuning, we incur too high a time cost to re-train the model this often.
         # Also skip retraining if model was loaded from cache (it was already trained and validated)
-        if not self.tune and not model_was_cached:
+        if not self.disable_underfitting_retrain and not self.tune and not model_was_cached:
             # Use a dataset-specific threshold to restart training if clean score indicates underfitting.
             underfitting_threshold = get_underfitting_threshold_for_dataset(self.dataset)
             if clean_score < underfitting_threshold:
@@ -1612,10 +1975,31 @@ class UnifiedExperimentRunner:
             paradigm_name = "MotorImagery"
 
         if not self.overwrite:
-            if check_skip_eval(self.model, self.seed, self.subjects, mode_str, self.noise_type, self.intensity, eval_mode=self.eval_mode, paradigm=paradigm_name, dataset=self.dataset, paradigm_obj=self.paradigm, dataset_obj=self.dataset_obj, tuned=self.tune):
+            expected_noise_types = None
+            expected_intensities_by_noise = None
+            if self.mode in ("test_perturb", "multirun") or (isinstance(self.mode, str) and self.mode.startswith("test_perturb")):
+                exp_types, exp_by_noise = _get_test_perturb_expected_scope(
+                    self.dataset,
+                    test_perturb_noise_types=self.test_perturb_noise_types,
+                    test_perturb_gaussian_only=self.test_perturb_gaussian_only,
+                    test_perturb_gaussian_alpha_grid=self.test_perturb_gaussian_alpha_grid,
+                    test_perturb_num_steps=self.test_perturb_num_steps,
+                    saturation_file=self._get_test_perturb_saturation_file(),
+                )
+                expected_noise_types = exp_types
+                expected_intensities_by_noise = exp_by_noise
+            if check_skip_eval(
+                self.model, self.seed, self.subjects, mode_str, self.noise_type, self.intensity,
+                eval_mode=self.eval_mode, paradigm=paradigm_name, dataset=self.dataset,
+                paradigm_obj=self.paradigm, dataset_obj=self.dataset_obj, tuned=self.tune,
+                expected_noise_types=expected_noise_types,
+                expected_intensities_by_noise=expected_intensities_by_noise,
+                test_perturb_num_steps=self.test_perturb_num_steps,
+                test_perturb_saturation_file=self._get_test_perturb_saturation_file(),
+            ):
                 print(f"Skipping evaluation due to existing output files.")
                 return None
-        
+
         all_subject_results = []
         set_seeds(self.seed)
         if self.eval_mode == "CrossSubject":
@@ -2051,38 +2435,34 @@ class UnifiedExperimentRunner:
         # Use first eval subject as representative for path
         representative_subject = eval_subjects[0] if eval_subjects else self.subjects[0]
         
-        # Get output directory
+        # Get output directory (short path for new runs; also check long path for existing runs)
         eval_mode_str = "CrossSubjectEvaluation"
-        out_dir = create_output_path(
-            self.model, self.seed, int(representative_subject), session, 
-            mode_str, session_type=eval_mode_str, paradigm=paradigm_name, dataset=self.dataset
+        out_dir_short = create_output_path(
+            self.model, self.seed, int(representative_subject), session,
+            mode_str, session_type=eval_mode_str, paradigm=paradigm_name, dataset=self.dataset, use_short_run_id=True
         )
-        
-        # Check for existing files
+        out_dir_long = create_output_path(
+            self.model, self.seed, int(representative_subject), session,
+            mode_str, session_type=eval_mode_str, paradigm=paradigm_name, dataset=self.dataset, use_short_run_id=False
+        )
         is_test_perturb_mode = self.mode in ['test_perturb', 'multirun'] or self.mode.startswith('test_perturb')
-        
+
         if is_test_perturb_mode:
-            # For test_perturb mode, check for ANY CSV file in the directory
-            if os.path.exists(out_dir):
-                csv_files = [f for f in os.listdir(out_dir) if f.endswith('.csv')]
-                if csv_files:
-                    return True
+            for out_dir in (out_dir_short, out_dir_long):
+                if os.path.exists(out_dir):
+                    csv_files = [f for f in os.listdir(out_dir) if f.endswith('.csv')]
+                    if csv_files:
+                        return True
         else:
-            # For non-test_perturb modes, check for specific filename
             if self.noise_dict:
                 filename_suffix = f"_{self.noise_dict['noise_type']}_{self.noise_dict['intensity']}"
             else:
                 filename_suffix = ""
-            
             short_session = get_short_session_id(session, 'CrossSubject')
-            out_file = os.path.join(
-                out_dir,
-                f"{self.model}_{mode_str}{filename_suffix}_{short_session}_seed{self.seed}.csv"
-            )
-            
-            if os.path.exists(out_file):
-                return True
-        
+            fname = f"{self.model}_{mode_str}{filename_suffix}_{short_session}_seed{self.seed}.csv"
+            for out_dir in (out_dir_short, out_dir_long):
+                if os.path.exists(os.path.join(out_dir, fname)):
+                    return True
         return False
     
     def _save_fold_results(self, fold_results: List[Dict[str, Any]], fold_idx: int, eval_subjects: List[int], session: str):
@@ -2196,6 +2576,7 @@ class UnifiedExperimentRunner:
                                                         'seed': self.seed,
                                                         'tune': self.tune,
                                                         'noise_type': noise_type,
+                                                        'perturbation_type': session_df['perturbation_type'].iloc[0] if 'perturbation_type' in session_df.columns else noise_type,
                                                         'intensity': intensity,
                                                         'clean_score': session_df['clean_score'].mean() if 'clean_score' in session_df.columns else 0.0,
                                                         'corrupted_score': session_df['corrupted_score'].mean() if 'corrupted_score' in session_df.columns else 0.0,
@@ -2204,6 +2585,14 @@ class UnifiedExperimentRunner:
                                                         'evaluation_time': session_df['evaluation_time'].mean() if 'evaluation_time' in session_df.columns else 0.0,
                                                         'total_time': session_df['total_time'].mean() if 'total_time' in session_df.columns else 0.0
                                                     }
+                                                    if 'params' in session_df.columns:
+                                                        agg_row['params'] = session_df['params'].iloc[0]
+                                                    if 'target_snr_db' in session_df.columns and session_df['target_snr_db'].notna().any():
+                                                        agg_row['target_snr_db'] = session_df['target_snr_db'].iloc[0]
+                                                    if 'empirical_snr_db' in session_df.columns and session_df['empirical_snr_db'].notna().any():
+                                                        agg_row['empirical_snr_db'] = session_df['empirical_snr_db'].iloc[0]
+                                                    if 'alpha_max' in session_df.columns and session_df['alpha_max'].notna().any():
+                                                        agg_row['alpha_max'] = session_df['alpha_max'].iloc[0]
                                                     
                                                     # Add all clean metrics (matching CrossSession)
                                                     if 'clean_roc_auc' in session_df.columns:
@@ -2412,6 +2801,67 @@ class UnifiedExperimentRunner:
             dataset=self.dataset
         )
 
+        # Spec 3 PATCH 4: Write test_perturb run manifest (git, dataset, model, perturbation, SNR, seeds)
+        if is_test_perturb_mode(self.mode) and not results_df.empty:
+            try:
+                git_commit = "unknown"
+                try:
+                    import subprocess as sp
+                    r = sp.run(
+                        ["git", "rev-parse", "HEAD"],
+                        capture_output=True,
+                        text=True,
+                        timeout=5,
+                        cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                    )
+                    if r.returncode == 0 and r.stdout:
+                        git_commit = r.stdout.strip()
+                except Exception:
+                    pass
+                first_subject = int(results_df["subject"].iloc[0]) if "subject" in results_df.columns else (self.subjects[0] if self.subjects else 0)
+                first_session = str(results_df["session"].iloc[0]) if "session" in results_df.columns else "0train"
+                out_dir = create_output_path(
+                    self.model, self.seed, first_subject, first_session,
+                    mode_str, session_type=eval_mode_str, paradigm=paradigm_name, dataset=self.dataset
+                )
+                os.makedirs(out_dir, exist_ok=True)
+                snr_by_type = {}
+                if "noise_type" in results_df.columns:
+                    for nt in results_df["noise_type"].dropna().unique():
+                        sub = results_df[results_df["noise_type"] == nt]
+                        row = sub.iloc[0]
+                        snr_by_type[str(nt)] = {
+                            "target_snr_db": float(row.get("target_snr_db", float("nan"))) if "target_snr_db" in row else float("nan"),
+                            "empirical_snr_db": float(row.get("empirical_snr_db", float("nan"))) if "empirical_snr_db" in row else float("nan"),
+                            "alpha_max": float(row.get("alpha_max", float("nan"))) if "alpha_max" in row else float("nan"),
+                        }
+                perturbation_params = {
+                    "ar1_drift": {"rho": getattr(self, "test_perturb_ar1_rho", 0.97)},
+                    "spatial_gaussian": {"ell_multiplier": getattr(self, "test_perturb_spatial_ell_multiplier", 1.0)},
+                    "emg_band": {
+                        "f_low": getattr(self, "test_perturb_emg_f_low", 20.0),
+                        "f_high": getattr(self, "test_perturb_emg_f_high", 80.0),
+                        "envelope_on": getattr(self, "test_perturb_emg_use_envelope", False),
+                    },
+                }
+                manifest = {
+                    "git_commit": git_commit,
+                    "dataset": self.dataset,
+                    "eval_mode": self.eval_mode,
+                    "model": self.model,
+                    "seed": int(self.seed),
+                    "perturbation_types": list(self.test_perturb_noise_types) if self.test_perturb_noise_types else [],
+                    "target_snr_db": float(self.test_perturb_target_snr_db),
+                    "snr_by_noise_type": snr_by_type,
+                    "perturbation_params": perturbation_params,
+                    "rng_seed": int(self.seed),
+                }
+                manifest_path = os.path.join(out_dir, "test_perturb_manifest.json")
+                with open(manifest_path, "w", encoding="utf-8") as f:
+                    json.dump(manifest, f, indent=2)
+            except Exception as e:
+                print(f"[WARNING] Could not write test_perturb_manifest.json: {e}")
+
 
 def main():
     """Main entry point for the unified experiment runner."""
@@ -2449,6 +2899,87 @@ def main():
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--noise_type", type=str, choices=["dropout", "gaussian", "eog", "spike"], default=None)
     parser.add_argument("--intensity", type=float, default=None)
+    parser.add_argument(
+        "--nas_pilot_dir",
+        type=str,
+        default=None,
+        help="If set, register NAS pilot models from <dir>/selected_architectures/*.json before running.",
+    )
+    # test_perturb configuration (optional; defaults preserve existing behavior)
+    parser.add_argument(
+        "--noise_perturbation_saturation_file",
+        type=str,
+        default=None,
+        help=(
+            "Optional CSV with saturation_point per (dataset, noise_type). "
+            "If provided, test_perturb will (a) use it to set sigma_max/bounds and "
+            "(b) restrict evaluated noise types to those present in the file for the selected dataset."
+        ),
+    )
+    parser.add_argument(
+        "--noise_perturbation_num_steps",
+        type=int,
+        default=20,
+        help="Number of intensity steps for test_perturb when not using an alpha grid.",
+    )
+    parser.add_argument(
+        "--test_perturb_noise_types",
+        type=str,
+        default=None,
+        help="Comma-separated list of noise types to evaluate in test_perturb (e.g., 'gaussian,dropout').",
+    )
+    parser.add_argument(
+        "--test_perturb_gaussian_only",
+        action="store_true",
+        help="If set, restrict test_perturb to Gaussian noise only.",
+    )
+    parser.add_argument(
+        "--test_perturb_gaussian_alpha_grid",
+        type=str,
+        default=None,
+        help="Comma-separated alpha grid in [0,1] for Gaussian: intensity = alpha * sigma_max (e.g., '0,0.25,0.5,0.75,1').",
+    )
+    parser.add_argument(
+        "--test_perturb_target_snr_db",
+        type=float,
+        default=0.0,
+        help="Target SNR in dB at alpha_max for correlated perturbations (0 = default; -5 for escalation).",
+    )
+    parser.add_argument(
+        "--test_perturb_spatial_ell_multiplier",
+        type=float,
+        default=1.0,
+        help="Multiplier for spatial correlation length ell (spatial_gaussian). Default 1.0; use 2.0 for Step 2 escalation.",
+    )
+    parser.add_argument(
+        "--test_perturb_emg_f_high",
+        type=float,
+        default=80.0,
+        help="High cutoff in Hz for EMG band-limited noise. Default 80; use 100 for Step 2 escalation.",
+    )
+    parser.add_argument(
+        "--test_perturb_emg_use_envelope",
+        action="store_true",
+        help="Apply slow amplitude envelope to EMG noise (bursty EMG).",
+    )
+    parser.add_argument(
+        "--test_perturb_ar1_rho",
+        type=float,
+        default=0.97,
+        help="AR(1) drift coefficient for ar1_drift perturbation (default 0.97).",
+    )
+    parser.add_argument(
+        "--test_perturb_emg_f_low",
+        type=float,
+        default=20.0,
+        help="EMG band low cutoff in Hz (default 20).",
+    )
+    parser.add_argument(
+        "--plot2_diagnostics_dir",
+        type=str,
+        default=None,
+        help="Plot 2 PATCH 0.2: If set, write perturbation_fingerprint.json here (e.g. <plot2_dir>/diagnostics).",
+    )
     parser.add_argument("--tune", action="store_true")
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--aggregate", action="store_true")
@@ -2464,6 +2995,11 @@ def main():
                         help="Number of subjects to load per chunk for memory-efficient training (CrossSubject mode). If None, loads all subjects at once.")
     parser.add_argument("--legacy", action="store_true",
                         help="Use legacy experimental protocol (disables subject chunking and other memory optimizations to match original behavior)")
+    parser.add_argument(
+        "--disable_underfitting_retrain",
+        action="store_true",
+        help="Disable the underfitting-triggered retraining pass (keeps training protocol fixed).",
+    )
     
     # Memory management: Check for environment variable to set memory limit
     max_memory_gb = os.environ.get('PYTHON_MAX_MEMORY_GB')
@@ -2478,6 +3014,32 @@ def main():
         max_memory_mb = None
     
     args = parser.parse_args()
+
+    # Register NAS pilot models (scalable alternative to per-run .model_registry python files)
+    if args.nas_pilot_dir:
+        from architecture_refinement.nas_pilot_registry import register_nas_pilot_models
+        registered = register_nas_pilot_models(args.nas_pilot_dir)
+        print(f"[NAS PILOT] Registered {len(registered)} models from: {args.nas_pilot_dir}")
+
+    # Parse optional test_perturb controls
+    if args.test_perturb_noise_types:
+        args.test_perturb_noise_types = [
+            s.strip() for s in str(args.test_perturb_noise_types).split(",") if s.strip()
+        ]
+    else:
+        args.test_perturb_noise_types = None
+
+    if args.test_perturb_gaussian_alpha_grid:
+        try:
+            args.test_perturb_gaussian_alpha_grid = [
+                float(s.strip())
+                for s in str(args.test_perturb_gaussian_alpha_grid).split(",")
+                if s.strip()
+            ]
+        except Exception as e:
+            raise ValueError(f"Invalid --test_perturb_gaussian_alpha_grid: {e}")
+    else:
+        args.test_perturb_gaussian_alpha_grid = None
 
     if args.dataset == "Lee2019_SSVEP":
         paradigm_name = "SSVEP"
@@ -2539,12 +3101,26 @@ def main():
         
         for mode in ["test_perturb"]:
             if not args.overwrite:
-                # If tune flag is set, append "_tune" to mode (e.g., "test_perturb" -> "test_perturb_tune")
                 mode_str = mode
                 if args.tune:
-                    # Make sure the tuned and non-tuned modes are not mixed when creating output paths.
                     mode_str = f"{mode_str}_tune"
-                if check_skip_eval(model, seed, args.subjects, mode_str, args.noise_type, args.intensity, eval_mode, paradigm_name, args.dataset, paradigm_obj=temp_paradigm, dataset_obj=temp_dataset_obj, tuned=args.tune):
+                exp_types, exp_by_noise = _get_test_perturb_expected_scope(
+                    args.dataset,
+                    test_perturb_noise_types=args.test_perturb_noise_types,
+                    test_perturb_gaussian_only=args.test_perturb_gaussian_only,
+                    test_perturb_gaussian_alpha_grid=args.test_perturb_gaussian_alpha_grid,
+                    test_perturb_num_steps=getattr(args, "noise_perturbation_num_steps", 20),
+                    saturation_file=getattr(args, "noise_perturbation_saturation_file", None),
+                )
+                if check_skip_eval(
+                    model, seed, args.subjects, mode_str, args.noise_type, args.intensity,
+                    eval_mode=eval_mode, paradigm=paradigm_name, dataset=args.dataset,
+                    paradigm_obj=temp_paradigm, dataset_obj=temp_dataset_obj, tuned=args.tune,
+                    expected_noise_types=exp_types,
+                    expected_intensities_by_noise=exp_by_noise,
+                    test_perturb_num_steps=getattr(args, "noise_perturbation_num_steps", 20),
+                    test_perturb_saturation_file=getattr(args, "noise_perturbation_saturation_file", None),
+                ):
                     continue
             try:
                 runner = UnifiedExperimentRunner(
@@ -2562,7 +3138,20 @@ def main():
                     train_subjects=args.train_subjects,
                     eval_subjects=args.eval_subjects,
                     subject_chunk_size=args.subject_chunk_size,
-                    legacy=args.legacy
+                    legacy=args.legacy,
+                    disable_underfitting_retrain=args.disable_underfitting_retrain,
+                    test_perturb_noise_types=args.test_perturb_noise_types,
+                    test_perturb_num_steps=args.noise_perturbation_num_steps,
+                    test_perturb_saturation_file=args.noise_perturbation_saturation_file,
+                    test_perturb_gaussian_only=args.test_perturb_gaussian_only,
+                    test_perturb_gaussian_alpha_grid=args.test_perturb_gaussian_alpha_grid,
+                    test_perturb_target_snr_db=getattr(args, "test_perturb_target_snr_db", 0.0),
+                    test_perturb_spatial_ell_multiplier=getattr(args, "test_perturb_spatial_ell_multiplier", 1.0),
+                    test_perturb_emg_f_high=getattr(args, "test_perturb_emg_f_high", 80.0),
+                    test_perturb_emg_use_envelope=getattr(args, "test_perturb_emg_use_envelope", False),
+                    test_perturb_ar1_rho=getattr(args, "test_perturb_ar1_rho", 0.97),
+                    test_perturb_emg_f_low=getattr(args, "test_perturb_emg_f_low", 20.0),
+                    plot2_diagnostics_dir=getattr(args, "plot2_diagnostics_dir", None),
                 )
                 results = runner.run_experiment()
                 print(f"Experiment completed successfully. Results shape: {results.shape}")
@@ -2591,15 +3180,32 @@ def main():
             print(f"Warning: Could not create temporary dataset/paradigm for session detection: {e}")
         
         if not args.overwrite:
-            # Construct mode_str to match what will be used in run_experiment
-            # If tune flag is set, append "_tune" to mode (e.g., "test_perturb" -> "test_perturb_tune")
             mode_str = args.mode
             if args.tune:
-                # Make sure the tuned and non-tuned modes are not mixed when creating output paths.
                 mode_str = f"{args.mode}_tune"
-            if check_skip_eval(args.model, args.seed, args.subjects, mode_str, args.noise_type, args.intensity, args.eval_mode, paradigm_name, args.dataset, paradigm_obj=temp_paradigm, dataset_obj=temp_dataset_obj, tuned=args.tune):
+            expected_noise_types = None
+            expected_intensities_by_noise = None
+            if args.mode in ("test_perturb", "multirun") or (isinstance(args.mode, str) and args.mode.startswith("test_perturb")):
+                exp_types, exp_by_noise = _get_test_perturb_expected_scope(
+                    args.dataset,
+                    test_perturb_noise_types=args.test_perturb_noise_types,
+                    test_perturb_gaussian_only=args.test_perturb_gaussian_only,
+                    test_perturb_gaussian_alpha_grid=args.test_perturb_gaussian_alpha_grid,
+                    test_perturb_num_steps=args.noise_perturbation_num_steps,
+                    saturation_file=args.noise_perturbation_saturation_file,
+                )
+                expected_noise_types = exp_types
+                expected_intensities_by_noise = exp_by_noise
+            if check_skip_eval(
+                args.model, args.seed, args.subjects, mode_str, args.noise_type, args.intensity,
+                args.eval_mode, paradigm_name, args.dataset, paradigm_obj=temp_paradigm, dataset_obj=temp_dataset_obj, tuned=args.tune,
+                expected_noise_types=expected_noise_types,
+                expected_intensities_by_noise=expected_intensities_by_noise,
+                test_perturb_num_steps=args.noise_perturbation_num_steps,
+                test_perturb_saturation_file=args.noise_perturbation_saturation_file,
+            ):
                 sys.exit(0)
-        
+
         try:
             # Create and run experiment
             runner = UnifiedExperimentRunner(
@@ -2617,7 +3223,20 @@ def main():
                 train_subjects=args.train_subjects,
                 eval_subjects=args.eval_subjects,
                 subject_chunk_size=args.subject_chunk_size,
-                legacy=args.legacy
+                legacy=args.legacy,
+                disable_underfitting_retrain=args.disable_underfitting_retrain,
+                test_perturb_noise_types=args.test_perturb_noise_types,
+                test_perturb_num_steps=args.noise_perturbation_num_steps,
+                test_perturb_saturation_file=args.noise_perturbation_saturation_file,
+                test_perturb_gaussian_only=args.test_perturb_gaussian_only,
+                test_perturb_gaussian_alpha_grid=args.test_perturb_gaussian_alpha_grid,
+                test_perturb_target_snr_db=getattr(args, "test_perturb_target_snr_db", 0.0),
+                test_perturb_spatial_ell_multiplier=getattr(args, "test_perturb_spatial_ell_multiplier", 1.0),
+                test_perturb_emg_f_high=getattr(args, "test_perturb_emg_f_high", 80.0),
+                test_perturb_emg_use_envelope=getattr(args, "test_perturb_emg_use_envelope", False),
+                test_perturb_ar1_rho=getattr(args, "test_perturb_ar1_rho", 0.97),
+                test_perturb_emg_f_low=getattr(args, "test_perturb_emg_f_low", 20.0),
+                plot2_diagnostics_dir=getattr(args, "plot2_diagnostics_dir", None),
             )
             
             results = runner.run_experiment()

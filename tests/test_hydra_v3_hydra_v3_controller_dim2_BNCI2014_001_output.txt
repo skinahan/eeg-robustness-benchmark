@@ -1,0 +1,54 @@
+Choosing the first 4 classes from all possible events
+[I 2026-01-20 16:10:25,836] A new study created in memory with name: no-name-b8a37823-7409-4218-b59c-4b5056cf65a9
+Script started at: 2026-01-20 16:07:28
+[check_skip_eval] Mode: test_perturb, Tuned: False, is_test_perturb_mode: True
+[check_skip_eval] Existing output paths (after tuned filter): 0, Expected: 2
+Starting unified experiment:
+  Model: hydra_v3_controller_dim2
+  Dataset: BNCI2014_001
+  Subjects: [1]
+  Mode: test_perturb
+  Eval Mode: CrossSession
+  Seed: 42
+  Tune: False
+[check_skip_eval] Mode: test_perturb, Tuned: False, is_test_perturb_mode: True
+[check_skip_eval] Existing output paths (after tuned filter): 0, Expected: 2
+[CACHE] Attempting to load cached model: hydra_v3_controller_dim2, subject 1, session 0train, eval_mode CrossSession, tuned False, fold_idx 0
+[CACHE] Trying checkpoint type: final
+[CACHE] Looking for checkpoint at: model_cache\BNCI2014_001\hydra_v3_controller_dim2\seed_42\subject_001\CrossSession\session_0train_baseline.pt
+[CACHE] Config file at: model_cache\BNCI2014_001\hydra_v3_controller_dim2\seed_42\subject_001\CrossSession\session_0train_baseline.json
+[CACHE] Checkpoint exists: True, Config exists: True
+[CACHE] Load config params: {'n_chans': 22, 'n_times': 1001, 'n_outputs': 2}
+[CACHE] Cached config params (first 10): {'optimizer': "<class 'torch.optim.adamw.AdamW'>", 'lr': 0.01, 'max_epochs': 200, 'batch_size': 64, 'train_split': '<skorch.dataset.ValidSplit object at 0x00000198A9CF6740>', 'optimizer__lr': 0.01, 'optimizer__weight_decay': 0, 'module__n_chans': 22, 'module__n_times': 1001, 'module__n_outputs': 2}
+Re-initializing module because the following parameters were re-set: D, F1, activation, backbone_dropout, backbone_layers, backbone_units, controller_dim, drop_prob, fusion, kernel_length, mixed_memory, mode, n_chans, n_outputs, n_times, ssvep_num_filters, temporal_kernel_size, temporal_stride, use_cfc_carry_controller, use_ssvep_head, wiring.
+Re-initializing criterion.
+Re-initializing optimizer.
+[CACHE] Restored model history (74 epochs)
+[CACHE] Successfully loaded cached model
+[CACHE] Successfully loaded final checkpoint
+Loaded cached model for hydra_v3_controller_dim2 subject 1 session 0train fold 0
+Using cached model, skipping training for hydra_v3_controller_dim2 subject 1 session 0train
+[CACHE] Attempting to load cached model: hydra_v3_controller_dim2, subject 1, session 1test, eval_mode CrossSession, tuned False, fold_idx 1
+[CACHE] Trying checkpoint type: final
+[CACHE] Looking for checkpoint at: model_cache\BNCI2014_001\hydra_v3_controller_dim2\seed_42\subject_001\CrossSession\session_1test_baseline.pt
+[CACHE] Config file at: model_cache\BNCI2014_001\hydra_v3_controller_dim2\seed_42\subject_001\CrossSession\session_1test_baseline.json
+[CACHE] Checkpoint exists: True, Config exists: True
+[CACHE] Load config params: {'n_chans': 22, 'n_times': 1001, 'n_outputs': 2}
+[CACHE] Cached config params (first 10): {'optimizer': "<class 'torch.optim.adamw.AdamW'>", 'lr': 0.01, 'max_epochs': 200, 'batch_size': 64, 'train_split': '<skorch.dataset.ValidSplit object at 0x00000198A9EE24D0>', 'optimizer__lr': 0.01, 'optimizer__weight_decay': 0, 'module__n_chans': 22, 'module__n_times': 1001, 'module__n_outputs': 2}
+Re-initializing module because the following parameters were re-set: D, F1, activation, backbone_dropout, backbone_layers, backbone_units, controller_dim, drop_prob, fusion, kernel_length, mixed_memory, mode, n_chans, n_outputs, n_times, ssvep_num_filters, temporal_kernel_size, temporal_stride, use_cfc_carry_controller, use_ssvep_head, wiring.
+Re-initializing criterion.
+Re-initializing optimizer.
+[CACHE] Restored model history (22 epochs)
+[CACHE] Successfully loaded cached model
+[CACHE] Successfully loaded final checkpoint
+Loaded cached model for hydra_v3_controller_dim2 subject 1 session 1test fold 1
+Using cached model, skipping training for hydra_v3_controller_dim2 subject 1 session 1test
+[CACHE] Cache loading disabled (try_cache=False)
+Re-initializing module because the following parameters were re-set: D, F1, activation, backbone_dropout, backbone_layers, backbone_units, controller_dim, drop_prob, fusion, kernel_length, mixed_memory, mode, n_chans, n_outputs, n_times, ssvep_num_filters, temporal_kernel_size, temporal_stride, use_cfc_carry_controller, use_ssvep_head, wiring.
+Re-initializing criterion.
+Re-initializing optimizer.
+Saved: results//MotorImagery//BNCI2014_001//hydra_v3_controller_dim2//CrossSessionEvaluation//42//sub-001//0train//test_perturb\hydra_v3_controller_dim2_test_perturb_subject_001_seed42.csv
+Saved: results//MotorImagery//BNCI2014_001//hydra_v3_controller_dim2//CrossSessionEvaluation//42//sub-001//1test//test_perturb\hydra_v3_controller_dim2_test_perturb_subject_001_seed42.csv
+Experiment completed successfully. Results shape: (160, 48)
+Script ended at: 2026-01-20 16:10:26
+Total runtime: 2.96 minutes

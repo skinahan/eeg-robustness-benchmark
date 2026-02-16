@@ -1,0 +1,17 @@
+NAS PILOT STUDY REPORT
+pilot_dir: E:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments\architecture_refinement\outputs\nas_pilot\20260129_162153
+dataset: BNCI2014_001
+eval_mode: CrossSession
+sigma_max (gaussian): 100.0
+
+Final best-so-far (b=2) mean±std:
+  random: -inf ± nan
+  tpe: -inf ± nan
+
+
+Gate 2 (early advantage up to b=2):
+  b=1: mean(tpe)-mean(random) = nan
+  b=2: mean(tpe)-mean(random) = nan
+
+Gate 3 (monotonic degradation sanity):
+  fraction monotone_nonincreasing: 0.000

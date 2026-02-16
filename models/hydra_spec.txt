@@ -1,0 +1,363 @@
+This document contains design notes for the implementation of the HYDRAv2 model, an iterative improvement on the BranchedWiredCfC (AKA HYDRA) model.
+
+The HYDRAv2 model implementation will be placed in the file models/hydra.py, and will follow established conventions used elsewhere in this project (EEGClassifier, model registry, etc.).
+Like the BranchedWiredCfC model, HYDRAv2 will be able to work with ArbitraryWiring instances, ensuring full backwards-compatibility with the existing pre-defined recurrent networks.
+
+It consolidates *all reasoning*, *equations*, and then gives a **step-by-step implementation specification in the recommended order**, without code.
+
+---
+
+# Robust HYDRAv2 AKA BranchedWiredCfCv2
+
+## Design Rationale, Failure Analysis, and Implementation Specification
+
+---
+
+## 1. Problem Statement and Observed Failure Mode
+
+Across multiple iterations of **recurrent EEG decoders** (LSTM, CfC, NCP-based), we observe a consistent weakness relative to EEGNet-style models on:
+
+* **SSVEP paradigms** (frequency-locked signals)
+* **ERP paradigms** (time-locked signals)
+
+In contrast, EEGNet and shallow CNNs perform strongly on these tasks despite having:
+
+* no recurrence
+* limited temporal expressivity
+
+This suggests that **recurrent models are overfitting to spurious temporal dynamics**, learning fragile sequence patterns rather than:
+
+* stable spectral evidence (SSVEP)
+* stable latency-locked responses (ERP)
+
+The goal of HYDRAv2 is therefore:
+
+> **Preserve the robustness and inductive biases that make EEGNet strong for ERP/SSVEP, while retaining the noise robustness and flexibility of branched recurrent modeling.**
+
+---
+
+## 2. Key Insight: Robustness Requires Multiple Evidence Paths
+
+No single modeling strategy is optimal across all EEG paradigms.
+
+We identify four distinct *types of evidence* that a robust EEG decoder must support:
+
+1. **Frequency-locked evidence** (SSVEP)
+2. **Time-locked evidence** (ERP)
+3. **Local temporal dynamics** (speech, motor imagery, nonstationary tasks)
+4. **Global contextual recovery** (noise compensation across time)
+
+Prior architectures forced *all evidence* through the recurrent path, which is both:
+
+* unnecessary for ERP/SSVEP
+* dangerous under noise and distribution shift
+
+---
+
+## 3. Summary of High-Impact Model Improvements
+
+### Improvement 1: Adaptive, corruption-aware residual (carry) gating
+
+**(Highest leverage change for robustness)**
+
+Current state:
+
+* single global scalar (\alpha)
+* same blend between recurrent and residual everywhere
+
+This cannot express:
+
+> “trust recurrence when useful, fall back to identity when corrupted.”
+
+#### Upgrade
+
+Make the residual weight **conditional**, e.g. per-bin or per-timestep:
+
+[
+\alpha_b = \sigma!\left(
+g\left(
+\mathrm{stats}(\mathbf{r}_b),
+\mathrm{stats}(\mathbf{h}_b),
+\mathrm{SNR}(\mathbf{r}_b)
+\right)
+\right)
+]
+
+[
+\mathbf{y}*{b,t} = (1-\alpha_b),\mathbf{h}*{b,t} + \alpha_b,\mathbf{r}_{b,t}
+]
+
+Where:
+
+* (\mathbf{h}): recurrent output
+* (\mathbf{r}): residual (pre-recurrent features)
+
+**Effect**
+
+* Enables *conditional routing* around fragile dynamics
+* Improves robustness without sacrificing clean accuracy
+
+---
+
+### Improvement 2: Explicit ERP and SSVEP evidence heads
+
+**(Primary fix for ERP/SSVEP underperformance)**
+
+Instead of forcing recurrence to rediscover known signal structure, we add **non-recurrent evidence paths** that model exactly what ERP/SSVEP need.
+
+#### ERP head (time-locked evidence)
+
+Multi-query attention pooling over time:
+
+[
+w_{m,t} =
+\mathrm{softmax}_t!\left(
+\frac{
+\langle \tanh(W\mathbf{x}_t),\mathbf{q}_m\rangle
+}{\sqrt{F}}
+\right)
+]
+
+[
+\mathbf{e}*m = \sum_t w*{m,t}\mathbf{x}_t
+]
+
+[
+\mathbf{e}_{ERP} = [\mathbf{e}_1,\dots,\mathbf{e}_M]
+]
+
+This behaves like a **learned matched filter bank** over ERP latencies.
+
+#### SSVEP head (frequency-locked evidence)
+
+Learnable bandpower approximation:
+
+[
+\mathbf{u}_k = \mathrm{Conv1D}_k(\mathbf{x})
+]
+
+[
+\mathbf{p}_k = \mathrm{Mean}_t\left(|\mathbf{u}_k|^2\right)
+]
+
+[
+\mathbf{e}_{SSVEP} = [\mathbf{p}_1,\dots,\mathbf{p}_K]
+]
+
+**Effect**
+
+* Restores EEGNet’s inductive advantage
+* Prevents recurrence from memorizing phase-specific noise
+* Improves both clean and noisy ERP/SSVEP performance
+
+---
+
+### Improvement 3: Cross-bin context module
+
+**(Improves robustness without long-range recurrence)**
+
+After bin-level pooling, introduce a *lightweight* model across bins:
+
+[
+\tilde{\mathbf{z}}*{1:B} =
+\mathrm{Context}\left(\mathbf{z}*{1:B}\right)
+]
+
+[
+\mathbf{e}*{REC} =
+\mathrm{Pool}\left(\tilde{\mathbf{z}}*{1:B}\right)
+]
+
+Where `Context` can be:
+
+* tiny Transformer
+* small GRU/CfC
+
+**Effect**
+
+* Allows clean bins to explain noisy bins
+* Mitigates bin boundary artifacts
+* Preserves stability by avoiding full-rate recurrence
+
+---
+
+### Improvement 4: Global skip path around binning and recurrence
+
+**(Cheap but powerful robustness boost)**
+
+Add a direct pooling path:
+
+[
+\mathbf{e}_{SKIP} = \mathrm{Pool}(\mathbf{x}_f)
+]
+
+This ensures:
+
+* stable features always survive
+* recurrence never becomes a single point of failure
+
+---
+
+### Improvement 5: Multi-query attention pooling + attention dropout
+
+**(Prevents single-timestep overfitting)**
+
+Replace single-query pooling with (M>1) queries and dropout on attention weights.
+
+**Effect**
+
+* Models multiple ERP components
+* Forces redundancy
+* Improves robustness under localized noise
+
+---
+
+### Improvement 6: SSVEP-specific time-shift consistency regularization
+
+**(Optional but high-impact for SSVEP benchmarks)**
+
+Encourage prediction invariance under small time shifts:
+
+[
+\mathcal{L} =
+\mathcal{L}*{CE}(\hat{y},y)
++
+\lambda,
+D*{KL}!\left(
+p_\theta(\mathbf{x})
+;|;
+p_\theta(\mathbf{x}^{(\Delta)})
+\right)
+]
+
+**Effect**
+
+* Promotes frequency-based reasoning
+* Penalizes fragile temporal memorization
+
+---
+
+### Improvement 7: Recurrent smoothness regularization
+
+**(Optional alternative to #6)**
+
+Discourage high-frequency hidden-state dynamics:
+
+[
+\mathcal{L}*{\mathrm{smooth}} =
+\frac{1}{T}
+\sum*{t=2}^{T}
+|\mathbf{h}*t - \mathbf{h}*{t-1}|_2^2
+]
+
+[
+\mathcal{L} =
+\mathcal{L}*{CE}
++
+\beta \mathcal{L}*{\mathrm{smooth}}
+]
+
+**Effect**
+
+* Prevents overreactive recurrence
+* Improves robustness across paradigms
+
+---
+
+## 4. Recommended Implementation Order (Critical)
+
+This order maximizes **impact per unit complexity** and minimizes regression risk.
+
+---
+
+### Phase 1 — Fix the biggest failure mode (ESSENTIAL)
+
+1. **Adaptive residual/carry gating**
+
+   * Per-bin scalar gate
+   * Condition on SNR + feature statistics
+   * Replace global (\alpha)
+
+2. **Multi-query intra-bin pooling**
+
+   * Add multiple queries
+   * Add attention dropout
+
+*Expected outcome:*
+Immediate robustness gains, no architectural upheaval.
+
+---
+
+### Phase 2 — Restore ERP / SSVEP inductive bias (ESSENTIAL)
+
+3. **Add ERP evidence head**
+
+   * Multi-query temporal attention
+   * Non-recurrent
+
+4. **Add SSVEP evidence head**
+
+   * Small learnable filter bank
+   * Power pooling
+
+5. **Fuse evidence paths**
+
+   * Concatenate:
+     [
+     \mathbf{e} =
+     [
+     \mathbf{e}*{REC},
+     \mathbf{e}*{ERP},
+     \mathbf{e}_{SSVEP}
+     ]
+     ]
+
+*Expected outcome:*
+Baseline accuracy matches or exceeds EEGNet on ERP/SSVEP.
+
+---
+
+### Phase 3 — Improve contextual robustness (RECOMMENDED)
+
+6. **Add cross-bin context module**
+
+   * Tiny Transformer / GRU
+   * Operates on bin embeddings
+
+7. **Add global skip path**
+
+   * Pool pre-binned features
+   * Include in fusion:
+     [
+     \mathbf{e} =
+     [
+     \mathbf{e}*{REC},
+     \mathbf{e}*{ERP},
+     \mathbf{e}*{SSVEP},
+     \mathbf{e}*{SKIP}
+     ]
+     ]
+
+*Expected outcome:*
+Improved robustness metrics (AUPC, RD, CSV).
+
+
+## 5. Final Conceptual Architecture Summary (v2)
+
+**Input** → EEGNet-style front-end → multi-scale temporal + SNR gate → downsampled features
+
+**Parallel evidence paths:**
+
+* ERP head (time-locked)
+* SSVEP head (frequency-locked)
+* Branched recurrent path (local dynamics)
+* Global skip (identity preservation)
+
+**Robust fusion:**
+
+* Adaptive gated recurrence
+* Cross-bin context
+* Multi-query pooling
+
+**Classifier head:**
+LayerNorm → Dropout → Linear

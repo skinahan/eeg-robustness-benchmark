@@ -1,0 +1,265 @@
+Choosing the first 4 classes from all possible events
+Choosing the first 4 classes from all possible events
+Choosing the first 4 classes from all possible events
+Script started at: 2026-01-17 15:59:24
+[check_skip_eval] Mode: test_perturb, Tuned: False, is_test_perturb_mode: True
+[check_skip_eval] Existing output paths (after tuned filter): 0, Expected: 2
+Starting unified experiment:
+  Model: branched_wiredcfc_arch4
+  Dataset: Lee2019_SSVEP
+  Subjects: [1]
+  Mode: test_perturb
+  Eval Mode: CrossSession
+  Seed: 42
+  Tune: False
+[check_skip_eval] Mode: test_perturb, Tuned: False, is_test_perturb_mode: True
+[check_skip_eval] Existing output paths (after tuned filter): 0, Expected: 2
+[CACHE] Attempting to load cached model: branched_wiredcfc_arch4, subject 1, session 0, eval_mode CrossSession, tuned False, fold_idx 0
+[CACHE] Trying checkpoint type: final
+[CACHE] Looking for checkpoint at: model_cache\Lee2019_SSVEP\branched_wiredcfc_arch4\seed_42\subject_001\CrossSession\session_0_baseline.pt
+[CACHE] Config file at: model_cache\Lee2019_SSVEP\branched_wiredcfc_arch4\seed_42\subject_001\CrossSession\session_0_baseline.json
+[CACHE] Checkpoint exists: False, Config exists: False
+[CACHE] No cached model found: model_cache\Lee2019_SSVEP\branched_wiredcfc_arch4\seed_42\subject_001\CrossSession\session_0_baseline.pt
+[CACHE] No final checkpoint found
+Re-initializing module because the following parameters were re-set: D, F1, activation, backbone_dropout, backbone_layers, backbone_units, drop_prob, kernel_length, mixed_memory, mode, n_chans, n_outputs, n_times, temporal_kernel_size, temporal_stride, wiring.
+Re-initializing criterion.
+Re-initializing optimizer.
+Training with max_epochs=100 for dataset Lee2019_SSVEP (fold 0, session 0)
+Re-initializing module because the following parameters were re-set: module__n_chans, module__n_outputs, module__n_times.
+Re-initializing criterion.
+Re-initializing optimizer.
+Re-initializing module because the following parameters were re-set: D, F1, activation, backbone_dropout, backbone_layers, backbone_units, drop_prob, kernel_length, mixed_memory, mode, n_chans, n_outputs, n_times, temporal_kernel_size, temporal_stride, wiring.
+Re-initializing criterion.
+Re-initializing optimizer.
+  epoch    train_loss    valid_acc    valid_loss      lr     dur
+-------  ------------  -----------  ------------  ------  ------
+      1        [36m2.0131[0m       [32m0.2500[0m        [35m2.1925[0m  0.0100  1.0890
+      2        2.6345       0.2500        [35m1.7619[0m  0.0097  0.6078
+      3        [36m1.9682[0m       0.2500        [35m1.4968[0m  0.0094  0.6135
+      4        2.1567       0.2500        [35m1.4786[0m  0.0091  0.6282
+      5        [36m1.8034[0m       0.2500        [35m1.4183[0m  0.0089  0.6152
+      6        1.8200       0.2500        [35m1.3958[0m  0.0086  0.6241
+      7        [36m1.7967[0m       0.2500        1.4671  0.0083  0.6373
+      8        [36m1.7627[0m       0.2500        1.4551  0.0081  0.6132
+      9        1.9520       0.2500        1.4235  0.0078  0.6154
+     10        [36m1.6867[0m       0.2500        1.4001  0.0076  0.6102
+     11        1.6888       0.2500        [35m1.3920[0m  0.0074  0.5994
+     12        [36m1.4590[0m       0.2500        1.3974  0.0072  0.6248
+     13        1.5933       0.2500        1.4022  0.0069  0.6181
+     14        1.6250       0.2500        1.3997  0.0067  0.6104
+     15        1.5809       0.2500        1.3967  0.0065  0.6204
+     16        1.4976       0.2500        1.3921  0.0063  0.6115
+     17        1.5167       0.2500        [35m1.3903[0m  0.0061  0.6091
+     18        1.5841       0.2500        1.3908  0.0060  0.5868
+     19        1.5028       0.2500        1.3920  0.0058  0.6047
+     20        [36m1.4042[0m       0.2500        1.3923  0.0056  0.6032
+     21        1.4711       0.2500        1.3925  0.0054  0.6097
+     22        1.6589       0.2500        1.3909  0.0053  0.6156
+     23        1.5948       0.2500        [35m1.3891[0m  0.0051  0.6182
+     24        1.4411       0.2500        [35m1.3882[0m  0.0050  0.6269
+     25        1.4724       0.2500        [35m1.3876[0m  0.0048  0.6122
+     26        [36m1.4019[0m       0.2500        [35m1.3868[0m  0.0047  0.6148
+     27        1.5206       0.2500        [35m1.3864[0m  0.0045  0.6076
+     28        1.4959       0.2500        [35m1.3859[0m  0.0044  0.6159
+     29        1.5638       0.2500        [35m1.3852[0m  0.0043  0.6123
+     30        1.4670       0.2000        [35m1.3844[0m  0.0041  0.6139
+     31        [36m1.3659[0m       0.2500        [35m1.3827[0m  0.0040  0.6187
+     32        1.5025       0.2000        [35m1.3808[0m  0.0039  0.6037
+     33        1.4223       0.2000        [35m1.3794[0m  0.0038  0.5886
+     34        1.3690       0.2000        [35m1.3785[0m  0.0037  0.6222
+     35        [36m1.3639[0m       0.2000        [35m1.3777[0m  0.0036  0.6196
+     36        [36m1.3545[0m       0.2500        1.3778  0.0034  0.6085
+     37        [36m1.3406[0m       0.2500        1.3812  0.0033  0.5806
+     38        1.3550       0.2500        1.3832  0.0032  0.6074
+     39        1.3769       0.2500        1.3861  0.0031  0.6223
+     40        1.3551       0.2500        1.3890  0.0030  0.6130
+     41        [36m1.2978[0m       0.2500        1.3901  0.0030  0.6002
+     42        1.3515       0.2500        1.3885  0.0029  0.6182
+     43        [36m1.2440[0m       0.2500        1.3795  0.0028  0.6063
+     44        1.2799       0.2500        [35m1.3712[0m  0.0027  0.6072
+     45        1.2588       0.2500        1.3824  0.0026  0.6138
+     46        [36m1.2004[0m       0.2500        1.4038  0.0025  0.6127
+     47        [36m1.1384[0m       0.2500        1.4153  0.0025  0.6383
+     48        1.1841       0.2500        1.4332  0.0024  0.6168
+     49        1.1840       0.2500        1.4454  0.0023  0.6200
+     50        [36m1.1089[0m       0.2500        1.4268  0.0022  0.6109
+     51        [36m1.0461[0m       0.2500        1.3939  0.0022  0.6177
+     52        1.1172       [32m0.3000[0m        [35m1.3426[0m  0.0021  0.6224
+     53        [36m0.9777[0m       0.3000        [35m1.2793[0m  0.0021  0.6058
+     54        1.0569       0.3000        [35m1.2420[0m  0.0020  0.5783
+     55        1.1221       0.3000        1.2470  0.0019  0.5825
+     56        1.0036       0.3000        [35m1.2347[0m  0.0019  0.5828
+     57        [36m0.9661[0m       0.2500        [35m1.1891[0m  0.0018  0.6044
+     58        0.9925       0.3000        [35m1.1243[0m  0.0018  0.6261
+     59        [36m0.8876[0m       [32m0.5000[0m        [35m1.0674[0m  0.0017  0.6125
+     60        0.9089       0.4500        [35m1.0247[0m  0.0017  0.6118
+     61        0.9471       0.4500        [35m1.0234[0m  0.0016  0.6095
+     62        0.9173       0.4500        1.0273  0.0016  0.6188
+     63        [36m0.8038[0m       0.4500        1.0294  0.0015  0.6100
+     64        0.8528       0.4000        1.0476  0.0015  0.6086
+     65        0.8717       0.4500        1.0453  0.0014  0.6163
+     66        [36m0.7912[0m       0.4500        1.0428  0.0014  0.5924
+     67        0.8927       0.4500        1.0411  0.0013  0.6145
+     68        0.8170       0.4500        1.0426  0.0013  0.6165
+     69        0.8581       0.5000        1.0301  0.0013  0.6261
+     70        0.8203       0.4500        [35m0.9910[0m  0.0012  0.6236
+     71        [36m0.7305[0m       0.4000        [35m0.9636[0m  0.0012  0.6241
+     72        0.7914       0.5000        [35m0.9388[0m  0.0012  0.6202
+     73        0.7761       0.4500        [35m0.9188[0m  0.0011  0.6143
+     74        0.7524       0.5000        [35m0.9104[0m  0.0011  0.6131
+     75        0.7666       [32m0.5500[0m        [35m0.9094[0m  0.0010  0.6261
+     76        0.7723       0.5500        [35m0.9079[0m  0.0010  0.6258
+     77        0.8341       0.5500        [35m0.9001[0m  0.0010  0.6041
+     78        0.7681       [32m0.6000[0m        [35m0.8948[0m  0.0010  0.6149
+     79        [36m0.7281[0m       0.6000        [35m0.8943[0m  0.0009  0.6183
+     80        0.7662       0.5500        [35m0.8900[0m  0.0009  0.6155
+     81        0.7924       0.5000        0.8981  0.0009  0.5896
+     82        0.8190       0.5000        0.9092  0.0008  0.5836
+     83        [36m0.7160[0m       0.4500        0.9215  0.0008  0.6334
+     84        [36m0.5745[0m       0.4500        0.9400  0.0008  0.6151
+     85        0.6904       0.4500        0.9545  0.0008  0.6397
+     86        0.7394       0.4500        0.9734  0.0008  0.6203
+     87        0.7370       0.4500        0.9828  0.0007  0.6161
+     88        0.6461       0.4500        0.9857  0.0007  0.6150
+     89        0.7079       0.4500        0.9877  0.0007  0.6129
+     90        0.7326       0.4000        0.9746  0.0007  0.6126
+     91        0.7728       0.4000        0.9605  0.0006  0.6176
+     92        0.6712       0.4000        0.9496  0.0006  0.5752
+     93        0.6318       0.4500        0.9301  0.0006  0.5907
+     94        0.7033       0.4500        0.9127  0.0006  0.6047
+     95        0.7357       0.4500        0.8997  0.0006  0.6017
+     96        0.6871       0.5500        [35m0.8842[0m  0.0006  0.6052
+     97        0.7102       0.5500        [35m0.8712[0m  0.0005  0.6082
+     98        0.6709       0.5500        [35m0.8558[0m  0.0005  0.6075
+     99        0.7109       0.5500        [35m0.8467[0m  0.0005  0.6426
+    100        0.6177       0.5500        [35m0.8397[0m  0.0005  0.6238
+[CACHE] Attempting to load cached model: branched_wiredcfc_arch4, subject 1, session 1, eval_mode CrossSession, tuned False, fold_idx 1
+[CACHE] Trying checkpoint type: final
+[CACHE] Looking for checkpoint at: model_cache\Lee2019_SSVEP\branched_wiredcfc_arch4\seed_42\subject_001\CrossSession\session_1_baseline.pt
+[CACHE] Config file at: model_cache\Lee2019_SSVEP\branched_wiredcfc_arch4\seed_42\subject_001\CrossSession\session_1_baseline.json
+[CACHE] Checkpoint exists: False, Config exists: False
+[CACHE] No cached model found: model_cache\Lee2019_SSVEP\branched_wiredcfc_arch4\seed_42\subject_001\CrossSession\session_1_baseline.pt
+[CACHE] No final checkpoint found
+Re-initializing module because the following parameters were re-set: D, F1, activation, backbone_dropout, backbone_layers, backbone_units, drop_prob, kernel_length, mixed_memory, mode, n_chans, n_outputs, n_times, temporal_kernel_size, temporal_stride, wiring.
+Re-initializing criterion.
+Re-initializing optimizer.
+Training with max_epochs=100 for dataset Lee2019_SSVEP (fold 1, session 1)
+Re-initializing module because the following parameters were re-set: module__n_chans, module__n_outputs, module__n_times.
+Re-initializing criterion.
+Re-initializing optimizer.
+Re-initializing module because the following parameters were re-set: D, F1, activation, backbone_dropout, backbone_layers, backbone_units, drop_prob, kernel_length, mixed_memory, mode, n_chans, n_outputs, n_times, temporal_kernel_size, temporal_stride, wiring.
+Re-initializing criterion.
+Re-initializing optimizer.
+  epoch    train_loss    valid_acc    valid_loss      lr     dur
+-------  ------------  -----------  ------------  ------  ------
+      1        [36m1.7160[0m       [32m0.2500[0m        [35m2.3197[0m  0.0100  0.6345
+      2        2.4840       0.2500        [35m1.8275[0m  0.0097  0.6184
+      3        1.8926       0.2500        [35m1.5641[0m  0.0094  0.6143
+      4        1.8989       [32m0.3500[0m        [35m1.3383[0m  0.0091  0.6117
+      5        1.8167       0.2500        1.3714  0.0089  0.6219
+      6        [36m1.6099[0m       0.2500        1.5052  0.0086  0.6161
+      7        1.7366       0.2500        1.7500  0.0083  0.6103
+      8        [36m1.3463[0m       0.2500        1.7411  0.0081  0.6154
+      9        1.4846       0.2500        1.6744  0.0078  0.6127
+     10        1.4089       0.2500        1.6284  0.0076  0.6066
+     11        1.3629       0.2500        1.6126  0.0074  0.5927
+     12        [36m1.2571[0m       0.2500        1.5910  0.0072  0.6128
+     13        [36m1.2114[0m       0.2500        1.4521  0.0069  0.6168
+     14        1.3584       0.3500        1.3414  0.0067  0.6089
+     15        [36m1.1404[0m       0.3000        [35m1.2474[0m  0.0065  0.6040
+     16        1.2439       [32m0.4000[0m        [35m1.1724[0m  0.0063  0.6023
+     17        [36m1.0203[0m       [32m0.4500[0m        [35m1.0374[0m  0.0061  0.6076
+     18        1.2001       [32m0.5500[0m        [35m0.9244[0m  0.0060  0.6125
+     19        1.1248       0.5000        [35m0.9190[0m  0.0058  0.6062
+     20        [36m1.0049[0m       0.5000        [35m0.9088[0m  0.0056  0.6169
+     21        1.0491       [32m0.6000[0m        0.9266  0.0054  0.6187
+     22        1.0515       0.5000        1.0454  0.0053  0.6210
+     23        [36m0.9754[0m       0.5000        1.0503  0.0051  0.6185
+     24        1.0908       0.5500        0.9290  0.0050  0.6185
+     25        [36m0.8591[0m       0.5500        [35m0.8300[0m  0.0048  0.6334
+     26        0.8856       0.5500        [35m0.8120[0m  0.0047  0.6320
+     27        0.9463       0.5500        0.8177  0.0045  0.6059
+     28        0.9193       0.5500        [35m0.8096[0m  0.0044  0.5973
+     29        0.9380       0.5500        [35m0.7975[0m  0.0043  0.6335
+     30        [36m0.7992[0m       0.5500        [35m0.7957[0m  0.0041  0.6245
+     31        0.9055       0.6000        0.8046  0.0040  0.6209
+     32        0.8516       0.6000        0.8443  0.0039  0.6465
+     33        [36m0.7905[0m       [32m0.6500[0m        0.8515  0.0038  0.6406
+     34        0.8481       0.6500        0.8289  0.0037  0.6163
+     35        [36m0.7509[0m       0.6500        0.8411  0.0036  0.5839
+     36        [36m0.7094[0m       0.6500        0.8538  0.0034  0.6077
+     37        0.7621       0.6500        0.8661  0.0033  0.6065
+     38        0.7569       0.6000        0.9435  0.0032  0.6145
+     39        0.7350       0.6000        0.9550  0.0031  0.6378
+     40        [36m0.6961[0m       0.6000        0.9204  0.0030  0.6247
+     41        [36m0.6181[0m       0.6000        0.8749  0.0030  0.6091
+     42        [36m0.5918[0m       0.6500        0.8201  0.0029  0.6582
+     43        0.6376       0.6500        [35m0.7794[0m  0.0028  0.6402
+     44        0.7124       [32m0.7000[0m        [35m0.7625[0m  0.0027  0.6203
+     45        0.7320       0.7000        [35m0.7473[0m  0.0026  0.6311
+     46        0.6637       0.7000        [35m0.7333[0m  0.0025  0.6103
+     47        0.6219       0.7000        0.7376  0.0025  0.6316
+     48        0.6493       0.7000        [35m0.7208[0m  0.0024  0.6167
+     49        0.6088       0.7000        [35m0.6932[0m  0.0023  0.6123
+     50        [36m0.5442[0m       0.7000        [35m0.6554[0m  0.0022  0.6229
+     51        0.5969       0.6500        [35m0.6358[0m  0.0022  0.6093
+     52        0.7328       0.7000        [35m0.6169[0m  0.0021  0.6235
+     53        0.6629       0.7000        [35m0.6019[0m  0.0021  0.6208
+     54        0.6835       [32m0.7500[0m        [35m0.5973[0m  0.0020  0.6270
+     55        0.6098       0.7000        0.6165  0.0019  0.6257
+     56        0.6082       0.7000        0.6615  0.0019  0.6182
+     57        0.6368       0.7000        0.7045  0.0018  0.6140
+     58        0.6746       0.7000        0.7197  0.0018  0.6121
+     59        0.7058       0.7000        0.7021  0.0017  0.6088
+     60        0.6431       0.7000        0.6735  0.0017  0.5982
+     61        0.6047       0.7000        0.6413  0.0016  0.5934
+     62        0.6537       0.7500        0.6205  0.0016  0.6040
+     63        0.5585       0.7000        0.6210  0.0015  0.6133
+     64        [36m0.5409[0m       0.7000        0.6195  0.0015  0.6041
+     65        0.6712       0.7000        0.6170  0.0014  0.6397
+     66        [36m0.5044[0m       0.6500        0.6095  0.0014  0.6183
+     67        0.6060       0.6500        [35m0.5968[0m  0.0013  0.6420
+     68        0.5214       0.7000        [35m0.5909[0m  0.0013  0.6686
+     69        0.6111       0.6500        0.6000  0.0013  0.6657
+     70        0.5345       0.6500        0.6236  0.0012  0.6330
+     71        0.5568       0.6500        0.6423  0.0012  0.6176
+     72        0.5972       0.6500        0.6491  0.0012  0.6220
+     73        0.5689       0.6500        0.6541  0.0011  0.6142
+     74        [36m0.4730[0m       0.6500        0.6441  0.0011  0.6175
+     75        0.5050       0.6500        0.6192  0.0010  0.6248
+     76        0.4904       0.6500        [35m0.5869[0m  0.0010  0.6315
+     77        0.5646       0.7500        [35m0.5484[0m  0.0010  0.6322
+     78        0.5357       0.7500        [35m0.5262[0m  0.0010  0.6226
+     79        0.4734       0.7000        0.5266  0.0009  0.6181
+     80        [36m0.4341[0m       0.7000        0.5374  0.0009  0.6208
+     81        0.5069       0.7000        0.5449  0.0009  0.6196
+     82        0.4978       0.7500        0.5490  0.0008  0.6107
+     83        0.4644       0.7500        0.5478  0.0008  0.6192
+     84        [36m0.3839[0m       0.7000        0.5402  0.0008  0.6275
+     85        0.5526       0.7000        0.5266  0.0008  0.6380
+     86        0.5033       0.7000        [35m0.5077[0m  0.0008  0.6214
+     87        0.4634       0.7000        [35m0.4865[0m  0.0007  0.6141
+     88        0.4903       0.7000        [35m0.4675[0m  0.0007  0.6216
+     89        0.5447       0.7000        [35m0.4583[0m  0.0007  0.6121
+     90        0.4873       [32m0.8000[0m        [35m0.4501[0m  0.0007  0.6019
+     91        0.5333       0.7500        [35m0.4469[0m  0.0006  0.6518
+     92        0.5097       0.7500        [35m0.4443[0m  0.0006  0.6564
+     93        0.4803       0.7500        [35m0.4411[0m  0.0006  0.6187
+     94        0.5118       0.7500        [35m0.4361[0m  0.0006  0.6112
+     95        0.4804       0.7500        [35m0.4350[0m  0.0006  0.6430
+     96        0.4741       0.7500        0.4393  0.0006  0.6226
+     97        0.5044       0.7500        0.4489  0.0005  0.6125
+     98        0.4476       0.7500        0.4608  0.0005  0.6145
+     99        0.4085       0.7500        0.4757  0.0005  0.6227
+    100        0.4692       0.7500        0.4888  0.0005  0.6225
+[I 2026-01-17 16:07:53,498] A new study created in memory with name: no-name-acc52ca8-71bc-40ca-82af-801ac3766c5b
+Restoring best model from epoch 95.
+[CACHE] Cache loading disabled (try_cache=False)
+Re-initializing module because the following parameters were re-set: D, F1, activation, backbone_dropout, backbone_layers, backbone_units, drop_prob, kernel_length, mixed_memory, mode, n_chans, n_outputs, n_times, temporal_kernel_size, temporal_stride, wiring.
+Re-initializing criterion.
+Re-initializing optimizer.
+Saved: results//SSVEP//Lee2019_SSVEP//branched_wiredcfc_arch4//CrossSessionEvaluation//42//sub-001//0//test_perturb\branched_wiredcfc_arch4_test_perturb_subject_001_seed42.csv
+Saved: results//SSVEP//Lee2019_SSVEP//branched_wiredcfc_arch4//CrossSessionEvaluation//42//sub-001//1//test_perturb\branched_wiredcfc_arch4_test_perturb_subject_001_seed42.csv
+Experiment completed successfully. Results shape: (160, 43)
+Script ended at: 2026-01-17 16:07:54
+Total runtime: 8.49 minutes

@@ -1,0 +1,286 @@
+Choosing the first 4 classes from all possible events
+Script started at: 2026-01-17 20:06:56
+[check_skip_eval] Mode: test_perturb, Tuned: False, is_test_perturb_mode: True
+[check_skip_eval] Existing output paths (after tuned filter): 0, Expected: 3
+Starting unified experiment:
+  Model: hydra_v2_multi_query
+  Dataset: BI2015a
+  Subjects: [1]
+  Mode: test_perturb
+  Eval Mode: CrossSession
+  Seed: 42
+  Tune: False
+[check_skip_eval] Mode: test_perturb, Tuned: False, is_test_perturb_mode: True
+[check_skip_eval] Existing output paths (after tuned filter): 0, Expected: 3
+[CACHE] Attempting to load cached model: hydra_v2_multi_query, subject 1, session 0, eval_mode CrossSession, tuned False, fold_idx 0
+[CACHE] Trying checkpoint type: final
+[CACHE] Looking for checkpoint at: model_cache\BI2015a\hydra_v2_multi_query\seed_42\subject_001\CrossSession\session_0_baseline.pt
+[CACHE] Config file at: model_cache\BI2015a\hydra_v2_multi_query\seed_42\subject_001\CrossSession\session_0_baseline.json
+[CACHE] Checkpoint exists: False, Config exists: False
+[CACHE] No cached model found: model_cache\BI2015a\hydra_v2_multi_query\seed_42\subject_001\CrossSession\session_0_baseline.pt
+[CACHE] No final checkpoint found
+Re-initializing module because the following parameters were re-set: D, F1, activation, attn_dropout, backbone_dropout, backbone_layers, backbone_units, context_num_heads, context_num_layers, context_type, drop_prob, erp_num_queries, fusion, kernel_length, mixed_memory, mode, n_chans, n_outputs, n_times, num_attn_queries, ssvep_num_filters, temporal_kernel_size, temporal_stride, use_adaptive_residual, use_cross_bin_context, use_erp_head, use_global_skip, use_ssvep_head, wiring.
+Re-initializing criterion.
+Re-initializing optimizer.
+Training with max_epochs=100 for dataset BI2015a (fold 0, session 0)
+Re-initializing module because the following parameters were re-set: module__n_chans, module__n_outputs, module__n_times.
+Re-initializing criterion.
+Re-initializing optimizer.
+Re-initializing module because the following parameters were re-set: D, F1, activation, attn_dropout, backbone_dropout, backbone_layers, backbone_units, context_num_heads, context_num_layers, context_type, drop_prob, erp_num_queries, fusion, kernel_length, mixed_memory, mode, n_chans, n_outputs, n_times, num_attn_queries, ssvep_num_filters, temporal_kernel_size, temporal_stride, use_adaptive_residual, use_cross_bin_context, use_erp_head, use_global_skip, use_ssvep_head, wiring.
+Re-initializing criterion.
+Re-initializing optimizer.
+  epoch    train_loss    valid_acc    valid_loss      lr     dur
+-------  ------------  -----------  ------------  ------  ------
+      1        [36m0.5591[0m       [32m0.8344[0m        [35m0.4493[0m  0.0100  7.1984
+      2        [36m0.4664[0m       0.8344        0.4724  0.0097  7.0777
+      3        [36m0.4618[0m       0.8344        0.4496  0.0094  7.0884
+      4        0.4665       0.8344        0.4502  0.0091  7.0108
+      5        [36m0.4534[0m       0.8344        [35m0.4471[0m  0.0089  7.0171
+      6        0.4583       0.8344        0.4521  0.0086  7.0760
+      7        [36m0.4462[0m       0.8344        [35m0.4180[0m  0.0083  7.1841
+      8        [36m0.4267[0m       0.8344        0.4390  0.0081  7.0721
+      9        [36m0.4128[0m       0.8344        [35m0.4030[0m  0.0078  7.2421
+     10        [36m0.3899[0m       0.8344        [35m0.3974[0m  0.0076  7.1876
+     11        [36m0.3864[0m       0.8344        [35m0.3861[0m  0.0074  7.0772
+     12        [36m0.3618[0m       0.8176        [35m0.3667[0m  0.0072  6.9863
+     13        [36m0.3461[0m       0.8302        [35m0.3639[0m  0.0069  7.1028
+     14        [36m0.3432[0m       [32m0.8365[0m        [35m0.3588[0m  0.0067  7.0688
+     15        [36m0.3367[0m       [32m0.8386[0m        [35m0.3345[0m  0.0065  7.1102
+     16        [36m0.3226[0m       [32m0.8553[0m        [35m0.3315[0m  0.0063  7.1072
+     17        [36m0.3082[0m       [32m0.8595[0m        [35m0.3257[0m  0.0061  7.1682
+     18        [36m0.3069[0m       [32m0.8616[0m        [35m0.3200[0m  0.0060  7.1136
+     19        [36m0.2890[0m       0.8532        0.3304  0.0058  7.0582
+     20        [36m0.2737[0m       [32m0.8637[0m        [35m0.3047[0m  0.0056  7.0396
+     21        0.2743       [32m0.8700[0m        0.3223  0.0054  7.1484
+     22        [36m0.2672[0m       0.8679        [35m0.2958[0m  0.0053  7.1543
+     23        [36m0.2469[0m       [32m0.8763[0m        0.3182  0.0051  7.0990
+     24        0.2680       [32m0.8805[0m        0.2994  0.0050  7.1329
+     25        [36m0.2457[0m       0.8700        0.3197  0.0048  7.1267
+     26        [36m0.2384[0m       0.8805        [35m0.2943[0m  0.0047  7.0557
+     27        [36m0.2381[0m       [32m0.8910[0m        0.2973  0.0045  6.9897
+     28        [36m0.2278[0m       0.8826        0.2972  0.0044  7.0965
+     29        0.2488       0.8637        0.3147  0.0043  6.9874
+     30        [36m0.2244[0m       0.8889        0.3013  0.0041  7.1296
+     31        [36m0.2153[0m       0.8826        0.3117  0.0040  7.0533
+     32        [36m0.2138[0m       0.8721        0.3295  0.0039  7.1953
+     33        [36m0.2116[0m       0.8805        0.3330  0.0038  7.0600
+     34        [36m0.1999[0m       0.8826        0.3251  0.0037  7.1518
+     35        [36m0.1946[0m       [32m0.8994[0m        [35m0.2819[0m  0.0036  7.1348
+     36        0.1972       0.8931        0.2999  0.0034  7.0918
+     37        [36m0.1874[0m       0.8952        0.2904  0.0033  6.9727
+     38        [36m0.1809[0m       0.8658        0.3668  0.0032  7.0792
+     39        0.1849       0.8868        0.3249  0.0031  7.0610
+     40        [36m0.1690[0m       0.8952        0.3326  0.0030  7.1632
+     41        0.1719       0.8826        0.3254  0.0030  7.2053
+     42        0.1792       0.8805        0.3155  0.0029  7.2125
+     43        0.1855       0.8973        [35m0.2798[0m  0.0028  7.3432
+     44        [36m0.1663[0m       0.8994        0.3255  0.0027  7.2284
+     45        [36m0.1620[0m       [32m0.9078[0m        0.2995  0.0026  7.0825
+     46        [36m0.1553[0m       0.9036        0.3209  0.0025  7.0578
+     47        0.1752       0.9078        [35m0.2700[0m  0.0025  7.0684
+     48        0.1592       0.8910        0.3242  0.0024  7.0289
+     49        [36m0.1524[0m       0.8868        0.3177  0.0023  7.1731
+     50        0.1547       0.8889        0.3287  0.0022  7.2123
+     51        [36m0.1484[0m       0.9057        0.3118  0.0022  7.2625
+     52        0.1486       0.8973        0.3138  0.0021  7.0957
+     53        0.1551       [32m0.9140[0m        0.2990  0.0021  7.0140
+     54        0.1525       0.9015        0.3139  0.0020  7.1131
+     55        0.1507       0.9119        0.3096  0.0019  7.1861
+     56        [36m0.1420[0m       0.8952        0.3177  0.0019  7.0641
+     57        [36m0.1358[0m       0.9078        0.3188  0.0018  7.1933
+     58        0.1429       0.9057        0.3183  0.0018  7.0449
+     59        [36m0.1291[0m       0.9015        0.3060  0.0017  7.0516
+     60        0.1537       0.9078        0.2982  0.0017  7.0382
+     61        0.1325       [32m0.9203[0m        0.2884  0.0016  7.0574
+     62        0.1294       0.9078        0.3154  0.0016  7.3150
+     63        0.1303       0.8910        0.3733  0.0015  7.3553
+     64        0.1349       0.9036        0.3287  0.0015  7.4243
+     65        0.1446       0.8994        0.3176  0.0014  7.1190
+     66        0.1298       0.8994        0.3231  0.0014  7.1221
+Stopping since valid_loss has not improved in the last 20 epochs.
+Restoring best model from epoch 47.
+[CACHE] Attempting to load cached model: hydra_v2_multi_query, subject 1, session 1, eval_mode CrossSession, tuned False, fold_idx 1
+[CACHE] Trying checkpoint type: final
+[CACHE] Looking for checkpoint at: model_cache\BI2015a\hydra_v2_multi_query\seed_42\subject_001\CrossSession\session_1_baseline.pt
+[CACHE] Config file at: model_cache\BI2015a\hydra_v2_multi_query\seed_42\subject_001\CrossSession\session_1_baseline.json
+[CACHE] Checkpoint exists: False, Config exists: False
+[CACHE] No cached model found: model_cache\BI2015a\hydra_v2_multi_query\seed_42\subject_001\CrossSession\session_1_baseline.pt
+[CACHE] No final checkpoint found
+Re-initializing module because the following parameters were re-set: D, F1, activation, attn_dropout, backbone_dropout, backbone_layers, backbone_units, context_num_heads, context_num_layers, context_type, drop_prob, erp_num_queries, fusion, kernel_length, mixed_memory, mode, n_chans, n_outputs, n_times, num_attn_queries, ssvep_num_filters, temporal_kernel_size, temporal_stride, use_adaptive_residual, use_cross_bin_context, use_erp_head, use_global_skip, use_ssvep_head, wiring.
+Re-initializing criterion.
+Re-initializing optimizer.
+Training with max_epochs=100 for dataset BI2015a (fold 1, session 1)
+Re-initializing module because the following parameters were re-set: module__n_chans, module__n_outputs, module__n_times.
+Re-initializing criterion.
+Re-initializing optimizer.
+Re-initializing module because the following parameters were re-set: D, F1, activation, attn_dropout, backbone_dropout, backbone_layers, backbone_units, context_num_heads, context_num_layers, context_type, drop_prob, erp_num_queries, fusion, kernel_length, mixed_memory, mode, n_chans, n_outputs, n_times, num_attn_queries, ssvep_num_filters, temporal_kernel_size, temporal_stride, use_adaptive_residual, use_cross_bin_context, use_erp_head, use_global_skip, use_ssvep_head, wiring.
+Re-initializing criterion.
+Re-initializing optimizer.
+  epoch    train_loss    valid_acc    valid_loss      lr     dur
+-------  ------------  -----------  ------------  ------  ------
+      1        [36m0.4772[0m       [32m0.8333[0m        [35m0.4510[0m  0.0100  9.9808
+      2        [36m0.4667[0m       0.8333        [35m0.4507[0m  0.0097  10.1225
+      3        [36m0.4609[0m       0.8333        0.4526  0.0094  10.0656
+      4        [36m0.4605[0m       0.8333        0.4555  0.0091  10.0172
+      5        0.4634       0.8333        0.4629  0.0089  10.1345
+      6        [36m0.4544[0m       0.8333        [35m0.4492[0m  0.0086  10.0758
+      7        [36m0.4372[0m       0.8333        [35m0.4213[0m  0.0083  9.9920
+      8        [36m0.4138[0m       0.8333        0.5911  0.0081  10.1402
+      9        [36m0.3856[0m       [32m0.8348[0m        0.4489  0.0078  10.0929
+     10        [36m0.3777[0m       0.8333        [35m0.4151[0m  0.0076  9.9856
+     11        [36m0.3736[0m       [32m0.8379[0m        [35m0.3918[0m  0.0074  10.0956
+     12        [36m0.3575[0m       [32m0.8409[0m        0.4038  0.0072  10.0239
+     13        [36m0.3514[0m       0.8152        0.4271  0.0069  10.0964
+     14        [36m0.3410[0m       0.8333        0.4413  0.0067  9.9409
+     15        [36m0.3269[0m       [32m0.8485[0m        [35m0.3821[0m  0.0065  10.0911
+     16        [36m0.3241[0m       0.8394        0.3889  0.0063  10.0627
+     17        [36m0.3176[0m       0.7924        0.4642  0.0061  9.9310
+     18        [36m0.3029[0m       0.8318        0.5105  0.0060  10.0671
+     19        0.3050       0.8455        [35m0.3728[0m  0.0058  10.1058
+     20        [36m0.2833[0m       0.8470        0.4013  0.0056  10.1395
+     21        [36m0.2820[0m       0.8485        0.4163  0.0054  10.0060
+     22        [36m0.2816[0m       [32m0.8591[0m        0.3824  0.0053  10.0741
+     23        [36m0.2764[0m       0.8455        0.3942  0.0051  9.8939
+     24        0.2799       0.8470        0.3913  0.0050  9.8806
+     25        [36m0.2711[0m       0.8591        0.3821  0.0048  10.0871
+     26        [36m0.2613[0m       0.8455        0.3946  0.0047  10.0064
+     27        [36m0.2462[0m       [32m0.8621[0m        0.4178  0.0045  10.1257
+     28        [36m0.2422[0m       [32m0.8636[0m        0.3759  0.0044  9.8944
+     29        [36m0.2320[0m       0.8333        0.4269  0.0043  10.0594
+     30        0.2409       0.8364        0.4053  0.0041  9.9733
+     31        0.2367       0.8576        0.4040  0.0040  10.1651
+     32        [36m0.2286[0m       [32m0.8712[0m        0.4166  0.0039  10.3566
+     33        0.2316       0.8333        0.4184  0.0038  10.1395
+     34        0.2291       0.8227        0.4586  0.0037  10.0450
+     35        0.2363       0.7894        0.4519  0.0036  10.0547
+     36        [36m0.2274[0m       0.8318        0.4413  0.0034  9.9581
+     37        [36m0.2235[0m       0.8697        0.4188  0.0033  10.0179
+     38        0.2271       0.8212        0.4166  0.0032  9.9914
+Stopping since valid_loss has not improved in the last 20 epochs.
+Restoring best model from epoch 19.
+[CACHE] Attempting to load cached model: hydra_v2_multi_query, subject 1, session 2, eval_mode CrossSession, tuned False, fold_idx 2
+[CACHE] Trying checkpoint type: final
+[CACHE] Looking for checkpoint at: model_cache\BI2015a\hydra_v2_multi_query\seed_42\subject_001\CrossSession\session_2_baseline.pt
+[CACHE] Config file at: model_cache\BI2015a\hydra_v2_multi_query\seed_42\subject_001\CrossSession\session_2_baseline.json
+[CACHE] Checkpoint exists: False, Config exists: False
+[CACHE] No cached model found: model_cache\BI2015a\hydra_v2_multi_query\seed_42\subject_001\CrossSession\session_2_baseline.pt
+[CACHE] No final checkpoint found
+Re-initializing module because the following parameters were re-set: D, F1, activation, attn_dropout, backbone_dropout, backbone_layers, backbone_units, context_num_heads, context_num_layers, context_type, drop_prob, erp_num_queries, fusion, kernel_length, mixed_memory, mode, n_chans, n_outputs, n_times, num_attn_queries, ssvep_num_filters, temporal_kernel_size, temporal_stride, use_adaptive_residual, use_cross_bin_context, use_erp_head, use_global_skip, use_ssvep_head, wiring.
+Re-initializing criterion.
+Re-initializing optimizer.
+Training with max_epochs=100 for dataset BI2015a (fold 2, session 2)
+Re-initializing module because the following parameters were re-set: module__n_chans, module__n_outputs, module__n_times.
+Re-initializing criterion.
+Re-initializing optimizer.
+Re-initializing module because the following parameters were re-set: D, F1, activation, attn_dropout, backbone_dropout, backbone_layers, backbone_units, context_num_heads, context_num_layers, context_type, drop_prob, erp_num_queries, fusion, kernel_length, mixed_memory, mode, n_chans, n_outputs, n_times, num_attn_queries, ssvep_num_filters, temporal_kernel_size, temporal_stride, use_adaptive_residual, use_cross_bin_context, use_erp_head, use_global_skip, use_ssvep_head, wiring.
+Re-initializing criterion.
+Re-initializing optimizer.
+  epoch    train_loss    valid_acc    valid_loss      lr      dur
+-------  ------------  -----------  ------------  ------  -------
+      1        [36m0.4787[0m       [32m0.8335[0m        [35m0.4504[0m  0.0100  12.9060
+      2        [36m0.4647[0m       0.8335        0.4506  0.0097  12.6655
+      3        [36m0.4556[0m       0.8335        0.4521  0.0094  12.7807
+      4        0.4604       0.8335        0.4520  0.0091  12.7505
+      5        0.4603       0.8335        0.4552  0.0089  13.0570
+      6        0.4602       0.8335        0.4634  0.0086  12.8861
+      7        0.4572       0.8335        0.4512  0.0083  12.7241
+      8        0.4664       0.8335        0.4504  0.0081  12.7913
+      9        0.4557       0.8335        [35m0.4503[0m  0.0078  12.9538
+     10        [36m0.4541[0m       0.8335        0.4511  0.0076  13.0275
+     11        [36m0.4537[0m       0.8335        [35m0.4502[0m  0.0074  12.5950
+     12        [36m0.4462[0m       0.8335        [35m0.4375[0m  0.0072  12.7734
+     13        [36m0.4340[0m       0.8312        [35m0.4228[0m  0.0069  12.8044
+     14        [36m0.3991[0m       0.8217        [35m0.4207[0m  0.0067  12.9270
+     15        [36m0.3771[0m       0.8312        [35m0.4171[0m  0.0065  12.8469
+     16        [36m0.3595[0m       [32m0.8347[0m        [35m0.4086[0m  0.0063  12.8103
+     17        [36m0.3483[0m       [32m0.8359[0m        [35m0.3993[0m  0.0061  12.7113
+     18        [36m0.3434[0m       0.8241        0.4025  0.0060  12.7160
+     19        [36m0.3345[0m       0.8217        0.4030  0.0058  12.6310
+     20        [36m0.3262[0m       [32m0.8501[0m        [35m0.3608[0m  0.0056  12.7831
+     21        [36m0.3064[0m       [32m0.8548[0m        [35m0.3598[0m  0.0054  12.8136
+     22        [36m0.2954[0m       0.8477        [35m0.3561[0m  0.0053  12.9251
+     23        [36m0.2893[0m       0.8418        0.3829  0.0051  12.7654
+     24        0.2919       [32m0.8630[0m        [35m0.3538[0m  0.0050  12.8426
+     25        [36m0.2773[0m       0.8512        [35m0.3481[0m  0.0048  12.7742
+     26        0.2789       [32m0.8678[0m        [35m0.3385[0m  0.0047  12.6923
+     27        [36m0.2580[0m       0.8654        0.3408  0.0045  12.6547
+     28        [36m0.2526[0m       0.8630        0.3405  0.0044  12.7268
+     29        0.2533       0.7898        0.4377  0.0043  12.9030
+     30        0.2558       0.8630        0.3496  0.0041  12.7229
+     31        0.2571       0.8666        [35m0.3314[0m  0.0040  12.6989
+     32        [36m0.2448[0m       0.8536        0.3585  0.0039  12.8881
+     33        0.2460       0.8241        0.3801  0.0038  12.6167
+     34        [36m0.2383[0m       [32m0.8725[0m        0.3387  0.0037  12.5830
+     35        0.2395       0.8666        0.3438  0.0036  12.6335
+     36        0.2383       0.8666        [35m0.3305[0m  0.0034  12.6193
+     37        [36m0.2326[0m       [32m0.8749[0m        [35m0.3257[0m  0.0033  12.9931
+     38        0.2377       [32m0.8760[0m        0.3510  0.0032  12.7320
+     39        [36m0.2254[0m       [32m0.8772[0m        0.3338  0.0031  12.5586
+     40        [36m0.2189[0m       0.8241        0.3978  0.0030  12.7692
+     41        0.2205       0.8772        0.3514  0.0030  12.7746
+     42        0.2198       0.8489        0.3702  0.0029  12.8649
+     43        [36m0.2170[0m       0.8666        0.3292  0.0028  12.7453
+     44        [36m0.2117[0m       0.8678        0.4019  0.0027  12.8580
+     45        [36m0.2060[0m       0.8642        0.3325  0.0026  12.6859
+     46        [36m0.2003[0m       0.8453        0.3411  0.0025  12.6513
+     47        0.2065       [32m0.8831[0m        [35m0.3208[0m  0.0025  12.6470
+     48        0.2105       0.8701        0.3265  0.0024  12.8243
+     49        0.2029       0.8760        0.3432  0.0023  12.7590
+     50        [36m0.1885[0m       0.8501        0.3882  0.0022  12.6056
+     51        0.1891       [32m0.8914[0m        0.3267  0.0022  12.9368
+     52        0.1903       [32m0.8949[0m        [35m0.3137[0m  0.0021  12.7484
+     53        0.1988       0.8902        0.3258  0.0021  12.9250
+     54        0.1998       0.8701        0.3812  0.0020  12.6901
+     55        0.2018       0.8855        [35m0.3058[0m  0.0019  12.7662
+     56        [36m0.1869[0m       0.8949        0.3129  0.0019  12.7185
+     57        0.1884       0.8512        0.4041  0.0018  12.6628
+     58        [36m0.1848[0m       0.8890        0.3069  0.0018  12.7373
+     59        [36m0.1839[0m       0.8926        0.3246  0.0017  12.7214
+     60        0.1866       0.8949        [35m0.2974[0m  0.0017  12.6975
+     61        [36m0.1820[0m       0.8937        0.3012  0.0016  12.8381
+     62        0.1893       0.8749        0.3424  0.0016  12.6538
+     63        0.1845       0.8689        0.3378  0.0015  12.7015
+     64        [36m0.1784[0m       [32m0.8973[0m        [35m0.2941[0m  0.0015  12.5853
+     65        0.1819       0.8737        0.3327  0.0014  12.8583
+     66        0.1877       0.8937        0.3100  0.0014  12.6420
+     67        0.1853       0.8630        0.3604  0.0013  12.7310
+     68        0.1853       [32m0.8996[0m        [35m0.2928[0m  0.0013  12.6894
+     69        [36m0.1712[0m       0.8914        0.3128  0.0013  12.8353
+     70        0.1825       0.8749        0.3308  0.0012  12.7003
+     71        0.1766       0.8914        0.3034  0.0012  12.9639
+     72        0.1783       0.8713        0.3381  0.0012  12.6124
+     73        0.1782       0.8902        0.3083  0.0011  12.7856
+     74        0.1772       0.8973        0.2974  0.0011  12.8523
+     75        0.1759       0.8985        [35m0.2908[0m  0.0010  12.8243
+     76        [36m0.1693[0m       0.8914        0.3086  0.0010  12.7528
+     77        [36m0.1684[0m       [32m0.9032[0m        0.3050  0.0010  12.8658
+     78        0.1704       0.8949        0.3090  0.0010  12.6419
+     79        0.1709       0.8666        0.3641  0.0009  12.8474
+     80        [36m0.1645[0m       0.8926        0.2983  0.0009  12.8414
+     81        0.1722       0.8985        0.3141  0.0009  12.6857
+     82        0.1715       0.8867        0.3109  0.0008  12.6439
+     83        0.1787       0.8819        0.3131  0.0008  12.7191
+     84        0.1724       0.8949        0.3007  0.0008  12.8422
+     85        0.1661       0.8985        0.2940  0.0008  12.7769
+     86        0.1682       0.8973        0.2938  0.0008  12.6958
+     87        0.1682       0.8843        0.3183  0.0007  12.7913
+     88        0.1714       0.8713        0.3439  0.0007  12.5947
+     89        [36m0.1643[0m       0.8878        0.3330  0.0007  12.6842
+     90        [36m0.1546[0m       0.8784        0.3525  0.0007  12.8312
+     91        0.1614       0.8937        0.3044  0.0006  12.9105
+     92        [36m0.1488[0m       0.8985        0.3026  0.0006  12.7072
+     93        0.1592       0.8926        0.3124  0.0006  12.7211
+     94        0.1497       0.8914        0.3147  0.0006  12.6194
+[I 2026-01-17 21:04:55,844] A new study created in memory with name: no-name-e63b4c9e-bcf9-4cd1-8686-3a331b60293d
+Stopping since valid_loss has not improved in the last 20 epochs.
+Restoring best model from epoch 75.
+[CACHE] Cache loading disabled (try_cache=False)
+Re-initializing module because the following parameters were re-set: D, F1, activation, attn_dropout, backbone_dropout, backbone_layers, backbone_units, context_num_heads, context_num_layers, context_type, drop_prob, erp_num_queries, fusion, kernel_length, mixed_memory, mode, n_chans, n_outputs, n_times, num_attn_queries, ssvep_num_filters, temporal_kernel_size, temporal_stride, use_adaptive_residual, use_cross_bin_context, use_erp_head, use_global_skip, use_ssvep_head, wiring.
+Re-initializing criterion.
+Re-initializing optimizer.
+Saved: results//ERP//BI2015a//hydra_v2_multi_query//CrossSessionEvaluation//42//sub-001//0//test_perturb\hydra_v2_multi_query_test_perturb_subject_001_seed42.csv
+Saved: results//ERP//BI2015a//hydra_v2_multi_query//CrossSessionEvaluation//42//sub-001//1//test_perturb\hydra_v2_multi_query_test_perturb_subject_001_seed42.csv
+Saved: results//ERP//BI2015a//hydra_v2_multi_query//CrossSessionEvaluation//42//sub-001//2//test_perturb\hydra_v2_multi_query_test_perturb_subject_001_seed42.csv
+Experiment completed successfully. Results shape: (240, 54)
+Script ended at: 2026-01-17 21:04:56
+Total runtime: 58.00 minutes

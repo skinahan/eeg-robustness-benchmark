@@ -1,0 +1,37 @@
+================================================================================
+ABLATION STUDIES ANALYSIS SUMMARY REPORT
+================================================================================
+Generated: 2026-01-19 16:11:11
+Output directory: E:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments\analysis\ablation_study_results
+
+--------------------------------------------------------------------------------
+PRIMARY OUTCOMES: ROBUSTNESS METRICS (RD/AUPC)
+Subject-level comparisons (n=subjects, not n=15 summary statistics)
+--------------------------------------------------------------------------------
+                  ablation                ablation_name         metric metric_type  baseline_mean  baseline_std  ablation_mean  ablation_std  mean_difference    test_type  parametric  statistic  p_value  cohens_dz  cohens_dz_ci_low  cohens_dz_ci_high  n_subjects  p_value_corrected significant
+ablation3_lstm_replacement Ablation 3: LSTM Replacement aupc_collapsed     primary       0.660605      0.045856       0.651400      0.049631         0.009205 paired_ttest        True   0.775174 0.519340   0.447547     -1.697021e-01           9.418569           3           1.000000       False
+ablation3_lstm_replacement Ablation 3: LSTM Replacement   rd_collapsed     primary       0.083552      0.011933       0.142214      0.040654        -0.058662 paired_ttest        True  -2.556261 0.124982  -1.475858     -3.509208e+00          -1.006883           3           0.749893       False
+    ablation2_no_branching     Ablation 2: No Branching aupc_collapsed     primary       0.660605      0.045856       0.678997      0.059087        -0.018392 paired_ttest        True  -1.338391 0.312632  -0.772720     -2.462175e+00          -0.186064           3           1.000000       False
+    ablation2_no_branching     Ablation 2: No Branching   rd_collapsed     primary       0.083552      0.011933       0.108751      0.025564        -0.025199 paired_ttest        True  -2.033235 0.179055  -1.173889     -2.375211e+00          -0.853803           3           1.000000       False
+   ablation1_no_carry_gate    Ablation 1: No Carry Gate aupc_collapsed     primary       0.660605      0.045856       0.642193      0.043883         0.018412 paired_ttest        True   1.242817 0.339878   0.717541      9.392115e-02           5.093433           3           1.000000       False
+   ablation1_no_carry_gate    Ablation 1: No Carry Gate   rd_collapsed     primary       0.083552      0.011933       0.100103      0.020605        -0.016551 paired_ttest        True  -0.916870 0.456000  -0.529355     -5.720275e+15           0.257323           3           1.000000       False
+
+--------------------------------------------------------------------------------
+CLEAN SCORES SUMMARY (Descriptive Statistics)
+--------------------------------------------------------------------------------
+                  ablation                ablation_name  clean_score_mean  clean_score_std  n_samples clean_score_mean_std
+   ablation1_no_carry_gate    Ablation 1: No Carry Gate          0.713728         0.072868         15      0.7137 ± 0.0729
+    ablation2_no_branching     Ablation 2: No Branching          0.759900         0.068601         15      0.7599 ± 0.0686
+ablation3_lstm_replacement Ablation 3: LSTM Replacement          0.755626         0.063326         15      0.7556 ± 0.0633
+                  baseline        Baseline (Full HYDRA)          0.717563         0.066004         15      0.7176 ± 0.0660
+
+--------------------------------------------------------------------------------
+SAVED FILES
+--------------------------------------------------------------------------------
+clean_scores                  : clean_scores_20260119_161110.csv
+statistical_tests             : statistical_tests_20260119_161110.csv
+subject_level_points          : subject_level_points_20260119_161110.csv
+subject_level_collapsed       : subject_level_collapsed_20260119_161110.csv
+subject_level_resolved        : subject_level_resolved_20260119_161110.csv
+combined_results              : combined_results_20260119_161110.csv
+

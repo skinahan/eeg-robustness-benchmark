@@ -142,9 +142,11 @@ class MultiObjectiveOptimizer:
             # Analyze graph topology
             metrics = self.topology_analyzer.analyze_graph(graph)
             
-            # Extract objective values (normalized to [0, 1] range)
-            entropy = min(1.0, max(0.0, metrics.get('degree_entropy', 0.0) / 5.0))
-            curvature = min(1.0, max(0.0, abs(metrics.get('avg_ricci_curvature', 0.0))))
+            # Extract objective values using canonical TE/ORC definitions.
+            # - TE is already normalized to [0,1] by definition.
+            # - ORC is signed; we maximize it directly (no abs).
+            entropy = float(np.clip(metrics.get('te', 0.0), 0.0, 1.0))
+            curvature = float(metrics.get('orc', metrics.get('avg_ricci_curvature', 0.0)))
             
             # Store results
             self.results.append(OptimizationResult(

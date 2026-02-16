@@ -1,0 +1,71 @@
+% =========================
+% Training Hyperparameters
+% =========================
+\begin{table}[t]
+\caption{\textbf{Default Training Hyperparameters.} Default training hyperparameters for EEGNet, REEGNet, CNN-NCPv2, and HYDRA models.}
+\label{tab:training_hyperparameters}
+  \begin{center}
+    \begin{small}
+      \begin{sc}
+        \begin{tabular}{lcccc}
+          \toprule
+          Parameter & EEGNet & REEGNet & CNN-NCPv2 & HYDRA \\
+          \midrule
+          Optimizer & AdamW & AdamW & AdamW & AdamW \\
+          Learning Rate & 0.001 & 1.00e-04 & 0.001 & 0.010 \\
+          Weight Decay & 0 & 0.001 & 0 & 0 \\
+          Batch Size & 64 & 64 & 32 & 64 \\
+          Max Epochs & 200 & 200 & 200 & 200 \\
+          LR Scheduler & None & None & ReduceLROnPlateau & ExponentialLR \\
+          LR Scheduler Params & --- & --- & patience=5, monitor=valid_loss & $\gamma$=0.97 \\
+          Gradient Clipping & None & None & Yes & Yes \\
+          Gradient Clip Value & --- & --- & 1.0 & 1.0 \\
+          Early Stopping & Yes & Yes & Yes & Yes \\
+          Early Stopping Patience & 20 & 20 & 20 & 20 \\
+          \bottomrule
+        \end{tabular}
+      \end{sc}
+    \end{small}
+  \end{center}
+  \vskip -0.1in
+\end{table}
+
+% =========================
+% Architectural Hyperparameters
+% =========================
+\begin{table}[t]
+\caption{\textbf{Default Architectural Hyperparameters.} Default architectural hyperparameters for EEGNet, REEGNet, CNN-NCPv2, and HYDRA models.}
+\label{tab:architectural_hyperparameters}
+  \begin{center}
+    \begin{small}
+      \begin{sc}
+        \begin{tabular}{lcccc}
+          \toprule
+          Parameter & EEGNet & REEGNet & CNN-NCPv2 & HYDRA \\
+          \midrule
+          $D$ (depth multiplier) & auto & 2 & --- & 2 \\
+          $F_1$ (temporal filters) & auto & 8 & --- & 8 \\
+          Activation (CfC) & --- & --- & --- & lecun_tanh \\
+          Backbone dropout (CfC) & --- & --- & --- & 0 \\
+          Backbone layers (CfC) & --- & --- & --- & 1 \\
+          Backbone units (CfC) & --- & --- & --- & 128 \\
+          Dropout probability & auto & 0.150 & --- & 0.500 \\
+          Final conv length & auto & --- & --- & --- \\
+          Fusion type & --- & --- & --- & mean \\
+          Kernel length & auto & 15 & --- & 125 \\
+          LSTM hidden size & --- & 32 & --- & --- \\
+          LSTM layers & --- & 2 & --- & --- \\
+          Mixed memory (CfC) & --- & --- & --- & No \\
+          Mode (CfC) & --- & --- & --- & default \\
+          NCP hidden dim & --- & --- & 36 & --- \\
+          Sparsity & --- & --- & 0.700 & --- \\
+          Temporal kernel size & --- & --- & --- & 3 \\
+          Temporal stride & --- & --- & --- & 2 \\
+          \bottomrule
+        \end{tabular}
+      \end{sc}
+    \end{small}
+  \end{center}
+  \vskip -0.1in
+\end{table}
+

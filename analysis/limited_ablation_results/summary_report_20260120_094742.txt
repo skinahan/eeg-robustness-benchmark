@@ -1,0 +1,11 @@
+================================================================================
+LIMITED ABLATION STUDIES ANALYSIS SUMMARY REPORT
+================================================================================
+Generated: 2026-01-20 09:47:44
+Output directory: E:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments\analysis\limited_ablation_results
+
+--------------------------------------------------------------------------------
+EFFECT SIZE INTERPRETATION (Cohen's dz)
+--------------------------------------------------------------------------------
+Cohen's dz interpretation guidelines:
+  |dz| < 0.2  : Negligible effect

@@ -1,0 +1,417 @@
+PLOT 2 OVERHAUL PATCH NOTE (vNext) — “Fix the proxy space” + Waqas-aligned small-world focus
+===========================================================================================
+
+Context / Why this patch exists
+-------------------------------
+Recent Plot 2 runs show weak or null separation between:
+  - A (true random WS-Flex), B (proxy-filtered WS-Flex), and C (TPE-guided WS-Flex),
+under both AUPC(alpha) and max_drop for ar1_drift, despite correct perturbation fingerprints
+and regime-stratified selection.
+
+Diagnostics indicate the core failure mode:
+  (1) ORC is strongly correlated with k / density (|corr(ORC, k)| ≈ 0.95 in our pools).
+  (2) Therefore, “maximize TE and ORC” behaves like “pick higher k” (density-dominated proxy space),
+      collapsing Pareto structure and undermining the central claim (“invert Waqas et al.”).
+  (3) Waqas et al. explore WS-Flex primarily in the (C, L) space (clustering coefficient and
+      average shortest path length), which is a natural parameterization of small-world structure.
+      Our current search does not constrain or optimize (C, L) — we only log them.
+
+Goal of this patch:
+  - Make “small-world regime” first-class (Waqas-aligned).
+  - Redefine the training-free objectives so they are not redundant with k/density.
+  - Preserve the A/B/C baseline logic needed to claim we “invert Waqas et al.”:
+      A = truly random baseline (no proxy),
+      B = proxy-selected baseline (static selection),
+      C = adaptive search (TPE) using the same proxy.
+  - Add training-free GO/NO-GO gates that must pass before any 24h training run.
+
+Summary of key changes
+----------------------
+UPDATES / TWEAKS (existing behaviors changed)
+  U1) Replace TE/ORC-only proxy with a Waqas-aligned proxy: (TE, small-worldness σ) as objectives.
+  U2) Demote ORC to a tie-breaker or residual proxy (within-k residual), not a primary objective.
+  U3) Make (C, L) binning mandatory for selection diversity across A/B/C, not optional logging.
+  U4) Expand WS-Flex generator bounds to cover a wider (C, L) manifold (not just k/p grids),
+      while keeping explicit capacity control (H fixed; optional edge-budget bands).
+
+NEW MECHANISMS (new functions / stages)
+  N1) Small-worldness computation σ using ER-matched references (C_ER, L_ER).
+  N2) Proxy viability diagnostic + strict GO/NO-GO gating based on redundancy and Pareto width.
+  N3) Residualized curvature proxy ORC_res = ORC − E[ORC | k] (or rank-within-k) for tie-breaking.
+  N4) Optional normalized spectral radius proxy ρ_norm for stability control (constraint or tie-breaker),
+      with density-aware normalization to avoid reintroducing “proxy = k”.
+  N5) Small-world focused generator mode that samples parameters to hit target (C, L) bins
+      (WS-Flex-in-(C,L) sampling), consistent with the WS-Flex “design space” framing.
+
+Definitions / Equations (locked)
+--------------------------------
+Graph and notation:
+  - Let G = (V, E), with |V| = H (hidden units fixed, default H=32).
+  - Let A be the adjacency matrix of the directed wiring actually used for the CfC mask.
+
+(1) Degree-distribution entropy (TE proxy)
+  - Let p_d be the empirical degree distribution over nodes (use undirected degree or total degree,
+    but be consistent across all candidates; default: undirected degree for WS-Flex before orientation).
+  - Shannon entropy of degrees:
+      H_deg(G) = − Σ_d p_d log p_d
+  - Normalized topological entropy (TE):
+      TE(G) = H_deg(G) / log(H)          ∈ [0, 1]   (define TE=0 if distribution degenerate)
+  Justification:
+    TE captures degree heterogeneity / mixing and was used as a robustness-correlated proxy in prior work.
+    Unlike ORC, TE is not purely monotone in k if the generator induces degree variability.
+
+(2) Clustering coefficient C and average path length L
+  - Use standard definitions on the undirected WS-Flex graph (pre-orientation):
+      C(G) = average local clustering coefficient
+      L(G) = average shortest path length (only for connected graphs)
+  Justification:
+    In WS-type families, (C, L) provides a smooth map of the “small-world manifold” and is the primary
+    coordinate system used in Waqas-style WS-Flex explorations. TE/ORC alone does not control C/L.
+
+(3) ER reference values for matched density
+  - Let p_edge be the observed edge probability (undirected):
+      p_edge = 2|E| / (H(H−1))
+  - Define an ER reference graph G_ER ~ G(H, p_edge) (or analytic approximations).
+  - Compute reference clustering and path length (choose one method and lock it):
+      C_ER ≈ p_edge
+      L_ER ≈ log(H) / log(H·p_edge)       (valid when H·p_edge > 1)
+    (If H·p_edge ≤ 1 or approximation unstable, compute L_ER via Monte Carlo averaging over
+     R_ER replicates, default R_ER=20, with fixed seed schedule.)
+
+(4) Small-worldness score σ (single scalar)
+      σ(G) = (C(G)/C_ER) / (L(G)/L_ER)
+  Justification:
+    σ increases with “high clustering + short paths” relative to random graphs at matched density,
+    matching the intuitive and commonly used operationalization of “small-world”.
+
+(5) Ollivier–Ricci curvature (ORC), sign-preserving
+  - Compute mean Ollivier–Ricci curvature over edges of the undirected graph:
+      ORC(G) = (1/|E|) Σ_(u,v)∈E κ(u,v)      (no absolute value)
+  Justification:
+    We retain sign information. However, ORC is density-coupled in our WS-Flex space and thus is
+    not suitable as a primary objective without residualization.
+
+(6) Residualized ORC within k (tie-breaker proxy)
+  - Estimate mean ORC for each k in a reference set:
+      μ_ORC(k) = E[ ORC(G) | k ]
+  - Define residual curvature:
+      ORC_res(G) = ORC(G) − μ_ORC(k(G))
+  Justification:
+    Removes the dominant dependence on k/density while preserving curvature variability within regime.
+    Using ORC_res prevents the optimizer from “winning” by simply choosing larger k.
+
+(7) Spectral radius (optional stability proxy), density-aware
+  - Let ρ(A) be the spectral radius of the *directed* adjacency used for masking:
+      ρ(A) = max_i |λ_i(A)|
+  - Normalize to reduce degree coupling:
+      ρ_norm(A) = ρ(A) / max(1, \bar d)
+    where \bar d is the mean out-degree (or mean total degree) of the directed wiring.
+  Justification:
+    Raw ρ(A) often scales with degree. ρ_norm is a “shape/stability” proxy rather than a density proxy.
+
+Overhauled Proxy Space (locked)
+-------------------------------
+Primary objectives (used for Pareto/TPE):
+  Objective 1 (maximize): TE(G)
+  Objective 2 (maximize): σ(G)      [small-worldness]
+
+Secondary proxies (NOT used as main objectives):
+  Tie-breaker 1: ORC_res(G)         (prefer higher ORC_res)
+  Tie-breaker 2 (optional): ρ_norm(A) constraint band or tie-breaker
+    - Default as constraint: ρ_norm ∈ [ρ_min, ρ_max] (per k-regime; see below)
+
+Why this is the correct fix:
+  - It makes small-world structure explicit (Waqas-aligned).
+  - It removes the “ORC ≈ k” collapse from the primary proxy space.
+  - It preserves interpretability: TE and σ have clear structural meanings.
+
+Overhauled Plot 2 Baselines (A/B/C) — reviewer-proof inversion of Waqas
+----------------------------------------------------------------------
+A (True Random Baseline):
+  - Sample graphs uniformly from the same WS-Flex generator constraints
+    (connectedness + capacity constraints + (C,L) bin coverage), WITHOUT using any proxy ranking.
+  - Selection within bins is uniform random.
+
+B (Static Proxy Baseline):
+  - Use the SAME candidate pool as A.
+  - Select graphs using the proxy score derived from (TE, σ) (Pareto/crowding within bins).
+  - No adaptive search; just “training-free filtering”.
+
+C (Adaptive Proxy NAS):
+  - Use Optuna TPE multi-objective search over generator parameters to adaptively sample candidates
+    that improve the Pareto front in (TE, σ).
+  - Then select B graphs from the resulting candidate set using the same bin-aware selection policy.
+
+Justification:
+  - A vs B isolates “does the proxy space predict robustness at all?”
+  - B vs C isolates “does adaptivity (TPE) beat static filtering under the same proxy?”
+  - This structure avoids the earlier pitfall “Best TE+ORC vs Best TE+ORC”.
+
+Generator / Search Space Overhaul (WS-Flex only; no new graph families)
+----------------------------------------------------------------------
+Current generator parameters:
+  - k ∈ even integers within [2, H−2] (via regimes)
+  - p ∈ [0, 1]
+  - connectedness constraint only
+
+New generator modes (WS-Flex still; richer manifold coverage):
+  Mode G0 (legacy): (k,p) sampling (kept for backward compatibility)
+  Mode G1 (small-world targeted): sample to cover bins in (C,L) (or σ) explicitly
+
+G1 Implementation concept:
+  - Maintain the k-regimes (super_sparse, sparse, moderate, near_dense) to ensure capacity stratification.
+  - Within each regime, define fixed bin edges for clustering and path length:
+      C bins: {low, mid, high}
+      L bins: {low, mid, high}
+    where bin edges are computed ONCE from a large reference set (see N2) and frozen in the manifest.
+  - Candidate generation proceeds by attempting to fill each (regime, Cbin, Lbin) cell with quota q.
+
+Justification:
+  - Forces exploration of the WS-Flex manifold the way Waqas explored it (explicit C/L space).
+  - Prevents collapse to “near_dense only” Pareto points.
+  - Gives us an honest, controllable “small-world focus”: we can define which bins correspond to “small-world”
+    (high C, low L) and emphasize those without excluding others.
+
+Capacity matching and fairness constraints (tightened)
+-----------------------------------------------------
+We lock capacity in the recurrent chamber, while allowing topology to vary.
+
+Locked (must be identical across A/B/C and all WS-Flex graphs):
+  - Hidden dimension H (default 32).
+  - Same CNN feature extractor and same CfC cell hyperparameters.
+  - Same training protocol, same seeds, same subjects, same eval mode.
+  - Same directed-edge orientation policy and wiring_seed usage.
+
+Constraints:
+  - Graph must be connected (nx.is_connected).
+  - Optional edge-budget bands within each k-regime remain allowed, but must be applied identically to A/B/C.
+  - If ρ_norm constraint enabled: enforce per-regime band:
+      ρ_norm ∈ [0.8, 1.2] default (tunable; see decision points)
+
+External baselines (non-WS-Flex):
+  - External Random (ncps Random) remains a separate “family” baseline.
+  - It must be capacity-matched explicitly:
+      - Same H for recurrent state
+      - Same projection sizes
+    If strict matching is not possible due to library wiring semantics, label it clearly as
+    “different wiring family baseline” and do not include it in A/B/C proxy inversion claims.
+
+Justification:
+  - Keeps the causal claim “wiring topology alone” defensible for A/B/C.
+  - Prevents misleading wins/losses due to hidden size or IO structure differences.
+
+Selection policy overhaul (mandatory diversity; fixed bins)
+----------------------------------------------------------
+Replace dynamic per-method tertile bins with fixed, manifest-locked bins.
+
+New selection coverage level:
+  coverage_level = "regime_cl_bins_fixed"
+
+Bin edges:
+  - Derived from a reference set of size M_ref (default 5000 connected graphs) using G1 or G0 sampling.
+  - For each regime r:
+      - Compute quantiles for C and L across all candidates in r:
+          C edges: q = (1/3, 2/3)
+          L edges: q = (1/3, 2/3)
+      - Freeze these edges in manifest as C_edges[r], L_edges[r].
+
+Selection within bins:
+  - A: uniform random within each (r, Cbin, Lbin) cell.
+  - B: within each cell, rank by proxy (see below).
+  - C: select from TPE candidate set using same cell quotas and ranking.
+
+Proxy ranking (within-cell):
+  - Multi-objective score via Pareto + crowding distance in (TE, σ).
+  - Tie-breakers:
+      1) ORC_res (descending)
+      2) ρ_norm proximity to center of band (if constraint enabled)
+
+Justification:
+  - Avoids “selection changes because bin edges were recomputed per method/pool”.
+  - Prevents A/B/C overlap collapse and maintains comparable structural diversity.
+  - Tie-breakers add signal without letting ORC or ρ reintroduce density dominance.
+
+Training-free search overhaul (Optuna TPE)
+------------------------------------------
+Objective function:
+  Return (TE(G), σ(G)).
+
+Candidate evaluation:
+  - Generate graph using WS-Flex (G0 or G1 mode).
+  - Reject if disconnected.
+  - Compute TE, C, L, σ.
+  - Compute ORC, then ORC_res using μ_ORC(k) from reference set.
+  - Compute ρ_norm on the directed adjacency used for masking (optional).
+
+Early stopping:
+  - Keep hypervolume early stopping, but compute hypervolume on (TE, σ) Pareto front.
+  - Stop when:
+      (HV_t − HV_{t−W}) / max(ε0, HV_{t−W}) < eps for patience windows
+    with defaults:
+      W=5 batches, eps=0.01, patience=3, ε0=1e-6.
+  - Additionally require Pareto-width criterion (N2) before allowing early stop to trigger.
+
+Justification:
+  - TE/σ front should be less degenerate than TE/ORC under density coupling.
+  - Early stopping is still needed for compute discipline, but must not terminate prematurely in a collapsed proxy space.
+
+NEW Stage: Proxy viability diagnostic + GO/NO-GO gates (must pass before training)
+---------------------------------------------------------------------------------
+N2: run_plot2_proxy_viability.py (new script)
+
+Inputs:
+  - H, k-regimes, generator mode (G0/G1), M_ref (default 5000)
+Outputs:
+  - reference_metrics.csv
+  - proxy_viability_report.json (gate pass/fail + reasons)
+  - frozen_bin_edges.json (C_edges, L_edges per regime)
+  - μ_ORC(k) table for ORC_res
+
+Gates (strict):
+  GATE V1 (redundancy):
+    For each primary objective proxy P ∈ {TE, σ}, require:
+      |corr(P, k)| < 0.80  and  |corr(P, density)| < 0.80
+    (We EXPECT ORC to fail; ORC is not a primary objective.)
+
+  GATE V2 (Pareto width):
+    Pareto front in (TE, σ) must contain >= 10 points AND
+    include candidates from >= 3 of 4 k-regimes AND
+    include >= 6 distinct (Cbin, Lbin) cells overall.
+
+  GATE V3 (cell feasibility):
+    For each regime r, at least 6 of the 9 (C,L) cells must be non-empty
+    in the reference set (prevents impossible stratification).
+
+  If any gate fails: DO NOT PROCEED TO TRAINING.
+  Fix bounds / generator mode and rerun viability diagnostic.
+
+Justification:
+  - This is the “save 24 hours” mechanism. It ensures we are not optimizing a collapsed proxy space.
+
+Intermediate Diagnostic Mini Run (fast, before full Plot 2)
+----------------------------------------------------------
+Purpose:
+  Confirm that changing topology along TE/σ actually changes robustness under the chosen perturbation,
+  without committing to full-scale training.
+
+Procedure:
+  - Select 1 graph per k-regime × 2 cells:
+      small-world cell: (C high, L low)
+      non-small-world cell: (C low, L high)
+    Total = 4 regimes × 2 = 8 graphs.
+  - Train/eval with:
+      subjects=3, seeds=1, same ar1_drift settings, same alpha grid.
+
+Success criteria (GO/NO-GO):
+  - Primary: max_pairwise_delta_max_drop ≥ 0.03 across the 8 graphs
+  - Secondary: at least one regime shows small-world cell more robust than non-small-world cell
+              (directional evidence topology matters)
+  If fail:
+    - Increase perturbation severity OR change perturbation type selection (see below) before full-scale run.
+
+Justification:
+  - Directly tests whether (C,L)/σ variation is visible under current perturbation.
+  - Avoids another 24h run if topology is genuinely second-order under this stress test.
+
+Perturbation diagnosis (avoid wasting training runs)
+----------------------------------------------------
+We must ensure we are using a perturbation that exposes topology differences, not one dominated by CfC dynamics.
+
+Add a training-free (or 1-model) perturbation sensitivity sweep stage:
+  - Choose a single fixed WS-Flex graph (moderate regime) and sweep perturbation types:
+      {ar1_drift, spatial_gaussian, emg_band, temporal_jitter} with matched SNR grid.
+  - Compute max_drop and AUPC for each perturbation.
+  - Pick the perturbation where:
+      (i) max_drop is large enough (e.g., ≥ 0.15 at max intensity),
+      (ii) curves are non-saturated (not flat),
+      (iii) perturbation fingerprint passes.
+
+This stage may reuse existing pilot scripts; if absent, implement:
+  - run_plot2_perturbation_sensitivity.py (new).
+
+Justification:
+  - If all graphs look robust, we can’t prove anything about topology.
+  - Choose the “most damaging but realistic” perturbation before full training.
+
+Locked reporting / analysis updates (to match new design)
+--------------------------------------------------------
+Analysis remains largely correct; update only what is needed:
+
+  - Group definitions:
+      A = baseline_a (true random)
+      B = baseline_b (proxy-filtered)
+      C = tpe (adaptive)
+  - Primary metric remains max_drop (lower is better).
+  - Secondary: AUPC(alpha) remains reported, but not used as the sole success signal.
+  - Add reporting of σ, (C,L) bins, and ORC_res stats per method.
+
+Success criteria for full Plot 2 (mini then full)
+-------------------------------------------------
+Mini-scale (subjects=3, seeds=1):
+  - Pass proxy viability gates V1–V3.
+  - Pass intermediate diagnostic:
+      max_pairwise_delta_max_drop ≥ 0.03 and at least one regime directional.
+
+Full-scale:
+  - A vs B (proxy validity): mean(max_drop_B − max_drop_A) < 0 with CI excluding 0 OR
+    ≥ 2/3 subjects show B better than A (directional) AND effect size |d| ≥ 0.4.
+  - B vs C (adaptive benefit): mean(max_drop_C − max_drop_B) < 0 with CI excluding 0 OR
+    ≥ 2/3 subjects show C better than B AND effect size |d| ≥ 0.4.
+  - Report AUPC as supporting, not decisive.
+
+Decision points (defaults)
+--------------------------
+D1) Generator mode:
+  Default: G1 (small-world targeted) for reference set + candidate pools.
+  Rationale: ensures manifold coverage in (C,L), aligned with Waqas.
+
+D2) Spectral radius usage:
+  Default: OFF as objective, ON as optional constraint using ρ_norm.
+  Rationale: avoid proxy redundancy; treat ρ_norm as stability guardrail.
+
+D3) ORC usage:
+  Default: tie-breaker only using ORC_res; never primary objective.
+  Rationale: observed ORC–k coupling.
+
+D4) Perturbation:
+  Default: ar1_drift at target_snr_db=-6 with verified fingerprint.
+  If intermediate diagnostic fails: escalate severity (e.g., -8 dB) or switch to more damaging
+  perturbation found by sensitivity sweep.
+
+Implementation checklist (what to change vs build)
+--------------------------------------------------
+UPDATE existing:
+  - metrics_te_orc.py: keep TE; keep ORC sign-preserving; add ORC_res support via lookup.
+  - run_plot2_topology_study.py:
+      * switch objectives from (TE, ORC) → (TE, σ)
+      * replace dynamic bins with manifest-locked bins
+      * selection policies for A/B/C must use fixed (regime, Cbin, Lbin) stratification
+      * A is truly random (no proxy rank), B is proxy-selected from same pool, C is TPE-adaptive
+      * record σ and bin membership per selected architecture
+  - analyze_plot2_results.py:
+      * group labels A/B/C
+      * include σ, C, L, ORC_res summaries
+      * keep max_drop primary
+
+NEW:
+  - small_world_metrics.py (or extend topology_analyzer.py):
+      * compute C, L, σ with ER reference (analytic + Monte Carlo fallback)
+  - run_plot2_proxy_viability.py:
+      * generate M_ref reference set
+      * compute redundancy correlations, Pareto width, cell feasibility
+      * freeze bin edges and μ_ORC(k)
+  - run_plot2_intermediate_diagnostic.py:
+      * build 8-graph set (small-world vs non-small-world per regime)
+      * run minimal training/eval and apply GO/NO-GO criteria
+  - run_plot2_perturbation_sensitivity.py (if not already covered by existing pilot tooling):
+      * single-model sweep to select damaging perturbation
+
+Final note (non-negotiable)
+---------------------------
+Do not spend another full 24h training cycle until:
+  (1) Proxy viability diagnostic gates pass, and
+  (2) Intermediate diagnostic shows topology-dependent robustness separation under the chosen perturbation.
+
+This patch explicitly aligns Plot 2 with the WS-Flex (C,L) “design space” framing in Waqas et al.,
+fixes the proxy collapse caused by ORC≈k, and restores the logic needed to defend the “inversion”
+claim with A/B/C baselines in a reviewer-proof way.

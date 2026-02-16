@@ -1,0 +1,536 @@
+====================================================================
+Plot 2 Combined Experiment + Search Specification
+Paper 3 (NeurIPS): Topology-Causal Robustness under WS-Flex NAS
+====================================================================
+
+Purpose
+-------
+Plot 2 establishes causal evidence that wiring topology alone drives
+robustness differences in recurrent neural networks, when model
+capacity, training protocol, and data are held fixed.
+
+Unlike Plot 1 (search efficiency), Plot 2 evaluates the robustness of
+architectures selected by different topology selection mechanisms,
+under identical training conditions, across an expanded WS-Flex
+graph space spanning super-sparse to near-dense regimes.
+
+Primary claim supported:
+- NAS-selected wiring yields higher robustness than random wiring and
+  is competitive with or exceeds hand-designed NCP wiring, when
+  capacity is controlled.
+
+--------------------------------------------------------------------
+1. Fixed Experimental Context
+--------------------------------------------------------------------
+
+Dataset:
+- BNCI2014_001 (Motor Imagery)
+
+Evaluation Mode:
+- Cross-session only
+
+Model Skeleton:
+- CNN–WiredCfC-Min
+  - Fixed CNN front-end
+  - Single WiredCfC recurrent chamber
+  - Linear classification head
+
+Hidden Dimension:
+- H = 32 (fixed across all conditions)
+
+Capacity Control:
+- Recurrent wiring implemented as fixed sparsity masks applied to dense
+  weight matrices:
+      W_eff = W ⊙ A
+- Parameter count is identical across all topologies.
+
+Training Protocol:
+- Optimizer, learning rate schedule, epochs, and early stopping are fixed
+- Training seeds per topology: S = 5
+
+--------------------------------------------------------------------
+2. Masked-Weight Optimization Handling
+--------------------------------------------------------------------
+
+Masked Weights:
+- Non-edge weights are masked out in the forward pass but exist as
+  parameters.
+
+To prevent topology-dependent regularization artifacts:
+- Weight decay MUST be disabled for masked recurrent weights
+  (separate AdamW parameter group with weight_decay = 0).
+
+All other parameters use standard weight decay.
+
+--------------------------------------------------------------------
+3. WS-Flex Graph Generator Space
+--------------------------------------------------------------------
+
+Generator Family:
+- WS-Flex (Watts–Strogatz–Flexible)
+
+Search Parameters:
+- k : total undirected degree (even integer)
+- p : rewiring probability
+
+Rewiring Probability:
+- p ∼ Uniform(0, 1)
+
+Degree Regimes (H = 32):
+- Super-sparse: k ∈ {2, 4}
+- Sparse (NCP-like): k ∈ {6, 8}
+- Moderate: k ∈ {10, 12, 14}
+- Near-dense: k ∈ {22, 26, 30}
+
+Constraints:
+- k must be even and satisfy 2 ≤ k ≤ H − 2
+- Disconnected graphs are rejected
+
+Justification:
+- These bounds span lattice-like, small-world, random-like, and
+  near-dense regimes without altering model capacity.
+- This prevents biasing random baselines toward sparse graphs and
+  enables explicit testing of sparsity-driven robustness hypotheses.
+
+--------------------------------------------------------------------
+4. Training-Free Search Budget and Early Stopping
+--------------------------------------------------------------------
+
+Training-free search is performed using graph metrics only
+(no model training).
+
+Per method (TPE and Random):
+
+Initial Budget:
+- M0 = 2000 candidate graphs
+
+Batch Size:
+- ΔM = 1000 candidates
+
+Maximum Budget:
+- M_max = 10000 candidates
+
+Hypervolume Computation:
+- Objectives: maximize TE and ORC
+- Reference point: r = (−0.05, −0.05)
+
+Normalization (Mandatory):
+- Reference-set normalization (fixed bounds):
+  - Before search begins, sample M_ref = 2000 random feasible WS-Flex graphs.
+  - Compute TE and ORC for these graphs.
+  - Define fixed normalization bounds using the 1st–99th percentile of TE and ORC
+    from this reference set.
+  - Normalize all subsequent TE and ORC values using these fixed bounds throughout
+    the search (clip to [0,1]).
+
+Early Stopping Criterion (Locked):
+- Windowed hypervolume improvement:
+  - Let W = 3 batches.
+  - Compute relative HV improvement over the window:
+        (HV_t − HV_{t−W}) / HV_{t−W}
+  - Terminate if this is < ε = 0.02 for Patience = 2 consecutive windows.
+
+- Pareto front stability (secondary):
+  - Let m = 5 and K = 3.
+  - Terminate if the number of newly added Pareto-optimal candidates in the most
+    recent batch is < m, for K consecutive batches.
+
+Termination policy:
+- Training-free search terminates when ANY occur:
+  1) Windowed HV improvement < 2% for 2 consecutive windows.
+  2) Pareto front growth < 5 new points for 3 consecutive batches.
+  3) Candidate budget reaches M_max = 10000 (safety cap).
+
+--------------------------------------------------------------------
+5. Search Methods Compared
+--------------------------------------------------------------------
+
+Method A: NAS via TPE (Proposed)
+- Optuna TPE over (k, p)
+- Multi-objective optimization: maximize TE and ORC
+- Constraints enforced during sampling
+- Candidate generation terminates via hypervolume saturation
+
+Method B: Random Baseline
+- Stratified random sampling over degree regimes (equal allocation)
+- p ∼ Uniform(0,1)
+- Same constraints and early stopping as TPE
+
+Both methods:
+- Evaluate identical numbers of training-free candidates
+- Use identical candidate selection rules for training
+
+--------------------------------------------------------------------
+6. Candidate Selection for Training
+--------------------------------------------------------------------
+
+Training Budget:
+- B = 12 topologies per method
+- Training seeds per topology: S = 5
+
+Selection Rule:
+Default (implemented): Pareto + diversity + regime coverage
+Runner flag: --selection_strategy pareto_farthest_regime
+
+1. Normalize TE and ORC using the fixed reference-set bounds (clip to [0,1])
+2. Compute the Pareto-optimal set in (TE', ORC') space (maximize both)
+3. Partition Pareto candidates into predefined k-regimes and allocate per-regime quotas
+   (e.g., B/4 each, with deterministic remainder allocation)
+4. Within each regime, select up to its quota using greedy farthest-point sampling in (TE', ORC')
+   space relative to the already-selected set
+5. If a regime lacks sufficient Pareto candidates, backfill from adjacent regimes while logging
+   shortfalls and backfill counts
+6. If the Pareto pool is still insufficient to reach B, fill remaining slots from non-Pareto
+   candidates using the legacy global score S = TE' + ORC' (descending)
+
+Anti–Lucky-Seed Control (Recommended):
+- For the top 3 (k,p) settings selected by TPE:
+  - sample 3 additional graphs with different generator seeds
+  - train with 1–2 seeds each (appendix if needed)
+
+--------------------------------------------------------------------
+7. Robustness Evaluation
+--------------------------------------------------------------------
+
+Noise Model:
+- Additive Gaussian noise
+
+Noise Grid:
+- Define σ_max as benchmark’s maximum Gaussian perturbation
+- Evaluate:
+      α ∈ {0, 0.25, 0.5, 0.75, 1.0}
+      σ_α = α · σ_max
+
+Robustness Metric:
+- Area Under the Perturbation Curve (AUPC),
+  computed via trapezoidal integration
+
+Interpretability:
+- Report effective SNR at σ_max:
+      SNR_dB = 10 log10( E||x||_2^2 / E||ε||_2^2 )
+
+Secondary Metric:
+- Clean ROC-AUC (reported but not primary)
+
+--------------------------------------------------------------------
+8. Conditions Shown in Plot 2
+--------------------------------------------------------------------
+
+Primary Conditions:
+- Random-selected wiring (B graphs × S seeds)
+- Hand-designed NCP wiring (1 graph × S seeds)
+- NAS-selected wiring (B graphs × S seeds)
+
+Optional Appendix:
+- Fully connected wiring (masked dense)
+
+--------------------------------------------------------------------
+9. Statistical Analysis
+--------------------------------------------------------------------
+
+Primary Comparison:
+- NAS-selected vs Random-selected (Gaussian AUPC)
+
+Method:
+- Hierarchical bootstrap:
+  - resample graphs with replacement within method
+  - resample seeds within graph
+  - compute distribution of mean AUPC differences
+
+Report:
+- mean difference
+- 95% confidence interval
+- effect size on per-graph means
+
+--------------------------------------------------------------------
+10. Success Criteria
+--------------------------------------------------------------------
+
+Plot 2 is considered successful if:
+1) Mean AUPC(NAS) > Mean AUPC(Random) with CI excluding 0
+2) ≥ 2/3 of top NAS graphs exceed Random median (per-graph means)
+3) Clean ROC-AUC does not catastrophically collapse, or trade-off is
+   explicitly framed
+
+--------------------------------------------------------------------
+11. Logging Requirements
+--------------------------------------------------------------------
+
+Training-Free Search:
+- (k, p), generator seed
+- TE, ORC
+- feasibility flags
+- Pareto membership
+- hypervolume trace and stopping point M*
+- Required diagnostics per batch:
+  1) Hypervolume per batch (HV_t)
+  2) Number of Pareto-optimal candidates per batch
+  3) TE and ORC min/max per batch (if dynamic normalization is used)
+     - NOTE: the locked policy uses fixed reference-set normalization, but raw
+       TE/ORC min/max may still be logged for debugging.
+
+Training:
+- adjacency / sparsity mask
+- training seed
+- clean ROC-AUC
+- per-α performance
+- Gaussian AUPC
+
+--------------------------------------------------------------------
+12. Canonical Search Loop (Pseudocode)
+--------------------------------------------------------------------
+
+def run_plot2_search(method, bounds):
+    candidates = []
+    hv_history = []
+    hv_window_no_improve = 0
+    pareto_low_growth = 0
+    M = 0
+
+    # ---- Reference-set normalization (fixed bounds) ----
+    ref = []
+    while len(ref) < M_ref:
+        k, p = random_feasible_ws_flex(bounds)
+        graph = generate_ws_flex(k, p)
+        if not is_connected(graph):
+            continue
+        TE = compute_TE(graph)
+        ORC = compute_ORC(graph)
+        ref.append({"TE": TE, "ORC": ORC})
+
+    TE_ref = [r["TE"] for r in ref]
+    ORC_ref = [r["ORC"] for r in ref]
+    TE_lo, TE_hi = percentile(TE_ref, 1), percentile(TE_ref, 99)
+    ORC_lo, ORC_hi = percentile(ORC_ref, 1), percentile(ORC_ref, 99)
+
+    def normalize_fixed(c):
+        return (
+            clip((c["TE"] - TE_lo) / (TE_hi - TE_lo + 1e-8), 0, 1),
+            clip((c["ORC"] - ORC_lo) / (ORC_hi - ORC_lo + 1e-8), 0, 1),
+        )
+
+    while M < M_max:
+        batch_size = ΔM if M > 0 else M0
+        batch = []
+
+        for _ in range(batch_size):
+            if method == "tpe":
+                k, p = sample_via_optuna()
+            else:
+                k, p = stratified_random_sample(bounds)
+
+            graph = generate_ws_flex(k, p)
+            if not is_connected(graph):
+                continue
+
+            TE = compute_TE(graph)
+            ORC = compute_ORC(graph)
+
+            batch.append({"k": k, "p": p, "TE": TE, "ORC": ORC})
+
+        candidates.extend(batch)
+        M = len(candidates)
+
+        pareto = pareto_front([normalize_fixed(c) for c in candidates])
+        hv = hypervolume(pareto, ref=(-0.05, -0.05))
+        hv_history.append(hv)
+
+        # Windowed hypervolume stopping (W=3, ε=0.02, patience=2)
+        if len(hv_history) > W:
+            rel_improve_W = (hv_history[-1] - hv_history[-1 - W]) / hv_history[-1 - W]
+            if rel_improve_W < 0.02:
+                hv_window_no_improve += 1
+            else:
+                hv_window_no_improve = 0
+
+        # Pareto growth stopping (m=5, K=3)
+        pareto_mask = pareto_membership([normalize_fixed(c) for c in candidates])
+        new_pareto_in_batch = count_pareto_points_from_last_batch(pareto_mask, candidates)
+        if new_pareto_in_batch < 5:
+            pareto_low_growth += 1
+        else:
+            pareto_low_growth = 0
+
+        if hv_window_no_improve >= 2 or pareto_low_growth >= 3:
+            break
+
+    for c in candidates:
+        c["TE_n"], c["ORC_n"] = normalize_fixed(c)
+        c["score"] = c["TE_n"] + c["ORC_n"]
+
+    # ---- Selection for training (default: Pareto + farthest-point + regime quotas) ----
+    pareto_mask = pareto_membership([(c["TE_n"], c["ORC_n"]) for c in candidates])
+    pareto = [c for c, is_p in zip(candidates, pareto_mask) if is_p]
+
+    # Partition Pareto pool into regimes and allocate per-regime quotas
+    quotas = allocate_equal_quotas(B, regimes=["super_sparse", "sparse", "moderate", "near_dense"])
+    by_regime = bucket_by_regime(pareto)
+
+    selected = []
+    for r in regimes_in_order:
+        selected.extend(farthest_point_greedy(by_regime[r], n=quotas[r], already_selected=selected))
+
+    # If a regime has a shortfall, backfill from adjacent regimes (still Pareto-only)
+    selected = backfill_shortfalls_from_adjacent_regimes(selected, by_regime, quotas)
+
+    # Safety: if Pareto is insufficient, fall back to non-Pareto by legacy score
+    if len(selected) < B:
+        remaining = [c for c in candidates if c not in selected]
+        remaining = sorted(remaining, key=lambda x: x["score"], reverse=True)
+        selected.extend(remaining[: (B - len(selected))])
+    return selected, candidates, hv_history
+
+--------------------------------------------------------------------
+End of Plot 2 Combined Specification
+====================================================================
+
+
+====================================================================
+Addendum: Hypervolume-Based Early Stopping Diagnostics and Revisions
+Plot 2 — Training-Free Search Termination
+====================================================================
+
+Motivation
+----------
+During initial Plot 2 runs, the training-free search frequently reached
+the maximum candidate budget M_max, indicating that the original
+hypervolume (HV) stopping criterion was overly strict or unstable given
+the breadth of the WS-Flex search space.
+
+This addendum documents:
+1) the likely causes of this behavior,
+2) how to diagnose them empirically, and
+3) revised, principled stopping criteria that prevent unnecessary
+   proxy evaluations while preserving search integrity.
+
+--------------------------------------------------------------------
+A. Likely Causes of Non-Termination at M_max
+--------------------------------------------------------------------
+
+A.1 Moving-Normalization Instability
+------------------------------------
+If TE and ORC are normalized using the running min/max over all
+candidates seen so far, the objective coordinate system shifts every
+batch. This can induce artificial hypervolume growth even when the
+Pareto front is substantively stable.
+
+Symptom:
+- HV continues to increase slowly despite little or no change in the
+  Pareto front membership.
+
+A.2 Overly Strict Improvement Threshold
+---------------------------------------
+With a large candidate batch size (ΔM = 1000) and a broad graph space,
+small Pareto improvements can persist for many batches. A 1% relative
+HV improvement threshold may therefore be unrealistically strict.
+
+Symptom:
+- HV increases by small amounts every batch without obvious structural
+  changes in the Pareto set.
+
+A.3 Batch-to-Batch Noise Sensitivity
+------------------------------------
+Using stepwise HV differences (HV_t − HV_{t−1}) makes termination
+sensitive to stochastic fluctuations or isolated extreme points.
+
+Symptom:
+- HV oscillates or increases irregularly despite diminishing returns.
+
+--------------------------------------------------------------------
+B. Diagnostic Checks (Required)
+--------------------------------------------------------------------
+
+Before applying revised stopping rules, the following diagnostics MUST
+be logged for each training-free search run:
+
+1) Hypervolume per batch (HV_t)
+2) Number of Pareto-optimal candidates per batch
+3) TE and ORC min/max per batch (if dynamic normalization is used)
+
+Interpretation:
+- Drifting min/max values indicate normalization-induced instability.
+- Stable Pareto size with slowly increasing HV suggests diminishing
+  returns rather than meaningful exploration.
+
+--------------------------------------------------------------------
+C. Revised Normalization Strategy (Mandatory)
+--------------------------------------------------------------------
+
+To stabilize hypervolume comparisons across batches:
+
+C.1 Reference-Set Normalization
+-------------------------------
+- Before search begins, sample M_ref = 2000 random feasible WS-Flex
+  graphs.
+- Compute TE and ORC for these graphs.
+- Define fixed normalization bounds using the 1st–99th percentile of
+  TE and ORC from this reference set.
+
+All subsequent TE and ORC values are normalized using these fixed
+bounds throughout the search.
+
+Rationale:
+- Prevents shifting objective scales.
+- Makes hypervolume values comparable across batches.
+
+--------------------------------------------------------------------
+D. Revised Hypervolume Stopping Criterion
+--------------------------------------------------------------------
+
+D.1 Windowed Hypervolume Improvement
+------------------------------------
+Replace stepwise HV checks with a windowed criterion:
+
+Let W = 3 batches.
+
+Terminate search if, for two consecutive windows:
+    (HV_t − HV_{t−W}) / HV_{t−W} < ε
+
+Recommended setting:
+- ε = 0.02 (2% relative improvement)
+- W = 3
+- Patience = 2 windows
+
+This corresponds to assessing improvement over ~3000 new candidates.
+
+D.2 Pareto Front Stability Criterion (Secondary)
+------------------------------------------------
+As an additional stopping condition, terminate if:
+- the number of newly added Pareto-optimal candidates in the most recent
+  batch is less than m = 5,
+- for K = 3 consecutive batches.
+
+The search terminates when either the windowed HV criterion OR the
+Pareto stability criterion is satisfied.
+
+--------------------------------------------------------------------
+E. Final Termination Policy (Locked)
+--------------------------------------------------------------------
+
+Training-free search terminates when ANY of the following occur:
+1) Windowed hypervolume improvement < 2% for 2 consecutive windows.
+2) Pareto front growth < 5 new points for 3 consecutive batches.
+3) Candidate budget reaches M_max = 10000 (safety cap).
+
+This policy ensures principled early termination in regimes of
+diminishing returns while preventing premature stopping.
+
+--------------------------------------------------------------------
+F. Reporting Guidance
+--------------------------------------------------------------------
+
+In the Methods section, report:
+
+- The use of reference-set normalization.
+- The windowed hypervolume stopping rule.
+- The typical number of candidates evaluated before termination (M*).
+
+Suggested language:
+“We terminate training-free search when Pareto hypervolume exhibits less
+than 2% improvement over a three-batch window for two consecutive
+windows, or when Pareto front growth stabilizes, preventing unnecessary
+proxy evaluations.”
+
+--------------------------------------------------------------------
+End of Addendum
+====================================================================

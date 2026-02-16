@@ -1,0 +1,9 @@
+Regime	Pool	Coverage	Occupied_bins	Dominant_bins	Notes
+super_sparse	random	0.778	7	low_high	KS_C=0.161; KS_L=0.153
+super_sparse	tpe	0.778	7	low_high	KS_C=0.161; KS_L=0.153
+sparse	random	1.000	9	low_high	KS_C=0.105; KS_L=0.114
+sparse	tpe	1.000	9	mid_low	KS_C=0.105; KS_L=0.114
+moderate	random	0.667	6	low_high	KS_C=0.156; KS_L=0.189
+moderate	tpe	0.556	5	mid_low	KS_C=0.156; KS_L=0.189
+near_dense	random	0.444	4	high_low	KS_C=0.186; KS_L=0.180
+near_dense	tpe	0.556	5	low_high	KS_C=0.186; KS_L=0.180

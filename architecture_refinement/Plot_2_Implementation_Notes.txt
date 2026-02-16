@@ -1,0 +1,689 @@
+================================================================================
+PLOT 2 IMPLEMENTATION NOTES
+================================================================================
+A plain-English summary of the Plot 2 implementation, including the design and
+workings of every method invoked along the main() path in both run_plot2_topology_
+study.py and analyze_plot2_results.py. The current implementation is the source
+of truth; spec files may reflect past versions.
+
+================================================================================
+1. OVERVIEW
+================================================================================
+
+PURPOSE OF PLOT 2
+-----------------
+Plot 2 provides a controlled comparison under matched protocol: wiring topology
+alone is varied while model capacity, training protocol, and data are held fixed.
+Unlike Plot 1 (search efficiency), Plot 2 evaluates the robustness of
+architectures selected by different topology selection mechanisms under
+identical training conditions.
+
+Held constant: H, training protocol, data, E_active bands.
+Varied: topology selection mechanism.
+
+Primary claim: NAS-selected wiring yields higher robustness than random wiring
+and is competitive with or exceeds hand-designed NCP wiring, when capacity is
+controlled.
+
+WARNING: Do not pool baseline_b with baseline_a in analysis. baseline_a is true
+random (primary comparator for NAS vs Random); baseline_b is proxy-filtered.
+
+TWO-SCRIPT PIPELINE
+------------------
+1. run_plot2_topology_study.py
+   - Runs training-free search over WS-Flex graphs (plain or modular)
+   - Selects architectures for Baseline A, B, C, NCP, and External Random
+   - Dispatches training and evaluation jobs via the unified experiment runner
+
+2. analyze_plot2_results.py
+   - Loads results from the evaluation runner
+   - Computes AUPC (Area Under Perturbation Curve) and max_drop metrics
+   - Performs hierarchical bootstrap for statistical inference
+   - Produces reports, JSON summaries, and figures
+
+PREREQUISITE: run_plot2_proxy_viability.py (Plot 2 Overhaul)
+-------------------------------------------------------------
+When using --selection_coverage_level regime_cl_bins_fixed (default), the
+topology study requires pre-computed proxy viability output. Run
+run_plot2_proxy_viability.py first with --output_dir; it produces:
+- frozen_bin_edges.json: C/L tertile edges per regime (G0 reference)
+- mu_orc_by_k.json, mu_te_by_k.json: k-conditioned means for TE_res, ORC_res
+- te_res_lo/hi, sigma_lo/hi: bounds for primary objectives (TE_res, sigma)
+
+KEY SPEC REFERENCES
+------------------
+- architecture_refinement/NAS_plot2_topology_study_spec.txt: Canonical spec
+- architecture_refinement/Plot2_revision3.md: Capacity filter, spectral radius
+- architecture_refinement/Plot2_revision2.md: Locked selection policy
+- architecture_refinement/plot2_schema.py: Manifest validation
+
+CLAIMS AND LIMITATIONS
+----------------------
+- Inference is conditional on chosen subjects; bootstrap hierarchy is
+  graph->seed (resample graphs, then seeds within graph).
+- AUPC integrates over intensity; for SNR-targeted perturbations, max_drop
+  is defined at the worst SNR point.
+- Spectral radius: undirected (from analyze_graph) is kept for diagnostics;
+  spectral_radius_directed (from oriented adjacency) is the model-relevant proxy.
+- Plot 2 Overhaul: primary objectives (TE_res, sigma) when proxy_viability_dir
+  provided; legacy (TE, ORC) otherwise.
+
+
+================================================================================
+2. run_plot2_topology_study.py - DETAILED MAIN FLOW
+================================================================================
+
+2.1 Argument Parsing and Setup (main, approx lines 2326-2533)
+-------------------------------------------------------------
+What it does: Parses all command-line arguments and prepares the run environment.
+
+How it works:
+- run_id: Optional; defaults to timestamp via _now_run_id() (returns e.g.
+  "20260129_162153").
+- output_root: Where to write run directories; default
+  "architecture_refinement/outputs/plot2_topology_study".
+- plot2_dir: If provided, use this explicit path; enables resume from existing
+  run.
+- resume: If set, skip search/selection when artifacts exist.
+- force_search: Override resume; rerun search even if artifacts exist.
+- scale: "mini" or "full". Mini-scale (Plot 2 spec §4): 3 subjects, 1 seed,
+  B=8, B_ext=8 for fast validation.
+- H: Hidden dimension (default 32).
+- B: Topologies per WS-Flex method (default 12).
+- B_ext: External random architectures (default 12).
+- S: Training seeds per topology (default 5).
+- perturbation_types: Comma-separated; default "ar1_drift" (primary topology-
+  sensitive stress test per Spec 2).
+- M0, dM, M_max: Search budget (initial batch, batch increment, cap).
+- M_ref: Reference set size for fixed TE/ORC normalization.
+- degree_regimes: super_sparse, sparse, moderate, near_dense k-values.
+- proxy_viability_dir: Required for regime_cl_bins_fixed; path to G0 viability
+  output (frozen bin edges, mu_te_by_k, mu_orc_by_k).
+- selection_coverage_level: regime_cl_bins_fixed (default), regime_cl_bins,
+  regime, none.
+- selection_strategy: pareto_farthest_regime (default), pareto_farthest_global,
+  pareto_score_regime, pareto_score_global, score.
+- generator_mode: ws_flex (default) or modular_ws_flex.
+- target_snr_db: Default -6.0 for correlated perturbations.
+
+When --scale mini: subjects truncated to first 3, S=1, B=8, B_ext=8.
+When --dry_run: M0, dM, M_max reduced; B set to minimum satisfying 2 per regime.
+
+_resolve_unique_run_id: If base run_id already exists, appends _v2, _v3, etc.
+to avoid overwriting.
+
+2.2 Environment Capture (I1, approx lines 2607-2608)
+-----------------------------------------------------
+What it does: Writes environment info for reproducibility.
+
+How it works:
+- _capture_environment_info: Writes plot2_dir/environment/ with conda_env.yml
+  or pip_freeze.txt, environment_info.json (git commit, command line, hostname,
+  platform, Python version, CUDA info).
+
+2.3 Resume Path (main, approx lines 2611-2694)
+-----------------------------------------------
+What it does: When resuming, loads existing manifest and jobs, then dispatches
+training/evaluation for any jobs that have not yet completed.
+
+How it works:
+- can_resume is True when manifest_path, selected_csv_path, jobs_csv_path all
+  exist and force_search is False.
+- Load manifest from plot2_manifest.json and jobs from jobs.csv.
+- For each job: _should_skip_plot2_job checks whether results already exist.
+  It uses evaluation.experiment_utils.check_skip_eval with expected noise types
+  and alpha grid from the unified runner.
+- If not skipped: _run_unified_job invokes evaluation/unified_experiment_runner.py
+  as a subprocess with --nas_pilot_dir, --model, --dataset, --mode test_perturb,
+  etc.
+- Failed jobs are recorded in failed_jobs.csv; if continue_on_error is False,
+  the script raises on first failure.
+
+2.4 Fresh Run: Degree Regimes and Validation (main, approx lines 2655-2727)
+---------------------------------------------------------------------------
+What it does: Parses degree regimes, validates k constraints, and enforces
+locked Plot 2 selection policies.
+
+How it works:
+- degree_regimes parsed from --regime_super_sparse, --regime_sparse,
+  --regime_moderate, --regime_near_dense (defaults: "2,4,6", "8,10,12",
+  "14,16,18", "20,22,24,26").
+- Each k must be even and satisfy 2 <= k <= H-2.
+- Locked policy: when selection_coverage_level="regime" and strategy is
+  pareto_farthest_regime or pareto_score_regime, B is coerced to 2 * n_regimes.
+- Global selection (pareto_score_global, pareto_farthest_global) or
+  coverage_level="none" raises ValueError; Plot 2 requires coverage-aware or
+  regime-stratified selection.
+- regime_cl_bins_fixed requires --proxy_viability_dir; raises if missing.
+
+2.5 Reference Bounds and Proxy Viability (main, approx lines 2655-2667)
+-----------------------------------------------------------------------
+What it does: Loads normalization bounds and fixed tertile edges.
+
+How it works:
+- If proxy_viability_dir provided: _load_proxy_viability_output loads
+  frozen_bin_edges.json, mu_orc_by_k.json, mu_te_by_k.json; returns
+  fixed_tertile_edges, mu_te_by_k, mu_orc_by_k, NormBounds with
+  use_te_res_sigma=True (primary objectives TE_res, sigma).
+- Else: _compute_reference_bounds samples M_ref random connected WS-Flex graphs;
+  computes TE/ORC quantiles; optionally cl_bin_edges from reference set (F4).
+
+2.6 TopologyAnalyzer and Graph Generation
+-----------------------------------------
+What it does: Creates the topology analyzer; graph creation delegates to
+generator_mode.
+
+How it works:
+- TopologyAnalyzer(default_config): From topology_analyzer.py. Provides
+  analyze_graph() for density, clustering, path length, spectral radius, etc.
+- _make_ws_graph: nx.watts_strogatz_graph for ws_flex mode.
+- _make_graph_for_mode: For modular_ws_flex, calls make_ws_flex_graph from
+  ws_flex_generator with sample_modular_params (M, p_out, r_out).
+- compute_spectral_radius_directed: From topology_analyzer; used for directed
+  adjacency (model-relevant).
+
+2.7 Training Seeds (main, approx lines 2689-2710)
+--------------------------------------------------
+What it does: Produces a deterministic run-level list of training seeds shared
+by all models/topologies for fair comparison.
+
+How it works:
+- If --training_seeds provided: parse comma-separated list.
+- Else if --training_seed_base provided: use that base.
+- Else: base = SHA256(run_id + "::plot2_training_seed_base") mod (2^31-1).
+- _derive_training_seeds_from_base_seed(base, S): Uses RNG seeded by base to
+  generate S distinct integers in [1, 2^31-1].
+
+2.8 Manifest Creation and Validation (main, approx lines 2712-2740)
+-------------------------------------------------------------------
+What it does: Builds the plot2_manifest.json and manifest.json with all run
+metadata; validates required keys.
+
+How it works:
+- Manifest includes: schema_version, run_id, dataset, eval_mode, subjects, H,
+  degree_regimes, search_budget (M0, dM, M_max, hv_ref, M_ref, etc.),
+  normalization (ref_seed, te_lo, te_hi, orc_lo, orc_hi), selection (B, S,
+  strategy, coverage_level), training_seeds, perturbation_types,
+  primary_perturbation_type, target_snr_db, perturbation_params, saturation_file,
+  generator_bounds, baseline_definitions, git_commit, proxy_viability_dir
+  (when used), primary_objectives (TE_res, sigma when Overhaul), generator_mode,
+  capacity_schema, metrics_graph_view.
+- validate_manifest(manifest, strict=True): From plot2_schema.py. Checks
+  REQUIRED_MANIFEST_KEYS; raises ValueError if any missing.
+
+2.9 Shared Random Pool (Baseline A/B) (main, approx lines 2996-3041)
+----------------------------------------------------------------------
+What it does: Builds one shared pool of random WS-Flex graphs for Baseline A
+(true random) and Baseline B (proxy-filtered).
+
+How it works:
+- _build_random_pool: Uses M0 for first batch, dM for subsequent batches;
+  runs until M_max candidates.
+  - _sample_random_stratified_batch: For each regime, allocates equal quota.
+    For each slot: samples k from regime, p ~ Uniform(0,1), graph_seed,
+    wiring_seed; builds graph via _make_graph_for_mode (ws_flex or modular_ws_flex);
+    rejects if not connected; optionally runs capacity_filter (E_active within
+    regime bands); when mu_te_by_k/mu_orc_by_k provided, uses _compute_full_metrics
+    (TE, ORC, TE_res, ORC_res, sigma, C, L) from metrics_te_orc and
+    small_world_metrics; else _compute_te_orc and analyzer.analyze_graph.
+    Returns Candidate objects (method="shared_random").
+  - Returns (all_cands, log_dict) with stop_reason="max_budget".
+- Norms: When use_te_res_sigma, normalizes (te_res, sigma); else (te, orc).
+- _cands_to_rows, _write_csv, _write_json: Write candidates_shared_random.csv
+  and hypervolume_shared_random.json.
+- Rejection diagnostics written to diagnostics/rejection_rate_shared_random.json.
+
+2.10 Coverage-Aware Selection for Baseline A and B (main, approx lines 3044-3165)
+---------------------------------------------------------------------------------
+What it does: Selects B topologies from the shared pool per method. Baseline A
+uses uniform random within each (regime, C_bin, L_bin) cell; Baseline B ranks
+by within-bin z-scored TE+ORC.
+
+How it works:
+- _select_top_b_coverage_aware(rank_by_proxy=False for A, True for B):
+  - _compute_cl_bins: For each candidate, assigns regime (from k via
+    _k_to_regime). Uses fixed_tertile_edges from reference/proxy viability
+    when provided (F4); else computes tertiles from pool. Assigns each candidate
+    to (c_bin, l_bin) in {low, medium, high}.
+  - _zscore_within_bins: For each (regime, c_bin, l_bin) cell, z-scores TE
+    and ORC; score = z_te + z_orc per candidate.
+  - Allocates quota per cell: B_r per regime, uniform across cells in regime;
+    cap at max_per_cell = 50% of B (collapse constraint).
+  - Baseline A: within each cell, shuffle indices with uniform_seed=202602.
+  - Baseline B: within each cell, sort by within_bin_score descending.
+  - Takes from each cell up to quota; if insufficient, backfills from
+    remaining valid candidates.
+  - Returns (selected_idxs, selection_meta) with collapse_score, coverage_score.
+
+- _process_ws_flex_baseline: For each selected Candidate:
+  - Builds graph via _make_ws_graph or make_ws_flex_graph (modular_ws_flex).
+  - _undirected_hidden_adj: Converts to HxH adjacency; _oriented_hidden_adj:
+    Uses WsFlexHiddenWiring(hidden_edge_orientation="random_oriented").
+  - compute_spectral_radius_directed(directed_adj) for model-relevant proxy.
+  - Writes JSON to selected_architectures/<model_name>.json.
+  - Appends arch_row to selected_rows with schema_version, model_name, method,
+    rank, k, p, graph_seed, wiring_seed, TE, ORC, hidden_adj_undirected,
+    hidden_adj_directed, spectral_radius_directed, sigma, te_res, orc_res, etc.
+
+2.11 TPE Search (Baseline C) (main, approx lines 3167-3197)
+----------------------------------------------------------
+What it does: Runs Optuna TPE multi-objective search over (k, p).
+
+How it works:
+- _run_training_free_search(method="tpe"):
+  - Creates Optuna study with directions=["maximize","maximize"] for (TE_res, sigma)
+    when use_te_res_sigma else (TE, ORC).
+  - Persists to SQLite (tpe_study.sqlite3 in plot2_dir/optuna/).
+  - Batches: trial.suggest_categorical("k", k_values), suggest_float("p",0,1).
+  - For each trial: _make_graph_for_mode; rejects if disconnected; optional
+    capacity_filter; _compute_full_metrics or _compute_te_orc; append Candidate.
+  - After each batch: normalize with fixed bounds; _pareto_membership_2d
+    (lexsort by -x, -y; keep points with strictly increasing y); hypervolume_2d
+    on Pareto front with ref=(-0.05,-0.05).
+  - Early stopping: (1) HV improvement (HV_t - HV_{t-W})/HV_{t-W} < eps for
+    patience consecutive windows; (2) new Pareto points in batch < m for K
+    consecutive batches; (3) M_max reached.
+  - Returns (all_cands, hv_log).
+
+- _select_top_b: When selection_coverage_level="regime_cl_bins" or
+  "regime_cl_bins_fixed", delegates to _select_top_b_coverage_aware
+  (rank_by_proxy=True, fixed_tertile_edges=cl_bin_edges). Else regime-level
+  Pareto: buckets by regime; within each regime picks top-2 per regime from
+  Pareto (or backfill by score); fills remaining slots with farthest-point from
+  remaining Pareto; fallback to global score.
+
+- _process_ws_flex_baseline for TPE selected.
+
+2.12 NCP Baseline (main, approx lines 3199-3223)
+------------------------------------------------
+What it does: Adds a single hand-designed NCP wiring baseline.
+
+How it works:
+- Creates ncp_model_name = "plot2_{run_id}_ncp".
+- Arch row: wiring_kind="ncp_autoncp", units=H+ncp_io_size (F2 capacity match),
+  output_size=ncp_io_size, sparsity_level from manifest.
+- Appends to selected_rows; writes JSON.
+
+2.13 External Random (G3) (main, approx lines 3225-3351)
+-------------------------------------------------------
+What it does: Generates B_ext external random wirings (ncps Random), density-
+stratified to match WS-Flex regimes.
+
+How it works:
+- _generate_and_select_external_random:
+  - Uses ncps.wirings.Random(units=H, output_dim=output_size, sparsity_level=sp,
+    random_seed=seed). F2: units=H for capacity matching with WS-Flex.
+  - Builds pool of size pool_size; each has sparsity_level, wiring_seed,
+    mask_density from adjacency matrix.
+  - Density bins: bin_edges from k_max/H per regime.
+  - Assigns each to bin_idx by density.
+  - F6: Stratified selection: seeded random within each bin (not deterministic
+    sort); backfill from remaining pool if needed.
+  - Returns (selected list of dicts, summary).
+
+- Writes arch rows with method="external_random", wiring_kind="external_random".
+
+2.14 Regime Collapse Check and Outputs (main, approx lines 3333-3390)
+---------------------------------------------------------------------
+What it does: Validates selection diversity; writes all selected artifacts and
+jobs table.
+
+How it works:
+- Regime histogram: counts selected by regime; fails if >50% from one regime
+  (unless --allow_regime_collapse).
+- _write_manifest_jsonl: Writes selected_A.jsonl, selected_B.jsonl, selected_C.jsonl,
+  selected_D.jsonl (external) with graph_id = _graph_id_hash(row).
+- _write_csv(selected_architectures.csv, selected_rows).
+- _build_capacity_manifest: H, E_active, mask_density per selected graph.
+- Writes capacity_manifest.json, plot2_search_summary.json.
+- Jobs: cross product of selected_rows x training_seeds; each row has
+  model_name, seed, dataset, eval_mode, subjects, alpha_grid, perturbation_types,
+  etc.
+- _write_csv(jobs.csv, jobs).
+
+2.15 Job Dispatch (main, approx lines 3392-3430)
+-------------------------------------------------
+What it does: For each job, skips if results exist; else runs unified runner.
+
+How it works:
+- For each job: _should_skip_plot2_job; if not skip, _run_unified_job.
+- _run_unified_job: Builds command for unified_experiment_runner.py with
+  --nas_pilot_dir, --model, --dataset, --subjects, --mode test_perturb, --seed,
+  --test_perturb_gaussian_alpha_grid, --test_perturb_noise_types (or
+  --test_perturb_gaussian_only), --test_perturb_target_snr_db, perturbation
+  params, --plot2_diagnostics_dir. Runs subprocess; returns exit code.
+- Failed jobs written to failed_jobs.csv; raises if any failed and not
+  continue_on_error.
+
+
+================================================================================
+3. analyze_plot2_results.py - DETAILED MAIN FLOW
+================================================================================
+
+3.1 Argument Parsing and Setup (main, approx lines 366-374)
+---------------------------------------------------------
+What it does: Parses arguments for the analysis script.
+
+How it works:
+- --plot2_dir: Required; path to Plot 2 run directory.
+- --repo_root: Optional; if omitted, _infer_repo_root_from_plot2_dir walks up
+  from plot2_dir to find a directory containing results/, evaluation/, and
+  config.py (or results/ and evaluation/unified_experiment_runner.py).
+- --n_boot: Bootstrap samples (default 5000).
+- --seed: RNG seed (default 123).
+
+3.2 Load Manifest and Selected Architectures (main, approx lines 376-378)
+---------------------------------------------------------------------------
+What it does: Loads run metadata and the selected architectures table.
+
+How it works:
+- _load_manifest: Reads plot2_manifest.json; raises if missing.
+- _load_selected_architectures: Reads selected_architectures.csv. Uses lightweight
+  columns (model_name, method, rank, wiring_kind, k, p, graph_seed, wiring_seed,
+  mean_degree_undirected, sigma, te_res, orc_res, C_bin, L_bin, graph_hash) when
+  present; else full CSV. Raises if model_name or method missing.
+
+3.3 F1 Method Validation (main, approx lines 280-288)
+-----------------------------------------------------
+What it does: Validates that selected_architectures contains only known methods.
+
+How it works:
+- known_methods: baseline_a, baseline_b, tpe, baseline, external_random,
+  random_stratified. Raises ValueError if unknown method present.
+
+3.4 Perturbation Types and Primary Metric (main, approx lines 291-364)
+----------------------------------------------------------------------
+What it does: Determines which perturbation types to analyze and the primary
+one for NAS vs Random comparison.
+
+How it works:
+- perturbation_types from manifest: "perturbation_types" (list or comma string).
+- primary_perturbation_type = manifest.get("primary_perturbation_type") or
+  "ar1_drift" if in list, else "gaussian".
+- _get_sigma_max_for_noise_type: get_noise_perturbation_bounds(dataset, nt,
+  saturation_file) from utils; returns (min, max). For correlated types, if
+  data sample has that noise_type and intensity column, uses max intensity
+  from data as sigma_max; else uses max from bounds.
+
+3.5 Per-Seed Metrics Loop (main, approx lines 366-429)
+-----------------------------------------------------
+What it does: For each selected architecture, loads result CSVs, picks metric
+column, and computes per-seed AUPC and max_drop per noise type.
+
+How it works:
+- _find_result_files: Walks repo results/; finds CSVs where path contains
+  short_run_id(model_name) and "test_perturb", or filename contains
+  "{model_name}_test_perturb" (legacy).
+- _load_model_results: Reads all found CSVs; concatenates; adds __source_file.
+- _pick_metric_col: First of corrupted_score, corrupted_roc_auc, roc_auc, score.
+- _compute_seed_level_metrics(
+    df, sigma_max, metric_col, noise_type):
+  - Filters rows by noise_type.
+  - Groups by seed (or fold_idx if no seed).
+  - For each seed: groupby intensity, mean of metric; sort by intensity.
+  - F5: _validate_intensity_axis checks monotonicity; warns if intensity
+    appears to be in dB.
+  - Ensures baseline at 0 (prepend clean_score if xs[0] > 0).
+  - Clips to [0, sigma_max].
+  - _aupc: trapezoidal integration (np.trapezoid or np.trapz) of xs, ys.
+  - aupc_alpha = aupc_sigma / sigma_max.
+  - max_drop = clean_roc_auc - roc_at_alpha=1; mid_drop = clean_roc_auc -
+    roc_at_alpha=0.5.
+  - Returns DataFrame with seed, noise_type, aupc_sigma, aupc_alpha,
+    clean_score, clean_roc_auc, max_drop, mid_drop.
+
+- Per-seed rows accumulated; for each architecture and noise type, appends
+  rows (with arch metadata) to per_seed_rows. Handles missing/empty results.
+
+3.6 Primary vs Data Validation (main, approx lines 431-447)
+-----------------------------------------------------------
+What it does: Validates that manifest primary type matches actual data.
+
+How it works:
+- If primary_perturbation_type is in _CORRELATED_NOISE_TYPES but not in
+  present_types (from data): fallback to gaussian (or first present type);
+  warn.
+- If primary is correlated and intensity max > 50: warn (gaussian-scale likely).
+
+3.7 Aggregation and Hierarchical Bootstrap (main, approx lines 449-517)
+-----------------------------------------------------------------------
+What it does: Aggregates per-graph; runs hierarchical bootstrap for NAS vs
+Random comparison.
+
+How it works:
+- per_graph: groupby (model_name, method, noise_type); agg n_seeds, aupc_alpha_mean,
+  aupc_alpha_std, clean_roc_auc_mean, max_drop_mean/std, mid_drop_mean/std.
+
+- _build_graph_dict(per_seed_sub, method_set, metric_col): For each method in
+  method_set, groups by model_name; collects list of metric values per model.
+  Returns {model_name: [seed-level values]}.
+
+- _bootstrap_hierarchical(graphs, n_boot, rng): For each bootstrap sample:
+  resample graph keys with replacement; for each sampled graph, resample
+  seed values with replacement, same count; compute mean per graph; compute
+  mean of graph means. Returns array of length n_boot.
+
+- _ci(a): 2.5th and 97.5th percentiles of finite values.
+
+- _cohens_d(x, y): Pooled standard deviation; (mean(x)-mean(y))/pooled_std.
+
+- NAS methods: {"tpe"}; Random: {"random_stratified","baseline_a","baseline_b"};
+  External: {"external_random"}.
+- Bootstrap (NAS - Random) for aupc_alpha; diff_mean, diff_ci, Cohen's d.
+- ci_excludes_0: CI does not contain 0.
+- frac_nas_above_rand_median: fraction of NAS graph means above Random median.
+- criterion_2: frac_nas_above_rand_median >= 2/3.
+
+3.8 Primary Metric: max_drop (main, approx lines 449-481)
+-------------------------------------------------------
+What it does: Computes primary robustness metric (max_drop, lower is better)
+and stage gates.
+
+How it works:
+- has_max_drop = "max_drop" in per_seed_g.
+- max_drop_rand_graphs, max_drop_nas_graphs, max_drop_ext_graphs,
+  max_drop_a_graphs, max_drop_b_graphs = _build_graph_dict with metric_col=
+  "max_drop".
+- Bootstrap (random - tpe) in max_drop: positive => TPE has lower max_drop
+  (more robust).
+- B−A (proxy validity): mean(max_drop_B - max_drop_A). Negative => B more robust.
+  stage2_go = mean < 0 and CI width <= 0.10 (and directional).
+- C−B (adaptive benefit): mean(max_drop_C - max_drop_B). Negative => TPE helps.
+  stage3_go = mean < 0.
+- (external_random - tpe) in max_drop.
+- Mini-scale: CI width <= 0.10; directional = >=2 subjects with same sign
+  (rand - tpe positive).
+- subject_diffs: per-seed (rand_mean - tpe_mean) for max_drop.
+- stage2_directional: >=2 subjects with (b_mean - a_mean) < 0.
+
+3.9 Report Generation and Outputs (main, approx lines 483-634)
+--------------------------------------------------------------
+What it does: Writes report, CSVs, JSON, and figures.
+
+How it works:
+- report_lines: Header with dataset, perturbation types, primary type, sigma_max,
+  SNR, n_boot. Primary metric (max_drop): mean, CI, Cohen's d for (random-tpe),
+  (external-tpe); B−A, C−B stage gates. Secondary (AUPC): diff, CI, criterion_2.
+  Secondary perturbation types summary. Clean ROC-AUC by method. Sanity checks:
+  identical aupc_alpha_mean across graphs (suspicious). k/regime distribution
+  per method (ws_flex only).
+
+- Writes: analysis/per_seed_aupc.csv, analysis/per_graph_aupc.csv,
+  analysis/bootstrap_diff.json, analysis/report.txt.
+
+- bootstrap_diff.json: diff_mean, diff_ci, cohens_d, max_drop_*, stage2_gate_pass,
+  stage3_gate_pass, primary_perturbation_type, sigma_max, snr_by_perturbation_type,
+  etc.
+
+- Matplotlib (if available): Bar chart for AUPC (Random, NAS, NCP) with bootstrap
+  CI; bar chart for max_drop by method (Baseline, A, B, Random WS-Flex, C, External).
+
+3.10 Helper Functions Summary
+-----------------------------
+- _k_to_regime(k, degree_regimes): Maps k to regime name.
+- _summarize_selected_k(sel, degree_regimes): For ws_flex rows, counts by k and
+  regime per method.
+- _get_snr_for_noise_type(nt, df_sample): Target and empirical SNR from data or
+  manifest.
+
+
+================================================================================
+4. SUPPORTING MODULES
+================================================================================
+
+topology_analyzer.py
+--------------------
+TopologyAnalyzer.analyze_graph(G): Computes density, clustering coefficient,
+avg path length, spectral radius (undirected), etc. Used for (C,L) tertile bins
+and Candidate metadata.
+
+compute_spectral_radius_directed(adj_directed): Spectral radius of oriented
+adjacency matrix; model-relevant proxy (directed mask).
+
+metrics_te_orc.py
+-----------------
+- degree_entropy_raw(G): Shannon entropy of degree distribution.
+- topological_entropy_te(G): TE = H_deg / log(N), clipped to [0,1].
+- ollivier_ricci_mean(G, alpha=0.5): ORC = mean over edges of (1 - W1(m_u,m_v)/d).
+  Uses Wasserstein-1 via POT or scipy linprog.
+- compute_te_orc(G, orc_alpha=0.5): Returns (TE, ORC, debug).
+- compute_te_residual(te, k, mu_te_by_k): TE - mu_te(k) for k-conditioned residual.
+- compute_orc_residual(orc, k, mu_orc_by_k): ORC - mu_orc(k) for k-conditioned residual.
+
+small_world_metrics.py
+----------------------
+- compute_small_worldness(G, graph_id, use_analytic_er): Returns (sigma, C, L,
+  C_ER, L_ER, ...). sigma = (C/C_ER)/(L/L_ER). ER reference: Monte Carlo or
+  analytic. Cache by (p_edge_bin, H) for reuse.
+
+pareto_hv.py
+------------
+- pareto_front_2d(points): Max-max Pareto; sort by x desc, keep points with
+  strictly increasing y.
+- hypervolume_2d(points_pf, ref=(-0.05,-0.05)): 2D hypervolume with reference.
+
+capacity_utils.py
+-----------------
+- capacity_filter(G, k, wiring_seed, regime_bins, H): E_active = H*k/2 for WS;
+  checks E_active within regime band; returns (ok, E_active, regime).
+- DEFAULT_E_ACTIVE_BANDS_H32: Regime bands for H=32.
+
+arbitrary_wiring.py
+-------------------
+WsFlexHiddenWiring: Converts WS-Flex graph to NCP wiring. _hidden_block_oriented:
+orients undirected edges via random_oriented policy (deterministic with seed).
+
+ws_flex_generator.py
+--------------------
+- make_ws_flex_graph(H, k, p, graph_seed, generator_mode, M, p_out, r_out):
+  Builds graph. ws_flex: nx.watts_strogatz_graph. modular_ws_flex: partition
+  into M modules, WS within each, sparse inter-module edges.
+- sample_modular_params(H, seed, rng, M_values, p_out_lo/hi, r_out_lo/hi):
+  Samples M, p_out, r_out for modular_ws_flex.
+- DEFAULT_M_VALUES, DEFAULT_P_OUT_LO/HI, DEFAULT_R_OUT_LO/HI: Bounds.
+
+run_plot2_proxy_viability.py
+-----------------------------
+G0-only reference set. Computes frozen bin edges, mu_orc_by_k, mu_te_by_k.
+Runs gates V1–V5. Outputs: frozen_bin_edges.json, mu_orc_by_k.json,
+mu_te_by_k.json, te_res_lo/hi, sigma_lo/hi. Required for regime_cl_bins_fixed.
+
+plot2_schema.py
+---------------
+- validate_manifest(manifest, strict): Checks REQUIRED_MANIFEST_KEYS.
+- REQUIRED_MANIFEST_KEYS: schema_version, run_id, dataset, H, degree_regimes,
+  perturbation_types, primary_perturbation_type, target_snr_db, selection,
+  training_seeds, search_budget, git_commit, etc.
+- PLOT2_COVERAGE_LEVEL_VALUES: none, regime, regime_cl_bins, regime_cl_bins_fixed.
+- PLOT2_OVERHAUL_MERGED_COLUMNS: sigma, te_res, orc_res, C_bin, L_bin, graph_hash,
+  generator_mode, M, p_out, r_out.
+
+utils.py
+--------
+- get_noise_perturbation_bounds(dataset, noise_type, saturation_file): Returns
+  (min, max) from saturation CSV or defaults. Correlated types: (0, 1) or
+  saturation_point if present.
+- short_run_id(model_name, length=12): SHA256 hash prefix for path shortening.
+- _CORRELATED_NOISE_TYPES: spatial_gaussian, ar1_drift, emg_band, gain_drift,
+  offset_drift, temporal_jitter, spatial_dropout, etc.
+
+
+================================================================================
+5. DATA FLOW DIAGRAM (ASCII)
+================================================================================
+
+  run_plot2_proxy_viability.py (prerequisite for regime_cl_bins_fixed)
+  ---------------------------------------------------------------------
+  G0 reference --> frozen_bin_edges, mu_te_by_k, mu_orc_by_k --> output_dir/
+
+  run_plot2_topology_study.py
+  ---------------------------
+  Parse args --> Resume? --> [Yes] --> Load jobs --> _should_skip_plot2_job
+                                    --> _run_unified_job (per job)
+  [No] --> Load proxy viability (if regime_cl_bins_fixed) OR compute reference bounds
+       --> Build shared random pool (_build_random_pool)
+       --> _select_top_b_coverage_aware (A, B) with fixed_tertile_edges
+       --> _run_training_free_search (TPE)
+       --> _select_top_b (C) with cl_bin_edges
+       --> NCP + _generate_and_select_external_random
+       --> Write selected_architectures.csv, jobs.csv
+       --> Dispatch _run_unified_job per job
+
+  unified_experiment_runner.py (external)
+  --------------------------------------
+  Train + test_perturb --> CSV results in results/
+
+  analyze_plot2_results.py
+  -----------------------
+  Load manifest + selected_architectures
+  --> F1 method validation
+  --> _find_result_files, _load_model_results (per model)
+  --> _compute_seed_level_metrics (F5 intensity validation)
+  --> Aggregate per-graph
+  --> _bootstrap_hierarchical
+  --> Report + bootstrap_diff.json + figures
+
+
+================================================================================
+6. KEY DESIGN DECISIONS (Implementation vs Spec)
+================================================================================
+
+- Reference-set normalization: Fixed TE/ORC (or TE_res/sigma) bounds from
+  M_ref sample or proxy viability; all subsequent values normalized with these
+  bounds (stabilizes hypervolume).
+
+- Plot 2 Overhaul: When proxy_viability_dir provided, primary objectives are
+  (TE_res, sigma); legacy (TE, ORC) otherwise. TE_res = TE - mu_te(k);
+  sigma = small-worldness from small_world_metrics.
+
+- Coverage-aware selection: (C,L) tertile bins per regime; fixed_tertile_edges
+  from G0 reference when regime_cl_bins_fixed; within-bin z-score for proxy;
+  collapse cap 50% per cell.
+
+- Baseline A: Uniform random within cells; no proxy.
+- Baseline B: Same pool, proxy-ranked within cells.
+- Baseline C: TPE search, adaptive.
+
+- generator_mode: ws_flex (plain Watts-Strogatz) or modular_ws_flex (modular
+  WS with M, p_out, r_out) for structural diversity.
+
+- Primary perturbation: ar1_drift by default (Spec 2); gaussian fallback for
+  backward compatibility or when data lacks correlated types.
+
+- Hierarchical bootstrap: Resample graphs, then seeds within graph; preserves
+  nested structure.
+
+- max_drop: Primary metric (lower is better); ROC(0) - ROC(alpha=1).
+
+- F2: All baselines use recurrent size H for capacity matching. External random
+  uses units=H; NCP uses units=H+ncp_io_size.
+
+- F4: Fixed tertile edges from reference/proxy viability for deterministic
+  (regime, C_bin, L_bin) assignment.
+
+- F6: External random uses seeded random selection within density bins, not
+  deterministic sort.
+
+================================================================================
+END OF PLOT 2 IMPLEMENTATION NOTES
+================================================================================

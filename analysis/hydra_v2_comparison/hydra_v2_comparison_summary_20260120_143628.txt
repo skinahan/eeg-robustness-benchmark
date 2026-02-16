@@ -1,0 +1,91 @@
+================================================================================
+HYDRA V2 vs BASELINE HYDRA COMPARISON SUMMARY
+================================================================================
+
+Generated: 2026-01-20 14:36:28
+
+Baseline Model: HYDRA (Baseline)
+HYDRA V2 Models: 14
+
+--------------------------------------------------------------------------------
+CLEAN PERFORMANCE (ROC-AUC)
+--------------------------------------------------------------------------------
+Baseline: 0.7709
+
+HYDRAv2                                 : 0.7793 (+0.0084, +1.10%)
+HYDRAv2 Adaptive Residual               : 0.8135 (+0.0426, +5.53%)
+HYDRAv2 Arch 1                          : 0.8576 (+0.0868, +11.25%)
+HYDRAv2 Arch 4                          : 0.8807 (+0.1098, +14.25%)
+HYDRAv2 Baseline                        : 0.8380 (+0.0671, +8.71%)
+HYDRAv2 Cross-Bin Context               : 0.7650 (-0.0058, -0.76%)
+HYDRAv2 ERP Head                        : 0.8350 (+0.0641, +8.32%)
+HYDRAv2 Full                            : 0.8280 (+0.0572, +7.42%)
+HYDRAv2 Global Skip                     : 0.8528 (+0.0819, +10.63%)
+HYDRAv2 Multi-Query                     : 0.8180 (+0.0471, +6.11%)
+HYDRAv2 Phase 1                         : 0.8595 (+0.0886, +11.50%)
+HYDRAv2 Phase 2                         : 0.8054 (+0.0346, +4.48%)
+HYDRAv2 Phase 3                         : 0.8352 (+0.0643, +8.35%)
+HYDRAv2 SSVEP Head                      : 0.8532 (+0.0823, +10.68%)
+
+--------------------------------------------------------------------------------
+ROBUSTNESS (AUPC - Higher is Better)
+--------------------------------------------------------------------------------
+Baseline: 0.6962
+
+HYDRAv2                                 : 0.6406 (-0.0557, -7.99%)
+HYDRAv2 Adaptive Residual               : 0.7080 (+0.0118, +1.69%)
+HYDRAv2 Arch 1                          : 0.7654 (+0.0692, +9.94%)
+HYDRAv2 Arch 4                          : 0.7782 (+0.0820, +11.77%)
+HYDRAv2 Baseline                        : 0.7314 (+0.0352, +5.06%)
+HYDRAv2 Cross-Bin Context               : 0.7071 (+0.0109, +1.57%)
+HYDRAv2 ERP Head                        : 0.7235 (+0.0273, +3.92%)
+HYDRAv2 Full                            : 0.7210 (+0.0248, +3.56%)
+HYDRAv2 Global Skip                     : 0.7376 (+0.0414, +5.95%)
+HYDRAv2 Multi-Query                     : 0.7148 (+0.0186, +2.67%)
+HYDRAv2 Phase 1                         : 0.7394 (+0.0432, +6.21%)
+HYDRAv2 Phase 2                         : 0.7059 (+0.0097, +1.40%)
+HYDRAv2 Phase 3                         : 0.7366 (+0.0404, +5.80%)
+HYDRAv2 SSVEP Head                      : 0.7554 (+0.0592, +8.50%)
+
+--------------------------------------------------------------------------------
+STATISTICAL COMPARISONS (vs Baseline)
+--------------------------------------------------------------------------------
+
+Metric: aupc_collapsed
+  HYDRAv2 Baseline                        : p=0.1456 , dz=-1.342, diff=+0.0119 (+1.65%)
+  HYDRAv2 Phase 1                         : p=0.1475 , dz=-1.331, diff=+0.0200 (+2.77%)
+  HYDRAv2 Adaptive Residual               : p=0.1500 , dz=1.318, diff=-0.0115 (-1.60%)
+  HYDRAv2 Phase 2                         : p=0.1673 , dz=1.228, diff=-0.0136 (-1.88%)
+  HYDRAv2 SSVEP Head                      : p=0.1735 , dz=-1.199, diff=+0.0359 (+4.98%)
+  HYDRAv2 Global Skip                     : p=0.2565 , dz=-0.908, diff=+0.0181 (+2.52%)
+  HYDRAv2 Phase 3                         : p=0.3576 , dz=-0.684, diff=+0.0171 (+2.37%)
+  HYDRAv2 Cross-Bin Context               : p=0.6966 , dz=0.260, diff=-0.0124 (-1.72%)
+  HYDRAv2 Multi-Query                     : p=0.8125 , dz=0.156, diff=-0.0047 (-0.65%)
+  HYDRAv2 Full                            : p=0.8162 , dz=-0.153, diff=+0.0015 (+0.21%)
+  HYDRAv2 ERP Head                        : p=0.8641 , dz=-0.112, diff=+0.0040 (+0.56%)
+
+Metric: rd_collapsed
+  HYDRAv2 ERP Head                        : p=0.0589 , dz=-2.272, diff=+0.0187 (+15.67%)
+  HYDRAv2 Baseline                        : p=0.0943 , dz=-1.745, diff=+0.0077 (+6.47%)
+  HYDRAv2 Phase 1                         : p=0.1310 , dz=-1.434, diff=+0.0186 (+15.54%)
+  HYDRAv2 Cross-Bin Context               : p=0.2873 , dz=0.830, diff=-0.0332 (-27.72%)
+  HYDRAv2 Adaptive Residual               : p=0.3862 , dz=-0.635, diff=+0.0074 (+6.15%)
+  HYDRAv2 Global Skip                     : p=0.4616 , dz=-0.522, diff=+0.0167 (+13.92%)
+  HYDRAv2 Full                            : p=0.5000 , dz=-0.411, diff=+0.0079 (+6.60%)
+  HYDRAv2 SSVEP Head                      : p=0.5432 , dz=0.419, diff=-0.0122 (-10.23%)
+  HYDRAv2 Multi-Query                     : p=0.5497 , dz=-0.412, diff=+0.0061 (+5.06%)
+  HYDRAv2 Phase 3                         : p=0.6815 , dz=-0.274, diff=+0.0060 (+5.03%)
+  HYDRAv2 Phase 2                         : p=0.9837 , dz=0.013, diff=-0.0002 (-0.15%)
+
+Metric: clean_roc_auc
+  HYDRAv2 Baseline                        : p=0.0385 *, dz=-2.857, diff=+0.0181 (+2.21%)
+  HYDRAv2 Phase 1                         : p=0.1027 , dz=-1.660, diff=+0.0396 (+4.83%)
+  HYDRAv2 SSVEP Head                      : p=0.1672 , dz=-1.228, diff=+0.0333 (+4.06%)
+  HYDRAv2 Cross-Bin Context               : p=0.2446 , dz=0.941, diff=-0.0548 (-6.69%)
+  HYDRAv2 Global Skip                     : p=0.3661 , dz=-0.669, diff=+0.0329 (+4.02%)
+  HYDRAv2 Adaptive Residual               : p=0.3703 , dz=0.662, diff=-0.0064 (-0.78%)
+  HYDRAv2 Phase 2                         : p=0.3905 , dz=0.628, diff=-0.0145 (-1.76%)
+  HYDRAv2 Full                            : p=0.4463 , dz=-0.543, diff=+0.0082 (+1.00%)
+  HYDRAv2 ERP Head                        : p=0.6591 , dz=-0.296, diff=+0.0151 (+1.85%)
+  HYDRAv2 Phase 3                         : p=0.6686 , dz=-0.287, diff=+0.0153 (+1.87%)
+  HYDRAv2 Multi-Query                     : p=0.9337 , dz=0.054, diff=-0.0019 (-0.23%)

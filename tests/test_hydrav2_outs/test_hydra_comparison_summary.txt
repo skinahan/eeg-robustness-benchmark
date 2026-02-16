@@ -1,0 +1,328 @@
+================================================================================
+HYDRAv2 SYSTEMATIC FEATURE EVALUATION - COMPREHENSIVE SUMMARY
+================================================================================
+
+
+================================================================================
+DATASET: BNCI2014_001
+================================================================================
+
+TEST STATUS:
+--------------------------------------------------------------------------------
+branched_wiredcfc_arch4: PASSED
+hydra_v2_baseline: PASSED
+hydra_v2_adaptive_residual: PASSED
+hydra_v2_multi_query: PASSED
+hydra_v2_erp_head: PASSED
+hydra_v2_ssvep_head: PASSED
+hydra_v2_cross_bin_context: PASSED
+hydra_v2_global_skip: PASSED
+hydra_v2_phase1: PASSED
+hydra_v2_phase2: PASSED
+hydra_v2_phase3: PASSED
+hydra_v2_full: PASSED
+
+--------------------------------------------------------------------------------
+CLEAN ACCURACY COMPARISON
+--------------------------------------------------------------------------------
+Model                                    Accuracy     vs Baseline     Change    
+--------------------------------------------------------------------------------
+branched_wiredcfc_arch4 (baseline)       0.7431      (baseline)                
+hydra_v2_cross_bin_context               0.8125      +0.0694 (+9.35%)
+hydra_v2_phase1                          0.8125      +0.0694 (+9.35%)
+hydra_v2_multi_query                     0.7917      +0.0486 (+6.54%)
+hydra_v2_ssvep_head                      0.7917      +0.0486 (+6.54%)
+hydra_v2_full                            0.7847      +0.0417 (+5.61%)
+hydra_v2_adaptive_residual               0.7778      +0.0347 (+4.67%)
+hydra_v2_baseline                        0.7569      +0.0139 (+1.87%)
+hydra_v2_phase2                          0.7361      -0.0069 (-0.93%)
+hydra_v2_global_skip                     0.7153      -0.0278 (-3.74%)
+hydra_v2_erp_head                        0.7014      -0.0417 (-5.61%)
+hydra_v2_phase3                          0.6736      -0.0694 (-9.35%)
+
+--------------------------------------------------------------------------------
+CLEAN ROC-AUC COMPARISON
+--------------------------------------------------------------------------------
+Model                                    ROC-AUC      vs Baseline     Change    
+--------------------------------------------------------------------------------
+branched_wiredcfc_arch4 (baseline)       0.7953      (baseline)                
+hydra_v2_ssvep_head                      0.8769      +0.0816 (+10.26%)
+hydra_v2_phase1                          0.8767      +0.0814 (+10.24%)
+hydra_v2_phase2                          0.8727      +0.0774 (+9.73%)
+hydra_v2_global_skip                     0.8667      +0.0714 (+8.97%)
+hydra_v2_baseline                        0.8636      +0.0683 (+8.59%)
+hydra_v2_multi_query                     0.8619      +0.0666 (+8.37%)
+hydra_v2_cross_bin_context               0.8615      +0.0662 (+8.32%)
+hydra_v2_adaptive_residual               0.8574      +0.0621 (+7.81%)
+hydra_v2_full                            0.8546      +0.0592 (+7.45%)
+hydra_v2_phase3                          0.8117      +0.0164 (+2.06%)
+hydra_v2_erp_head                        0.7627      -0.0326 (-4.10%)
+
+--------------------------------------------------------------------------------
+NOISE ROBUSTNESS COMPARISON (sample)
+--------------------------------------------------------------------------------
+
+gaussian @ intensity 53.1:
+  Model                                    Accuracy     vs Baseline    
+  branched_wiredcfc_arch4 (baseline)       0.6736      (baseline)     
+  hydra_v2_ssvep_head                      0.7569      +0.0833        
+  hydra_v2_multi_query                     0.6944      +0.0208        
+  hydra_v2_phase2                          0.6944      +0.0208        
+  hydra_v2_phase3                          0.6944      +0.0208        
+  hydra_v2_adaptive_residual               0.6875      +0.0139        
+  hydra_v2_cross_bin_context               0.6806      +0.0069        
+  hydra_v2_global_skip                     0.6806      +0.0069        
+  hydra_v2_phase1                          0.6806      +0.0069        
+  hydra_v2_full                            0.6597      -0.0139        
+  hydra_v2_baseline                        0.6458      -0.0278        
+  hydra_v2_erp_head                        0.5486      -0.1250        
+
+dropout @ intensity 39.9:
+  Model                                    Accuracy     vs Baseline    
+  branched_wiredcfc_arch4 (baseline)       0.5208      (baseline)     
+  hydra_v2_ssvep_head                      0.6597      +0.1389        
+  hydra_v2_multi_query                     0.6528      +0.1319        
+  hydra_v2_erp_head                        0.5903      +0.0694        
+  hydra_v2_phase2                          0.5903      +0.0694        
+  hydra_v2_full                            0.5833      +0.0625        
+  hydra_v2_baseline                        0.5764      +0.0556        
+  hydra_v2_cross_bin_context               0.5694      +0.0486        
+  hydra_v2_global_skip                     0.5694      +0.0486        
+  hydra_v2_phase1                          0.5556      +0.0347        
+  hydra_v2_phase3                          0.5556      +0.0347        
+  hydra_v2_adaptive_residual               0.5208      +0.0000        
+
+eog @ intensity 49.8:
+  Model                                    Accuracy     vs Baseline    
+  branched_wiredcfc_arch4 (baseline)       0.7014      (baseline)     
+  hydra_v2_ssvep_head                      0.7292      +0.0278        
+  hydra_v2_cross_bin_context               0.7153      +0.0139        
+  hydra_v2_baseline                        0.6319      -0.0694        
+  hydra_v2_multi_query                     0.6319      -0.0694        
+  hydra_v2_global_skip                     0.5764      -0.1250        
+  hydra_v2_erp_head                        0.5486      -0.1528        
+  hydra_v2_adaptive_residual               0.5347      -0.1667        
+  hydra_v2_phase2                          0.5347      -0.1667        
+  hydra_v2_phase1                          0.5000      -0.2014        
+  hydra_v2_phase3                          0.5000      -0.2014        
+  hydra_v2_full                            0.5000      -0.2014        
+
+================================================================================
+
+
+================================================================================
+DATASET: Lee2019_SSVEP
+================================================================================
+
+TEST STATUS:
+--------------------------------------------------------------------------------
+branched_wiredcfc_arch4: PASSED
+hydra_v2_baseline: PASSED
+hydra_v2_adaptive_residual: PASSED
+hydra_v2_multi_query: PASSED
+hydra_v2_erp_head: PASSED
+hydra_v2_ssvep_head: PASSED
+hydra_v2_cross_bin_context: PASSED
+hydra_v2_global_skip: PASSED
+hydra_v2_phase1: PASSED
+hydra_v2_phase2: PASSED
+hydra_v2_phase3: PASSED
+hydra_v2_full: PASSED
+
+--------------------------------------------------------------------------------
+CLEAN ACCURACY COMPARISON
+--------------------------------------------------------------------------------
+Model                                    Accuracy     vs Baseline     Change    
+--------------------------------------------------------------------------------
+branched_wiredcfc_arch4 (baseline)       0.6500      (baseline)                
+hydra_v2_erp_head                        0.3100      -0.3400 (-52.31%)
+hydra_v2_full                            0.3000      -0.3500 (-53.85%)
+hydra_v2_phase3                          0.2600      -0.3900 (-60.00%)
+hydra_v2_baseline                        0.2500      -0.4000 (-61.54%)
+hydra_v2_adaptive_residual               0.2500      -0.4000 (-61.54%)
+hydra_v2_multi_query                     0.2500      -0.4000 (-61.54%)
+hydra_v2_ssvep_head                      0.2500      -0.4000 (-61.54%)
+hydra_v2_cross_bin_context               0.2500      -0.4000 (-61.54%)
+hydra_v2_global_skip                     0.2500      -0.4000 (-61.54%)
+hydra_v2_phase1                          0.2500      -0.4000 (-61.54%)
+hydra_v2_phase2                          0.2500      -0.4000 (-61.54%)
+
+--------------------------------------------------------------------------------
+CLEAN ROC-AUC COMPARISON
+--------------------------------------------------------------------------------
+Model                                    ROC-AUC      vs Baseline     Change    
+--------------------------------------------------------------------------------
+branched_wiredcfc_arch4 (baseline)       0.8805      (baseline)                
+hydra_v2_cross_bin_context               0.7393      -0.1412 (-16.04%)
+hydra_v2_erp_head                        0.7231      -0.1575 (-17.88%)
+hydra_v2_phase1                          0.7229      -0.1576 (-17.90%)
+hydra_v2_phase2                          0.7145      -0.1660 (-18.85%)
+hydra_v2_phase3                          0.7108      -0.1697 (-19.28%)
+hydra_v2_global_skip                     0.7075      -0.1731 (-19.65%)
+hydra_v2_full                            0.6980      -0.1825 (-20.73%)
+hydra_v2_multi_query                     0.6923      -0.1883 (-21.38%)
+hydra_v2_baseline                        0.6776      -0.2029 (-23.05%)
+hydra_v2_adaptive_residual               0.6473      -0.2332 (-26.48%)
+hydra_v2_ssvep_head                      0.5621      -0.3184 (-36.16%)
+
+--------------------------------------------------------------------------------
+NOISE ROBUSTNESS COMPARISON (sample)
+--------------------------------------------------------------------------------
+
+gaussian @ intensity 53.1:
+  Model                                    Accuracy     vs Baseline    
+  branched_wiredcfc_arch4 (baseline)       0.4600      (baseline)     
+  hydra_v2_baseline                        0.2700      -0.1900        
+  hydra_v2_phase3                          0.2600      -0.2000        
+  hydra_v2_adaptive_residual               0.2500      -0.2100        
+  hydra_v2_multi_query                     0.2500      -0.2100        
+  hydra_v2_erp_head                        0.2500      -0.2100        
+  hydra_v2_ssvep_head                      0.2500      -0.2100        
+  hydra_v2_cross_bin_context               0.2500      -0.2100        
+  hydra_v2_global_skip                     0.2500      -0.2100        
+  hydra_v2_phase2                          0.2500      -0.2100        
+  hydra_v2_full                            0.2500      -0.2100        
+  hydra_v2_phase1                          0.2200      -0.2400        
+
+dropout @ intensity 53.1:
+  Model                                    Accuracy     vs Baseline    
+  branched_wiredcfc_arch4 (baseline)       0.3500      (baseline)     
+  hydra_v2_phase2                          0.3400      -0.0100        
+  hydra_v2_baseline                        0.3200      -0.0300        
+  hydra_v2_erp_head                        0.3000      -0.0500        
+  hydra_v2_cross_bin_context               0.3000      -0.0500        
+  hydra_v2_ssvep_head                      0.2800      -0.0700        
+  hydra_v2_multi_query                     0.2600      -0.0900        
+  hydra_v2_phase1                          0.2600      -0.0900        
+  hydra_v2_adaptive_residual               0.2500      -0.1000        
+  hydra_v2_global_skip                     0.2500      -0.1000        
+  hydra_v2_phase3                          0.2500      -0.1000        
+  hydra_v2_full                            0.2200      -0.1300        
+
+eog @ intensity 53.1:
+  Model                                    Accuracy     vs Baseline    
+  branched_wiredcfc_arch4 (baseline)       0.3200      (baseline)     
+  hydra_v2_baseline                        0.3000      -0.0200        
+  hydra_v2_phase1                          0.2900      -0.0300        
+  hydra_v2_adaptive_residual               0.2500      -0.0700        
+  hydra_v2_multi_query                     0.2500      -0.0700        
+  hydra_v2_erp_head                        0.2500      -0.0700        
+  hydra_v2_ssvep_head                      0.2500      -0.0700        
+  hydra_v2_cross_bin_context               0.2500      -0.0700        
+  hydra_v2_global_skip                     0.2500      -0.0700        
+  hydra_v2_phase2                          0.2500      -0.0700        
+  hydra_v2_phase3                          0.2500      -0.0700        
+  hydra_v2_full                            0.2500      -0.0700        
+
+================================================================================
+
+
+================================================================================
+DATASET: BI2015a
+================================================================================
+
+TEST STATUS:
+--------------------------------------------------------------------------------
+branched_wiredcfc_arch4: PASSED
+hydra_v2_baseline: PASSED
+hydra_v2_adaptive_residual: PASSED
+hydra_v2_multi_query: PASSED
+hydra_v2_erp_head: PASSED
+hydra_v2_ssvep_head: PASSED
+hydra_v2_cross_bin_context: PASSED
+hydra_v2_global_skip: PASSED
+hydra_v2_phase1: PASSED
+hydra_v2_phase2: PASSED
+hydra_v2_phase3: PASSED
+hydra_v2_full: PASSED
+
+--------------------------------------------------------------------------------
+CLEAN ACCURACY COMPARISON
+--------------------------------------------------------------------------------
+Model                                    Accuracy     vs Baseline     Change    
+--------------------------------------------------------------------------------
+branched_wiredcfc_arch4 (baseline)       0.8765      (baseline)                
+hydra_v2_multi_query                     0.9005      +0.0241 (+2.75%)
+hydra_v2_phase1                          0.8963      +0.0198 (+2.26%)
+hydra_v2_adaptive_residual               0.8776      +0.0012 (+0.13%)
+hydra_v2_cross_bin_context               0.8757      -0.0008 (-0.09%)
+hydra_v2_erp_head                        0.8644      -0.0120 (-1.37%)
+hydra_v2_baseline                        0.8621      -0.0144 (-1.64%)
+hydra_v2_global_skip                     0.8609      -0.0155 (-1.77%)
+hydra_v2_full                            0.8594      -0.0171 (-1.95%)
+hydra_v2_phase3                          0.8481      -0.0284 (-3.24%)
+hydra_v2_ssvep_head                      0.8458      -0.0307 (-3.50%)
+hydra_v2_phase2                          0.8333      -0.0431 (-4.92%)
+
+--------------------------------------------------------------------------------
+CLEAN ROC-AUC COMPARISON
+--------------------------------------------------------------------------------
+Model                                    ROC-AUC      vs Baseline     Change    
+--------------------------------------------------------------------------------
+branched_wiredcfc_arch4 (baseline)       0.8640      (baseline)                
+hydra_v2_phase1                          0.9005      +0.0366 (+4.23%)
+hydra_v2_multi_query                     0.8940      +0.0300 (+3.47%)
+hydra_v2_adaptive_residual               0.8519      -0.0121 (-1.40%)
+hydra_v2_cross_bin_context               0.8467      -0.0173 (-2.00%)
+hydra_v2_erp_head                        0.8455      -0.0185 (-2.14%)
+hydra_v2_baseline                        0.8427      -0.0212 (-2.46%)
+hydra_v2_full                            0.8398      -0.0242 (-2.80%)
+hydra_v2_ssvep_head                      0.8246      -0.0394 (-4.56%)
+hydra_v2_global_skip                     0.8233      -0.0406 (-4.70%)
+hydra_v2_phase3                          0.8019      -0.0620 (-7.18%)
+hydra_v2_phase2                          0.7830      -0.0810 (-9.38%)
+
+--------------------------------------------------------------------------------
+NOISE ROBUSTNESS COMPARISON (sample)
+--------------------------------------------------------------------------------
+
+gaussian @ intensity 53.1:
+  Model                                    Accuracy     vs Baseline    
+  branched_wiredcfc_arch4 (baseline)       0.8244      (baseline)     
+  hydra_v2_phase3                          0.8372      +0.0128        
+  hydra_v2_phase1                          0.8353      +0.0109        
+  hydra_v2_phase2                          0.8333      +0.0089        
+  hydra_v2_multi_query                     0.8228      -0.0016        
+  hydra_v2_full                            0.8205      -0.0039        
+  hydra_v2_adaptive_residual               0.8197      -0.0047        
+  hydra_v2_erp_head                        0.8124      -0.0120        
+  hydra_v2_global_skip                     0.8069      -0.0175        
+  hydra_v2_cross_bin_context               0.8057      -0.0186        
+  hydra_v2_baseline                        0.8030      -0.0214        
+  hydra_v2_ssvep_head                      0.7999      -0.0245        
+
+dropout @ intensity 53.1:
+  Model                                    Accuracy     vs Baseline    
+  branched_wiredcfc_arch4 (baseline)       0.8236      (baseline)     
+  hydra_v2_phase3                          0.8345      +0.0109        
+  hydra_v2_phase2                          0.8333      +0.0097        
+  hydra_v2_multi_query                     0.8287      +0.0051        
+  hydra_v2_erp_head                        0.8279      +0.0043        
+  hydra_v2_adaptive_residual               0.8252      +0.0016        
+  hydra_v2_phase1                          0.8236      +0.0000        
+  hydra_v2_global_skip                     0.8213      -0.0023        
+  hydra_v2_cross_bin_context               0.8205      -0.0031        
+  hydra_v2_baseline                        0.8174      -0.0062        
+  hydra_v2_full                            0.8147      -0.0089        
+  hydra_v2_ssvep_head                      0.8127      -0.0109        
+
+eog @ intensity 53.1:
+  Model                                    Accuracy     vs Baseline    
+  branched_wiredcfc_arch4 (baseline)       0.7976      (baseline)     
+  hydra_v2_phase2                          0.8333      +0.0357        
+  hydra_v2_phase3                          0.8217      +0.0241        
+  hydra_v2_erp_head                        0.8089      +0.0113        
+  hydra_v2_full                            0.8046      +0.0070        
+  hydra_v2_baseline                        0.7995      +0.0019        
+  hydra_v2_phase1                          0.7890      -0.0085        
+  hydra_v2_adaptive_residual               0.7805      -0.0171        
+  hydra_v2_multi_query                     0.7743      -0.0233        
+  hydra_v2_cross_bin_context               0.7669      -0.0307        
+  hydra_v2_global_skip                     0.7634      -0.0342        
+  hydra_v2_ssvep_head                      0.7067      -0.0909        
+
+================================================================================
+
+================================================================================
+END OF SUMMARY
+================================================================================

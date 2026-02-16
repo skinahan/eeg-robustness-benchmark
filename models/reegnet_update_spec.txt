@@ -1,0 +1,10 @@
+I've copied the implementation of EEGNetv4 that's included with Braindecode into the file @models/eegnet_example.py . We will use this implementation as a reference to update our REEGNet model.
+
+Task 1:
+While retaining the old implementation for posterity, please update the REEGNet class in @models/reegnet.py to be similarly parameterized. For example, users should be able to specify kernel lengths, etc. 
+Task 2: 
+In the newly parameterized version, make sure that changes to the expected sizes of layers is respected, so as to avoid matrix incompatibility. 
+Task 3:
+Update the global model registry to point "reegnet" at the newly parameterized model, and update the optimization parameter dictionaries in two_stage_hp_opt.py to match these new parameters. Once again, make sure that these parameter ranges are sanity-checked so as to not cause size issues during the forward pass.
+Task 4:
+Finally, create a simple test script to validate the new implementation using CrossSession evaluation on subject 1 from the BNCI2014_001 dataset, with an experimental seed of 42. Note that this script should be extremely simple, as it only needs to call unified_experiment_runner.py with the appropriate parameters.

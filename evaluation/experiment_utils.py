@@ -9,10 +9,10 @@ import os
 import json
 import pandas as pd
 import numpy as np
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from sklearn.preprocessing import LabelEncoder
 
-from utils import create_output_path, create_hdf5_model_path, get_noise_intensities, get_short_session_id
+from utils import create_output_path, create_hdf5_model_path, get_noise_intensities, get_short_session_id, short_run_id, _CORRELATED_NOISE_TYPES
 from evaluation.two_stage_hp_opt import run_two_stage_optuna
 
 
@@ -23,7 +23,7 @@ def extract_model_params(model) -> Dict[str, Any]:
     return {}
 
 
-def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity, eval_mode='CrossSession', paradigm='MotorImagery', dataset='BNCI2014_001', cache_manager=None, config=None, tuned=False, paradigm_obj=None, dataset_obj=None):
+def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity, eval_mode='CrossSession', paradigm='MotorImagery', dataset='BNCI2014_001', cache_manager=None, config=None, tuned=False, paradigm_obj=None, dataset_obj=None, expected_noise_types=None, expected_intensities_by_noise=None, test_perturb_num_steps=20, test_perturb_saturation_file=None):
 
     if not eval_mode.endswith("Evaluation"):
         eval_mode = f"{eval_mode}Evaluation"
@@ -123,10 +123,12 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
             # Get short session identifier for new path format
             short_session = get_short_session_id(session, 'CrossSubject')
             
-            # Check both new (short) and old (long) path formats for backwards compatibility
-            out_dir_new = create_output_path(model_name, seed, int(representative_subject), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
+            # Short path (short run id + short session): used for new writes and primary check
+            out_dir_short = create_output_path(model_name, seed, int(representative_subject), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset, use_short_run_id=True)
+            # Long path (full model name): for backwards compatibility with existing results
+            out_dir_long = create_output_path(model_name, seed, int(representative_subject), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset, use_short_run_id=False)
             
-            # Create old path format (with full session string) for backwards compatibility
+            # Create legacy path format (full session string in path) for backwards compatibility
             if not eval_mode.endswith("Evaluation"):
                 eval_mode_full = f"{eval_mode}Evaluation"
             else:
@@ -146,82 +148,78 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
             out_dir_old = os.path.join("//".join([str(item) for item in old_path_parts]))
             
             # For test_perturb/multirun mode, check for ANY CSV file in the output directory
-            # instead of a specific filename pattern (to handle legacy filename conventions)
+            # Check short path, long path, and legacy path for backwards compatibility
             if is_test_perturb_mode:
-                # Check new path format first
                 found_files = False
-                if os.path.exists(out_dir_new):
-                    csv_files = [f for f in os.listdir(out_dir_new) if f.endswith('.csv')]
-                    if csv_files:
-                        for csv_file in csv_files:
-                            existing_output_paths.append(os.path.join(out_dir_new, csv_file))
-                        found_files = True
-                
-                # Also check old path format for backwards compatibility
-                if not found_files and os.path.exists(out_dir_old):
-                    csv_files = [f for f in os.listdir(out_dir_old) if f.endswith('.csv')]
-                    if csv_files:
-                        for csv_file in csv_files:
-                            existing_output_paths.append(os.path.join(out_dir_old, csv_file))
-                        found_files = True
-                
+                for out_dir in (out_dir_short, out_dir_long, out_dir_old):
+                    if os.path.exists(out_dir):
+                        csv_files = [f for f in os.listdir(out_dir) if f.endswith('.csv')]
+                        if csv_files:
+                            for csv_file in csv_files:
+                                existing_output_paths.append(os.path.join(out_dir, csv_file))
+                            found_files = True
+                            break
                 if not found_files:
-                    expected_output_paths.append(out_dir_new)  # Prefer new format
+                    expected_output_paths.append(out_dir_short)  # New writes use short path
             else:
-                # For non-test_perturb modes, check both new and old filename patterns
+                # For non-test_perturb modes, check both short and long path filename patterns
                 if noise_type is not None and intensity is not None:
                     filename_suffix = f"_{noise_type}_{intensity}"
                 else:
                     filename_suffix = ""
                 
-                # Check new format (short session)
-                out_file_new = os.path.join(out_dir_new,
-                                            f"{model_name}_{mode}{filename_suffix}_{short_session}_seed{seed}.csv")
-                # Check old format (full session) for backwards compatibility
+                out_file_short = os.path.join(out_dir_short,
+                                              f"{model_name}_{mode}{filename_suffix}_{short_session}_seed{seed}.csv")
+                out_file_long = os.path.join(out_dir_long,
+                                             f"{model_name}_{mode}{filename_suffix}_{short_session}_seed{seed}.csv")
                 out_file_old = os.path.join(out_dir_old,
                                             f"{model_name}_{mode}{filename_suffix}_{session}_seed{seed}.csv")
                 
-                if os.path.exists(out_file_new):
-                    existing_output_paths.append(out_file_new)
+                if os.path.exists(out_file_short):
+                    existing_output_paths.append(out_file_short)
+                elif os.path.exists(out_file_long):
+                    existing_output_paths.append(out_file_long)
                 elif os.path.exists(out_file_old):
-                    existing_output_paths.append(out_file_old)  # Found in old format
+                    existing_output_paths.append(out_file_old)
                 else:
-                    expected_output_paths.append(out_file_new)  # Prefer new format
+                    expected_output_paths.append(out_file_short)
     else:
         # Original logic for WithinSession and CrossSession
         # sessions_to_check was already determined above
+        is_test_perturb_mode = mode in ['test_perturb', 'multirun'] or mode.startswith('test_perturb')
         for subj in subject_list:
             for session in sessions_to_check:
-                # Determine paradigm and dataset for path creation
-                out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
+                # Short path (used for new writes); long path for backwards compatibility
+                out_dir_short = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset, use_short_run_id=True)
+                out_dir_long = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset, use_short_run_id=False)
                 
-                # For test_perturb/multirun mode, check for ANY CSV file in the output directory
-                # instead of a specific filename pattern (to handle legacy filename conventions)
-                is_test_perturb_mode = mode in ['test_perturb', 'multirun'] or mode.startswith('test_perturb')
                 if is_test_perturb_mode:
-                    # Check if directory exists and has any CSV files
-                    if os.path.exists(out_dir):
-                        csv_files = [f for f in os.listdir(out_dir) if f.endswith('.csv')]
-                        if csv_files:
-                            # Add all CSV files found in this directory
-                            for csv_file in csv_files:
-                                existing_output_paths.append(os.path.join(out_dir, csv_file))
-                        else:
-                            expected_output_paths.append(out_dir)  # Directory exists but no CSVs
-                    else:
-                        expected_output_paths.append(out_dir)  # Directory doesn't exist
+                    # Check short then long dir for any CSV files
+                    found_files = False
+                    for out_dir in (out_dir_short, out_dir_long):
+                        if os.path.exists(out_dir):
+                            csv_files = [f for f in os.listdir(out_dir) if f.endswith('.csv')]
+                            if csv_files:
+                                for csv_file in csv_files:
+                                    existing_output_paths.append(os.path.join(out_dir, csv_file))
+                                found_files = True
+                                break
+                    if not found_files:
+                        expected_output_paths.append(out_dir_short)
                 else:
-                    # For non-test_perturb modes, use the original specific filename pattern
                     if noise_type is not None and intensity is not None:
                         filename_suffix = f"_{noise_type}_{intensity}"
                     else:
                         filename_suffix = ""
-                    out_file = os.path.join(out_dir,
-                                            f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
-                    if os.path.exists(out_file):
-                        existing_output_paths.append(out_file)
+                    fname = f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv"
+                    out_file_short = os.path.join(out_dir_short, fname)
+                    out_file_long = os.path.join(out_dir_long, fname)
+                    if os.path.exists(out_file_short):
+                        existing_output_paths.append(out_file_short)
+                    elif os.path.exists(out_file_long):
+                        existing_output_paths.append(out_file_long)
                     else:
-                        expected_output_paths.append(out_file)
+                        expected_output_paths.append(out_file_short)
 
     # For test_perturb/multirun mode, we need to verify that the CSV files contain
     # all expected noise intensities, not just that the files exist
@@ -249,34 +247,51 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
     
     # For test_perturb mode, check intensity completeness if files exist
     if len(expected_output_paths) == 0 and is_test_perturb_mode:
-        # Check if all expected noise intensities are present in the existing files
-        all_intensities_present = True
+        # Check if all expected noise intensities are present in the existing files.
+        # When expected_noise_types and expected_intensities_by_noise are provided (e.g. by Plot2
+        # or runner with gaussian_only + alpha_grid), only require those; otherwise require
+        # all four noise types with full saturation-step intensities (stricter legacy behavior).
         missing_intensities_info = []
-        
-        # Get expected noise intensities for all noise types
-        noise_types = ['gaussian', 'dropout', 'eog', 'spike']
-        expected_intensities_by_noise = {}
-        
-        # Load saturation file to get expected intensities
-        saturation_file = "saturation_results/saturation_points_summary.csv"
-        num_steps = 20  # Default from experiment_config.yaml
-        
-        for nt in noise_types:
-            try:
-                expected_intensities = get_noise_intensities(
-                    dataset=dataset, 
-                    noise_type=nt, 
-                    num_steps=num_steps,
-                    saturation_file=saturation_file
-                )
-                # Convert to Python float to avoid numpy/pandas type mismatches in comparison
-                expected_intensities_by_noise[nt] = [float(x) for x in expected_intensities]
-            except Exception as e:
-                print(f"Warning: Could not get expected intensities for {nt}: {e}")
-                # If we can't get expected intensities, assume we need to run
-                all_intensities_present = False
-                break
-        
+        saturation_file = test_perturb_saturation_file or "saturation_results/saturation_points_summary.csv"
+        num_steps = int(test_perturb_num_steps)
+
+        if expected_noise_types is not None and expected_intensities_by_noise is not None and len(expected_noise_types) > 0 and len(expected_intensities_by_noise) > 0:
+            # Run-specific scope: only require these noise types and intensities (e.g. gaussian + alpha grid)
+            noise_types = list(expected_noise_types)
+            expected_by_noise = {}
+            for nt in noise_types:
+                if nt in expected_intensities_by_noise and expected_intensities_by_noise[nt]:
+                    expected_by_noise[nt] = [float(x) for x in expected_intensities_by_noise[nt]]
+            if not expected_by_noise:
+                # Caller passed empty lists; fall back to legacy so we don't skip incorrectly
+                noise_types = ['gaussian', 'dropout', 'eog', 'spike']
+                expected_by_noise = {}
+                for nt in noise_types:
+                    try:
+                        expected_intensities = get_noise_intensities(
+                            dataset=dataset, noise_type=nt, num_steps=num_steps, saturation_file=saturation_file
+                        )
+                        expected_by_noise[nt] = [float(x) for x in expected_intensities]
+                    except Exception as e:
+                        print(f"Warning: Could not get expected intensities for {nt}: {e}")
+                        expected_by_noise[nt] = []
+        else:
+            # Legacy: require all four noise types and full saturation-step intensities
+            noise_types = ['gaussian', 'dropout', 'eog', 'spike']
+            expected_by_noise = {}
+            for nt in noise_types:
+                try:
+                    expected_intensities = get_noise_intensities(
+                        dataset=dataset,
+                        noise_type=nt,
+                        num_steps=num_steps,
+                        saturation_file=saturation_file
+                    )
+                    expected_by_noise[nt] = [float(x) for x in expected_intensities]
+                except Exception as e:
+                    print(f"Warning: Could not get expected intensities for {nt}: {e}")
+                    expected_by_noise[nt] = []
+
         # Check each existing output file to see if it contains all expected intensities
         # If ANY file has all expected intensities, we can skip the job
         print(f"[check_skip_eval] Checking {len(existing_output_paths)} existing file(s) for intensity completeness...")
@@ -298,7 +313,7 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
                 
                 # Check each noise type
                 for noise_type in noise_types:
-                    if noise_type not in expected_intensities_by_noise:
+                    if noise_type not in expected_by_noise:
                         continue
                     
                     # Get intensities present in the file for this noise type
@@ -310,9 +325,20 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
                     
                     # Convert to float to avoid numpy/pandas type mismatches
                     existing_intensities = [float(x) for x in noise_df['intensity'].unique()]
-                    expected_intensities = expected_intensities_by_noise[noise_type]
+                    expected_intensities = expected_by_noise[noise_type]
                     
                     print(f"[check_skip_eval] {out_file} - {noise_type}: Found {len(existing_intensities)} intensities, expected {len(expected_intensities)}")
+                    
+                    # For correlated types (ar1_drift, spatial_gaussian, emg_band), actual intensities
+                    # are data-derived (alpha * alpha_max), so we only require count match, not value match.
+                    if noise_type in _CORRELATED_NOISE_TYPES:
+                        if len(existing_intensities) < len(expected_intensities):
+                            file_missing_info.append(f"{noise_type}: found {len(existing_intensities)} intensities, need {len(expected_intensities)}")
+                            file_has_all_intensities = False
+                            missing_intensities_info.append(
+                                f"{out_file}: {noise_type} intensity count {len(existing_intensities)} < expected {len(expected_intensities)}"
+                            )
+                        continue
                     
                     # Check if all expected intensities are present (with tolerance for floating point)
                     # Use 1e-3 tolerance to account for CSV round-trip precision loss and reasonable floating point differences
@@ -410,19 +436,23 @@ def log_all_subjects(results, subject_list, model_name, mode, noise_type, intens
             # CRITICAL: The 'mode' parameter is used in create_output_path to create different directories
             # for tuned vs non-tuned results. This prevents overwriting.
             # Path structure: results/.../{mode}/ where mode is either 'test_perturb' or 'test_perturb_tune'
-            out_dir = create_output_path(model_name, seed, int(representative_subject), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
+            out_dir = create_output_path(model_name, seed, int(representative_subject), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset, use_short_run_id=True)
             os.makedirs(out_dir, exist_ok=True)
             
             if noise_type is not None and intensity is not None:
-                filename_suffix = f"_{noise_type}_{intensity}" 
+                filename_suffix = f"_{noise_type}_{intensity}"
             else:
                 filename_suffix = ""
             
             # Use short session identifier for filename to avoid long paths
-            # The full session info (including eval_subjects) is preserved in the CSV data
             short_session = get_short_session_id(session, 'CrossSubject')
-            out_file = os.path.join(out_dir,
-                                    f"{model_name}_{mode}{filename_suffix}_{short_session}_seed{seed}.csv")
+            # Short filename for test_perturb to stay under Windows path limit (model is in path + CSV content)
+            is_tp = mode in ('test_perturb', 'test_perturb_tune') or mode.startswith('test_perturb')
+            if is_tp and not filename_suffix:
+                fname = f"tp_{short_session}_seed{seed}.csv" if "_tune" not in mode else f"tp_tune_{short_session}_seed{seed}.csv"
+            else:
+                fname = f"{model_name}_{mode}{filename_suffix}_{short_session}_seed{seed}.csv"
+            out_file = os.path.join(out_dir, fname)
             
             # Log the full path construction for debugging
             print(f"[LOG_ALL_SUBJECTS] CrossSubject file save:")
@@ -458,19 +488,23 @@ def log_all_subjects(results, subject_list, model_name, mode, noise_type, intens
                 raise
     else:
         # Original logic for WithinSession and CrossSession modes
-        for subj in subject_list:        
+        for subj in subject_list:
             subject_df = results[results['subject'] == int(subj)]
             for session in subject_df['session'].unique():
                 session_df = subject_df[subject_df['session'] == session]
-                out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset)
+                out_dir = create_output_path(model_name, seed, int(subj), session, mode, session_type=eval_mode, paradigm=paradigm, dataset=dataset, use_short_run_id=True)
                 os.makedirs(out_dir, exist_ok=True)
                 if noise_type is not None and intensity is not None:
-                    filename_suffix = f"_{noise_type}_{intensity}" 
+                    filename_suffix = f"_{noise_type}_{intensity}"
                 else:
                     filename_suffix = ""
-
-                out_file = os.path.join(out_dir,
-                                        f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv")
+                # Short filename for test_perturb to avoid Windows path length limit
+                is_tp = mode in ('test_perturb', 'test_perturb_tune') or mode.startswith('test_perturb')
+                if is_tp and not filename_suffix:
+                    fname = f"tp_s{int(subj):03d}_seed{seed}.csv" if "_tune" not in mode else f"tp_tune_s{int(subj):03d}_seed{seed}.csv"
+                else:
+                    fname = f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv"
+                out_file = os.path.join(out_dir, fname)
                 session_df.to_csv(out_file, index=False)
                 print(f"Saved: {out_file}")
 

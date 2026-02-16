@@ -1,0 +1,22 @@
+Choosing the first 4 classes from all possible events
+Script started at: 2026-01-20 12:49:55
+[check_skip_eval] Mode: test_perturb, Tuned: False, is_test_perturb_mode: True
+[check_skip_eval] Existing output paths (after tuned filter): 2, Expected: 0
+[check_skip_eval] First existing file: results//MotorImagery//BNCI2014_001//cnn_ncp//CrossSessionEvaluation//12217//sub-001//0train//test_perturb\cnn_ncp_test_perturb_subject_001_seed12217.csv
+[check_skip_eval] Checking 2 existing file(s) for intensity completeness...
+[check_skip_eval] Loaded results//MotorImagery//BNCI2014_001//cnn_ncp//CrossSessionEvaluation//12217//sub-001//0train//test_perturb\cnn_ncp_test_perturb_subject_001_seed12217.csv: 80 rows, columns: ['noise_type', 'intensity', 'clean_score', 'corrupted_score', 'clean_roc_auc', 'clean_accuracy', 'clean_precision', 'clean_recall', 'clean_f1', 'corrupted_roc_auc', 'corrupted_accuracy', 'corrupted_precision', 'corrupted_recall', 'corrupted_f1', 'relative_drop', 'training_time', 'evaluation_time', 'total_time', 'session', 'cv_type', 'split_level', 'subject', 'model', 'dataset', 'mode', 'eval_mode', 'seed', 'tune', 'batch_size', 'optimizer__lr', 'optimizer__weight_decay', 'module__ncp_hidden_dim', 'module__sparsity']
+[check_skip_eval] results//MotorImagery//BNCI2014_001//cnn_ncp//CrossSessionEvaluation//12217//sub-001//0train//test_perturb\cnn_ncp_test_perturb_subject_001_seed12217.csv - gaussian: Found 20 intensities, expected 20
+[check_skip_eval] results//MotorImagery//BNCI2014_001//cnn_ncp//CrossSessionEvaluation//12217//sub-001//0train//test_perturb\cnn_ncp_test_perturb_subject_001_seed12217.csv - dropout: Found 20 intensities, expected 20
+[check_skip_eval] results//MotorImagery//BNCI2014_001//cnn_ncp//CrossSessionEvaluation//12217//sub-001//0train//test_perturb\cnn_ncp_test_perturb_subject_001_seed12217.csv - eog: Found 20 intensities, expected 20
+[check_skip_eval] results//MotorImagery//BNCI2014_001//cnn_ncp//CrossSessionEvaluation//12217//sub-001//0train//test_perturb\cnn_ncp_test_perturb_subject_001_seed12217.csv - spike: Found 20 intensities, expected 20
+[check_skip_eval] OK results//MotorImagery//BNCI2014_001//cnn_ncp//CrossSessionEvaluation//12217//sub-001//0train//test_perturb\cnn_ncp_test_perturb_subject_001_seed12217.csv contains all expected intensities
+[check_skip_eval] Loaded results//MotorImagery//BNCI2014_001//cnn_ncp//CrossSessionEvaluation//12217//sub-001//1test//test_perturb\cnn_ncp_test_perturb_subject_001_seed12217.csv: 80 rows, columns: ['noise_type', 'intensity', 'clean_score', 'corrupted_score', 'clean_roc_auc', 'clean_accuracy', 'clean_precision', 'clean_recall', 'clean_f1', 'corrupted_roc_auc', 'corrupted_accuracy', 'corrupted_precision', 'corrupted_recall', 'corrupted_f1', 'relative_drop', 'training_time', 'evaluation_time', 'total_time', 'session', 'cv_type', 'split_level', 'subject', 'model', 'dataset', 'mode', 'eval_mode', 'seed', 'tune', 'batch_size', 'optimizer__lr', 'optimizer__weight_decay', 'module__ncp_hidden_dim', 'module__sparsity']
+[check_skip_eval] results//MotorImagery//BNCI2014_001//cnn_ncp//CrossSessionEvaluation//12217//sub-001//1test//test_perturb\cnn_ncp_test_perturb_subject_001_seed12217.csv - gaussian: Found 20 intensities, expected 20
+[check_skip_eval] results//MotorImagery//BNCI2014_001//cnn_ncp//CrossSessionEvaluation//12217//sub-001//1test//test_perturb\cnn_ncp_test_perturb_subject_001_seed12217.csv - dropout: Found 20 intensities, expected 20
+[check_skip_eval] results//MotorImagery//BNCI2014_001//cnn_ncp//CrossSessionEvaluation//12217//sub-001//1test//test_perturb\cnn_ncp_test_perturb_subject_001_seed12217.csv - eog: Found 20 intensities, expected 20
+[check_skip_eval] results//MotorImagery//BNCI2014_001//cnn_ncp//CrossSessionEvaluation//12217//sub-001//1test//test_perturb\cnn_ncp_test_perturb_subject_001_seed12217.csv - spike: Found 20 intensities, expected 20
+[check_skip_eval] OK results//MotorImagery//BNCI2014_001//cnn_ncp//CrossSessionEvaluation//12217//sub-001//1test//test_perturb\cnn_ncp_test_perturb_subject_001_seed12217.csv contains all expected intensities
+[check_skip_eval] OK All expected intensities found in existing files - SKIPPING job
+[check_skip_eval] Files with complete intensity data:
+  results//MotorImagery//BNCI2014_001//cnn_ncp//CrossSessionEvaluation//12217//sub-001//0train//test_perturb\cnn_ncp_test_perturb_subject_001_seed12217.csv
+  results//MotorImagery//BNCI2014_001//cnn_ncp//CrossSessionEvaluation//12217//sub-001//1test//test_perturb\cnn_ncp_test_perturb_subject_001_seed12217.csv

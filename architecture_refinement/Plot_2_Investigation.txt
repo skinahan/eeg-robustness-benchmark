@@ -1,0 +1,295 @@
+====================================================================
+Plot 2 / NAS Debug Phase – Fast Diagnostics + Next Steps (Spec)
+====================================================================
+
+Purpose
+-------
+This specification defines an *iterative*, low-compute diagnostic phase
+to isolate why Plot 2 appears insensitive (NAS ≈ Random ≈ NCP) and why
+the trained architecture sets collapse into a narrow WS-Flex regime
+(e.g., near-dense k only). The emphasis is on feasibility/validity checks
+that avoid 24-hour full training runs.
+
+This spec also re-anchors diagnostics against the "Architecture
+Refinement (First Pass)" optimizer formulation (clustering/path-length
+guided WS-Flex) to detect regression in diversity and/or selection logic.
+:contentReference[oaicite:0]{index=0}
+
+Primary hypotheses to test:
+H1) WS-Flex generator + constraints create a “validity funnel” that
+    makes sparse/moderate graphs infeasible or unlikely.
+H2) Objective proxies (TE/ORC) + selection collapse diversity (density proxy).
+H3) Pipeline mismatches exist (wrong perturbation applied, stale logging,
+    wrong column aggregated, etc.).
+H4) Even with diverse graphs, the chosen testbed/model/metric is
+    topology-insensitive under current settings.
+
+--------------------------------------------------------------------
+Guiding Principle
+-----------------
+Do not run full multi-model training until a “gating checklist” is green:
+- The candidate generator produces multi-regime diversity.
+- The selection policy preserves diversity (or deliberately stratifies it).
+- The perturbation type/intensity is verifiably correct in outputs.
+- A minimal trained smoke test shows sensitivity across regimes.
+
+--------------------------------------------------------------------
+Phase 0 – Instrumentation Patches (Required Before Any New Runs)
+--------------------------------------------------------------------
+
+PATCH 0.1: Mandatory run manifest + table schema
+- Every run must write a machine-readable manifest.json with:
+  - perturbation_type
+  - target_snr_db and empirical_snr_db
+  - alpha_max and alpha_grid
+  - perturbation params (rho, ell, band, envelope_on, etc.)
+  - generator bounds + constraints (k range, p range, target_clustering,
+    target_path_length, any feasibility thresholds)
+  - selection method + parameters (global score vs Pareto vs stratified)
+  - git commit hash (or code version id) + RNG seeds
+
+- Every per_seed/per_graph CSV must include:
+  - perturbation_type
+  - target_snr_db, empirical_snr_db
+  - selection_method
+  - graph_id
+  - k, p (and any other generator parameters)
+  - density (or edges count), clustering, path_length
+  - TE_raw, TE_norm, ORC_raw, ORC_norm (exact forms used)
+
+Hard fail:
+- If any required field is missing, the run must error out early
+  (do not silently continue).
+
+PATCH 0.2: Perturbation fingerprint diagnostic
+- For one batch (or a small sample of trials), log:
+  - lag-1 autocorrelation of injected noise (AR(1) should be ~rho)
+  - mean/std of (X̃ − X)
+This prevents “plot says ar1_drift but run is Gaussian” regressions.
+
+PATCH 0.3: Selection output audit
+- When selecting B graphs for training, write:
+  - selected_architectures.csv with full metric vectors + generator params
+  - histogram summary by regime (see Phase 2)
+This prevents silent collapse to one k.
+
+--------------------------------------------------------------------
+Phase 1 – Generator Feasibility & Diversity Diagnostics (Training-Free)
+--------------------------------------------------------------------
+
+Goal: determine whether WS-Flex can actually produce diverse regimes
+under the current bounds/constraints, and identify “why sparse graphs
+disappear.”
+
+Inputs:
+- A single “diagnostic config” for WS-Flex bounds:
+  - explicit k_min..k_max and p_min..p_max
+  - explicit target_clustering range, target_path_length range
+  - seed policy (fixed list)
+
+Diagnostics to compute for N graphs (N = 2,000 is fine; this is cheap):
+For each generated graph G:
+- validity flag (accepted/rejected)
+- rejection reason (single categorical label)
+- generator parameters used (k, p, target_clustering, target_path_length, seed)
+- derived graph stats:
+  - density (or edges)
+  - average clustering coefficient
+  - average shortest path length (if connected; else handle components)
+  - degree entropy (TE proxy)
+  - mean Ollivier–Ricci curvature (ORC proxy; sign-preserving, no abs)
+  - any additional metrics you already compute (optional)
+
+Required outputs:
+1) feasibility_rate_overall = accepted / attempted
+2) feasibility_rate_by_regime:
+   - define regimes by k bins (example):
+     super_sparse: k ∈ [2,6]
+     sparse:       k ∈ [7,12]
+     moderate:     k ∈ [13,18]
+     near_dense:   k ∈ [19,26]  (adjust to your k_max)
+3) rejection_reason_histogram overall + by regime
+4) metric_distributions by regime:
+   - TE vs k
+   - ORC vs k
+   - clustering vs k
+   - path_length vs k
+
+Key gate (Phase 1 PASS criteria):
+- Each regime must have >= 5% feasibility (accepted graphs) OR
+  we must explicitly document which constraints make it infeasible.
+
+Interpretation:
+- If sparse/moderate regimes show near-zero feasibility:
+  -> WS-Flex constraints are over-restrictive (validity funnel).
+  -> revise target_clustering/path_length ranges (Phase 4).
+
+--------------------------------------------------------------------
+Phase 2 – Objective Proxy Sanity: Are TE/ORC Just Density Proxies?
+--------------------------------------------------------------------
+
+Goal: test whether TE and ORC monotonicly track k/density under current
+WS-Flex constraints, which would explain selection collapse.
+
+Compute correlations over accepted graphs:
+- corr(TE_raw, k), corr(TE_raw, density)
+- corr(ORC_raw, k), corr(ORC_raw, density)
+- corr(TE_raw, ORC_raw)
+
+Also compute “Pareto width”:
+- number of non-dominated points overall
+- number of non-dominated points per regime
+
+Key gate (Phase 2 PASS criteria):
+- Pareto set must include multiple regimes.
+- If >80% of Pareto points sit in one regime, proxies are not providing
+  useful multi-regime tradeoffs (or constraints are funneling).
+
+If FAIL:
+- Consider adding clustering/path-length as explicit objectives again
+  (as in the first-pass formulation) to prevent density collapse.
+  :contentReference[oaicite:1]{index=1}
+
+--------------------------------------------------------------------
+Phase 3 – Selection Policy Diagnostics (No Training)
+--------------------------------------------------------------------
+
+Goal: prove whether selection (global score / Pareto / stratified) is
+responsible for collapsing to one k.
+
+Given a fixed pool P of accepted graphs with computed metrics:
+Test the following selectors and compare selected-set diversity:
+
+Selector A (current problematic mode):
+- global top-B by scalar score (e.g., TE_norm + ORC_norm)
+
+Selector B (Pareto + crowding):
+- take Pareto front(s), then select by crowding distance / hypervolume contribution
+
+Selector C (stratified-by-regime, recommended):
+- allocate B_r = floor(B / R) per regime (R = number of regimes)
+- within regime: pick by Pareto rank then crowding
+- if regime lacks candidates: fill remaining slots from next-most-diverse regime
+
+Required outputs:
+- For each selector:
+  - selected set summary:
+    unique_k list, regime counts, density stats
+    TE/ORC ranges
+    clustering/path_length ranges
+- A single “collapse score”:
+    collapse = max_regime_fraction
+  (If collapse > 0.5, the selection is not preserving diversity.)
+
+Key gate (Phase 3 PASS criteria):
+- Selector C must yield meaningful multi-regime coverage.
+- If even Selector C cannot, the generator/constraints are the issue (Phase 4).
+
+--------------------------------------------------------------------
+Phase 4 – Bounds / Constraints Revision to Recover Original Diversity
+--------------------------------------------------------------------
+
+Trigger: Phase 1 or 2 shows sparse/moderate infeasible or dominated.
+
+Action: reintroduce / emphasize the parameters that previously shaped
+diversity in the first-pass optimizer:
+- target_clustering and target_path_length were explicitly optimized and
+  passed into WS-flex generation, shaping valid graphs beyond (k,p).
+  :contentReference[oaicite:2]{index=2}
+
+Concrete revision steps:
+1) Ensure the WS-flex generator actually uses the intended rewiring param:
+   - In first-pass, 'rewiring_prob' was optimized but not passed to WS-flex;
+     only 'p_rewiring' was used. Audit current runner for similar mismatches.
+   :contentReference[oaicite:3]{index=3}
+
+2) Expand/relax constraint ranges to allow sparse feasibility:
+   - widen target_path_length upper bound for low k
+   - lower target_clustering for low k
+   - allow disconnected graphs with a consistent handling rule (optional):
+     e.g., compute path length on giant component and log component count
+
+3) Add a feasibility-preserving repair strategy (optional):
+   - If generated graph fails constraints, adaptively adjust k/p within a
+     small neighborhood rather than rejecting (log repair rate separately).
+
+Output:
+- A “v2 bounds” config file + rerun Phase 1/2 to confirm diversity returns.
+
+--------------------------------------------------------------------
+Phase 5 – Minimal Training Smoke Tests (Hours, Not 24 Hours)
+--------------------------------------------------------------------
+
+Goal: verify that topology differences can affect robustness metrics
+before committing to full-scale runs.
+
+Design:
+- Choose 4 graphs, one from each regime (super_sparse, sparse, moderate, near_dense)
+  using Selector C (stratified) from Phase 3.
+- Fixed model config (CNN–CfC/CNN–NCP), fixed H=32 (as agreed).
+- Train with:
+  - 1 seed only
+  - shortened training schedule (e.g., 20–30% of normal epochs)
+  - early stopping permitted
+- Evaluate on one perturbation only (AR(1) drift) at target_snr_db = −5.
+
+Success condition:
+- At least one pair of regimes differs in robustness (AUPC or ROC-AUC drop)
+  by a non-trivial margin (set a practical threshold, e.g., ΔAUPC ≥ 0.02),
+  indicating the experiment has sensitivity.
+
+If FAIL (no sensitivity):
+- either (a) the testbed is topology-insensitive, or
+- (b) the perturbation injection/intensity is still wrong, or
+- (c) the masked-weight implementation is washing out topology.
+Then proceed to Phase 6.
+
+--------------------------------------------------------------------
+Phase 6 – Pipeline Integrity Checks (If Sensitivity Still Missing)
+--------------------------------------------------------------------
+
+1) Confirm perturbation is active and logged correctly (Patch 0.2).
+2) Confirm AUPC computation reads the correct columns for the chosen perturbation:
+   - verify the corruption label propagated into evaluation loop and output tables.
+3) Confirm “masked-weight wiring” does not erase topology distinctions:
+   - report effective sparsity mask stats per graph:
+     number of active edges, mask density, per-layer mask sizes
+   - ensure training does not inadvertently densify (it should not, but verify).
+4) Confirm selection pool is not contaminated:
+   - no duplicates in trained graph IDs
+   - random and TPE draws are disjoint unless intentionally overlapped
+
+--------------------------------------------------------------------
+Decision Tree for Next Full Plot 2 Run
+--------------------------------------------------------------------
+
+Only launch the 24-hour full Plot 2 run when:
+- Phase 1 PASS (multi-regime feasibility)
+- Phase 3 PASS (stratified selector yields regime coverage)
+- Phase 5 PASS (minimal trained smoke test shows sensitivity)
+
+If all PASS:
+- Run full Plot 2 with:
+  - selection_method = stratified (Selector C) for both Random and TPE
+  - AR(1) drift primary perturbation (target_snr_db = −5)
+  - include spatial Gaussian / EMG as secondary (optional)
+
+If any FAIL:
+- Do not scale up. Fix the failing phase first.
+
+--------------------------------------------------------------------
+Deliverables Checklist
+--------------------------------------------------------------------
+
+- [ ] Patch 0.1: manifest.json + required CSV columns
+- [ ] Patch 0.2: perturbation fingerprint logs
+- [ ] Patch 0.3: selected_architectures.csv + regime summary
+- [ ] Phase 1 report: feasibility + rejection histograms by regime
+- [ ] Phase 2 report: TE/ORC correlation with density + Pareto width
+- [ ] Phase 3 report: selector comparison + collapse score
+- [ ] Phase 4: revised bounds config (if triggered)
+- [ ] Phase 5: 4-graph minimal training smoke test results
+
+====================================================================
+End of Specification
+====================================================================
