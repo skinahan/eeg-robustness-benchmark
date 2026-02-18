@@ -126,9 +126,9 @@ def check_max_drop_in_outputs(plot2_dir: Path) -> Dict[str, Any]:
 
 
 def check_selection_pool(plot2_dir: Path) -> Dict[str, Any]:
-    """4) No duplicates in trained graph IDs; report method breakdown."""
+    """4) No duplicates in trained graph IDs; report method breakdown. Stage 0: no duplicate model_name; no duplicate graph_hash within each method (overlap across methods is allowed per spec)."""
     sel_path = plot2_dir / "selected_architectures.csv"
-    out = {"path": str(sel_path), "exists": sel_path.exists(), "pass": False, "n_rows": 0, "n_unique_model_names": 0, "duplicates": [], "by_method": {}}
+    out = {"path": str(sel_path), "exists": sel_path.exists(), "pass": False, "n_rows": 0, "n_unique_model_names": 0, "duplicates": [], "by_method": {}, "graph_hash_duplicates": []}
     if not sel_path.exists():
         out["message"] = "selected_architectures.csv not found."
         return out
@@ -143,11 +143,94 @@ def check_selection_pool(plot2_dir: Path) -> Dict[str, Any]:
         out["n_unique_model_names"] = len(set(names))
         dupes = [n for n in set(names) if names.count(n) > 1]
         out["duplicates"] = dupes
-        out["pass"] = len(dupes) == 0
+        graph_hash_dupes = []
+        if "graph_hash" in df.columns and "method" in df.columns:
+            # Per-method: no duplicate graph_hash within same method (overlap across methods allowed per Plot2 spec)
+            for method in df["method"].dropna().astype(str).unique():
+                sub = df[df["method"].astype(str) == method]
+                hashes = sub["graph_hash"].dropna().astype(str).tolist()
+                within_dupes = [h for h in set(hashes) if hashes.count(h) > 1]
+                graph_hash_dupes.extend(within_dupes)
+            out["graph_hash_duplicates"] = list(set(graph_hash_dupes))
+        out["pass"] = len(dupes) == 0 and len(out["graph_hash_duplicates"]) == 0
         if "method" in df.columns:
             out["by_method"] = df.groupby("method").size().to_dict()
-        out["message"] = "No duplicate model_name." if out["pass"] else f"Duplicates: {dupes}"
+        out["message"] = "No duplicate model_name or graph_hash within method." if out["pass"] else f"Duplicates: {dupes}; graph_hash_dupes: {out['graph_hash_duplicates']}"
     except Exception as e:
+        out["message"] = str(e)
+    return out
+
+
+def check_stage1_overlap_and_regime(plot2_dir: Path) -> Dict[str, Any]:
+    """Stage 1: Overlap A-B <= 75% or >=2 graphs differ; overlap A-C and B-C <= 50%; span >=2 regimes and >=3 (C,L) cells."""
+    sel_path = plot2_dir / "selected_architectures.csv"
+    manifest_path = plot2_dir / "plot2_manifest.json"
+    out = {"pass": True, "overlap_A_B": float("nan"), "overlap_A_C": float("nan"), "overlap_B_C": float("nan"), "n_regimes": 0, "n_cells": 0, "message": ""}
+    if not sel_path.exists() or not manifest_path.exists():
+        out["pass"] = True
+        out["message"] = "Missing selected_architectures or manifest; skip Stage 1."
+        return out
+    try:
+        import pandas as pd
+        df = pd.read_csv(sel_path)
+        if "graph_hash" not in df.columns or "method" not in df.columns:
+            out["message"] = "No graph_hash or method column; skip Stage 1."
+            return out
+        ws = df[df["wiring_kind"].astype(str) == "ws_flex"].copy() if "wiring_kind" in df.columns else df.copy()
+        if ws.empty:
+            out["message"] = "No ws_flex architectures; skip Stage 1."
+            return out
+
+        def _graphs(m: str) -> Set[str]:
+            sub = ws[ws["method"].astype(str) == m]
+            return set(sub["graph_hash"].dropna().astype(str).tolist())
+
+        a_set = _graphs("baseline_a")
+        b_set = _graphs("baseline_b")
+        c_set = _graphs("tpe")
+        if a_set and b_set:
+            overlap_ab = len(a_set & b_set) / max(len(a_set), len(b_set))
+            out["overlap_A_B"] = float(overlap_ab)
+            if overlap_ab > 0.75 and len(a_set - b_set) + len(b_set - a_set) < 2:
+                out["pass"] = False
+                out["message"] = f"Stage 1: overlap(A,B)={overlap_ab:.2f} > 75% and <2 graphs differ."
+        if a_set and c_set:
+            overlap_ac = len(a_set & c_set) / max(len(a_set), len(c_set))
+            out["overlap_A_C"] = float(overlap_ac)
+            if overlap_ac > 0.50:
+                out["pass"] = False
+                out["message"] = out["message"] or f"Stage 1: overlap(A,C)={overlap_ac:.2f} > 50%."
+        if b_set and c_set:
+            overlap_bc = len(b_set & c_set) / max(len(b_set), len(c_set))
+            out["overlap_B_C"] = float(overlap_bc)
+            if overlap_bc > 0.50:
+                out["pass"] = False
+                out["message"] = out["message"] or f"Stage 1: overlap(B,C)={overlap_bc:.2f} > 50%."
+        if "k" in ws.columns:
+            regimes = set()
+            deg = json.loads(manifest_path.read_text()).get("degree_regimes", {})
+            for _, r in ws.iterrows():
+                k = r.get("k")
+                if pd.isna(k):
+                    continue
+                for name, ks in deg.items():
+                    if int(k) in [int(x) for x in ks]:
+                        regimes.add(str(name))
+                        break
+            out["n_regimes"] = len(regimes)
+            if len(regimes) < 2:
+                out["pass"] = False
+                out["message"] = out["message"] or f"Stage 1: only {len(regimes)} regime(s); need >=2."
+        if "C_bin" in ws.columns and "L_bin" in ws.columns:
+            cells = set((str(r["C_bin"]), str(r["L_bin"])) for _, r in ws.iterrows() if pd.notna(r.get("C_bin")) and pd.notna(r.get("L_bin")))
+            out["n_cells"] = len(cells)
+            if len(cells) < 3:
+                out["pass"] = False
+                out["message"] = out["message"] or f"Stage 1: only {len(cells)} (C,L) cells; need >=3."
+        if out["pass"]:
+            out["message"] = "Stage 1: overlap and regime span OK."
+    except Exception as e:
+        out["pass"] = False
         out["message"] = str(e)
     return out
 
@@ -179,6 +262,9 @@ def main() -> None:
     if strict_spec:
         strict = True
         allow_legacy = False
+    else:
+        strict = getattr(args, "strict", False)
+        allow_legacy = getattr(args, "allow_legacy", False) and not strict
     report = {
         "schema_version": 1,
         "plot2_dir": str(plot2_dir),
@@ -186,13 +272,11 @@ def main() -> None:
             "perturbation_fingerprint": check_fingerprint(plot2_dir, strict_spec=strict_spec),
             "manifest_primary_perturbation": check_manifest_primary_perturbation(plot2_dir),
             "selection_pool_no_duplicates": check_selection_pool(plot2_dir),
+            "stage1_overlap_and_regime": check_stage1_overlap_and_regime(plot2_dir),
             "collapse_scores": check_collapse_scores(plot2_dir),
             "max_drop_in_outputs": check_max_drop_in_outputs(plot2_dir),
         },
     }
-    else:
-        strict = getattr(args, "strict", False)
-        allow_legacy = getattr(args, "allow_legacy", False) and not strict
     fp_pass = report["checks"]["perturbation_fingerprint"].get("pass", False)
     other_checks = {k: v for k, v in report["checks"].items() if k != "perturbation_fingerprint"}
     other_pass = all(c.get("pass", False) for c in other_checks.values())

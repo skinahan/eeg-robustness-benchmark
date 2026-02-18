@@ -117,7 +117,7 @@ def run_eval(
         "--disable_underfitting_retrain",
         "--test_perturb_gaussian_alpha_grid", ",".join(str(a) for a in ALPHA_GRID),
         "--test_perturb_noise_types", ",".join(noise_types),
-        "--test_perturb_target_snr_db", str(target_snr_db),
+        "--test_perturb_target_snr_db=" + str(target_snr_db),
     ]
     print("[SWEEP] Running:", " ".join(cmd[:12]), "...")
     proc = subprocess.run(cmd, cwd=str(repo_root), check=False)

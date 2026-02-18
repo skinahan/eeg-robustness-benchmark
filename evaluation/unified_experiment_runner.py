@@ -486,6 +486,7 @@ class UnifiedExperimentRunner:
         test_perturb_gaussian_only: bool = False,
         test_perturb_gaussian_alpha_grid: Optional[List[float]] = None,
         test_perturb_target_snr_db: float = 0.0,
+        test_perturb_target_snr_dbs: Optional[List[float]] = None,
         test_perturb_spatial_ell_multiplier: float = 1.0,
         test_perturb_emg_f_high: float = 80.0,
         test_perturb_emg_use_envelope: bool = False,
@@ -520,6 +521,7 @@ class UnifiedExperimentRunner:
         self.test_perturb_gaussian_only = bool(test_perturb_gaussian_only)
         self.test_perturb_gaussian_alpha_grid = test_perturb_gaussian_alpha_grid
         self.test_perturb_target_snr_db = float(test_perturb_target_snr_db)
+        self.test_perturb_target_snr_dbs = test_perturb_target_snr_dbs
         self.test_perturb_spatial_ell_multiplier = float(test_perturb_spatial_ell_multiplier)
         self.test_perturb_emg_f_high = float(test_perturb_emg_f_high)
         self.test_perturb_emg_use_envelope = bool(test_perturb_emg_use_envelope)
@@ -616,8 +618,9 @@ class UnifiedExperimentRunner:
         Target SNR_dB is test_perturb_target_snr_db (default 0). Formula: alpha_max = alpha_max_0dB * 10^(-target_snr_db/20).
         Cached per (dataset, noise_type, split_id, params). Uses a fixed calibration seed for reproducibility (Spec 3 PATCH 2).
         """
+        target_db = float(getattr(self, "_eval_target_snr_db_override", None) or self.test_perturb_target_snr_db)
         params_key = self._get_correlated_noise_params_key(noise_type)
-        key = (self.dataset, noise_type, split_id or (getattr(self, "eval_mode", "CrossSession"),), params_key)
+        key = (self.dataset, noise_type, split_id or (getattr(self, "eval_mode", "CrossSession"),), params_key, target_db)
         if key in self._correlated_alpha_max_cache:
             return self._correlated_alpha_max_cache[key]
         augmentor = self._make_correlated_noise_augmentor(noise_type, intensity=1.0, seed=_CALIBRATION_SEED)
@@ -632,8 +635,6 @@ class UnifiedExperimentRunner:
             alpha_max_0db = float(np.sqrt(mean_X_sq / mean_eps_sq))
             if not np.isfinite(alpha_max_0db) or alpha_max_0db <= 0:
                 alpha_max_0db = 1.0
-        # Scale so that at alpha_max we get target_snr_db: alpha_max = alpha_max_0db * 10^(-target_snr_db/20)
-        target_db = self.test_perturb_target_snr_db
         alpha_max = alpha_max_0db * (10.0 ** (-target_db / 20.0))
         if not np.isfinite(alpha_max) or alpha_max <= 0:
             alpha_max = 1.0
@@ -1671,7 +1672,11 @@ class UnifiedExperimentRunner:
             noise_types = ["eog", "gaussian", "dropout", "spike"]
 
         split_id = (getattr(self, "eval_mode", "CrossSession"), str(session))
-        target_snr_db = float(self.test_perturb_target_snr_db)
+        target_snr_dbs = getattr(self, "test_perturb_target_snr_dbs", None)
+        if target_snr_dbs and len(target_snr_dbs) > 0:
+            target_snr_db_list = [float(t) for t in target_snr_dbs]
+        else:
+            target_snr_db_list = [float(self.test_perturb_target_snr_db)]
 
         results = []
         trained_model.module_.eval()
@@ -1685,6 +1690,7 @@ class UnifiedExperimentRunner:
             gc.collect()
             
             for noise_type in noise_types:
+                target_snr_db = target_snr_db_list[0]
                 # Runtime assertion: ar1_drift must use correlated path and valid rho (Plot 2 bug fix)
                 if noise_type == "ar1_drift":
                     rho = float(getattr(self, "test_perturb_ar1_rho", 0.97))
@@ -1717,25 +1723,82 @@ class UnifiedExperimentRunner:
                     and self.test_perturb_gaussian_alpha_grid is not None
                     and len(self.test_perturb_gaussian_alpha_grid) > 0
                 ):
-                    alpha_max = self._get_alpha_max_for_correlated_noise(noise_type, X_valid, split_id=split_id)
-                    sigma_max = alpha_max
-                    this_alpha_max = alpha_max
-                    intensities = [
-                        float(alpha) * float(alpha_max) for alpha in self.test_perturb_gaussian_alpha_grid
-                    ]
-                    intensities = sorted(set(float(x) for x in intensities))
-                    # Empirical SNR at alpha_max (Spec 3 PATCH 1): same formula as calibration
-                    augmentor_calib = self._make_correlated_noise_augmentor(
-                        noise_type, intensity=1.0, seed=_CALIBRATION_SEED
-                    )
-                    X_calib = augmentor_calib.transform(X_valid)
-                    eps_calib = X_calib - X_valid
-                    n_ep = X_valid.shape[0]
-                    mean_X_sq = float(np.sum(X_valid ** 2) / n_ep)
-                    mean_eps_sq = float(np.sum(eps_calib ** 2) / n_ep)
-                    if mean_eps_sq > 0 and np.isfinite(mean_eps_sq) and alpha_max > 0:
-                        this_empirical_snr_db = float(10.0 * np.log10(mean_X_sq / (alpha_max ** 2 * mean_eps_sq)))
-                    del X_calib, eps_calib
+                    # Plot 2 Overhaul: loop over target_snr_db for dual-SNR eval (-12, -6)
+                    for target_snr_db in target_snr_db_list:
+                        self._eval_target_snr_db_override = target_snr_db
+                        alpha_max = self._get_alpha_max_for_correlated_noise(noise_type, X_valid, split_id=split_id)
+                        sigma_max = alpha_max
+                        this_alpha_max = alpha_max
+                        intensities = [
+                            float(alpha) * float(alpha_max) for alpha in self.test_perturb_gaussian_alpha_grid
+                        ]
+                        intensities = sorted(set(float(x) for x in intensities))
+                        augmentor_calib = self._make_correlated_noise_augmentor(
+                            noise_type, intensity=1.0, seed=_CALIBRATION_SEED
+                        )
+                        X_calib = augmentor_calib.transform(X_valid)
+                        eps_calib = X_calib - X_valid
+                        n_ep = X_valid.shape[0]
+                        mean_X_sq = float(np.sum(X_valid ** 2) / n_ep)
+                        mean_eps_sq = float(np.sum(eps_calib ** 2) / n_ep)
+                        if mean_eps_sq > 0 and np.isfinite(mean_eps_sq) and alpha_max > 0:
+                            this_empirical_snr_db = float(10.0 * np.log10(mean_X_sq / (alpha_max ** 2 * mean_eps_sq)))
+                        else:
+                            this_empirical_snr_db = float("nan")
+                        del X_calib, eps_calib
+                        for intensity in intensities:
+                            noise_augmentor = self._make_correlated_noise_augmentor(noise_type, intensity=intensity)
+                            X_valid_corrupted = noise_augmentor.transform(X_valid)
+                            if intensity == intensities[-1]:
+                                fp = _compute_perturbation_fingerprint(noise_type, X_valid, X_valid_corrupted, max_epochs=10)
+                                if getattr(self, "plot2_diagnostics_dir", None) and not getattr(self, "_perturbation_fingerprint_written", False):
+                                    try:
+                                        import os
+                                        fp["target_snr_db"] = target_snr_db
+                                        fp["empirical_snr_db"] = this_empirical_snr_db
+                                        os.makedirs(self.plot2_diagnostics_dir, exist_ok=True)
+                                        with open(os.path.join(self.plot2_diagnostics_dir, "perturbation_fingerprint.json"), "w", encoding="utf-8") as f:
+                                            json.dump(fp, f, indent=2)
+                                        self._perturbation_fingerprint_written = True
+                                    except Exception:
+                                        pass
+                            start_time = time.time()
+                            y_pred_proba_corrupted = trained_model.predict_proba(X_valid_corrupted)
+                            metrics_corrupted = compute_classification_metrics(y_valid, y_pred_proba_corrupted, num_classes_clean)
+                            evaluation_time = time.time() - start_time
+                            corrupted_score = metrics_corrupted["roc_auc"]
+                            relative_drop = (clean_score - corrupted_score) / clean_score if clean_score > 0 else 0.0
+                            results.append({
+                                'fold_idx': fold_idx, 'noise_type': noise_type, 'perturbation_type': noise_type,
+                                'params': self._get_perturbation_params_dict(noise_type),
+                                'intensity': intensity,
+                                'alpha': (float(intensity) / float(sigma_max)) if (sigma_max and float(sigma_max) != 0.0) else None,
+                                'target_snr_db': target_snr_db,
+                                'empirical_snr_db': this_empirical_snr_db,
+                                'alpha_max': this_alpha_max,
+                                'clean_score': clean_score,
+                                'corrupted_score': corrupted_score,
+                                'clean_roc_auc': clean_score,
+                                'clean_accuracy': metrics_clean["accuracy"],
+                                'clean_precision': metrics_clean["precision"],
+                                'clean_recall': metrics_clean["recall"],
+                                'clean_f1': metrics_clean["f1"],
+                                'corrupted_roc_auc': metrics_corrupted["roc_auc"],
+                                'corrupted_accuracy': metrics_corrupted["accuracy"],
+                                'corrupted_precision': metrics_corrupted["precision"],
+                                'corrupted_recall': metrics_corrupted["recall"],
+                                'corrupted_f1': metrics_corrupted["f1"],
+                                'relative_drop': relative_drop,
+                                'training_time': training_time,
+                                'evaluation_time': evaluation_time,
+                                'total_time': training_time + evaluation_time,
+                                'session': session,
+                            })
+                            del X_valid_corrupted, y_pred_proba_corrupted
+                            if len(results) % 10 == 0:
+                                gc.collect()
+                    self._eval_target_snr_db_override = None
+                    continue
                 else:
                     intensities = get_noise_intensities(
                         self.dataset,
@@ -2941,9 +3004,9 @@ def main():
     )
     parser.add_argument(
         "--test_perturb_target_snr_db",
-        type=float,
-        default=0.0,
-        help="Target SNR in dB at alpha_max for correlated perturbations (0 = default; -5 for escalation).",
+        type=str,
+        default="0.0",
+        help="Target SNR in dB at alpha_max for correlated perturbations. Comma-separated for dual-SNR (e.g. '-12,-6').",
     )
     parser.add_argument(
         "--test_perturb_spatial_ell_multiplier",
@@ -3040,6 +3103,16 @@ def main():
             raise ValueError(f"Invalid --test_perturb_gaussian_alpha_grid: {e}")
     else:
         args.test_perturb_gaussian_alpha_grid = None
+
+    # Parse test_perturb_target_snr_db: comma-separated for dual-SNR (Plot 2 Overhaul)
+    _snr_str = str(getattr(args, "test_perturb_target_snr_db", "0.0"))
+    _snr_parts = [s.strip() for s in _snr_str.split(",") if s.strip()]
+    if len(_snr_parts) > 1:
+        args.test_perturb_target_snr_dbs = [float(x) for x in _snr_parts]
+        args.test_perturb_target_snr_db = float(_snr_parts[0])
+    else:
+        args.test_perturb_target_snr_db = float(_snr_parts[0]) if _snr_parts else 0.0
+        args.test_perturb_target_snr_dbs = None
 
     if args.dataset == "Lee2019_SSVEP":
         paradigm_name = "SSVEP"
@@ -3146,6 +3219,7 @@ def main():
                     test_perturb_gaussian_only=args.test_perturb_gaussian_only,
                     test_perturb_gaussian_alpha_grid=args.test_perturb_gaussian_alpha_grid,
                     test_perturb_target_snr_db=getattr(args, "test_perturb_target_snr_db", 0.0),
+                test_perturb_target_snr_dbs=getattr(args, "test_perturb_target_snr_dbs", None),
                     test_perturb_spatial_ell_multiplier=getattr(args, "test_perturb_spatial_ell_multiplier", 1.0),
                     test_perturb_emg_f_high=getattr(args, "test_perturb_emg_f_high", 80.0),
                     test_perturb_emg_use_envelope=getattr(args, "test_perturb_emg_use_envelope", False),
@@ -3231,6 +3305,7 @@ def main():
                 test_perturb_gaussian_only=args.test_perturb_gaussian_only,
                 test_perturb_gaussian_alpha_grid=args.test_perturb_gaussian_alpha_grid,
                 test_perturb_target_snr_db=getattr(args, "test_perturb_target_snr_db", 0.0),
+                test_perturb_target_snr_dbs=getattr(args, "test_perturb_target_snr_dbs", None),
                 test_perturb_spatial_ell_multiplier=getattr(args, "test_perturb_spatial_ell_multiplier", 1.0),
                 test_perturb_emg_f_high=getattr(args, "test_perturb_emg_f_high", 80.0),
                 test_perturb_emg_use_envelope=getattr(args, "test_perturb_emg_use_envelope", False),

@@ -1,0 +1,65 @@
+PLOT 2 TOPOLOGY STUDY REPORT
+plot2_dir: E:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments\architecture_refinement\outputs\plot2_topology_study\20260216_161506
+repo_root: E:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments
+dataset: BNCI2014_001
+perturbation_types: ['ar1_drift']
+primary_perturbation_type: ar1_drift
+alpha_max (ar1_drift, data-derived): 19.521080333752355
+target_snr_db (ar1_drift): -12.0
+empirical_snr_db (ar1_drift): -12.0
+n_boot: 5000
+bootstrap_hierarchy: graph->seed (F7: resample graphs, then seeds within graph)
+Note: Inference is conditional on chosen subjects.
+
+REPORTED METRICS: clean ROC-AUC, AUPC(alpha), RD(alpha), maxRD, max_drop, CSV_clean, CSV_AUPC, CSV_maxRD
+WARNING: Do not interpret max_drop alone; report alongside clean ROC-AUC and RD.
+
+PRIMARY METRIC: max_drop (lower is better) — spec §2.4
+  (baseline_a - tpe) in max_drop [F1: baseline_a=Random]: mean=0.017110, 95% CI=[-0.008874, 0.043299], Cohen's d=0.583
+  (external_random - tpe) in max_drop: mean=0.073395, 95% CI=[0.048858, 0.094528]
+  B−A (proxy validity): mean(max_drop_B - max_drop_A)=-0.002401, 95% CI=[-0.046442, 0.038138], Cohen's d=-0.060 (negative => proxy helps)
+  B−A maxRD: mean(maxRD_B - maxRD_A)=-0.007085, 95% CI=[-0.043659, 0.029711] (negative => proxy helps)
+  B−A AUPC: mean(AUPC_B - AUPC_A)=0.014511, 95% CI=[-0.003821, 0.032509] (positive => proxy helps)
+  Stage 2 gate (proxy usefulness): False
+  C−B (adaptive benefit): mean(max_drop_C - max_drop_B)=-0.010647, 95% CI=[-0.049617, 0.030323], Cohen's d=-0.266 (negative => TPE helps)
+  C−B maxRD: mean(maxRD_C - maxRD_B)=-0.008290, 95% CI=[-0.047398, 0.030452] (negative => TPE helps)
+  C−B AUPC: mean(AUPC_C - AUPC_B)=-0.012884, 95% CI=[-0.031660, 0.005981] (positive => TPE helps)
+  Stage 3 gate (adaptive benefit): False
+  Mini-scale: CI width <= 0.10? True; directional (>=2 subjects same sign)? False
+
+SECONDARY METRIC: AUPC_alpha (higher is better)
+  (NAS - baseline_a) [F1: baseline_a=Random]: mean diff=0.003219, 95% CI=[-0.009000, 0.015863], Cohen's d=0.233
+  Success: CI excludes 0? False; frac(NAS > baseline_a median)? 0.500 (>= 0.667? False)
+
+Clean ROC-AUC summary (per-graph mean, ar1_drift):
+  baseline_a: mean(clean_roc_auc_mean)=0.764
+  baseline_b: mean(clean_roc_auc_mean)=0.771
+  tpe: mean(clean_roc_auc_mean)=0.753
+  baseline: mean(clean_roc_auc_mean)=0.827
+  external_random: mean(clean_roc_auc_mean)=0.776
+
+Sanity checks:
+
+I3 Diagnostics (proxy distributions, proxy-k correlations, cell occupancy):
+  baseline_a sigma: mean=0.8481, std=0.3802, n=8
+  baseline_a te_res: mean=0.0263, std=0.0661, n=8
+  baseline_b sigma: mean=1.0633, std=0.2212, n=8
+  baseline_b te_res: mean=0.0364, std=0.0863, n=8
+  tpe sigma: mean=1.0756, std=0.1552, n=8
+  tpe te_res: mean=0.0256, std=0.0562, n=8
+  corr(sigma, k)=0.2822
+  corr(te_res, k)=-0.0908
+  baseline_a cell_occupancy: {('high', 'low'): 2, ('low', 'high'): 2, ('low', 'medium'): 2, ('medium', 'high'): 1, ('medium', 'low'): 1}
+  baseline_b cell_occupancy: {('high', 'low'): 2, ('low', 'high'): 2, ('low', 'medium'): 2, ('medium', 'high'): 1, ('medium', 'low'): 1}
+  tpe cell_occupancy: {('high', 'low'): 2, ('high', 'medium'): 1, ('low', 'high'): 3, ('medium', 'low'): 2}
+
+Selected architecture k/regime distribution (ws_flex only):
+  baseline_a: n=8 unique_k=[2, 4, 8, 12, 14, 18, 20, 26]
+    counts_by_regime={'super_sparse': 2, 'sparse': 2, 'moderate': 2, 'near_dense': 2}
+    counts_by_k={'2': 1, '4': 1, '8': 1, '12': 1, '14': 1, '18': 1, '20': 1, '26': 1}
+  baseline_b: n=8 unique_k=[2, 4, 10, 12, 14, 18, 20, 26]
+    counts_by_regime={'super_sparse': 2, 'sparse': 2, 'moderate': 2, 'near_dense': 2}
+    counts_by_k={'2': 1, '4': 1, '10': 1, '12': 1, '14': 1, '18': 1, '20': 1, '26': 1}
+  tpe: n=8 unique_k=[2, 6, 10, 12, 14, 18, 20, 26]
+    counts_by_regime={'super_sparse': 2, 'sparse': 2, 'moderate': 2, 'near_dense': 2}
+    counts_by_k={'2': 1, '6': 1, '10': 1, '12': 1, '14': 1, '18': 1, '20': 1, '26': 1}

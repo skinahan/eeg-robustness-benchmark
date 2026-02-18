@@ -1,0 +1,113 @@
+================================================================================
+ORIENTATION SENSITIVITY EXPERIMENT SPEC
+================================================================================
+Purpose: Test whether symmetric wiring conversion improves results over
+random_oriented when converting WS-Flex graphs to Wired CfC networks.
+
+================================================================================
+1. MOTIVATION
+================================================================================
+
+CURRENT STATE
+-------------
+NAS pilot study and Plot 2 studies use random_oriented when converting
+undirected WS-Flex graphs to directed Wired CfC wiring:
+  - random_oriented: For each undirected edge (i,j), pick one direction
+    randomly (i→j or j→i). Result: ~half the connections (one direction per edge).
+  - Implemented in WsFlexHiddenWiring(hidden_edge_orientation="random_oriented")
+  - Used in: run_nas_pilot_study.py, run_plot2_topology_study.py, nas_pilot_registry,
+    run_plot2_smoke_test.py, run_wiring_robustness_experiment.py, etc.
+
+PROBLEM
+-------
+WS graphs are inherently undirected (symmetric). Random_oriented arbitrarily
+destroys half the bidirectional connectivity:
+  - Fewer recurrent pathways → reduced information flow
+  - Less redundancy → potentially worse robustness under perturbation
+  - CfC dynamics may benefit from bidirectional temporal integration
+
+ALTERNATIVE: SYMMETRIC
+----------------------
+  - symmetric: For each undirected edge (i,j), add BOTH directions (i→j and j→i).
+  - Preserves full bidirectional connectivity of the WS graph
+  - ~2x more connections in the hidden block (same as undirected edge count × 2)
+
+HYPOTHESIS
+----------
+Symmetric wiring will yield better robustness (higher AUPC, lower max_drop) than
+random_oriented on the same WS-Flex graphs, potentially shifting the "less than
+stellar" results from NAS pilot and Plot 2.
+
+================================================================================
+2. EXPERIMENT DESIGN (MINIMAL)
+================================================================================
+
+SCOPE
+-----
+- 3 fixed WS graphs: sparse (k=4), moderate (k=8), dense (k=14), p=0.3
+- For each graph: 2 models — random_oriented and symmetric (same hidden_adj_undirected)
+- Total: 6 models
+
+PROTOCOL
+--------
+- Dataset: BNCI2014_001
+- Eval: CrossSession
+- Subjects: 1 (minimal for speed)
+- Seed: 1
+- Perturbation: AR(1) drift (primary Plot 2 stress test)
+- target_snr_db: -5
+- Intensity grid: [0, 0.25, 0.5, 0.75, 1.0] × alpha_max
+
+METRICS
+-------
+- AUPC (Area Under Perturbation Curve)
+- clean ROC-AUC (baseline performance)
+- max_drop (worst degradation at highest intensity)
+
+OUTPUT
+------
+- architecture_refinement/outputs/orientation_sensitivity/
+  - selected_architectures/*.json (6 architectures)
+  - orientation_sensitivity_report.json (per-model and per-regime comparison)
+  - analysis/per_graph_aupc.csv (from analyze_plot2_results)
+
+================================================================================
+3. IMPLEMENTATION
+================================================================================
+
+REGISTRY EXTENSION
+------------------
+nas_pilot_registry.py: ws_flex architectures now support optional
+  hidden_edge_orientation: "symmetric" | "random_oriented" | "as_is"
+  Default: "random_oriented" (backward compatible)
+
+RUN SCRIPT
+----------
+  python architecture_refinement/run_orientation_sensitivity_experiment.py
+
+  Options:
+    --H 32
+    --subjects 1
+    --seed 202618
+    --target_snr_db -5
+    --dry_run  (write architectures only, skip training)
+
+REPORT INTERPRETATION
+--------------------
+- delta_aupc_sym_minus_ro > 0  → symmetric more robust (higher AUPC)
+- delta_max_drop_ro_minus_sym > 0 → symmetric degrades less (lower max_drop)
+- If symmetric consistently wins across regimes → consider switching NAS/Plot 2
+  to symmetric wiring and re-running full studies.
+
+================================================================================
+4. FOLLOW-UP (IF POSITIVE)
+================================================================================
+
+If symmetric shows clear improvement:
+1. Update run_nas_pilot_study.py: hidden_edge_orientation="symmetric"
+2. Update run_plot2_topology_study.py: hidden_edge_orientation="symmetric"
+3. Update nas_pilot_registry default for ws_flex (or keep per-arch override)
+4. Re-run NAS pilot and Plot 2 with symmetric wiring
+5. Document in Plot_2_Implementation_Notes and Appendix_Answers
+
+================================================================================

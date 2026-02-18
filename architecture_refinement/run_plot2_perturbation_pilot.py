@@ -145,7 +145,7 @@ def run_unified_runner(
         "--noise_perturbation_num_steps", "20",
         "--test_perturb_gaussian_alpha_grid", ",".join(str(a) for a in ALPHA_GRID),
         "--test_perturb_noise_types", ",".join(PERTURBATION_TYPES),
-        "--test_perturb_target_snr_db", str(target_snr_db),
+        "--test_perturb_target_snr_db=" + str(target_snr_db),
         "--test_perturb_spatial_ell_multiplier", str(spatial_ell_multiplier),
         "--test_perturb_emg_f_high", str(emg_f_high),
     ]

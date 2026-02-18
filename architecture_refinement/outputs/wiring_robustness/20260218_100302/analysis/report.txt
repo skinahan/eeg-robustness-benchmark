@@ -1,0 +1,9 @@
+================================================================================
+WIRING ROBUSTNESS EXPERIMENT - ANALYSIS REPORT
+================================================================================
+Generated: 2026-02-18T14:42:57.704478
+Dataset: BNCI2014_001, Eval: CrossSession
+
+aupc: friedman stat=3.3492 p=0.6463
+rd_mean: friedman stat=10.2698 p=0.0679
+rd_max: friedman stat=2.2063 p=0.8199

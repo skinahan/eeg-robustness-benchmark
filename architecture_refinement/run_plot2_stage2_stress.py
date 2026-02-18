@@ -171,7 +171,7 @@ def _run_unified_job(
         "--noise_perturbation_saturation_file", saturation_file,
         "--noise_perturbation_num_steps", "20",
         "--test_perturb_gaussian_alpha_grid", ",".join(str(a) for a in alpha_grid),
-        "--test_perturb_target_snr_db", str(target_snr_db),
+        "--test_perturb_target_snr_db=" + str(target_snr_db),
         "--test_perturb_ar1_rho", str(params.get("ar1_drift", {}).get("rho", 0.97)),
         "--plot2_diagnostics_dir", str((plot2_dir / "diagnostics").as_posix()),
     ]

@@ -317,6 +317,11 @@ def _graph_hash_from_adj(
     return hashlib.sha256(key.encode()).hexdigest()
 
 
+def _orient_seed_from_graph_hash(graph_hash: str) -> int:
+    """Spec G2: s_orient(g) = hash(graph_hash) mod 2^31-1 for deterministic orientation."""
+    return int(graph_hash, 16) % (2**31 - 1)
+
+
 def _compute_full_metrics(
     analyzer: TopologyAnalyzer,
     G: nx.Graph,
@@ -689,7 +694,6 @@ def _sample_random_stratified_batch(
             k = int(rng.choice(ks))
             p = float(rng.uniform(0.0, 1.0))
             graph_seed = int(rng.integers(0, 2**31 - 1))
-            wiring_seed = int(rng.integers(0, 2**31 - 1))
             G, mod_params = _make_graph_for_mode(
                 H, k, p, graph_seed, generator_mode, seed_mod_params,
                 rng=rng, sample_idx=sample_idx_offset + len(out),
@@ -702,6 +706,10 @@ def _sample_random_stratified_batch(
                 if diagnostics_out is not None:
                     diagnostics_out["rejections_disconnected"] += 1
                 continue
+            # Spec G2: wiring_seed = s_orient(g) = hash(graph_hash) mod 2^31-1
+            adj = _undirected_hidden_adj(G, H)
+            gh = _graph_hash_from_adj(adj, H, k, p, graph_seed, mod_params=mod_params)
+            wiring_seed = _orient_seed_from_graph_hash(gh)
             if capacity_filter_on:
                 cap_ok, _, _ = capacity_filter(G, k, wiring_seed, _degree_regimes_to_bins(degree_regimes), H)
                 if not cap_ok:
@@ -949,13 +957,16 @@ def _run_training_free_search(
             k = int(trial.suggest_categorical("k", k_values))
             p = float(trial.suggest_float("p", 0.0, 1.0))
             graph_seed = int(rng.integers(0, 2**31 - 1))
-            wiring_seed = int(rng.integers(0, 2**31 - 1))
             G, mod_params = _make_graph_for_mode(
                 H, k, p, graph_seed, generator_mode, seed_mod_params,
                 rng=rng, sample_idx=len(all_cands),
             )
             if not nx.is_connected(G):
                 raise optuna.TrialPruned()
+            # Spec G2: wiring_seed = s_orient(g) = hash(graph_hash) mod 2^31-1
+            adj = _undirected_hidden_adj(G, H)
+            gh = _graph_hash_from_adj(adj, H, k, p, graph_seed, mod_params=mod_params)
+            wiring_seed = _orient_seed_from_graph_hash(gh)
             if capacity_filter_on:
                 cap_ok, _, _ = capacity_filter(G, k, wiring_seed, _degree_regimes_to_bins(degree_regimes), H)
                 if not cap_ok:
@@ -1303,20 +1314,21 @@ def _compute_cl_bins(
     valid_l = np.isfinite(L_vals)
 
     regime_names = list(degree_regimes.keys())
+    # Build by_regime for tertile computation and diagnostics (always needed)
+    by_regime: Dict[str, List[Tuple[float, float]]] = {str(r): [] for r in regime_names}
+    for i, c in enumerate(cands):
+        r = _k_to_regime(int(c.k), degree_regimes=degree_regimes)
+        regime_per_idx[i] = r
+        if r is None:
+            continue
+        if valid_c[i] and valid_l[i]:
+            by_regime[str(r)].append((float(C_vals[i]), float(L_vals[i])))
+
     # Tertile edges: use fixed (F4) if provided, else compute from pool
     tertile_edges: Dict[str, Dict[str, Tuple[float, float]]] = {}
     if fixed_tertile_edges and set(fixed_tertile_edges.keys()) == set(regime_names):
         tertile_edges = dict(fixed_tertile_edges)
     else:
-        by_regime: Dict[str, List[Tuple[float, float]]] = {str(r): [] for r in regime_names}
-        for i, c in enumerate(cands):
-            r = _k_to_regime(int(c.k), degree_regimes=degree_regimes)
-            regime_per_idx[i] = r
-            if r is None:
-                continue
-            if valid_c[i] and valid_l[i]:
-                by_regime[str(r)].append((float(C_vals[i]), float(L_vals[i])))
-
         for r in regime_names:
             pts = by_regime.get(r, [])
             if not pts:
@@ -1734,10 +1746,10 @@ def _select_top_b(
     global_order = np.lexsort((idxs, -score))
 
     selection_coverage_level = str(selection_coverage_level).strip().lower()
-    if selection_coverage_level not in {"none", "regime", "regime_cl_bins"}:
+    if selection_coverage_level not in {"none", "regime", "regime_cl_bins", "regime_cl_bins_fixed"}:
         raise ValueError(
             f"Unknown selection_coverage_level={selection_coverage_level!r} "
-            "(expected 'none'|'regime'|'regime_cl_bins')."
+            "(expected 'none'|'regime'|'regime_cl_bins'|'regime_cl_bins_fixed')."
         )
 
     selected_idxs: List[int] = []
@@ -1748,7 +1760,8 @@ def _select_top_b(
     }
 
     # Coverage-aware selection (plot2_revision): (C,L) bins, within-bin z-scored proxy, collapse <= 50%
-    if selection_coverage_level == "regime_cl_bins":
+    # regime_cl_bins_fixed: same as regime_cl_bins but uses frozen tertile edges from proxy viability
+    if selection_coverage_level in {"regime_cl_bins", "regime_cl_bins_fixed"}:
         selected_idxs, cov_meta = _select_top_b_coverage_aware(
             cands,
             B,
@@ -2018,8 +2031,8 @@ def _select_top_b(
     selected_idxs = [int(i) for i in selected_idxs[: int(B)]]
     selected = [cands[int(i)] for i in selected_idxs]
 
-    # Collapse score per spec §3.4, §7: regime = max regime fraction; regime_cl_bins = already in selection_meta
-    if selection_coverage_level == "regime_cl_bins":
+    # Collapse score per spec §3.4, §7: regime = max regime fraction; regime_cl_bins* = already in selection_meta
+    if selection_coverage_level in {"regime_cl_bins", "regime_cl_bins_fixed"}:
         # collapse_score and coverage_score already set by _select_top_b_coverage_aware
         pass
     elif selection_coverage_level == "regime" and degree_regimes and selected_idxs:
@@ -2298,8 +2311,8 @@ def _run_unified_job(
         "20",
         "--test_perturb_gaussian_alpha_grid",
         ",".join(str(a) for a in alpha_grid),
-        "--test_perturb_target_snr_db",
-        str(target_snr_db),
+        "--test_perturb_target_snr_db="
+        + (str(target_snr_db) if isinstance(target_snr_db, (int, float)) else ",".join(str(t) for t in target_snr_db)),
         "--test_perturb_ar1_rho",
         str(params.get("ar1_drift", {}).get("rho", 0.97)),
         "--test_perturb_spatial_ell_multiplier",
@@ -2456,7 +2469,13 @@ def main() -> None:
         "--target_snr_db",
         type=float,
         default=-6.0,
-        help="Target SNR in dB at alpha_max for correlated perturbations (Spec 3; default -5.0 for Plot 2).",
+        help="Target SNR in dB at alpha_max for correlated perturbations (Spec 3; default -6.0 for Plot 2).",
+    )
+    parser.add_argument(
+        "--target_snr_dbs",
+        type=str,
+        default=None,
+        help="Comma-separated target SNRs for dual-SNR eval (Plot 2 Overhaul, e.g. '-12,-6'). Overrides --target_snr_db.",
     )
     parser.add_argument("--ar1_rho", type=float, default=0.97, help="AR(1) drift coefficient for ar1_drift (default 0.97).")
     parser.add_argument("--spatial_ell_multiplier", type=float, default=1.0, help="Multiplier for spatial correlation length (default 1.0).")
@@ -2666,7 +2685,7 @@ def main() -> None:
                 saturation_file=job_saturation,
                 alpha_grid=job_alpha,
                 perturbation_types=job_perturb,
-                target_snr_db=float(job.get("target_snr_db", manifest.get("target_snr_db", -5.0))),
+                target_snr_db=job.get("target_snr_db", manifest.get("target_snr_db", -6.0)),
                 perturbation_params=manifest.get("perturbation_params"),
                 overwrite=bool(args.overwrite),
             )
@@ -2749,13 +2768,9 @@ def main() -> None:
     ):
         args.B = int(2 * len(degree_regimes))
 
-    # FIX 3 (Plot 2 spec): Mandate stratified or coverage-aware selection. Global TE/ORC ranking is forbidden.
-    if _strat in {"pareto_score_global", "pareto_farthest_global"} or _cov == "none":
-        raise ValueError(
-            "Plot 2 requires coverage-aware or regime-stratified selection. "
-            "Use --selection_coverage_level regime_cl_bins (default) or regime with pareto_*_regime. "
-            "Global selection (pareto_score_global/pareto_farthest_global) is forbidden."
-        )
+    # Plot 2 Overhaul: allow MODE_NONE (selection_coverage_level=none) for selection protocol ablation (M3).
+    # MODE_REGIME = regime (2 per regime, no C,L bins); MODE_NONE = none (any B=8).
+    # Legacy: regime_cl_bins_fixed remains default for non-overhaul runs.
 
     # Plot 2 Overhaul: regime_cl_bins_fixed requires proxy viability output
     proxy_viability_dir = getattr(args, "proxy_viability_dir", "") or ""
@@ -2822,6 +2837,9 @@ def main() -> None:
             training_seed_base = int.from_bytes(digest[:8], byteorder="little", signed=False) % (2**31 - 1)
             training_seed_strategy = "run_id_hash"
         training_seeds = _derive_training_seeds_from_base_seed(int(training_seed_base), int(args.S))
+
+    generator_mode = str(getattr(args, "generator_mode", "ws_flex"))
+    seed_mod_params = int(getattr(args, "seed_mod_params", 202607))
 
     manifest = {
         "schema_version": 2,
@@ -2895,10 +2913,9 @@ def main() -> None:
         "model_key": "cnn_wiredcfc_min",
         "ncp_baseline": {
             "wiring_kind": "ncp_autoncp",
-            # Capacity-fair sizing:
-            # WS-Flex builds an internal wiring with units ~= H (WS nodes) + ncp_output_size (motor/readout units).
-            # CNNWiredCfCMin defaults to ncp_output_size = F2, so we mirror that here.
-            "units": H + int(args.ncp_io_size),
+            # Capacity-fair sizing: NCP recurrent chamber must match WS-Flex H (32 units).
+            # output_size = ncp_io_size (F2) for CNNWiredCfCMin proj_size compatibility.
+            "units": int(H),
             "output_size": int(args.ncp_io_size),
             "sparsity_level": float(args.ncp_sparsity_level),
         },
@@ -2945,7 +2962,7 @@ def main() -> None:
         # F2: Capacity schema for all baselines
         "capacity_schema": {
             "H_fixed": int(H),
-            "description": "All baselines use recurrent size H. WS-Flex: H hidden nodes. NCP: units-output_size=H. External: units=H.",
+            "description": "All baselines use recurrent size H. WS-Flex: H hidden nodes. NCP: units=H. External: units=H.",
             "E_active_bands": dict(DEFAULT_E_ACTIVE_BANDS_H32) if H == 32 else {},
         },
     }
@@ -2995,8 +3012,6 @@ def main() -> None:
 
     # Build one shared random pool for Baseline A (uniform-in-bin) and Baseline B (proxy-in-bin)
     print("[PLOT2] Search start: shared random pool (baseline_a / baseline_b)")
-    generator_mode = str(getattr(args, "generator_mode", "ws_flex"))
-    seed_mod_params = int(getattr(args, "seed_mod_params", 202607))
     shared_random_pool, shared_hv_log = _build_random_pool(
         analyzer=analyzer,
         H=H,
@@ -3418,10 +3433,28 @@ def main() -> None:
         "wall_clock_seconds": round(wall_clock_sec, 2),
         "gpu_hours_estimate": None,  # Populated by training jobs if tracked
     }
+    # Plot 2 Overhaul: dual-SNR manifest key; analysis_target_snr_db for locked analyzer (mini: -12)
+    target_snr_dbs_str = getattr(args, "target_snr_dbs", None) or ""
+    if target_snr_dbs_str.strip():
+        target_snr_list = [float(x.strip()) for x in target_snr_dbs_str.split(",") if x.strip()]
+        if target_snr_list:
+            manifest["target_snr_dbs"] = target_snr_list
+            # G0: analyzer uses first (harshest) for locked config; override via manifest.analysis_target_snr_db
+            manifest["analysis_target_snr_db"] = float(target_snr_list[0])
+    else:
+        single = float(getattr(args, "target_snr_db", -6.0))
+        manifest["target_snr_db"] = single
+        manifest["analysis_target_snr_db"] = single
     _write_json(plot2_dir / "plot2_manifest.json", manifest)
     _write_json(plot2_dir / "manifest.json", manifest)
 
     # ---- Jobs table (topology × training seed) ----
+    target_snr_dbs_str = getattr(args, "target_snr_dbs", None) or ""
+    target_snr_val: Any = float(getattr(args, "target_snr_db", -6.0))
+    if target_snr_dbs_str.strip():
+        target_snr_val = [float(x.strip()) for x in target_snr_dbs_str.split(",") if x.strip()]
+        if not target_snr_val:
+            target_snr_val = float(getattr(args, "target_snr_db", -6.0))
     jobs: List[Dict[str, Any]] = []
     for arch in selected_rows:
         model_name = str(arch["model_name"])
@@ -3440,7 +3473,7 @@ def main() -> None:
                     "saturation_file": str(args.saturation_file),
                     "alpha_grid": ",".join(str(a) for a in alpha_grid),
                     "perturbation_types": ",".join(perturbation_types),
-                    "target_snr_db": float(getattr(args, "target_snr_db", -5.0)),
+                    "target_snr_db": target_snr_val,
                 }
             )
     _write_csv(plot2_dir / "jobs.csv", jobs)
@@ -3482,7 +3515,7 @@ def main() -> None:
             saturation_file=str(job["saturation_file"]),
             alpha_grid=job_alpha,
             perturbation_types=job_perturb,
-            target_snr_db=float(job.get("target_snr_db", manifest.get("target_snr_db", -5.0))),
+            target_snr_db=job.get("target_snr_db", manifest.get("target_snr_db", -6.0)),
             perturbation_params=manifest.get("perturbation_params"),
             overwrite=bool(args.overwrite),
         )

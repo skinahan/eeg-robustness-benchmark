@@ -243,11 +243,13 @@ def _compute_seed_level_metrics(
     sigma_max: float,
     metric_col: str,
     noise_type: str = "gaussian",
+    alpha_grid: Optional[List[float]] = None,
 ) -> pd.DataFrame:
     """
     Returns rows per seed with AUPC metrics computed from the perturbation curve for the given noise_type.
     sigma_max (or alpha_max for correlated types) is the maximum intensity; used to normalize AUPC to alpha in [0,1].
     F5: Validates intensity column and monotonicity.
+    Plot2_LatestSpec: RD(alpha) = (m0 - m(alpha)) / max(eps, m0); maxRD = max over alpha grid (exclude alpha=0).
     """
     if df.empty:
         return pd.DataFrame()
@@ -272,6 +274,11 @@ def _compute_seed_level_metrics(
     g = g.dropna(subset=["intensity", "seed", metric_col])
     if g.empty:
         return pd.DataFrame()
+
+    if alpha_grid is None:
+        alpha_grid = [0.0, 0.25, 0.5, 0.75, 1.0]
+    # Spec G4: RD_g(α) = (p_clean - p_g(α)) / max(p_clean - 0.5, ε); ε = 1e-3
+    eps_rd = 1e-3
 
     rows: List[Dict[str, Any]] = []
     for seed, gg in g.groupby("seed"):
@@ -321,21 +328,49 @@ def _compute_seed_level_metrics(
         max_drop = float(clean_roc_auc - roc_at_1) if np.isfinite(clean_roc_auc) and np.isfinite(roc_at_1) else float("nan")
         mid_drop = float(clean_roc_auc - roc_at_05) if np.isfinite(clean_roc_auc) and np.isfinite(roc_at_05) else float("nan")
 
-        rows.append(
-            {
-                "seed": seed_int,
-                "noise_type": noise_type,
-                "n_rows": int(len(gg)),
-                "sigma_max": float(sigma_max),
-                "metric_col": str(metric_col),
-                "aupc_sigma": float(a_sigma),
-                "aupc_alpha": float(a_alpha),
-                "clean_score": clean_score,
-                "clean_roc_auc": clean_roc_auc,
-                "max_drop": max_drop,
-                "mid_drop": mid_drop,
-            }
-        )
+        # Spec G4: RD_g(α) = (p_clean - p_g(α)) / max(p_clean - 0.5, ε); maxRD = max over alpha
+        # Robustness-normalized: denom = headroom above chance (0.5); RD can exceed 1 when p_clean near 0.5
+        p_clean = clean_roc_auc if np.isfinite(clean_roc_auc) else (float(ys[0]) if xs.size > 0 and xs[0] <= 1e-9 else float("nan"))
+        rd_by_alpha: Dict[str, float] = {}
+        max_rd = float("nan")
+        denom = max(eps_rd, float(p_clean - 0.5)) if np.isfinite(p_clean) else float("nan")
+        if np.isfinite(denom) and denom > 0 and xs.size > 0:
+            rd_vals: List[float] = []
+            for a in alpha_grid:
+                if a <= 0.0:
+                    rd_by_alpha[f"rd_alpha_{a:.2f}".replace(".", "_")] = 0.0
+                    continue
+                # Map alpha to intensity: alpha=1 => max perturbation (intensity = sigma_max)
+                alpha_as_intensity = float(a) * sigma_max
+                idx_a = np.argmin(np.abs(xs - alpha_as_intensity))
+                m_alpha = float(ys[idx_a]) if np.isfinite(ys[idx_a]) else float("nan")
+                rd = (p_clean - m_alpha) / denom if np.isfinite(m_alpha) else float("nan")
+                rd_by_alpha[f"rd_alpha_{a:.2f}".replace(".", "_")] = rd if np.isfinite(rd) else float("nan")
+                if np.isfinite(rd):
+                    rd_vals.append(rd)
+            # Also compute maxRD over all curve points with intensity > 0
+            for i in range(xs.size):
+                if xs[i] > 1e-9 and np.isfinite(ys[i]):
+                    rd_i = (p_clean - float(ys[i])) / denom
+                    rd_vals.append(float(rd_i))
+            max_rd = float(np.max(rd_vals)) if rd_vals else float("nan")
+
+        row: Dict[str, Any] = {
+            "seed": seed_int,
+            "noise_type": noise_type,
+            "n_rows": int(len(gg)),
+            "sigma_max": float(sigma_max),
+            "metric_col": str(metric_col),
+            "aupc_sigma": float(a_sigma),
+            "aupc_alpha": float(a_alpha),
+            "clean_score": clean_score,
+            "clean_roc_auc": clean_roc_auc,
+            "max_drop": max_drop,
+            "mid_drop": mid_drop,
+            "max_rd": max_rd,
+            **rd_by_alpha,
+        }
+        rows.append(row)
 
     return pd.DataFrame(rows)
 
@@ -371,6 +406,25 @@ def _bootstrap_hierarchical(
     return out
 
 
+def _seed_to_subject_mapping(subjects: List[int], n_folds: int = 3) -> Dict[int, int]:
+    """
+    Map fold_idx/seed to eval subject for cross-subject splits.
+    For 3-fold: fold 0 evals subject 0, fold 1 evals subject 1, etc.
+    """
+    if not subjects or n_folds <= 0:
+        return {}
+    unique = sorted(set(int(s) for s in subjects))
+    eval_size = max(1, len(unique) // n_folds)
+    out: Dict[int, int] = {}
+    for fold_idx in range(n_folds):
+        start = fold_idx * eval_size
+        end = min(start + eval_size, len(unique))
+        if start < len(unique):
+            eval_subj = unique[start] if start < end else unique[min(start, len(unique) - 1)]
+            out[int(fold_idx)] = int(eval_subj)
+    return out
+
+
 def _cohens_d(x: np.ndarray, y: np.ndarray) -> float:
     x = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float)
@@ -386,12 +440,41 @@ def _cohens_d(x: np.ndarray, y: np.ndarray) -> float:
     return float((np.mean(x) - np.mean(y)) / pooled)
 
 
+def _resolve_analysis_target_snr_db(manifest: dict, cli_override: Optional[float] = None) -> float:
+    """Resolve which target_snr_db to use for analysis. G0: locked config per run."""
+    if cli_override is not None and np.isfinite(cli_override):
+        return float(cli_override)
+    v = manifest.get("analysis_target_snr_db")
+    if v is not None and np.isfinite(float(v)):
+        return float(v)
+    v = manifest.get("target_snr_db")
+    if v is not None and np.isfinite(float(v)):
+        return float(v)
+    lst = manifest.get("target_snr_dbs")
+    if lst and len(lst) > 0:
+        return float(lst[0])
+    return float("nan")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Analyze Plot 2 results (Gaussian AUPC + hierarchical bootstrap)")
     parser.add_argument("--plot2_dir", type=str, required=True)
     parser.add_argument("--repo_root", type=str, default=None)
     parser.add_argument("--n_boot", type=int, default=5000)
     parser.add_argument("--seed", type=int, default=123)
+    parser.add_argument(
+        "--analysis_target_snr_db",
+        type=float,
+        default=None,
+        help="Override: use only rows with this target_snr_db. Must match manifest for G0. For dual-SNR runs, lock to one value (e.g. -12).",
+    )
+    parser.add_argument(
+        "--strict_config",
+        action="store_true",
+        default=True,
+        help="G0: fail hard if rows do not match (perturbation_type, target_snr_db) or duplicate (subject, model_name, seed). Default: True.",
+    )
+    parser.add_argument("--no_strict_config", action="store_false", dest="strict_config")
     args = parser.parse_args()
 
     plot2_dir = Path(args.plot2_dir).resolve()
@@ -413,6 +496,14 @@ def main() -> None:
 
     dataset = str(manifest.get("dataset", "BNCI2014_001"))
     saturation_file = str(manifest.get("saturation_file", "saturation_results/saturation_points_summary.csv"))
+    # Alpha grid for RD computation (Plot2_LatestSpec)
+    alpha_obj = manifest.get("alpha_grid") or manifest.get("gaussian_alpha_grid")
+    if isinstance(alpha_obj, list):
+        alpha_grid = [float(x) for x in alpha_obj]
+    else:
+        alpha_grid = [float(x.strip()) for x in str(alpha_obj or "0,0.25,0.5,0.75,1").split(",") if str(x).strip()]
+    if not alpha_grid:
+        alpha_grid = [0.0, 0.25, 0.5, 0.75, 1.0]
     manifest_has_perturbation_types = "perturbation_types" in manifest
     perturbation_types_config = manifest.get("perturbation_types", "gaussian")
     if isinstance(perturbation_types_config, list):
@@ -428,6 +519,9 @@ def main() -> None:
         primary_perturbation_type = "ar1_drift" if "ar1_drift" in noise_types_to_analyze else (
             "gaussian" if "gaussian" in noise_types_to_analyze else noise_types_to_analyze[0] if noise_types_to_analyze else "gaussian"
         )
+
+    # G0: Resolve locked target_snr_db for analysis (avoids dual-SNR contamination)
+    analysis_target_snr_db = _resolve_analysis_target_snr_db(manifest, getattr(args, "analysis_target_snr_db", None))
 
     def _get_sigma_max_for_noise_type(nt: str, df_sample: Optional[pd.DataFrame] = None) -> float:
         _, max_int = get_noise_perturbation_bounds(dataset, nt, saturation_file=saturation_file)
@@ -468,6 +562,7 @@ def main() -> None:
                         "clean_roc_auc": np.nan,
                         "max_drop": np.nan,
                         "mid_drop": np.nan,
+                        "max_rd": np.nan,
                     }
                 )
             continue
@@ -511,50 +606,116 @@ def main() -> None:
                     "metric_col": metric_col,
                 })
         for nt in noise_types_to_analyze:
-            sigma_max_nt = _get_sigma_max_for_noise_type(nt, df)
-            seed_df = _compute_seed_level_metrics(
-                df, sigma_max=sigma_max_nt, metric_col=metric_col, noise_type=nt
-            )
-            # Snr metadata from raw data for this noise type (Plot 2 bug fix)
-            target_snr_nt = float("nan")
-            empirical_snr_nt = float("nan")
-            if not df.empty and "noise_type" in df.columns:
-                sub = df[df["noise_type"].astype(str) == nt]
-                if not sub.empty:
-                    if "target_snr_db" in sub.columns and sub["target_snr_db"].notna().any():
-                        target_snr_nt = float(pd.to_numeric(sub["target_snr_db"], errors="coerce").dropna().iloc[0])
-                    if "empirical_snr_db" in sub.columns and sub["empirical_snr_db"].notna().any():
-                        empirical_snr_nt = float(pd.to_numeric(sub["empirical_snr_db"], errors="coerce").dropna().iloc[0])
-            if seed_df.empty:
-                per_seed_rows.append(
-                    {
-                        **arch.to_dict(),
-                        "noise_type": nt,
-                        "perturbation_type": nt,
-                        "sigma_max": sigma_max_nt,
-                        "target_snr_db": target_snr_nt,
-                        "empirical_snr_db": empirical_snr_nt,
-                        "seed": np.nan,
-                        "n_rows": int(len(df)),
-                        "metric_col": metric_col,
-                        "aupc_sigma": np.nan,
-                        "aupc_alpha": np.nan,
-                        "clean_score": np.nan,
-                        "clean_roc_auc": np.nan,
-                        "max_drop": np.nan,
-                        "mid_drop": np.nan,
-                    }
+            sub_nt = df[df["noise_type"].astype(str) == nt] if not df.empty else pd.DataFrame()
+            if sub_nt.empty:
+                sigma_max_nt = _get_sigma_max_for_noise_type(nt, df)
+                seed_df = _compute_seed_level_metrics(
+                    df, sigma_max=sigma_max_nt, metric_col=metric_col, noise_type=nt, alpha_grid=alpha_grid
                 )
+                target_snr_nt = float("nan")
+                empirical_snr_nt = float("nan")
+                if seed_df.empty:
+                    per_seed_rows.append({
+                        **arch.to_dict(), "noise_type": nt, "perturbation_type": nt,
+                        "sigma_max": sigma_max_nt, "target_snr_db": target_snr_nt,
+                        "empirical_snr_db": empirical_snr_nt, "seed": np.nan, "n_rows": int(len(df)),
+                        "metric_col": metric_col, "aupc_sigma": np.nan, "aupc_alpha": np.nan,
+                        "clean_score": np.nan, "clean_roc_auc": np.nan, "max_drop": np.nan,
+                        "mid_drop": np.nan, "max_rd": np.nan,
+                    })
+                else:
+                    for _, r in seed_df.iterrows():
+                        row = {**arch.to_dict(), **r.to_dict()}
+                        row["perturbation_type"] = nt
+                        row["target_snr_db"] = target_snr_nt
+                        row["empirical_snr_db"] = empirical_snr_nt
+                        per_seed_rows.append(row)
                 continue
-            for _, r in seed_df.iterrows():
-                row = {**arch.to_dict(), **r.to_dict()}
-                row["perturbation_type"] = nt
-                row["target_snr_db"] = target_snr_nt
-                row["empirical_snr_db"] = empirical_snr_nt
-                per_seed_rows.append(row)
+            # Plot 2 Overhaul: when multiple target_snr_db (dual-SNR), compute metrics per target
+            # G0: only include target_snr matching manifest to avoid contamination
+            target_snr_vals = sub_nt["target_snr_db"].dropna().unique() if "target_snr_db" in sub_nt.columns else []
+            target_snr_vals = [float(pd.to_numeric(x, errors="coerce")) for x in target_snr_vals if np.isfinite(pd.to_numeric(x, errors="coerce"))]
+            if not target_snr_vals:
+                target_snr_vals = [float("nan")]
+            if np.isfinite(analysis_target_snr_db):
+                target_snr_vals = [t for t in target_snr_vals if np.isfinite(t) and abs(float(t) - analysis_target_snr_db) < 0.01]
+            for target_snr_nt in target_snr_vals:
+                if np.isfinite(target_snr_nt):
+                    sub_t = sub_nt[sub_nt["target_snr_db"].apply(lambda x: np.isfinite(pd.to_numeric(x, errors="coerce")) and float(pd.to_numeric(x, errors="coerce")) == target_snr_nt)].copy()
+                else:
+                    sub_t = sub_nt.copy()
+                if sub_t.empty:
+                    sub_t = sub_nt.copy()
+                sigma_max_nt = float(sub_t["intensity"].max()) if "intensity" in sub_t.columns and not sub_t.empty and sub_t["intensity"].notna().any() else _get_sigma_max_for_noise_type(nt, sub_t)
+                if not np.isfinite(sigma_max_nt) or sigma_max_nt <= 0:
+                    sigma_max_nt = _get_sigma_max_for_noise_type(nt, sub_t)
+                seed_df = _compute_seed_level_metrics(
+                    sub_t, sigma_max=sigma_max_nt, metric_col=metric_col, noise_type=nt, alpha_grid=alpha_grid
+                )
+                empirical_snr_nt = float(sub_t["empirical_snr_db"].iloc[0]) if "empirical_snr_db" in sub_t.columns and sub_t["empirical_snr_db"].notna().any() else float("nan")
+                if seed_df.empty:
+                    per_seed_rows.append({
+                        **arch.to_dict(), "noise_type": nt, "perturbation_type": nt,
+                        "sigma_max": sigma_max_nt, "target_snr_db": target_snr_nt,
+                        "empirical_snr_db": empirical_snr_nt, "seed": np.nan, "n_rows": int(len(sub_t)),
+                        "metric_col": metric_col, "aupc_sigma": np.nan, "aupc_alpha": np.nan,
+                        "clean_score": np.nan, "clean_roc_auc": np.nan, "max_drop": np.nan,
+                        "mid_drop": np.nan, "max_rd": np.nan,
+                    })
+                else:
+                    for _, r in seed_df.iterrows():
+                        row = {**arch.to_dict(), **r.to_dict()}
+                        row["perturbation_type"] = nt
+                        row["target_snr_db"] = target_snr_nt
+                        row["empirical_snr_db"] = empirical_snr_nt
+                        per_seed_rows.append(row)
 
     per_seed = pd.DataFrame(per_seed_rows)
     raw_curves = pd.DataFrame(raw_curves_rows) if raw_curves_rows else pd.DataFrame()
+
+    # CSV (cross-subject variance): Var_s(μ_s) where μ_s = mean over seeds for subject s (Plot2_LatestSpec)
+    subjects_list = manifest.get("subjects", [])
+    if isinstance(subjects_list, (list, tuple)):
+        subjects_list = [int(s) for s in subjects_list if str(s).strip()]
+    else:
+        subjects_list = []
+    seed_to_subj = _seed_to_subject_mapping(subjects_list or [1, 2, 3], n_folds=3)
+    if seed_to_subj and "seed" in per_seed.columns:
+        per_seed["subject"] = per_seed["seed"].map(lambda s: seed_to_subj.get(int(s), int(s) if np.isfinite(s) else np.nan))
+    else:
+        per_seed["subject"] = np.nan
+
+    # G0: Locked config — filter to manifest (perturbation_type, target_snr_db); fail hard if mismatch or duplicates
+    if getattr(args, "strict_config", True):
+        g0_filter = (
+            (per_seed["noise_type"].astype(str) == primary_perturbation_type)
+            if "noise_type" in per_seed.columns
+            else pd.Series([True] * len(per_seed))
+        )
+        if np.isfinite(analysis_target_snr_db) and "target_snr_db" in per_seed.columns:
+            g0_filter = g0_filter & (
+                per_seed["target_snr_db"].apply(
+                    lambda x: np.isfinite(pd.to_numeric(x, errors="coerce"))
+                    and abs(float(pd.to_numeric(x, errors="coerce")) - analysis_target_snr_db) < 0.01
+                )
+            )
+        per_seed_g0 = per_seed[g0_filter]
+        if per_seed_g0.empty:
+            raise ValueError(
+                f"G0 FAIL: No rows match (perturbation_type={primary_perturbation_type!r}, target_snr_db={analysis_target_snr_db}). "
+                "Result contamination or manifest mismatch. Fix run config or use --no_strict_config to bypass (not recommended)."
+            )
+        dup_cols = [c for c in ["subject", "model_name", "seed"] if c in per_seed_g0.columns]
+        if dup_cols:
+            n_before = len(per_seed_g0)
+            per_seed_dedup = per_seed_g0.drop_duplicates(subset=dup_cols)
+            if len(per_seed_dedup) < n_before:
+                raise ValueError(
+                    f"G0 FAIL: Duplicate ({','.join(dup_cols)}) rows after filtering. "
+                    f"n_before={n_before} n_after={len(per_seed_dedup)}. "
+                    "Result contamination from multiple runs/configs. Purge prior results or use fresh run_id."
+                )
+        per_seed = per_seed_g0
 
     # Validate manifest primary vs actual data (Plot 2 bug fix): do not report correlated type if data are gaussian-only
     if first_df_sample is not None and not first_df_sample.empty and "noise_type" in first_df_sample.columns:
@@ -603,6 +764,9 @@ def main() -> None:
         agg_dict["max_drop_std"] = ("max_drop", "std")
         agg_dict["mid_drop_mean"] = ("mid_drop", "mean")
         agg_dict["mid_drop_std"] = ("mid_drop", "std")
+    if "max_rd" in per_seed.columns:
+        agg_dict["max_rd_mean"] = ("max_rd", "mean")
+        agg_dict["max_rd_std"] = ("max_rd", "std")
     if "noise_type" in per_seed.columns:
         per_graph = (
             per_seed.groupby(["model_name", "method", "noise_type"], as_index=False)
@@ -618,6 +782,37 @@ def main() -> None:
     if "noise_type" in per_graph.columns and "perturbation_type" not in per_graph.columns:
         per_graph["perturbation_type"] = per_graph["noise_type"]
 
+    # CSV metrics per graph: Var_s(μ_s) where μ_s = mean over seeds for subject s (Plot2_LatestSpec)
+    csv_clean_by_graph: Dict[Tuple[str, str, str], float] = {}
+    csv_aupc_by_graph: Dict[Tuple[str, str, str], float] = {}
+    csv_maxrd_by_graph: Dict[Tuple[str, str, str], float] = {}
+    if "subject" in per_seed.columns and per_seed["subject"].notna().any():
+        for key, g in per_seed.groupby(["model_name", "method", "noise_type"]):
+            if g.empty:
+                continue
+            subj_means_clean = g.groupby("subject")["clean_roc_auc"].mean()
+            subj_means_aupc = g.groupby("subject")["aupc_alpha"].mean()
+            subj_means_maxrd = g.groupby("subject")["max_rd"].mean() if "max_rd" in g.columns else pd.Series(dtype=float)
+            csv_clean_by_graph[key] = float(subj_means_clean.var()) if len(subj_means_clean) >= 2 else float("nan")
+            csv_aupc_by_graph[key] = float(subj_means_aupc.var()) if len(subj_means_aupc) >= 2 else float("nan")
+            csv_maxrd_by_graph[key] = float(subj_means_maxrd.var()) if len(subj_means_maxrd) >= 2 and "max_rd" in g.columns else float("nan")
+    # Merge CSV into per_graph
+    def _lookup_csv(row: pd.Series, d: Dict) -> float:
+        nt = row.get("noise_type", row.get("perturbation_type", ""))
+        if not isinstance(nt, str):
+            return float("nan")
+        return d.get((row["model_name"], row["method"], nt), float("nan"))
+    per_graph["CSV_clean"] = per_graph.apply(lambda r: _lookup_csv(r, csv_clean_by_graph), axis=1)
+    per_graph["CSV_AUPC"] = per_graph.apply(lambda r: _lookup_csv(r, csv_aupc_by_graph), axis=1)
+    per_graph["CSV_maxRD"] = per_graph.apply(lambda r: _lookup_csv(r, csv_maxrd_by_graph), axis=1)
+
+    # Clean floor tagging (Plot2_LatestSpec): low_clean = clean_roc_auc < median - 0.02
+    median_clean = float(per_graph["clean_roc_auc_mean"].median()) if "clean_roc_auc_mean" in per_graph.columns else float("nan")
+    per_graph["low_clean"] = (
+        pd.to_numeric(per_graph["clean_roc_auc_mean"], errors="coerce") < (median_clean - 0.02)
+        if np.isfinite(median_clean) else False
+    )
+
     # Hierarchical bootstrap (Plot 2: primary max_drop, secondary AUPC) — per noise type
     # F1: Do NOT pool baseline_b with baseline_a. Primary "Random" comparator = baseline_a only.
     rng = np.random.default_rng(int(args.seed))
@@ -628,8 +823,11 @@ def main() -> None:
     baseline_b_methods = {"baseline_b"}
     ncp_methods = {"baseline"}
 
-    def _build_graph_dict(per_seed_sub: pd.DataFrame, method_set: set, metric_col: str = "aupc_alpha") -> Dict[str, List[float]]:
+    def _build_graph_dict(per_seed_sub: pd.DataFrame, method_set: set, metric_col: str = "aupc_alpha", exclude_low_clean: bool = False) -> Dict[str, List[float]]:
         out: Dict[str, List[float]] = {}
+        low_clean_models: set = set()
+        if exclude_low_clean and "low_clean" in per_graph_g.columns:
+            low_clean_models = set(per_graph_g[per_graph_g["low_clean"] == True]["model_name"].astype(str).tolist())
         for m in method_set:
             dfm = per_seed_sub[per_seed_sub["method"].astype(str) == m].copy()
             if dfm.empty:
@@ -637,6 +835,8 @@ def main() -> None:
             if metric_col not in dfm.columns:
                 continue
             for model_name, g in dfm.groupby("model_name"):
+                if str(model_name) in low_clean_models:
+                    continue
                 vals = pd.to_numeric(g[metric_col], errors="coerce").dropna().to_numpy(dtype=float).tolist()
                 if vals:
                     out[str(model_name)] = vals
@@ -697,8 +897,57 @@ def main() -> None:
     max_drop_rand_graphs = _build_graph_dict(per_seed_g, rand_methods, metric_col="max_drop") if has_max_drop else {}
     max_drop_nas_graphs = _build_graph_dict(per_seed_g, nas_methods, metric_col="max_drop") if has_max_drop else {}
     max_drop_ext_graphs = _build_graph_dict(per_seed_g, ext_methods, metric_col="max_drop") if has_max_drop else {}
-    max_drop_a_graphs = _build_graph_dict(per_seed_g, baseline_a_methods, metric_col="max_drop") if has_max_drop else {}
-    max_drop_b_graphs = _build_graph_dict(per_seed_g, baseline_b_methods, metric_col="max_drop") if has_max_drop else {}
+    max_drop_b_graphs_cb = _build_graph_dict(per_seed_g, baseline_b_methods, metric_col="max_drop", exclude_low_clean=True) if has_max_drop else {}
+    max_drop_nas_graphs_cb = _build_graph_dict(per_seed_g, nas_methods, metric_col="max_drop", exclude_low_clean=True) if has_max_drop else {}
+    max_drop_a_graphs = _build_graph_dict(per_seed_g, baseline_a_methods, metric_col="max_drop", exclude_low_clean=True) if has_max_drop else {}
+    max_drop_b_graphs = _build_graph_dict(per_seed_g, baseline_b_methods, metric_col="max_drop", exclude_low_clean=True) if has_max_drop else {}
+    has_max_rd = "max_rd" in per_seed_g.columns
+    max_rd_a_graphs = _build_graph_dict(per_seed_g, baseline_a_methods, metric_col="max_rd", exclude_low_clean=True) if has_max_rd else {}
+    max_rd_b_graphs = _build_graph_dict(per_seed_g, baseline_b_methods, metric_col="max_rd", exclude_low_clean=True) if has_max_rd else {}
+    max_rd_nas_graphs = _build_graph_dict(per_seed_g, nas_methods, metric_col="max_rd", exclude_low_clean=True) if has_max_rd else {}
+    # M4 decisive: Δ = E[maxRD_rand - maxRD_tpe] (positive = TPE wins)
+    diff_rd_rand_tpe_mean = diff_rd_rand_tpe_ci_lo = diff_rd_rand_tpe_ci_hi = float("nan")
+    d_max_rd_rand_tpe = float("nan")
+    m4_go = None
+    m4_nogo = None
+    ci_rd_excludes_0 = False
+    m4_directional = False
+    if has_max_rd and max_rd_a_graphs and max_rd_nas_graphs:
+        rd_rand_boot = _bootstrap_hierarchical(max_rd_a_graphs, n_boot=int(args.n_boot), rng=rng)
+        rd_tpe_boot = _bootstrap_hierarchical(max_rd_nas_graphs, n_boot=int(args.n_boot), rng=rng)
+        diff_rd_rand_tpe_boot = rd_rand_boot - rd_tpe_boot
+        diff_rd_rand_tpe_mean = float(np.nanmean(diff_rd_rand_tpe_boot)) if np.isfinite(diff_rd_rand_tpe_boot).any() else float("nan")
+        rd_rt_ci = _ci(diff_rd_rand_tpe_boot)
+        diff_rd_rand_tpe_ci_lo, diff_rd_rand_tpe_ci_hi = rd_rt_ci[0], rd_rt_ci[1]
+        a_rd_means = per_graph_g[per_graph_g["method"].astype(str).isin(baseline_a_methods)]["max_rd_mean"].to_numpy(dtype=float) if "max_rd_mean" in per_graph_g.columns else np.array([])
+        nas_rd_means = per_graph_g[per_graph_g["method"].astype(str).isin(nas_methods)]["max_rd_mean"].to_numpy(dtype=float) if "max_rd_mean" in per_graph_g.columns else np.array([])
+        d_max_rd_rand_tpe = _cohens_d(a_rd_means, nas_rd_means) if a_rd_means.size and nas_rd_means.size else float("nan")
+        ci_rd_excludes_0 = bool(np.isfinite(diff_rd_rand_tpe_ci_lo) and np.isfinite(diff_rd_rand_tpe_ci_hi) and (diff_rd_rand_tpe_ci_lo > 0 or diff_rd_rand_tpe_ci_hi < 0))
+        # M4 GO: Δ ≥ 0.05, CI excludes 0, Cohen's d ≥ 0.5, directional consistency ≥2/3 subjects
+        subject_diffs_rd: List[float] = []
+        if "seed" in per_seed_g.columns and "max_rd" in per_seed_g.columns and "method" in per_seed_g.columns:
+            for seed in per_seed_g["seed"].dropna().unique():
+                sg = per_seed_g[per_seed_g["seed"] == seed]
+                rand_rd = sg[sg["method"].astype(str) == "baseline_a"]["max_rd"].mean()
+                tpe_rd = sg[sg["method"].astype(str) == "tpe"]["max_rd"].mean()
+                if np.isfinite(rand_rd) and np.isfinite(tpe_rd):
+                    subject_diffs_rd.append(float(rand_rd - tpe_rd))
+        n_positive_rd = sum(1 for x in subject_diffs_rd if x > 0)
+        m4_directional = len(subject_diffs_rd) >= 2 and n_positive_rd >= max(2, int(np.ceil(2 * len(subject_diffs_rd) / 3)))
+        m4_go = (
+            np.isfinite(diff_rd_rand_tpe_mean) and diff_rd_rand_tpe_mean >= 0.05
+            and ci_rd_excludes_0
+            and np.isfinite(d_max_rd_rand_tpe) and d_max_rd_rand_tpe >= 0.5
+            and m4_directional
+        )
+        # M4 NO-GO: |Δ| < 0.02 and CI includes 0 at both SNRs
+        m4_nogo = (
+            np.isfinite(diff_rd_rand_tpe_mean) and abs(diff_rd_rand_tpe_mean) < 0.02
+            and not ci_rd_excludes_0
+        )
+    aupc_a_graphs = _build_graph_dict(per_seed_g, baseline_a_methods, metric_col="aupc_alpha", exclude_low_clean=True)
+    aupc_b_graphs = _build_graph_dict(per_seed_g, baseline_b_methods, metric_col="aupc_alpha", exclude_low_clean=True)
+    aupc_nas_graphs = _build_graph_dict(per_seed_g, nas_methods, metric_col="aupc_alpha", exclude_low_clean=True)
     if has_max_drop and max_drop_rand_graphs and max_drop_nas_graphs:
         rand_md_boot = _bootstrap_hierarchical(max_drop_rand_graphs, n_boot=int(args.n_boot), rng=rng)
         nas_md_boot = _bootstrap_hierarchical(max_drop_nas_graphs, n_boot=int(args.n_boot), rng=rng)
@@ -717,6 +966,10 @@ def main() -> None:
     diff_md_B_A_mean = float("nan")
     diff_md_B_A_ci = (float("nan"), float("nan"))
     d_max_drop_B_A = float("nan")
+    diff_rd_B_A_mean = diff_rd_B_A_ci_lo = diff_rd_B_A_ci_hi = float("nan")
+    diff_aupc_B_A_mean = diff_aupc_B_A_ci_lo = diff_aupc_B_A_ci_hi = float("nan")
+    diff_rd_C_B_mean = diff_rd_C_B_ci_lo = diff_rd_C_B_ci_hi = float("nan")
+    diff_aupc_C_B_mean = diff_aupc_C_B_ci_lo = diff_aupc_C_B_ci_hi = float("nan")
     stage2_go = None
     if has_max_drop and max_drop_a_graphs and max_drop_b_graphs:
         a_md_boot = _bootstrap_hierarchical(max_drop_a_graphs, n_boot=int(args.n_boot), rng=rng)
@@ -724,29 +977,74 @@ def main() -> None:
         diff_B_A_boot = b_md_boot - a_md_boot  # negative = B more robust
         diff_md_B_A_mean = float(np.nanmean(diff_B_A_boot)) if np.isfinite(diff_B_A_boot).any() else float("nan")
         diff_md_B_A_ci = _ci(diff_B_A_boot)
-        a_md_means = per_graph_g[per_graph_g["method"].astype(str).isin(baseline_a_methods)]["max_drop_mean"].to_numpy(dtype=float) if "max_drop_mean" in per_graph_g.columns else np.array([])
-        b_md_means = per_graph_g[per_graph_g["method"].astype(str).isin(baseline_b_methods)]["max_drop_mean"].to_numpy(dtype=float) if "max_drop_mean" in per_graph_g.columns else np.array([])
+        pg_ba = per_graph_g[per_graph_g["low_clean"] != True] if "low_clean" in per_graph_g.columns else per_graph_g
+        a_md_means = pg_ba[pg_ba["method"].astype(str).isin(baseline_a_methods)]["max_drop_mean"].to_numpy(dtype=float) if "max_drop_mean" in pg_ba.columns else np.array([])
+        b_md_means = pg_ba[pg_ba["method"].astype(str).isin(baseline_b_methods)]["max_drop_mean"].to_numpy(dtype=float) if "max_drop_mean" in pg_ba.columns else np.array([])
         d_max_drop_B_A = _cohens_d(b_md_means, a_md_means) if b_md_means.size and a_md_means.size else float("nan")
         ci_width_B_A = float(diff_md_B_A_ci[1] - diff_md_B_A_ci[0]) if np.isfinite(diff_md_B_A_ci[0]) and np.isfinite(diff_md_B_A_ci[1]) else float("nan")
-        stage2_go = bool(
-            np.isfinite(diff_md_B_A_mean) and diff_md_B_A_mean < 0
-            and np.isfinite(ci_width_B_A) and ci_width_B_A <= 0.10
-        )
-    # C−B (adaptive benefit): mean(max_drop_C - max_drop_B) < 0 => TPE helps beyond proxy
+        # Plot2_LatestSpec: (P1) maxRD_B - maxRD_A < 0 with CI excluding 0, OR (P2) AUPC_B - AUPC_A > 0 with CI excluding 0; AND (P3) clean floor
+        clean_B_A_mean = float("nan")
+        if has_max_rd and max_rd_a_graphs and max_rd_b_graphs:
+            rd_a_boot = _bootstrap_hierarchical(max_rd_a_graphs, n_boot=int(args.n_boot), rng=rng)
+            rd_b_boot = _bootstrap_hierarchical(max_rd_b_graphs, n_boot=int(args.n_boot), rng=rng)
+            diff_rd_B_A_boot = rd_b_boot - rd_a_boot  # negative = B more robust (lower maxRD)
+            diff_rd_B_A_mean = float(np.nanmean(diff_rd_B_A_boot)) if np.isfinite(diff_rd_B_A_boot).any() else float("nan")
+            rd_ci = _ci(diff_rd_B_A_boot)
+            diff_rd_B_A_ci_lo, diff_rd_B_A_ci_hi = rd_ci[0], rd_ci[1]
+        if aupc_a_graphs and aupc_b_graphs:
+            aupc_a_boot = _bootstrap_hierarchical(aupc_a_graphs, n_boot=int(args.n_boot), rng=rng)
+            aupc_b_boot = _bootstrap_hierarchical(aupc_b_graphs, n_boot=int(args.n_boot), rng=rng)
+            diff_aupc_B_A_boot = aupc_b_boot - aupc_a_boot  # positive = B better (higher AUPC)
+            diff_aupc_B_A_mean = float(np.nanmean(diff_aupc_B_A_boot)) if np.isfinite(diff_aupc_B_A_boot).any() else float("nan")
+            aupc_ci = _ci(diff_aupc_B_A_boot)
+            diff_aupc_B_A_ci_lo, diff_aupc_B_A_ci_hi = aupc_ci[0], aupc_ci[1]
+        if "clean_roc_auc_mean" in pg_ba.columns:
+            a_clean = pg_ba[pg_ba["method"].astype(str).isin(baseline_a_methods)]["clean_roc_auc_mean"].mean()
+            b_clean = pg_ba[pg_ba["method"].astype(str).isin(baseline_b_methods)]["clean_roc_auc_mean"].mean()
+            clean_B_A_mean = float(b_clean - a_clean) if np.isfinite(a_clean) and np.isfinite(b_clean) else float("nan")
+        p1 = np.isfinite(diff_rd_B_A_mean) and diff_rd_B_A_mean < 0 and (diff_rd_B_A_ci_lo > 0 or diff_rd_B_A_ci_hi < 0)
+        p2 = np.isfinite(diff_aupc_B_A_mean) and diff_aupc_B_A_mean > 0 and (diff_aupc_B_A_ci_lo > 0 or diff_aupc_B_A_ci_hi < 0)
+        p3 = np.isfinite(clean_B_A_mean) and clean_B_A_mean >= -0.01
+        stage2_go = (p1 or p2) and p3
+    # C−B (adaptive benefit): mean(max_drop_C - max_drop_B) < 0 => TPE helps beyond proxy (exclude low-clean)
     diff_md_C_B_mean = float("nan")
     diff_md_C_B_ci = (float("nan"), float("nan"))
     d_max_drop_C_B = float("nan")
     stage3_go = None
-    if has_max_drop and max_drop_b_graphs and max_drop_nas_graphs:
-        b_md_boot_cb = _bootstrap_hierarchical(max_drop_b_graphs, n_boot=int(args.n_boot), rng=rng)
-        c_md_boot = _bootstrap_hierarchical(max_drop_nas_graphs, n_boot=int(args.n_boot), rng=rng)
+    if has_max_drop and max_drop_b_graphs_cb and max_drop_nas_graphs_cb:
+        b_md_boot_cb = _bootstrap_hierarchical(max_drop_b_graphs_cb, n_boot=int(args.n_boot), rng=rng)
+        c_md_boot = _bootstrap_hierarchical(max_drop_nas_graphs_cb, n_boot=int(args.n_boot), rng=rng)
         diff_C_B_boot = c_md_boot - b_md_boot_cb  # negative = C more robust
         diff_md_C_B_mean = float(np.nanmean(diff_C_B_boot)) if np.isfinite(diff_C_B_boot).any() else float("nan")
         diff_md_C_B_ci = _ci(diff_C_B_boot)
-        b_md_means_cb = per_graph_g[per_graph_g["method"].astype(str).isin(baseline_b_methods)]["max_drop_mean"].to_numpy(dtype=float) if "max_drop_mean" in per_graph_g.columns else np.array([])
-        c_md_means = per_graph_g[per_graph_g["method"].astype(str).isin(nas_methods)]["max_drop_mean"].to_numpy(dtype=float) if "max_drop_mean" in per_graph_g.columns else np.array([])
+        pg_cb = per_graph_g[per_graph_g["low_clean"] != True] if "low_clean" in per_graph_g.columns else per_graph_g
+        b_md_means_cb = pg_cb[pg_cb["method"].astype(str).isin(baseline_b_methods)]["max_drop_mean"].to_numpy(dtype=float) if "max_drop_mean" in pg_cb.columns else np.array([])
+        c_md_means = pg_cb[pg_cb["method"].astype(str).isin(nas_methods)]["max_drop_mean"].to_numpy(dtype=float) if "max_drop_mean" in pg_cb.columns else np.array([])
         d_max_drop_C_B = _cohens_d(c_md_means, b_md_means_cb) if c_md_means.size and b_md_means_cb.size else float("nan")
-        stage3_go = bool(np.isfinite(diff_md_C_B_mean) and diff_md_C_B_mean < 0)
+        # Plot2_LatestSpec: (A1) maxRD_C - maxRD_B < 0 with CI excluding 0, OR (A2) AUPC_C - AUPC_B > 0 with CI excluding 0; AND (A3) clean floor
+        clean_C_B_mean = float("nan")
+        if has_max_rd and max_rd_b_graphs and max_rd_nas_graphs:
+            rd_b_cb = _bootstrap_hierarchical(max_rd_b_graphs, n_boot=int(args.n_boot), rng=rng)
+            rd_c_cb = _bootstrap_hierarchical(max_rd_nas_graphs, n_boot=int(args.n_boot), rng=rng)
+            diff_rd_C_B_boot = rd_c_cb - rd_b_cb  # negative = C more robust (lower maxRD)
+            diff_rd_C_B_mean = float(np.nanmean(diff_rd_C_B_boot)) if np.isfinite(diff_rd_C_B_boot).any() else float("nan")
+            rd_cb_ci = _ci(diff_rd_C_B_boot)
+            diff_rd_C_B_ci_lo, diff_rd_C_B_ci_hi = rd_cb_ci[0], rd_cb_ci[1]
+        if aupc_b_graphs and aupc_nas_graphs:
+            aupc_b_cb = _bootstrap_hierarchical(aupc_b_graphs, n_boot=int(args.n_boot), rng=rng)
+            aupc_c_cb = _bootstrap_hierarchical(aupc_nas_graphs, n_boot=int(args.n_boot), rng=rng)
+            diff_aupc_C_B_boot = aupc_c_cb - aupc_b_cb  # positive = C better
+            diff_aupc_C_B_mean = float(np.nanmean(diff_aupc_C_B_boot)) if np.isfinite(diff_aupc_C_B_boot).any() else float("nan")
+            aupc_cb_ci = _ci(diff_aupc_C_B_boot)
+            diff_aupc_C_B_ci_lo, diff_aupc_C_B_ci_hi = aupc_cb_ci[0], aupc_cb_ci[1]
+        if "clean_roc_auc_mean" in pg_cb.columns:
+            b_clean_cb = pg_cb[pg_cb["method"].astype(str).isin(baseline_b_methods)]["clean_roc_auc_mean"].mean()
+            c_clean_cb = pg_cb[pg_cb["method"].astype(str).isin(nas_methods)]["clean_roc_auc_mean"].mean()
+            clean_C_B_mean = float(c_clean_cb - b_clean_cb) if np.isfinite(b_clean_cb) and np.isfinite(c_clean_cb) else float("nan")
+        a1 = np.isfinite(diff_rd_C_B_mean) and diff_rd_C_B_mean < 0 and (diff_rd_C_B_ci_lo > 0 or diff_rd_C_B_ci_hi < 0)
+        a2 = np.isfinite(diff_aupc_C_B_mean) and diff_aupc_C_B_mean > 0 and (diff_aupc_C_B_ci_lo > 0 or diff_aupc_C_B_ci_hi < 0)
+        a3 = np.isfinite(clean_C_B_mean) and clean_C_B_mean >= -0.01
+        stage3_go = (a1 or a2) and a3
     diff_md_ext_mean = float("nan")
     diff_md_ext_ci = (float("nan"), float("nan"))
     if has_max_drop and max_drop_ext_graphs and max_drop_nas_graphs:
@@ -792,6 +1090,8 @@ def main() -> None:
     else:
         report_lines.append(f"sigma_max ({primary_perturbation_type}): {sigma_max_primary}")
     report_lines.append(f"target_snr_db ({primary_perturbation_type}): {target_snr_primary}")
+    if np.isfinite(analysis_target_snr_db):
+        report_lines.append(f"analysis_target_snr_db (G0 locked): {analysis_target_snr_db}")
     report_lines.append(f"empirical_snr_db ({primary_perturbation_type}): {empirical_snr_primary}")
     for nt in noise_types_to_analyze:
         if nt != primary_perturbation_type and nt in snr_by_type:
@@ -800,16 +1100,34 @@ def main() -> None:
     report_lines.append("bootstrap_hierarchy: graph->seed (F7: resample graphs, then seeds within graph)")
     report_lines.append("Note: Inference is conditional on chosen subjects.")
     report_lines.append("")
+    report_lines.append("REPORTED METRICS: clean ROC-AUC, AUPC(alpha), RD(alpha), maxRD, max_drop, CSV_clean, CSV_AUPC, CSV_maxRD")
+    report_lines.append("WARNING: Do not interpret max_drop alone; report alongside clean ROC-AUC and RD.")
+    report_lines.append("")
     report_lines.append("PRIMARY METRIC: max_drop (lower is better) — spec §2.4")
     report_lines.append(f"  (baseline_a - tpe) in max_drop [F1: baseline_a=Random]: mean={diff_md_mean:.6f}, 95% CI=[{diff_md_ci[0]:.6f}, {diff_md_ci[1]:.6f}], Cohen's d={d_max_drop:.3f}")
     report_lines.append(f"  (external_random - tpe) in max_drop: mean={diff_md_ext_mean:.6f}, 95% CI=[{diff_md_ext_ci[0]:.6f}, {diff_md_ext_ci[1]:.6f}]")
     if np.isfinite(diff_md_B_A_mean):
         report_lines.append(f"  B−A (proxy validity): mean(max_drop_B - max_drop_A)={diff_md_B_A_mean:.6f}, 95% CI=[{diff_md_B_A_ci[0]:.6f}, {diff_md_B_A_ci[1]:.6f}], Cohen's d={d_max_drop_B_A:.3f} (negative => proxy helps)")
+        if np.isfinite(diff_rd_B_A_mean):
+            report_lines.append(f"  B−A maxRD: mean(maxRD_B - maxRD_A)={diff_rd_B_A_mean:.6f}, 95% CI=[{diff_rd_B_A_ci_lo:.6f}, {diff_rd_B_A_ci_hi:.6f}] (negative => proxy helps)")
+        if np.isfinite(diff_aupc_B_A_mean):
+            report_lines.append(f"  B−A AUPC: mean(AUPC_B - AUPC_A)={diff_aupc_B_A_mean:.6f}, 95% CI=[{diff_aupc_B_A_ci_lo:.6f}, {diff_aupc_B_A_ci_hi:.6f}] (positive => proxy helps)")
         report_lines.append(f"  Stage 2 gate (proxy usefulness): {stage2_go}")
     if np.isfinite(diff_md_C_B_mean):
         report_lines.append(f"  C−B (adaptive benefit): mean(max_drop_C - max_drop_B)={diff_md_C_B_mean:.6f}, 95% CI=[{diff_md_C_B_ci[0]:.6f}, {diff_md_C_B_ci[1]:.6f}], Cohen's d={d_max_drop_C_B:.3f} (negative => TPE helps)")
+        if np.isfinite(diff_rd_C_B_mean):
+            report_lines.append(f"  C−B maxRD: mean(maxRD_C - maxRD_B)={diff_rd_C_B_mean:.6f}, 95% CI=[{diff_rd_C_B_ci_lo:.6f}, {diff_rd_C_B_ci_hi:.6f}] (negative => TPE helps)")
+        if np.isfinite(diff_aupc_C_B_mean):
+            report_lines.append(f"  C−B AUPC: mean(AUPC_C - AUPC_B)={diff_aupc_C_B_mean:.6f}, 95% CI=[{diff_aupc_C_B_ci_lo:.6f}, {diff_aupc_C_B_ci_hi:.6f}] (positive => TPE helps)")
         report_lines.append(f"  Stage 3 gate (adaptive benefit): {stage3_go}")
     report_lines.append(f"  Mini-scale: CI width <= 0.10? {mini_scale_ci_ok}; directional (>=2 subjects same sign)? {mini_scale_directional}")
+    # M4 decisive GO/NO-GO (Plot 2 Overhaul §6.4–6.5)
+    if has_max_rd and np.isfinite(diff_rd_rand_tpe_mean):
+        report_lines.append("")
+        report_lines.append("M4 DECISIVE (maxRD primary, rand vs TPE):")
+        report_lines.append(f"  Δ = E[maxRD_rand - maxRD_tpe] = {diff_rd_rand_tpe_mean:.6f}, 95% CI=[{diff_rd_rand_tpe_ci_lo:.6f}, {diff_rd_rand_tpe_ci_hi:.6f}], Cohen's d={d_max_rd_rand_tpe:.3f}")
+        report_lines.append(f"  GO thresholds: Δ≥0.05? {np.isfinite(diff_rd_rand_tpe_mean) and diff_rd_rand_tpe_mean >= 0.05}; CI excludes 0? {ci_rd_excludes_0}; d≥0.5? {np.isfinite(d_max_rd_rand_tpe) and d_max_rd_rand_tpe >= 0.5}; directional ≥2/3? {m4_directional}")
+        report_lines.append(f"  M4 verdict: GO={m4_go}, NO-GO={m4_nogo}")
     report_lines.append("")
     report_lines.append("SECONDARY METRIC: AUPC_alpha (higher is better)")
     report_lines.append(f"  (NAS - baseline_a) [F1: baseline_a=Random]: mean diff={diff_mean:.6f}, 95% CI=[{diff_ci[0]:.6f}, {diff_ci[1]:.6f}], Cohen's d={d:.3f}")
@@ -880,15 +1198,49 @@ def main() -> None:
     else:
         report_lines.append("  (no sigma/te_res columns; I3 skipped for legacy runs)")
 
-    # k/regime distribution diagnostics (helps detect search/selection collapse)
+    # Regime-wise pairing for MODE_REGIME (Plot 2 Overhaul §6.3)
     deg_raw = manifest.get("degree_regimes", {})
+    degree_regimes: Dict[str, List[int]] = {}
     if isinstance(deg_raw, dict) and deg_raw:
-        degree_regimes: Dict[str, List[int]] = {}
         for name, ks in deg_raw.items():
             try:
                 degree_regimes[str(name)] = [int(x) for x in list(ks)]
             except Exception:
                 continue
+    selection_coverage_level = str(manifest.get("selection", {}).get("coverage_level", ""))
+    regime_wise_diff_mean = float("nan")
+    regime_wise_diff_ci = (float("nan"), float("nan"))
+    if selection_coverage_level == "regime" and degree_regimes and "k" in sel.columns and "model_name" in sel.columns:
+        model_to_regime = {}
+        for _, row in sel.iterrows():
+            k_val = row.get("k")
+            if pd.notna(k_val) and str(k_val).strip():
+                r = _k_to_regime(int(float(k_val)), degree_regimes)
+                if r is not None:
+                    model_to_regime[str(row["model_name"])] = r
+        if model_to_regime:
+            pg_tmp = per_graph_g.copy()
+            pg_tmp["regime"] = pg_tmp["model_name"].map(model_to_regime)
+            pg_tmp = pg_tmp[pg_tmp["regime"].notna()]
+            if "max_rd_mean" in pg_tmp.columns and not pg_tmp.empty:
+                regime_diffs: List[float] = []
+                for regime_name, grp in pg_tmp.groupby("regime"):
+                    rand_means = grp[grp["method"].astype(str).isin(baseline_a_methods)]["max_rd_mean"].dropna()
+                    tpe_means = grp[grp["method"].astype(str).isin(nas_methods)]["max_rd_mean"].dropna()
+                    if rand_means.size and tpe_means.size:
+                        regime_diffs.append(float(rand_means.mean() - tpe_means.mean()))
+                if regime_diffs:
+                    regime_wise_diff_mean = float(np.mean(regime_diffs))
+                    arr = np.array(regime_diffs, dtype=float)
+                    regime_boot = np.array([float(np.mean(rng.choice(arr, size=arr.size, replace=True))) for _ in range(min(int(args.n_boot), 5000))])
+                    regime_wise_diff_ci = _ci(regime_boot)
+                    report_lines.append("")
+                    report_lines.append("Regime-wise pairing (MODE_REGIME):")
+                    report_lines.append(f"  Per-regime mean(maxRD_rand - maxRD_tpe): {regime_diffs}")
+                    report_lines.append(f"  Aggregate: mean={regime_wise_diff_mean:.6f}, 95% CI=[{regime_wise_diff_ci[0]:.6f}, {regime_wise_diff_ci[1]:.6f}]")
+
+    # k/regime distribution diagnostics (helps detect search/selection collapse)
+    if degree_regimes:
         dist = _summarize_selected_k(sel, degree_regimes)
         if dist:
             report_lines.append("")
@@ -916,6 +1268,8 @@ def main() -> None:
         d.mkdir(parents=True, exist_ok=True)
     per_seed.to_csv(out_dir / "per_seed_aupc.csv", index=False)
     per_graph.to_csv(out_dir / "per_graph_aupc.csv", index=False)
+    per_seed.to_csv(out_dir / "per_seed_metrics.csv", index=False)
+    per_graph.to_csv(out_dir / "per_graph_metrics.csv", index=False)
     _write = {
         "primary_comparator": "baseline_a",
         "diff_mean": diff_mean,
@@ -937,9 +1291,26 @@ def main() -> None:
         "max_drop_C_minus_B_cohens_d": d_max_drop_C_B,
         "stage2_gate_pass": stage2_go,
         "stage3_gate_pass": stage3_go,
+        "max_rd_B_minus_A_mean": diff_rd_B_A_mean,
+        "max_rd_B_minus_A_ci": {"lo": diff_rd_B_A_ci_lo, "hi": diff_rd_B_A_ci_hi},
+        "aupc_B_minus_A_mean": diff_aupc_B_A_mean,
+        "aupc_B_minus_A_ci": {"lo": diff_aupc_B_A_ci_lo, "hi": diff_aupc_B_A_ci_hi},
+        "max_rd_C_minus_B_mean": diff_rd_C_B_mean,
+        "max_rd_C_minus_B_ci": {"lo": diff_rd_C_B_ci_lo, "hi": diff_rd_C_B_ci_hi},
+        "aupc_C_minus_B_mean": diff_aupc_C_B_mean,
+        "aupc_C_minus_B_ci": {"lo": diff_aupc_C_B_ci_lo, "hi": diff_aupc_C_B_ci_hi},
         "stage2_directional": stage2_directional,
         "mini_scale_ci_width_ok": mini_scale_ci_ok,
         "mini_scale_directional": mini_scale_directional,
+        "m4_max_rd_rand_minus_tpe_mean": diff_rd_rand_tpe_mean,
+        "m4_max_rd_rand_minus_tpe_ci": {"lo": diff_rd_rand_tpe_ci_lo, "hi": diff_rd_rand_tpe_ci_hi},
+        "m4_max_rd_cohens_d": d_max_rd_rand_tpe,
+        "m4_go": m4_go,
+        "m4_nogo": m4_nogo,
+        "m4_directional": m4_directional,
+        "regime_wise_diff_mean": regime_wise_diff_mean,
+        "regime_wise_diff_ci": {"lo": regime_wise_diff_ci[0], "hi": regime_wise_diff_ci[1]},
+        "selection_coverage_level": selection_coverage_level,
         "primary_perturbation_type": primary_perturbation_type,
         "sigma_max": sigma_max_primary,
         "target_snr_db": target_snr_primary,
@@ -987,7 +1358,23 @@ def main() -> None:
             i3_diag["overlap_B_C"] = _overlap("baseline_b", "tpe")
             i3_diag["overlap_A_C"] = _overlap("baseline_a", "tpe")
     _write["i3_diagnostics"] = i3_diag
-    (out_dir / "bootstrap_diff.json").write_text(json.dumps(_write, indent=2), encoding="utf-8")
+
+    def _json_serializer(obj: Any) -> Any:
+        if isinstance(obj, Path):
+            return str(obj)
+        if isinstance(obj, (np.integer, np.int64, np.int32)):
+            return int(obj)
+        if isinstance(obj, (np.floating, np.float64, np.float32)):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        if isinstance(obj, np.bool_):
+            return bool(obj)
+        raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
+
+    (out_dir / "bootstrap_diff.json").write_text(
+        json.dumps(_write, indent=2, default=_json_serializer), encoding="utf-8"
+    )
     (out_dir / "report.txt").write_text("\n".join(report_lines), encoding="utf-8")
 
     # Simple Plot 2-ready figure (bar + CI) if matplotlib is available — primary perturbation.
@@ -1053,6 +1440,7 @@ def main() -> None:
             hi_show = [hi_aupc[i] for i in valid]
             colors_show = [colors_aupc[i] for i in valid]
             yerr = np.vstack([np.array(y_show) - np.array(lo_show), np.array(hi_show) - np.array(y_show)])
+            yerr = np.maximum(yerr, 0.0)  # matplotlib requires yerr >= 0
 
             fig, ax = plt.subplots(figsize=(7.0, 4.0), dpi=150)
             ax.bar(range(len(labels_show)), y_show, yerr=yerr, capsize=4, color=colors_show)
@@ -1090,6 +1478,7 @@ def main() -> None:
             lo_md = np.array(lo_md)
             hi_md = np.array(hi_md)
             yerr_md = np.vstack([y_md - lo_md, hi_md - y_md])
+            yerr_md = np.maximum(yerr_md, 0.0)  # matplotlib requires yerr >= 0
             fig2, ax2 = plt.subplots(figsize=(6.0, 3.6), dpi=150)
             ax2.bar(range(len(labels_md)), y_md, yerr=yerr_md, capsize=4, color=["#2ca02c", "#8c8c8c", "#4a90d9", "#777777", "#2a6fdb", "#d62728"])
             ax2.set_xticks(range(len(labels_md)))
@@ -1164,6 +1553,9 @@ def main() -> None:
             if "max_drop_mean" in row:
                 r["max_drop_mean"] = row["max_drop_mean"]
                 r["max_drop_std"] = row["max_drop_std"]
+            if "max_rd_mean" in row:
+                r["max_rd_mean"] = row["max_rd_mean"]
+                r["max_rd_std"] = row["max_rd_std"]
             if "mid_drop_mean" in row:
                 r["mid_drop_mean"] = row["mid_drop_mean"]
                 r["mid_drop_std"] = row["mid_drop_std"]

@@ -9,8 +9,9 @@ This pilot study exists to validate the central premise of Paper 3:
 
 Under a fixed training budget, constrained Bayesian optimization (TPE)
 over WS-Flex graph generator parameters—guided by training-free
-topological metrics (TE, ORC)—identifies more robust recurrent
-architectures than random exploration of the same generator space.
+topological metrics (TE_res, sigma) from proxy viability—identifies
+more robust recurrent architectures than random exploration of the
+same generator space.
 
 This pilot DOES NOT aim to:
 - establish state-of-the-art MI performance,
@@ -26,11 +27,12 @@ is justified.
 
 H1 (Search Efficiency Hypothesis):
 Given an equal training budget B, BO-guided selection of WS-Flex
-topologies yields higher best-so-far robustness than random exploration,
-measured by AUPC under Gaussian noise.
+topologies yields lower maxRD (more robust) than random exploration,
+measured under AR(1) drift.
 
 Formally:
-E[max_{b <= B} AUPC_BO(b)] > E[max_{b <= B} AUPC_Random(b)]
+E[maxRD_Random(b)] - E[maxRD_TPE(b)] >= 0.05
+(i.e., TPE-selected architectures have lower maxRD on average)
 
 Early dominance (b <= 3–4) is considered strong supporting evidence.
 
@@ -116,7 +118,7 @@ Method A: Random Metric-Guided Exploration
 --------------------------------------------------
 1. Sample WS-Flex parameters (k, p) uniformly
 2. Generate graph
-3. Compute TE and ORC
+3. Compute TE_res and sigma (using frozen bounds from proxy viability)
 4. Repeat until M candidate graphs are collected
 5. Select top B graphs using the same selection rule as Method B
 6. Train only those B models
@@ -127,7 +129,7 @@ Method B: BO-Guided Exploration (TPE / Optuna)
 1. Run Optuna TPE for M trials over (k, p)
 2. For each trial:
    - generate graph
-   - compute TE and ORC
+   - compute TE_res and sigma
    - enforce constraints
 3. Select top B graphs using the same selection rule
 4. Train only those B models
@@ -135,15 +137,12 @@ Method B: BO-Guided Exploration (TPE / Optuna)
 --------------------------------------------------
 Selection Rule (Identical for A and B)
 --------------------------------------------------
-For the pilot, use a simple and reproducible rule:
+Proxy: Use (TE_res, sigma) from proxy viability (frozen bounds).
+Selection: regime_cl_bins_fixed + Pareto on (TE_res, sigma), matching
+Plot 2 pipeline.
 
-Let TE and ORC be normalized to [0, 1] across the M candidates.
-Define score:
-S = TE_norm + ORC_norm
-
-Select the top B graphs by S.
-
-This rule is intentionally simple for pilot validation.
+Prerequisite: Proxy viability must pass (V1–V5 gates) before pilot;
+pilot requires --proxy_viability_dir.
 
 --------------------------------------------------------------------
 6. Budgets and Repetitions
@@ -165,46 +164,39 @@ Total trained models:
 2 * B * R = 48
 
 --------------------------------------------------------------------
-7. Robustness Perturbation: Gaussian Noise (SNR-Anchored)
+7. Robustness Perturbation: AR(1) Drift (SNR-Anchored)
 --------------------------------------------------------------------
 
 Primary Robustness Metric:
-- Area Under the Perturbation Curve (AUPC)
+- maxRD (maximum Relative Degradation; lower is better)
 
 Perturbation Definition:
-Additive zero-mean Gaussian noise:
-x_tilde = x + ε,   ε ~ N(0, σ^2 I)
+AR(1) temporal drift with rho = 0.97, target_snr_db ∈ {-12, -6}.
+Same trained weights evaluated at both SNR settings.
 
 --------------------------------------------------
-Maximum Perturbation Definition
+Relative Degradation (RD) and maxRD
 --------------------------------------------------
-The benchmark already defines a maximum Gaussian perturbation level.
-Denote this as σ_max.
+Let p_g(α) = ROC-AUC at intensity α; p_clean = p_g(0).
 
-Compute its effective signal-to-noise ratio (SNR):
+RD_g(α) = (p_clean - p_g(α)) / max(p_clean - 0.5, ε),  ε = 1e-3
 
-SNR_dB = 10 log10 ( E[||x||_2^2] / E[||ε||_2^2] )
+maxRD(g) = max_{α∈A} RD_g(α)
 
-Expectations are taken over channels, timepoints, and test samples.
+Lower maxRD = more robust (less relative degradation under perturbation).
 
 --------------------------------------------------
 Perturbation Grid (Pilot)
 --------------------------------------------------
-Define noise levels as fractions of σ_max:
-
 α ∈ {0, 0.25, 0.50, 0.75, 1.00}
-σ_α = α · σ_max
 
 For each α:
-- inject noise
+- inject AR(1) drift at intensity α · alpha_max
 - evaluate model
 - record performance
 
-AUPC is computed via trapezoidal integration:
-
-AUPC = ∫_{0}^{σ_max} Perf(σ) dσ
-
-Approximated numerically on the discrete grid.
+alpha_max is data-derived per target_snr_db (runner computes from
+calibration data).
 
 --------------------------------------------------------------------
 8. Outputs to Record
@@ -215,11 +207,11 @@ For each trained model:
 - adjacency matrix
 - training seed
 - clean performance
-- performance at each α
-- Gaussian AUPC
+- performance at each α (AR(1) drift)
+- maxRD, AUPC (secondary)
 
 For each repetition:
-- best-so-far AUPC curve over b = 1..B
+- best-so-far maxRD curve over b = 1..B (minimum over b; lower is better)
 
 --------------------------------------------------------------------
 9. Pilot Success Criteria (Hard Gates)
@@ -227,13 +219,12 @@ For each repetition:
 
 The pilot is SUCCESSFUL if:
 
-1. Final best-so-far AUPC:
-   E[max_{b <= B} AUPC_BO(b)] >
-   E[max_{b <= B} AUPC_Random(b)]
+1. Final best-so-far maxRD:
+   E[maxRD_Random] - E[maxRD_TPE] >= 0.05
    with a non-trivial margin (~0.5 std of random baseline)
 
 2. Early advantage:
-   BO best-so-far exceeds Random by b <= 3–4 on average
+   TPE best-so-far maxRD lower than Random by b <= 3–4 on average
 
 3. Perturbation sanity:
    Performance degrades monotonically with α (no degenerate curves)

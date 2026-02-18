@@ -176,7 +176,7 @@ def main() -> None:
             "--eval_mode", args.eval_mode,
             "--seed", str(args.seed),
             "--test_perturb_noise_types", "ar1_drift",
-            "--test_perturb_target_snr_db", str(args.target_snr_db),
+            "--test_perturb_target_snr_db=" + str(args.target_snr_db),
             "--noise_perturbation_saturation_file", args.saturation_file,
             "--test_perturb_gaussian_alpha_grid", "0,0.25,0.5,0.75,1.0",
             "--plot2_diagnostics_dir", str(diagnostics_dir),

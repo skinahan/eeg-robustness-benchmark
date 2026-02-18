@@ -64,6 +64,12 @@ OPTIONAL_MANIFEST_KEYS: List[str] = [
     "generator_mode",
     "modular_param_bounds",
     "seed_mod_params",
+    # Plot 2 Final Overhaul (M2/M3/M4 pipeline)
+    "selection_mode",
+    "target_snr_dbs",
+    "m2_go",
+    "m3_go",
+    "m4_verdict",
 ]
 
 # Valid method / selection_method values in Plot 2 outputs (plot2_revision baselines A/B/C + D/E).

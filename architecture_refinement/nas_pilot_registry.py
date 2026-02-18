@@ -49,6 +49,25 @@ def register_nas_pilot_models(pilot_dir: str | Path) -> List[str]:
         arch_path: str,
     ) -> object:
         """Build wiring from an architecture dict. wiring_kind and wiring_seed are required to avoid closure bugs."""
+        if wiring_kind == "topology_opt_directed":
+            # Directed adjacency from topology optimization (A[i,j]=1 if j→i)
+            hidden_adj = arch_dict.get("hidden_adj_directed")
+            if hidden_adj is None:
+                raise KeyError(
+                    f"topology_opt_directed architecture missing 'hidden_adj_directed' (from {arch_path})"
+                )
+            A = np.asarray(hidden_adj, dtype=np.float32)
+            return WsFlexHiddenWiring(
+                input_size=1,
+                hidden_graph=A,
+                output_size=int(A.shape[0]),
+                input_strategy="degree_proportional",
+                output_strategy="uniform",
+                hidden_edge_orientation="as_is",
+                add_hidden_self_loops=True,
+                seed=0,
+            )
+
         if wiring_kind == "ws_flex":
             hidden_adj = arch_dict.get("hidden_adj_undirected")
             if hidden_adj is None:
@@ -60,13 +79,16 @@ def register_nas_pilot_models(pilot_dir: str | Path) -> List[str]:
             G = nx.from_numpy_array((hidden_adj != 0).astype(np.int8))
             if not nx.is_connected(G):
                 raise ValueError("Hidden graph is disconnected (pilot constraint).")
+            orientation = str(arch_dict.get("hidden_edge_orientation", "random_oriented"))
+            if orientation not in ("symmetric", "random_oriented", "as_is"):
+                orientation = "random_oriented"
             return WsFlexHiddenWiring(
                 input_size=1,
                 hidden_graph=G,
                 output_size=1,
                 input_strategy="degree_proportional",
                 output_strategy="uniform",
-                hidden_edge_orientation="random_oriented",
+                hidden_edge_orientation=orientation,
                 add_hidden_self_loops=True,
                 seed=int(wiring_seed),
             )
@@ -88,11 +110,12 @@ def register_nas_pilot_models(pilot_dir: str | Path) -> List[str]:
             from ncps.wirings import Random  # Plot 2 G3 out-of-family baseline
 
             units = int(arch_dict["units"])
-            output_size = int(arch_dict.get("output_size", units))
             sparsity_level = float(arch_dict["sparsity_level"])
+            # WiredCfCCell returns full hidden state (size=units), not output_dim. CfC uses
+            # wiring.output_dim for fc input size, so set output_dim=units to avoid shape mismatch.
             return Random(
                 units=units,
-                output_dim=output_size,
+                output_dim=units,
                 sparsity_level=sparsity_level,
                 random_seed=int(wiring_seed),
             )
