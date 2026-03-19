@@ -39,14 +39,14 @@ random_oriented on the same WS-Flex graphs, potentially shifting the "less than
 stellar" results from NAS pilot and Plot 2.
 
 ================================================================================
-2. EXPERIMENT DESIGN (MINIMAL)
+2. EXPERIMENT DESIGN (MINIMAL - SINGLE GRAPH)
 ================================================================================
 
 SCOPE
 -----
-- 3 fixed WS graphs: sparse (k=4), moderate (k=8), dense (k=14), p=0.3
-- For each graph: 2 models — random_oriented and symmetric (same hidden_adj_undirected)
-- Total: 6 models
+- 1 fixed WS graph: k=8, p=0.3
+- 2 models with distinct names: orient_ro (random_oriented), orient_sym (symmetric)
+- Same hidden_adj_undirected for both; only orientation differs
 
 PROTOCOL
 --------
@@ -67,8 +67,8 @@ METRICS
 OUTPUT
 ------
 - architecture_refinement/outputs/orientation_sensitivity/
-  - selected_architectures/*.json (6 architectures)
-  - orientation_sensitivity_report.json (per-model and per-regime comparison)
+  - selected_architectures/orient_ro.json, orient_sym.json
+  - orientation_sensitivity_report.json (single orient_ro vs orient_sym comparison)
   - analysis/per_graph_aupc.csv (from analyze_plot2_results)
 
 ================================================================================

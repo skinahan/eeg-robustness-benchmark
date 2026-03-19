@@ -1,0 +1,270 @@
+% Complexity Analysis: FLOPS Estimates for Paper 3 Plot 1
+% Proxy vs Full Evaluation Cost Comparison
+% ==============================================================================
+
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\title{Computational Complexity Analysis: Proxy vs Full Evaluation}
+\author{Paper 3 Experiment Pipeline}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Overview}
+
+Plot 1 (plot1\_proxy\_landscape.pdf) consists of three panels arranged in a $2 \times 2$ grid: a proxy landscape scatter (left, spanning both rows) and two cost-comparison bar charts (right, stacked). The figure compares the computational cost of two evaluation pathways:
+\begin{enumerate}
+  \item \textbf{Proxy evaluation}: Graph-theoretic metrics (TE, ORC) computed on candidate architectures without training.
+  \item \textbf{Full evaluation}: Train the neural network and evaluate robustness via perturbation sweep.
+\end{enumerate}
+
+This document provides the analytical justification for the default FLOPS estimates used in the plot:
+\begin{itemize}
+  \item Proxy: $\sim 10^7$ FLOP per architecture
+  \item Full: $\sim 10^{12}$ FLOP per (model, seed)
+\end{itemize}
+
+These are \emph{order-of-magnitude} estimates, not measured values. The ratio ($\sim 10^5$) illustrates that proxy evaluation is orders of magnitude cheaper than full training and robustness evaluation.
+
+% ------------------------------------------------------------------------------
+\section{Figure Layout and Panel Descriptions}
+% ------------------------------------------------------------------------------
+
+The figure uses a \texttt{GridSpec} layout: the left column spans two rows and contains the proxy landscape; the right column contains two stacked bar charts (time and FLOPS).
+
+\subsection{Panel A: Proxy Landscape (Scatter)}
+
+\textbf{Location:} Left column, full height.
+
+\textbf{Content:} A scatter plot of all proxy-evaluated architectures in the $(\hat{TE}, \widehat{|ORC|})$ plane. Each point $(\hat{TE}, \widehat{|ORC|})$ corresponds to one Watts--Strogatz--Flex graph evaluated by \texttt{compute\_paper3\_proxies(G)}.
+
+\textbf{Data sources:}
+\begin{itemize}
+  \item \texttt{proxy\_pool.csv}: All $N_{\text{proxy}}$ (default 500) connected graphs from Experiment 1.
+  \item \texttt{selected\_proxy.csv}: The $K$ (default 12) Pareto-optimal architectures selected by diversity (6$\times$6 grid binning).
+\end{itemize}
+
+\textbf{Visual encoding:}
+\begin{itemize}
+  \item Gray points: All proxy-evaluated graphs (small markers, $\alpha = 0.3$).
+  \item Orange circles: Selected architectures S1--S$K$, highlighted with black borders and labels S1, S2, \ldots, SK.
+  \item Axes: $\hat{TE}$ (topological entropy proxy) on $x$; $\widehat{|ORC|}$ (Ollivier--Ricci curvature proxy) on $y$.
+  \item Axis limits: Data-driven with small margin; $y$-axis capped at 0.05 for visibility of the typical ORC range.
+\end{itemize}
+
+\textbf{Interpretation:} The scatter shows the diversity of the proxy landscape. Pareto selection favors high $\hat{TE}$ and high $\widehat{|ORC|}$ (max-max objective). The selected points (orange) are spread across the Pareto front for diversity.
+
+\subsection{Panel B: Time Comparison (Bar Chart)}
+
+\textbf{Location:} Right column, top.
+
+\textbf{Content:} A bar chart comparing wall-clock time for proxy evaluation vs.\ full evaluation (training + robustness sweep).
+
+\textbf{Data sources:}
+\begin{itemize}
+  \item \texttt{experiment1\_summary.json}: \texttt{mean\_proxy\_time\_sec}---mean time per proxy eval (build graph + compute TE/ORC).
+  \item Optional argument \texttt{mean\_full\_eval\_time\_sec}: Mean time per full eval; default 300\,s if not provided.
+\end{itemize}
+
+\textbf{Visual encoding:}
+\begin{itemize}
+  \item Bar 0 (steelblue): Mean proxy eval time (seconds).
+  \item Bar 1 (coral): Mean full eval time (seconds).
+  \item $y$-axis: Log scale (seconds).
+  \item Title: ``Time ratio $\approx R$'' where $R = \text{mean\_full} / \text{mean\_proxy}$.
+\end{itemize}
+
+\textbf{Interpretation:} The time ratio quantifies how many proxy evaluations can be performed in the time of one full evaluation. Typical values are $10^4$--$10^5$ (proxy $\sim$1--10\,ms, full $\sim$300\,s).
+
+\subsection{Panel C: FLOPS Comparison (Bar Chart)}
+
+\textbf{Location:} Right column, bottom.
+
+\textbf{Content:} A bar chart comparing estimated floating-point operations (FLOP) for proxy vs.\ full evaluation.
+
+\textbf{Data sources:}
+\begin{itemize}
+  \item \texttt{experiment1\_summary.json}: \texttt{mean\_proxy\_flops\_est}, \texttt{mean\_full\_flops\_est} (if present).
+  \item Defaults: $10^7$ (proxy), $10^{12}$ (full) if not in summary.
+\end{itemize}
+
+\textbf{Visual encoding:}
+\begin{itemize}
+  \item Bar 0 (steelblue): Estimated proxy FLOP per architecture.
+  \item Bar 1 (coral): Estimated full FLOP per (model, seed).
+  \item $y$-axis: Log scale (FLOP).
+  \item Title: ``FLOPS ratio $\approx R$'' where $R = \text{full\_flop} / \text{proxy\_flop}$.
+\end{itemize}
+
+\textbf{Interpretation:} The FLOPS ratio is the theoretical cost advantage of proxy evaluation. It is independent of hardware and complements the time ratio (which can vary with CPU/GPU). The analytical justification for the default FLOPS estimates is given in Sections 3--5 below.
+
+% ------------------------------------------------------------------------------
+\section{Proxy Evaluation Complexity}
+% ------------------------------------------------------------------------------
+
+The proxy evaluation is implemented in \texttt{architecture\_refinement.metrics\_te\_orc.compute\_paper\_3\_proxies(G)}. It computes two metrics on a Watts--Strogatz--Flex graph $G$ with $H = 32$ nodes and $E \approx H \cdot k$ edges (where $k \in \{2, 4, \ldots, 24\}$; typical $k \approx 12$ yields $E \approx 400$).
+
+\subsection{Degree Entropy (TE)}
+
+The topological entropy proxy uses the Shannon entropy of the empirical degree distribution:
+\begin{equation}
+  H_{\text{deg}}(G) = -\sum_k p(k) \log p(k), \quad p(k) = \frac{|\{i : \deg(i) = k\}|}{N}
+\end{equation}
+
+\textbf{Operations:}
+\begin{itemize}
+  \item Degree computation: $O(N) = O(32)$
+  \item \texttt{np.unique} for histogram: $O(N \log N) \approx 32 \cdot 5 \approx 160$
+  \item Entropy sum: $O(\text{unique degrees}) \leq O(N)$, typically $\sim 10$ terms
+  \item Each term: 1 division, 1 $\log$, 1 multiply, 1 add
+\end{itemize}
+
+\textbf{Total:} $\sim 10^3$--$10^4$ FLOP. Negligible compared to ORC.
+
+\subsection{Ollivier--Ricci Curvature (ORC)}
+
+The ORC proxy computes the signed mean Ollivier--Ricci curvature over edges:
+\begin{equation}
+  \kappa(u,v) = 1 - \frac{W_1(m_u, m_v)}{d(u,v)}, \qquad
+  \text{ORC}(G) = \frac{1}{|E|} \sum_{(u,v) \in E} \kappa(u,v)
+\end{equation}
+where $m_u$, $m_v$ are neighbor measures (mass $\alpha$ at node, $(1-\alpha)$ uniform over 1-hop neighbors), and $W_1$ is the Wasserstein-1 (Earth Mover's) distance.
+
+\textbf{Implementation steps (per graph):}
+
+\begin{enumerate}
+  \item \textbf{All-pairs shortest path lengths:} \texttt{nx.all\_pairs\_shortest\_path\_length(G)}.
+  \begin{itemize}
+    \item For each of $N = 32$ nodes: BFS or Dijkstra over $E \approx 400$ edges.
+    \item Per node: $O(N + E) \approx 432$; total $O(N(N+E)) \approx 32 \cdot 432 \approx 1.4 \times 10^4$.
+  \end{itemize}
+
+  \item \textbf{Per edge} $(u,v) \in E$ (up to $E \approx 400$ edges):
+  \begin{itemize}
+    \item \texttt{\_support\_and\_measure}: Build discrete measure on support of size $|\text{supp}| \leq \deg + 1 \approx 13$.
+    \item Cost matrix $M \in \mathbb{R}^{|\text{supp}_u| \times |\text{supp}_v|}$: fill $O(|\text{supp}|^2) \approx 169$ entries using graph distances.
+    \item \textbf{Wasserstein-1}: Either
+    \begin{itemize}
+      \item POT \texttt{emd2}: $O(n^3)$ for $n = |\text{supp}| \approx 10$ $\Rightarrow$ $\sim 10^3$ per edge, or
+      \item LP (SciPy HiGHS): $m \cdot n$ variables ($\approx 100$), equality constraints; typically $O(n^3)$ to $O(n^4)$ iterations $\Rightarrow$ $\sim 10^4$--$10^5$ per edge.
+    \end{itemize}
+  \end{itemize}
+\end{enumerate}
+
+\textbf{Aggregate ORC FLOP:}
+\begin{align}
+  \text{ORC}_{\text{FLOP}} &\approx \underbrace{1.4 \times 10^4}_{\text{shortest paths}} + \underbrace{E \cdot (10^4 \text{--} 10^5)}_{\text{per-edge W1}} \\
+  &\approx 1.4 \times 10^4 + 400 \times (2 \times 10^4) \approx 8 \times 10^6
+\end{align}
+
+Using the LP fallback (slower path): $400 \times 10^5 = 4 \times 10^7$. With POT (faster): $400 \times 10^4 = 4 \times 10^6$.
+
+\textbf{Conclusion:} Proxy FLOP is dominated by ORC. A conservative order-of-magnitude estimate is
+\begin{equation}
+  \boxed{\text{Proxy FLOP} \approx 10^7}
+\end{equation}
+
+% ------------------------------------------------------------------------------
+\section{Full Evaluation Complexity}
+% ------------------------------------------------------------------------------
+
+Full evaluation consists of (1) training the neural network and (2) robustness evaluation via perturbation sweep.
+
+\subsection{Model and Training Configuration}
+
+The Paper 3 pipeline uses CfC (Closed-form Continuous) / NCP-style models with sparse wiring. Typical configuration:
+\begin{itemize}
+  \item Hidden size $H = 32$, sparse connectivity $E_{\text{active}} \approx 400$--$800$
+  \item Parameter count: $\sim 4{,}000$--$15{,}000$ (from BranchedWiredCfC analysis)
+  \item Training: CrossSession on BNCI2014\_001; $\sim 100$ epochs, $\sim 50$ batches/epoch
+  \item Batch size: $\sim 32$; sequence length (after CNN front-end): $\sim 500$--$1000$
+\end{itemize}
+
+\subsection{Training FLOP}
+
+Per batch:
+\begin{itemize}
+  \item Forward pass: Each timestep involves recurrent updates. Approximate FLOP per forward:
+  \begin{equation}
+    \text{FLOP}_{\text{fwd}} \approx \text{params} \times \text{batch} \times \text{seq} \times 2 \quad \text{(multiply-add)}
+  \end{equation}
+  With params $\approx 10^4$, batch $= 32$, seq $= 1000$:
+  \begin{equation}
+    \text{FLOP}_{\text{fwd}} \approx 10^4 \times 32 \times 1000 \times 2 \approx 6.4 \times 10^8
+  \end{equation}
+  \item Backward pass: $\approx 2 \times \text{FLOP}_{\text{fwd}}$ (gradient computation)
+  \item Total per batch: $\approx 2 \times 10^9$
+\end{itemize}
+
+Total training:
+\begin{equation}
+  \text{FLOP}_{\text{train}} \approx 100 \times 50 \times (2 \times 10^9) \approx 10^{13}
+\end{equation}
+
+\subsection{Robustness Evaluation FLOP}
+
+After training, the pipeline sweeps AR(1) drift intensities (e.g., 20 levels) over subjects/sessions. Each evaluation is a forward pass (no backward):
+\begin{equation}
+  \text{FLOP}_{\text{robust}} \approx 20 \times 9 \times (6.4 \times 10^8) \approx 1.2 \times 10^{11}
+\end{equation}
+(20 intensities, $\sim 9$ subjects/sessions, $\sim 6.4 \times 10^8$ FLOP per forward.)
+
+\subsection{Total Full Evaluation}
+
+\begin{equation}
+  \text{FLOP}_{\text{full}} = \text{FLOP}_{\text{train}} + \text{FLOP}_{\text{robust}} \approx 10^{13} + 10^{11} \approx 10^{13}
+\end{equation}
+
+A conservative default for the plot (to avoid overstating the ratio) uses:
+\begin{equation}
+  \boxed{\text{Full FLOP} \approx 10^{12}}
+\end{equation}
+This is a lower bound; $10^{13}$ is more representative of typical runs.
+
+% ------------------------------------------------------------------------------
+\section{Summary Table}
+% ------------------------------------------------------------------------------
+
+\begin{table}[h]
+  \centering
+  \caption{Order-of-magnitude FLOPS estimates for Plot 1 cost comparison}
+  \label{tab:flops}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Component & Estimate & Rationale \\
+    \midrule
+    Proxy: degree entropy & $\sim 10^3$ & $O(N)$, negligible \\
+    Proxy: Ollivier--Ricci & $\sim 10^7$ & $E \times$ W1 per edge; $E \approx 400$ \\
+    \textbf{Proxy total} & $\mathbf{10^7}$ & ORC dominates \\
+    \midrule
+    Full: training & $\sim 10^{13}$ & 100 epochs $\times$ 50 batches $\times$ fwd+bwd \\
+    Full: robustness eval & $\sim 10^{11}$ & 20 intensities $\times$ 9 subjects $\times$ fwd \\
+    \textbf{Full total} & $\mathbf{10^{12}}$ (default) & Conservative; $10^{13}$ plausible \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Ratio}
+
+\begin{equation}
+  \frac{\text{Full FLOP}}{\text{Proxy FLOP}} \approx \frac{10^{12}}{10^7} = 10^5
+\end{equation}
+
+The proxy is approximately \textbf{five orders of magnitude} cheaper than full evaluation, justifying its use for large-scale architecture search.
+
+% ------------------------------------------------------------------------------
+\section{Caveats and Overrides}
+% ------------------------------------------------------------------------------
+
+\begin{itemize}
+  \item These are \emph{analytical} estimates, not profiled FLOPS. Actual values depend on hardware, implementation (e.g., POT vs LP for W1), and exact model/training config.
+  \item Override defaults via \texttt{experiment1\_summary.json}: \texttt{mean\_proxy\_flops\_est}, \texttt{mean\_full\_flops\_est}.
+  \item Or pass \texttt{mean\_proxy\_flops} and \texttt{mean\_full\_flops} to \texttt{plot1()} when generating the figure.
+\end{itemize}
+
+\end{document}

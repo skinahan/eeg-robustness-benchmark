@@ -8,6 +8,7 @@ from models.branched_ncp import create_cnnncp_branched_bins_classifier
 from models.cnnncp import create_cnnncfc_v2_classifier, create_cnnncfc_compact_classifier
 from models.cnnncp import create_cnnsmallworld_classifier, create_cnnwiredcfc_classifier
 from models.cnnncp import create_cfc_only_classifier, create_ncp_only_classifier
+from models.cnn_wiredcfc_min import create_cnnwiredcfc_min_classifier
 from models.diva_ncp import create_diva_ncp_classifier
 from models.branched_diva_ncp import create_branched_diva_ncp_classifier
 from models.branched_lstm import create_branched_lstm_classifier
@@ -85,6 +86,7 @@ def get_base_model_registry():
         "diva_full": create_diva_full_classifier,
         "cnncfc_compact": create_cnnncfc_compact_classifier,
         "cnn_smallworld": create_cnnsmallworld_classifier,
+        "cnn_wiredcfc_min": create_cnnwiredcfc_min_classifier,
         "cfc_only": create_cfc_only_classifier,
         "ncp_only": create_ncp_only_classifier,
     }

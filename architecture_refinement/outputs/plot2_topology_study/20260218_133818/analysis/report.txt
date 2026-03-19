@@ -1,0 +1,71 @@
+PLOT 2 TOPOLOGY STUDY REPORT
+plot2_dir: E:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments\architecture_refinement\outputs\plot2_topology_study\20260218_133818
+repo_root: E:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments
+dataset: BNCI2014_001
+perturbation_types: ['ar1_drift']
+primary_perturbation_type: ar1_drift
+alpha_max (ar1_drift, data-derived): 19.521080333752355
+target_snr_db (ar1_drift): -12.0
+analysis_target_snr_db (G0 locked): -12.0
+empirical_snr_db (ar1_drift): -12.0
+n_boot: 5000
+bootstrap_hierarchy: graph->seed (F7: resample graphs, then seeds within graph)
+Note: Inference is conditional on chosen subjects.
+
+REPORTED METRICS: clean ROC-AUC, AUPC(alpha), RD(alpha), maxRD, max_drop, CSV_clean, CSV_AUPC, CSV_maxRD
+WARNING: Do not interpret max_drop alone; report alongside clean ROC-AUC and RD.
+
+PRIMARY METRIC: max_drop (lower is better) — spec §2.4
+  (baseline_a - tpe) in max_drop [F1: baseline_a=Random]: mean=-0.004599, 95% CI=[-0.041824, 0.030920], Cohen's d=-0.113
+  (external_random - tpe) in max_drop: mean=-0.039484, 95% CI=[-0.063611, -0.015210]
+  B−A (proxy validity): mean(max_drop_B - max_drop_A)=-0.008613, 95% CI=[-0.024630, 0.006765], Cohen's d=-0.582 (negative => proxy helps)
+  B−A maxRD: mean(maxRD_B - maxRD_A)=0.031865, 95% CI=[-0.023714, 0.102366] (negative => proxy helps)
+  B−A AUPC: mean(AUPC_B - AUPC_A)=0.001577, 95% CI=[-0.003750, 0.007177] (positive => proxy helps)
+  Stage 2 gate (proxy usefulness): False
+  C−B (adaptive benefit): mean(max_drop_C - max_drop_B)=0.011590, 95% CI=[-0.013157, 0.032943], Cohen's d=0.611 (negative => TPE helps)
+  C−B maxRD: mean(maxRD_C - maxRD_B)=-0.028818, 95% CI=[-0.081584, 0.026164] (negative => TPE helps)
+  C−B AUPC: mean(AUPC_C - AUPC_B)=-0.004482, 95% CI=[-0.014856, 0.006150] (positive => TPE helps)
+  Stage 3 gate (adaptive benefit): False
+  Mini-scale: CI width <= 0.10? True; directional (>=2 subjects same sign)? False
+
+M4 DECISIVE (maxRD primary, rand vs TPE):
+  Δ = E[maxRD_rand - maxRD_tpe] = -0.002603, 95% CI=[-0.075689, 0.055414], Cohen's d=-0.017
+  GO thresholds: Δ≥0.05? False; CI excludes 0? False; d≥0.5? False; directional ≥2/3? False
+  M4 verdict: GO=False, NO-GO=True
+
+SECONDARY METRIC: AUPC_alpha (higher is better)
+  (NAS - baseline_a) [F1: baseline_a=Random]: mean diff=-0.002014, 95% CI=[-0.016520, 0.014109], Cohen's d=-0.119
+  Success: CI excludes 0? False; frac(NAS > baseline_a median)? 0.375 (>= 0.667? False)
+
+Clean ROC-AUC summary (per-graph mean, ar1_drift):
+  baseline_a: mean(clean_roc_auc_mean)=0.669
+  baseline_b: mean(clean_roc_auc_mean)=0.670
+  tpe: mean(clean_roc_auc_mean)=0.669
+  baseline: mean(clean_roc_auc_mean)=0.770
+  external_random: mean(clean_roc_auc_mean)=0.738
+
+Sanity checks:
+
+I3 Diagnostics (proxy distributions, proxy-k correlations, cell occupancy):
+  baseline_a sigma: mean=0.9673, std=0.5249, n=8
+  baseline_a te_res: mean=0.0520, std=0.1395, n=8
+  baseline_b sigma: mean=0.9608, std=0.5214, n=8
+  baseline_b te_res: mean=0.0556, std=0.1436, n=8
+  tpe sigma: mean=0.8737, std=0.3599, n=8
+  tpe te_res: mean=0.1043, std=0.0599, n=8
+  corr(sigma, k)=0.3389
+  corr(te_res, k)=-0.1075
+  baseline_a cell_occupancy: {('high', 'high'): 1, ('high', 'low'): 5, ('low', 'high'): 1, ('medium', 'low'): 1}
+  baseline_b cell_occupancy: {('high', 'high'): 1, ('high', 'low'): 5, ('low', 'high'): 1, ('medium', 'low'): 1}
+  tpe cell_occupancy: {('high', 'low'): 6, ('low', 'high'): 1, ('medium', 'low'): 1}
+
+Selected architecture k/regime distribution (ws_flex only):
+  baseline_a: n=8 unique_k=[2, 4, 8, 10, 16, 18, 20]
+    counts_by_regime={'super_sparse': 2, 'sparse': 2, 'moderate': 2, 'near_dense': 2}
+    counts_by_k={'2': 1, '4': 1, '8': 1, '10': 1, '16': 1, '18': 1, '20': 2}
+  baseline_b: n=8 unique_k=[2, 6, 8, 10, 18, 22, 26]
+    counts_by_regime={'super_sparse': 2, 'sparse': 2, 'moderate': 2, 'near_dense': 2}
+    counts_by_k={'2': 1, '6': 1, '8': 1, '10': 1, '18': 2, '22': 1, '26': 1}
+  tpe: n=8 unique_k=[2, 6, 8, 12, 14, 16, 24, 26]
+    counts_by_regime={'super_sparse': 2, 'sparse': 2, 'moderate': 2, 'near_dense': 2}
+    counts_by_k={'2': 1, '6': 1, '8': 1, '12': 1, '14': 1, '16': 1, '24': 1, '26': 1}

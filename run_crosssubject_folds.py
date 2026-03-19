@@ -181,10 +181,10 @@ def main():
         
         try:
             result = subprocess.run(cmd, check=True, capture_output=False)
-            print(f"\n✓ Fold {fold_idx} completed successfully")
+            print(f"\n[OK] Fold {fold_idx} completed successfully")
             successful_folds.append(fold_idx)
         except subprocess.CalledProcessError as e:
-            print(f"\n✗ Fold {fold_idx} failed with exit code {e.returncode}")
+            print(f"\n[ERROR] Fold {fold_idx} failed with exit code {e.returncode}")
             failed_folds.append(fold_idx)
         except KeyboardInterrupt:
             print(f"\n\nInterrupted by user. Completed {len(successful_folds)} fold(s).")
@@ -202,7 +202,7 @@ def main():
         print(f"\nWARNING: {len(failed_folds)} fold(s) failed. Results may be incomplete.")
         sys.exit(1)
     else:
-        print(f"\n✓ All folds completed successfully!")
+        print(f"\n[OK] All folds completed successfully!")
         if args.mode != "multirun":
             # For non-multirun modes, user needs to manually aggregate
             print(f"\nNext step: Run aggregate_crosssubject_results.py to combine results:")

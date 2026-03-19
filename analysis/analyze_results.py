@@ -105,7 +105,7 @@ def format_model_name_for_display(model_name):
     - model_name: str, internal model name (e.g., 'cnn_ncp', 'eegnet', 'reegnet')
     
     Returns:
-    - str, formatted display name (e.g., 'CNN-NCPv2', 'EEGNet', 'REEGNet')
+    - str, formatted display name (e.g., 'CNN-NCP', 'EEGNet', 'REEGNet')
     """
     if model_name is None:
         return ''
@@ -115,7 +115,8 @@ def format_model_name_for_display(model_name):
     
     # Mapping of normalized model names to display names
     MODEL_DISPLAY_MAP = {
-        'cnn_ncp': 'CNN-NCPv2',
+        'cnn_ncp': 'CNN-NCP',
+        'cnn_ncp_v2': 'CNN-NCP',
         'eegnet': 'EEGNet',
         'reegnet': 'REEGNet',
         'branched_wiredcfc_arch4': 'HYDRA',
@@ -1357,7 +1358,7 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
         print(f"Saved multisubject {plot_type} plot: {output_file}")
 
 
-def plot_combined_multisubject_comparison(df, noise_type, models=None, dataset='BNCI2014_001', output_dir='plots', plot_type='line', hydra=False):
+def plot_combined_multisubject_comparison(df, noise_type, models=None, dataset='BNCI2014_001', output_dir='plots', plot_type='line', hydra=False, zoomed=False):
     """
     Create a combined multi-subject comparison plot organized in a 3x2 grid:
     - Rows: CrossSession, WithinSession, CrossSubject (eval_modes)
@@ -1370,6 +1371,9 @@ def plot_combined_multisubject_comparison(df, noise_type, models=None, dataset='
     - dataset: str, dataset name for directory organization
     - output_dir: str, base directory to save plots
     - plot_type: str, 'line' or 'bar' (default: 'line')
+    - zoomed: bool, if True limits y-axis to (0.5, 0.8) and x-axis to (0, 30) intensity;
+      uses a different filename (_zoomed suffix) to avoid overwriting existing plots;
+      when zoomed, x-axis is (0, 50) intensity
     """
     from matplotlib.gridspec import GridSpec
     
@@ -1428,6 +1432,9 @@ def plot_combined_multisubject_comparison(df, noise_type, models=None, dataset='
                     ax.set_ylabel(y_label, fontsize=16)
                     ax.set_title(f'{eval_mode_labels[row_idx]} | {tune_labels[col_idx]}', 
                                fontsize=16, fontweight='bold')
+                    if zoomed:
+                        ax.set_ylim(0.5, 0.8)
+                        ax.set_xlim(0, 50)
                     ax.grid(True, alpha=0.3)
                 continue
         
@@ -1450,6 +1457,9 @@ def plot_combined_multisubject_comparison(df, noise_type, models=None, dataset='
                 ax.set_ylabel(y_label, fontsize=16)
                 ax.set_title(f'{eval_mode_labels[row_idx]} | {tune_labels[col_idx]}', 
                            fontsize=16, fontweight='bold')
+                if zoomed:
+                    ax.set_ylim(0.5, 0.8)
+                    ax.set_xlim(0, 50)
                 ax.grid(True, alpha=0.3)
                 continue
             
@@ -1560,14 +1570,19 @@ def plot_combined_multisubject_comparison(df, noise_type, models=None, dataset='
             ax.set_xlabel('Noise Intensity (%)', fontsize=16)
             ax.set_ylabel(y_label, fontsize=16)
             
-            # Set y-axis limits based on dataset configuration
-            ylim_config = get_plot_ylim_config(dataset, plot_type='performance')
-            if ylim_config:
-                ax.set_ylim(ylim_config['min'], ylim_config['max'])
+            # Set axis limits
+            if zoomed:
+                ax.set_ylim(0.5, 0.8)
+                ax.set_xlim(0, 50)
             else:
-                # Fallback to default
-                y_min = 0.4 if dataset == 'BNCI2014_001' else 0
-                ax.set_ylim(y_min, 1)
+                # Set y-axis limits based on dataset configuration
+                ylim_config = get_plot_ylim_config(dataset, plot_type='performance')
+                if ylim_config:
+                    ax.set_ylim(ylim_config['min'], ylim_config['max'])
+                else:
+                    # Fallback to default
+                    y_min = 0.4 if dataset == 'BNCI2014_001' else 0
+                    ax.set_ylim(y_min, 1)
             
             # Customize legend (only show in first subplot, or all if preferred)
             if row_idx == 0 and col_idx == 0:
@@ -1587,12 +1602,14 @@ def plot_combined_multisubject_comparison(df, noise_type, models=None, dataset='
     # Save plot
     combined_dir = os.path.join(output_dir, dataset, 'combined')
     os.makedirs(combined_dir, exist_ok=True)
-    filename = f"combined_multisubject_{noise_type}_{plot_type}_test_perturb.pdf"
+    zoom_suffix = '_zoomed' if zoomed else ''
+    filename = f"combined_multisubject_{noise_type}_{plot_type}_test_perturb{zoom_suffix}.pdf"
     output_file = os.path.join(combined_dir, filename)
     plt.savefig(output_file, dpi=300, bbox_inches='tight', format='pdf')
     plt.close()
     
-    print(f"Saved combined multisubject {plot_type} plot: {output_file}")
+    zoom_label = ' (zoomed)' if zoomed else ''
+    print(f"Saved combined multisubject {plot_type} plot{zoom_label}: {output_file}")
 
 
 def plot_rd_curves(df, noise_type, models=None, dataset='BNCI2014_001', output_dir='plots', eval_mode=None, hydra=False):
@@ -2496,6 +2513,9 @@ def generate_organized_test_perturb_plots(df, models=None, dataset='BNCI2014_001
     for noise_type in noise_types:
         plot_combined_multisubject_comparison(df, noise_type, models, dataset, output_dir, plot_type='line', hydra=hydra)
         plot_combined_multisubject_comparison(df, noise_type, models, dataset, output_dir, plot_type='bar', hydra=hydra)
+        # Zoomed versions (y: 0.5–0.8, x: 0–50 intensity) with distinct filenames
+        plot_combined_multisubject_comparison(df, noise_type, models, dataset, output_dir, plot_type='line', hydra=hydra, zoomed=True)
+        plot_combined_multisubject_comparison(df, noise_type, models, dataset, output_dir, plot_type='bar', hydra=hydra, zoomed=True)
 
     # Generate combined RD curves (3x2 grid)
     print("\n=== Generating combined Relative Degradation (RD) curves ===")
@@ -2889,7 +2909,7 @@ def extract_custom_data(df, filters=None, columns=None, aggregate=None, group_by
 
 def plot_compact_clean_perturbed_comparison(df, noise_type, dataset='BNCI2014_001', models=None, 
                                            output_dir='plots', metric='roc_auc', eval_mode=None,
-                                           tune_setting=None):
+                                           tune_setting=None, perturbed_label='Perturbed'):
     """
     Create a compact bar plot comparing clean scores vs corrupted scores at maximum perturbation intensity.
     
@@ -2915,6 +2935,8 @@ def plot_compact_clean_perturbed_comparison(df, noise_type, dataset='BNCI2014_00
         Evaluation mode ('CrossSession', 'WithinSession', 'CrossSubject'). If None, uses all available.
     tune_setting : bool, optional
         Tune setting (True for tuned, False for baseline). If None, creates separate plots for both.
+    perturbed_label : str, default='Perturbed'
+        Label for the perturbed/noisy condition in the legend (e.g. 'Perturbed' or 'Noisy').
     
     Returns:
     --------
@@ -3090,7 +3112,7 @@ def plot_compact_clean_perturbed_comparison(df, noise_type, dataset='BNCI2014_00
                     
                     plot_data.append({
                         'model': model,
-                        'condition': 'Perturbed',
+                        'condition': perturbed_label,
                         'mean': mean_corrupted,
                         'ci_lower': ci_lower,
                         'ci_upper': ci_upper,
@@ -3143,7 +3165,7 @@ def plot_compact_clean_perturbed_comparison(df, noise_type, dataset='BNCI2014_00
                           yerr=clean_error, capsize=3, error_kw={'elinewidth': 0.5, 'capthick': 0.5})
                 
                 # Perturbed bar
-                perturbed_data_model = model_data[model_data['condition'] == 'Perturbed']
+                perturbed_data_model = model_data[model_data['condition'] == perturbed_label]
                 if not perturbed_data_model.empty:
                     perturbed_mean = perturbed_data_model['mean'].iloc[0]
                     perturbed_ci_lower = perturbed_data_model['ci_lower'].iloc[0]
@@ -3153,7 +3175,7 @@ def plot_compact_clean_perturbed_comparison(df, noise_type, dataset='BNCI2014_00
                     perturbed_error_upper = perturbed_ci_upper - perturbed_mean
                     perturbed_error = np.array([[perturbed_error_lower], [perturbed_error_upper]])
                     
-                    label = 'Perturbed' if not perturbed_label_added else ''
+                    label = perturbed_label if not perturbed_label_added else ''
                     if not perturbed_label_added:
                         perturbed_label_added = True
                     
@@ -3203,7 +3225,8 @@ def plot_compact_clean_perturbed_comparison(df, noise_type, dataset='BNCI2014_00
             
             # Save plot
             noise_label = format_noise_type_label(noise_type)
-            filename = f"compact_clean_perturbed_{noise_type}_{dataset}_{eval_mode_short}_{tune_label}.pdf"
+            perturbed_suffix = perturbed_label.lower().replace(' ', '_')
+            filename = f"compact_clean_{perturbed_suffix}_{noise_type}_{dataset}_{eval_mode_short}_{tune_label}.pdf"
             output_file = os.path.join(output_subdir, filename)
             plt.savefig(output_file, dpi=300, bbox_inches='tight', format='pdf', 
                        facecolor='white', edgecolor='none')
@@ -3263,12 +3286,15 @@ def generate_all_compact_plots(df, models=None, dataset='BNCI2014_001', output_d
     # Generate compact plots for each combination
     print("\n=== Generating compact clean/perturbed comparison plots ===")
     for noise_type in noise_types:
+        # Use "Noisy" label for EOG plots (HYDRA bar plot variant at max EOG intensity)
+        perturbed_label = 'Noisy' if noise_type == 'eog' else 'Perturbed'
         for eval_mode in eval_modes:
             for tune_setting in tune_settings:
                 try:
                     plot_compact_clean_perturbed_comparison(
                         df, noise_type, dataset, models, output_dir, 
-                        metric, eval_mode, tune_setting
+                        metric, eval_mode, tune_setting,
+                        perturbed_label=perturbed_label
                     )
                 except Exception as e:
                     print(f"[ERROR] Failed to generate compact plot for {noise_type}, "

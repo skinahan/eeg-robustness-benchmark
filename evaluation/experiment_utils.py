@@ -446,10 +446,12 @@ def log_all_subjects(results, subject_list, model_name, mode, noise_type, intens
             
             # Use short session identifier for filename to avoid long paths
             short_session = get_short_session_id(session, 'CrossSubject')
-            # Short filename for test_perturb to stay under Windows path limit (model is in path + CSV content)
+            # Short filename for test_perturb to stay under Windows path limit.
+            # Include short model id (8 chars) to prevent collision when multiple models share subject/seed.
             is_tp = mode in ('test_perturb', 'test_perturb_tune') or mode.startswith('test_perturb')
             if is_tp and not filename_suffix:
-                fname = f"tp_{short_session}_seed{seed}.csv" if "_tune" not in mode else f"tp_tune_{short_session}_seed{seed}.csv"
+                mid = short_run_id(model_name, length=8)
+                fname = f"tp_{mid}_{short_session}_seed{seed}.csv" if "_tune" not in mode else f"tp_tune_{mid}_{short_session}_seed{seed}.csv"
             else:
                 fname = f"{model_name}_{mode}{filename_suffix}_{short_session}_seed{seed}.csv"
             out_file = os.path.join(out_dir, fname)
@@ -498,10 +500,13 @@ def log_all_subjects(results, subject_list, model_name, mode, noise_type, intens
                     filename_suffix = f"_{noise_type}_{intensity}"
                 else:
                     filename_suffix = ""
-                # Short filename for test_perturb to avoid Windows path length limit
+                # Short filename for test_perturb to avoid Windows path length limit.
+                # Include short model id (8 chars) to prevent collision when multiple models
+                # share the same subject/seed (e.g. orientation_sensitivity: random_oriented vs symmetric).
                 is_tp = mode in ('test_perturb', 'test_perturb_tune') or mode.startswith('test_perturb')
                 if is_tp and not filename_suffix:
-                    fname = f"tp_s{int(subj):03d}_seed{seed}.csv" if "_tune" not in mode else f"tp_tune_s{int(subj):03d}_seed{seed}.csv"
+                    mid = short_run_id(model_name, length=8)
+                    fname = f"tp_{mid}_s{int(subj):03d}_seed{seed}.csv" if "_tune" not in mode else f"tp_tune_{mid}_s{int(subj):03d}_seed{seed}.csv"
                 else:
                     fname = f"{model_name}_{mode}{filename_suffix}_subject_{int(subj):03d}_seed{seed}.csv"
                 out_file = os.path.join(out_dir, fname)

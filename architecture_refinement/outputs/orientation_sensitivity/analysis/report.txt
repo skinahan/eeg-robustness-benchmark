@@ -1,0 +1,33 @@
+PLOT 2 TOPOLOGY STUDY REPORT
+plot2_dir: E:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments\architecture_refinement\outputs\orientation_sensitivity
+repo_root: E:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments
+dataset: BNCI2014_001
+perturbation_types: ['ar1_drift']
+primary_perturbation_type: ar1_drift
+alpha_max (ar1_drift, data-derived): 8.719746286148025
+target_snr_db (ar1_drift): -5.0
+analysis_target_snr_db (G0 locked): -5.0
+empirical_snr_db (ar1_drift): -5.0
+n_boot: 5000
+bootstrap_hierarchy: graph->seed (F7: resample graphs, then seeds within graph)
+Note: Inference is conditional on chosen subjects.
+
+REPORTED METRICS: clean ROC-AUC, AUPC(alpha), RD(alpha), maxRD, max_drop, CSV_clean, CSV_AUPC, CSV_maxRD
+WARNING: Do not interpret max_drop alone; report alongside clean ROC-AUC and RD.
+
+PRIMARY METRIC: max_drop (lower is better) — spec §2.4
+  (baseline_a - tpe) in max_drop [F1: baseline_a=Random]: mean=nan, 95% CI=[nan, nan], Cohen's d=nan
+  (external_random - tpe) in max_drop: mean=nan, 95% CI=[nan, nan]
+  Mini-scale: CI width <= 0.10? False; directional (>=2 subjects same sign)? False
+
+SECONDARY METRIC: AUPC_alpha (higher is better)
+  (NAS - baseline_a) [F1: baseline_a=Random]: mean diff=nan, 95% CI=[nan, nan], Cohen's d=nan
+  Success: CI excludes 0? False; frac(NAS > baseline_a median)? nan (>= 0.667? False)
+
+Clean ROC-AUC summary (per-graph mean, ar1_drift):
+
+Sanity checks:
+  WARNING: noise_type=ar1_drift method=orientation_sensitivity has identical aupc_alpha_mean across 2 graphs (min=max=0.672077). This is suspicious; verify model registration/wiring and caching.
+
+I3 Diagnostics (proxy distributions, proxy-k correlations, cell occupancy):
+  (no sigma/te_res columns; I3 skipped for legacy runs)

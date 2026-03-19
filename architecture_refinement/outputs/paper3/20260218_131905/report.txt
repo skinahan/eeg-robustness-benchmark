@@ -1,0 +1,5 @@
+PAPER 3 Full Benchmark Report (CfC-Rand vs NCP vs LSTM)
+Output: architecture_refinement\outputs\paper3\20260218_131905
+Regimes: CfC-Rand (K=6 random topologies), NCP (ncp_units=63), LSTM (H=52)
+Task: overlapping omega bands (0.08-0.18 vs 0.15-0.28), P1-P3 (awgn, impulse, drift)
+Results: 160 rows in all_results.csv

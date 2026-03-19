@@ -29,7 +29,75 @@ models:
     
    - name: "cnn_ncp"
      display_name: "CNN-NCP"
+
+  #  - name: "hydra_v2_arch1"
+  #    display_name: "HYDRAv2 (Arch 1)"
+
+  #  - name: "hydra_v2_arch2"
+  #    display_name: "HYDRAv2 (Arch 2)"
+
+  #  - name: "hydra_v2_arch3"
+  #    display_name: "HYDRAv2 (Arch 3)"
+
+  #  - name: "hydra_v2_arch4"
+  #    display_name: "HYDRAv2 (Arch 4)"
+
+  #  - name: "hydra_v2_arch5"
+  #    display_name: "HYDRAv2 (Arch 5)"
   
+   - name: "branched_wiredcfc_arch4"
+     display_name: "HYDRA (Branched WiredCfC Arch 4)"
+
+  # Ablation study models
+  # Baseline (already registered above)
+  # Ablation 1-4: Single component ablations
+   - name: "branched_wiredcfc_arch4_no_carry_gate"
+     display_name: "HYDRA - No Carry Gate"
+     
+   - name: "branched_wiredcfc_arch4_no_branching"
+     display_name: "HYDRA - No Branching"
+     
+   - name: "branched_lstm_arch4_equivalent"
+     display_name: "HYDRA - LSTM Equivalent"
+     
+   - name: "branched_wiredcfc_arch4_no_snr_gate"
+     display_name: "HYDRA - No SNR Gate"
+  
+  # Ablation 5-8: Combination ablations (CfC-based)
+  #  - name: "branched_wiredcfc_arch4_no_carry_gate_no_branching"
+  #    display_name: "HYDRA - No Carry Gate + No Branching"
+     
+  #  - name: "branched_wiredcfc_arch4_no_carry_gate_no_snr_gate"
+  #    display_name: "HYDRA - No Carry Gate + No SNR Gate"
+     
+  #  - name: "branched_wiredcfc_arch4_no_branching_no_snr_gate"
+  #    display_name: "HYDRA - No Branching + No SNR Gate"
+     
+  #  - name: "branched_wiredcfc_arch4_no_carry_gate_no_branching_no_snr_gate"
+  #    display_name: "HYDRA - No Carry Gate + No Branching + No SNR Gate"
+  
+  # # Ablation 9-15: Combination ablations (LSTM-based)
+  #  - name: "branched_lstm_arch4_no_carry_gate"
+  #    display_name: "LSTM - No Carry Gate"
+     
+  #  - name: "branched_lstm_arch4_no_branching"
+  #    display_name: "LSTM - No Branching"
+     
+  #  - name: "branched_lstm_arch4_no_snr_gate"
+  #    display_name: "LSTM - No SNR Gate"
+     
+  #  - name: "branched_lstm_arch4_no_carry_gate_no_branching"
+  #    display_name: "LSTM - No Carry Gate + No Branching"
+     
+  #  - name: "branched_lstm_arch4_no_carry_gate_no_snr_gate"
+  #    display_name: "LSTM - No Carry Gate + No SNR Gate"
+     
+  #  - name: "branched_lstm_arch4_no_branching_no_snr_gate"
+  #    display_name: "LSTM - No Branching + No SNR Gate"
+     
+  #  - name: "branched_lstm_arch4_no_carry_gate_no_branching_no_snr_gate"
+  #    display_name: "LSTM - No Carry Gate + No Branching + No SNR Gate"
+
   #  - name: "branched_wiredcfc_arch1"
   #    display_name: "Branched WiredCfC Arch 1"
     
@@ -88,9 +156,12 @@ seeds:
   - 400
   - 500
 
-# Subject group configurations for different experiment scales
-subject_groups:
-  full: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+# Experiment settings
+experiment_settings:
+  # Legacy mode: If true, uses original experimental protocol (no subject chunking)
+  # This disables memory optimizations to match the behavior of old_unified_experiment_runner.py
+  # Can be overridden via --legacy command-line flag
+  legacy: true
 
 # Experiment filtering and prioritization
 experiment_filters:

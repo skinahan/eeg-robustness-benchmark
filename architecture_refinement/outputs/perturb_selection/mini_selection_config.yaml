@@ -1,0 +1,14 @@
+# Reproducibility config snapshot
+proxy_pool: 'E:\\Research\\Dissertation\\full_backup_7_16_2025\\moabb_experiments\\architecture_refinement\\outputs\\paper3_test\\experiment1\\proxy_pool.csv'
+T_best: {'model': 'paper3_mini_T_best', 'te_hat': 0.4482525414867925, 'orc_hat': 0.0274718188254236, 's': 0.23786218015610805}
+T_worst: {'model': 'paper3_mini_T_worst', 'te_hat': 0.092682711765286, 'orc_hat': 2.775557561562892e-18, 's': 0.046341355882643}
+T_mid: {'model': 'paper3_mini_T_mid', 'te_hat': 0.3491725005084846, 'orc_hat': 0.0337764129165552, 's': 0.1914744567125199}
+B_dense: {'model': 'paper3_mini_dense'}
+H: 32
+S_mini: 2
+perturbations: ['ar1_drift', 'gaussian']
+alpha_grid: [0.0, 0.33, 0.66, 1.0]
+dataset: 'BNCI2014_001'
+eval_mode: 'CrossSession'
+target_snr_db: -5.0
+ar1_rho: 0.95

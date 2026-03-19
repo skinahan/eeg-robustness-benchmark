@@ -1,0 +1,204 @@
+VERY FAST PERTURBATION-SELECTION MINI EXPERIMENT (PAPER 3)
+Version: 2026-02-18
+Purpose: Quickly decide which perturbation(s) to use in the final Plot 2/3 robustness evaluation,
+         with minimal compute and maximum confidence the chosen perturbation stresses recurrent dynamics
+         and yields stable, discriminative results.
+
+CRITICAL CONSTRAINTS
+  • Must align with first-pass architecture_refinement pipeline.
+  • Must be fast (hours, not days): few topologies, few seeds, small perturbation grid.
+  • Must preserve the “stress recurrent dynamics” motivation (continuous-time recurrence).
+  • Must produce a clear go/no-go decision for each candidate perturbation.
+
+--------------------------------------------------------------------------------
+A) MOTIVATION
+--------------------------------------------------------------------------------
+Different perturbations probe different failure modes. For Paper 3, we need perturbations that:
+  (P1) are plausible for EEG (sensor drift/artifacts/channel issues),
+  (P2) meaningfully stress recurrent hidden-state propagation (not just trivial i.i.d. noise),
+  (P3) produce consistent ordering across seeds/topologies (so conclusions are reliable),
+  (P4) separate “robust” vs “non-robust” wirings (so topology effects are detectable).
+
+Earlier work often picks a perturbation ad hoc, then discovers late that results are noisy or nondiscriminative.
+This mini experiment is a rapid screening test to pick perturbations that will “work” for Plot 2/3.
+
+--------------------------------------------------------------------------------
+B) CANDIDATE PERTURBATION SET (TEST ONLY WHAT YOU CAN IMPLEMENT RELIABLY)
+--------------------------------------------------------------------------------
+Candidate perturbations (ordered by preference for Paper 3’s narrative):
+  C1) AR(1) drift (temporal correlation) — already in draft; best for stressing recurrence.
+  C2) Channel dropout (structured missing channels) — EEG-realistic; stresses reliance on subsets.
+  C3) EOG-like artifact injection (structured temporal artifact) — EEG-realistic; can be correlated in time.
+  C4) Additive Gaussian noise (i.i.d.) — simplest baseline; may be too “easy” / not recurrence-specific.
+
+Conditional inclusion:
+  • If channel dropout + EOG artifacts are already implemented and stable in your robustness harness, include them.
+  • If not, do NOT implement new perturbations now; run only AR(1) vs Gaussian as a minimum viable selection.
+
+Important: This is a selection test, not a final benchmark. Keep it small and controlled.
+
+--------------------------------------------------------------------------------
+C) MINIMAL MODEL/TOPLOGY SETUP (VERY FAST)
+--------------------------------------------------------------------------------
+Fix capacity:
+  • Fix H to your default (recommended H=32) for all runs.
+
+Select 3 WS-Flex topologies + 1 baseline:
+  T_best: “best proxy” topology from the proxy pool (maximize s(G)=0.5*(TE_hat+|ORC|_hat))
+  T_worst: “worst proxy” topology from the same pool (minimize s(G))
+  T_mid: a mid-proxy topology (choose median s(G) OR a Pareto-but-not-extreme point)
+  B_dense: dense CfC baseline
+
+Why this works:
+  • Best vs worst gives immediate signal if a perturbation reveals topology differences.
+  • Mid topology checks that results aren’t only at extremes.
+  • Dense baseline anchors the curves.
+
+Seeds:
+  • S_mini = 2 seeds per topology (fast) OR S_mini = 3 if runtime permits.
+  • If you already have cached trained weights for any topology, reuse (but keep protocol identical).
+
+Training:
+  • Use your exact final training protocol, but allow a mini shortcut:
+      If early stopping exists, keep it.
+      If max epochs=200, keep it; early stopping will cap runtime.
+    (Avoid changing optimizer/hparams here—selection validity depends on matching final protocol.)
+
+--------------------------------------------------------------------------------
+D) PERTURBATION GRIDS (KEEP TINY AND COMPARABLE)
+--------------------------------------------------------------------------------
+Use 4 intensity levels per perturbation (including clean):
+  Levels: t ∈ {0, 1, 2, 3}
+  t=0 is clean (no perturbation).
+
+Define each perturbation’s “intensity” consistently:
+  AR(1) drift:
+    ε_t = ρ ε_{t-1} + η_t, η_t ~ N(0,σ^2)
+    Use a fixed ρ (recommended ρ=0.95) and vary σ over 3 values.
+    Example mini grid:
+      (ρ, σ) ∈ {(0.95, 0), (0.95, σ1), (0.95, σ2), (0.95, σ3)}
+    Choose σ1..σ3 as the lowest three nonzero levels from your existing final grid IF available.
+    Otherwise pick conservative values that do not immediately destroy accuracy (e.g., small→moderate).
+
+  Gaussian i.i.d. noise (if included):
+    x' = x + η, η ~ N(0,σ^2)
+    Use σ ∈ {0, σ1, σ2, σ3} matched to AR(1) σ’s for comparability.
+
+  Channel dropout (if included):
+    Randomly drop a fraction q of channels (set to zero or mean).
+    Mini grid: q ∈ {0, 0.1, 0.3, 0.5}
+    (Use your existing implementation’s semantics: per-trial dropout mask vs per-sample; log it.)
+
+  EOG artifact (if included):
+    Use your existing artifact injection with a scalar amplitude A.
+    Mini grid: A ∈ {0, A1, A2, A3} using your existing defaults.
+
+Reproducibility requirement:
+  • Fix a perturbation RNG seed per (model run, intensity) so curves are comparable and repeatable.
+  • If your perturbation is deterministic given a seed and intensity, log those values.
+
+--------------------------------------------------------------------------------
+E) EVALUATION METRICS (FAST BUT DECISIVE)
+--------------------------------------------------------------------------------
+For each run (topology × seed × perturbation × intensity):
+  • Clean AUC: a_0
+  • Perturbed AUC: a_t
+  • Relative performance: r_t = a_t / a_0
+  • RD_max = max_t (1 - r_t) over t ∈ {0,1,2,3}
+
+Additionally compute one “separation” score per perturbation:
+  Separation(pert) = mean_over_seeds [ RD_max(T_worst) - RD_max(T_best) ]
+Interpretation:
+  • Larger positive separation means the perturbation reveals the expected robustness ordering.
+  • Negative means worst looks better than best (bad sign for proxy+perturbation combo).
+
+Stability score per perturbation:
+  Stability(pert) = std_over_seeds_and_topologies [ RD_max ]
+Interpretation:
+  • Lower stability score means less noisy conclusions.
+
+(If you already compute AUPC_total or similar, you may substitute, but keep RD_max as the primary for clarity.)
+
+--------------------------------------------------------------------------------
+F) EXPERIMENT PROCEDURE (END-TO-END)
+--------------------------------------------------------------------------------
+Step F1: Build proxy pool (reuse Experiment 1 output)
+  • Use the same proxy-evaluated WS-Flex dataset.
+  • Identify T_best, T_worst, T_mid using scalar s(G) and the same fixed H.
+
+Step F2: Train the 4 models (T_best, T_worst, T_mid, B_dense) for S_mini seeds.
+  • Save checkpoints.
+  • Log training runtime and clean AUC.
+
+Step F3: For each perturbation candidate Ck and each intensity level t=0..3:
+  • Run evaluation, compute r_t and RD_max per run.
+
+Step F4: Compute per-perturbation summary:
+  • Separation(pert)
+  • Stability(pert)
+  • Also report mean RD_max for each topology (so you can see if perturbation is too weak/too strong).
+
+--------------------------------------------------------------------------------
+G) OUTPUT FIGURES/TABLES (MINIMAL)
+--------------------------------------------------------------------------------
+Figure P-mini-1 (one figure, small):
+  • 2×2 grid of curves OR a single plot with 4 curves per perturbation:
+      x: intensity t
+      y: r_t
+    Show T_best vs T_worst prominently; include T_mid and B_dense with lighter styling.
+  If only one perturbation can be shown per plot, generate one plot per perturbation and compare.
+
+Table P-mini-1 (one table):
+  For each perturbation:
+    Separation(pert), Stability(pert),
+    mean RD_max(T_best), mean RD_max(T_worst),
+    plus a qualitative tag: PASS / FAIL / BORDERLINE
+
+--------------------------------------------------------------------------------
+H) DECISION RULE (GO/NO-GO) — PICK FINAL PERTURBATION(S)
+--------------------------------------------------------------------------------
+Primary selection criterion:
+  • PASS if Separation(pert) is clearly > 0 and large relative to noise:
+      Separation(pert) ≥ 0.05  AND  Separation(pert) ≥ 2 × Stability(pert)
+    (Thresholds can be adjusted, but keep a fixed rule before looking at results.)
+
+Secondary criteria:
+  • Perturbation should not annihilate performance for all models at moderate intensity:
+      mean r_{t=2} should not be near 0.5 for every model (too strong too soon).
+  • Perturbation should produce consistent ordering T_best > T_mid > T_worst in robustness at least in expectation.
+
+Selection outcome:
+  • Choose 1 primary perturbation for main Plot 2/3 (recommended: AR(1) drift if it passes).
+  • Optionally choose 1 secondary perturbation for Appendix validation (e.g., channel dropout) ONLY if it passes strongly and is already implemented.
+
+--------------------------------------------------------------------------------
+I) EXPECTED RESULTS / HYPOTHESES
+--------------------------------------------------------------------------------
+Hmini-1: AR(1) drift yields the strongest and most stable separation between T_best and T_worst,
+         because it directly stresses recurrent propagation and memory.
+Hmini-2: Pure Gaussian i.i.d. noise yields weaker separation (may still be useful as a sanity baseline).
+Hmini-3: Channel dropout/EOG artifacts can yield strong separation if implemented consistently, but may increase variance.
+
+If none pass:
+  • Do NOT expand perturbation set; instead:
+      - Increase S_mini from 2→3, and/or
+      - Add 1 more intensity level (t=4) using your existing grid,
+    then rerun. The goal is to find a stable perturbation, not chase novelty.
+
+--------------------------------------------------------------------------------
+J) REUSE VS UPDATES (MINIMIZE RISK)
+--------------------------------------------------------------------------------
+Reuse:
+  • Existing proxy pool and topology selection code (best/worst/mid by s(G))
+  • Existing training pipeline (identical to final)
+  • Existing perturbation implementations (AR(1), dropout, EOG, Gaussian) if already present
+  • Existing evaluation harness for RD_max / curves
+
+Updates (only if missing, keep tiny):
+  • A small driver script: run_perturbation_mini_selection.py
+      Inputs: proxy_pool.csv, fixed H, list of perturbations, S_mini, intensity grids
+      Outputs: one summary table + curves, plus a YAML/JSON config snapshot for reproducibility
+  • Ensure perturbation RNG seeding is exposed and logged.
+
+This mini experiment is designed to be fail-safe: it uses extreme proxy topologies and a tiny grid to rapidly confirm which perturbation(s)
+actually reveal topology-driven robustness differences under your exact evaluation protocol.

@@ -1,0 +1,104 @@
+PLOT SPECIFICATION — Q3: METRIC–ROBUSTNESS ALIGNMENT (Paper 3)
+
+Purpose
+-------
+This plot answers Q3: How do TE and |ORC| organize trained robustness?
+It visualizes the relationship between structural proxy metrics and trained robustness at the topology level, consistent with the Paper 3 benchmark protocol (BNCI2014_001, AR(1) drift, matched training, H=32).
+
+Unit of Analysis
+----------------
+• Each point represents ONE topology.
+• y-value = topology-level RD_max (mean across seeds).
+• x-value = scalar proxy score = 0.5*(TE_hat + |ORC|_hat), computed during proxy phase.
+• Per-run (seed-level) points must NOT be plotted.
+• n = total number of distinct trained topologies across G1–G5.
+
+Data Sources (already generated in Paper 3 pipeline)
+-----------------------------------------------------
+• experiment3_results.csv (topology-level RD_max)
+• proxy_pool.csv / selected_proxy.csv (proxy scores)
+• topology_variance_summary.json (seed-averaged RD_max if needed)
+All preprocessing must follow the existing architecture_refinement benchmark.
+
+Axes
+----
+X-axis:
+• Label: “Proxy score (½(TÊ + |ORĈ|))”
+• Linear scale.
+• Range: full observed range with 2–3% padding.
+• No truncation or zooming to exaggerate slope.
+
+Y-axis:
+• Label: “RD_max under AR(1) drift”
+• Linear scale.
+• Range: full observed RD_max range with 2–3% padding.
+• No clipping of high-RD points (e.g., NCP).
+
+Visual Encoding
+---------------
+• Color-code by architecture group:
+    G1 (Proxy WS-Flex): orange
+    G2 (Uniform WS-Flex): blue
+    G3 (Dense CfC): green
+    G4 (Random Sparse): red
+    G5 (NCP): purple
+• Marker size: moderate (≈ 60 pt).
+• Edgecolor: black (thin) for clarity.
+• Alpha: 0.8 (avoid transparency unless overlap is severe).
+• Legend: simple, upper corner, no box if possible.
+
+Regression Line
+---------------
+• Include a light grey dashed linear regression line across all topologies.
+• No confidence band shading.
+• No LOWESS, spline, or nonlinear smoothing.
+• No R² annotation on the plot.
+• Correlation statistics (Pearson r, Spearman ρ, n) reported in caption only.
+
+Degree Confound Handling
+------------------------
+Main plot:
+• Do NOT encode degree with marker size or shape (to avoid clutter).
+• Degree-stratified analysis is referenced in text and shown in Appendix.
+
+Caption must include:
+• Statement that each point is topology-level mean across seeds.
+• Pearson r, Spearman ρ, and p-value.
+• Clarification that correlation is modest and non-monotonic.
+• Statement that robust topologies cluster in proxy-defined regions rather than along a strict linear frontier.
+
+Statistical Reporting
+---------------------
+In text (not on figure):
+• Report Pearson r, Spearman ρ, p-values.
+• Report n (number of topologies).
+• Avoid claims of strong prediction.
+• Frame metrics as structural coordinates, not deterministic predictors.
+
+Formatting & Export
+-------------------
+• Vector format: PDF (preferred for NeurIPS).
+• Minimum 300 dpi if raster elements present.
+• Font size: consistent with main paper figures.
+• Line widths ≥ 0.75 pt.
+• Colorblind-safe palette.
+• Figure width: single-column unless density requires full-width.
+• No excessive annotation.
+
+Consistency with Paper 3 Benchmark
+-----------------------------------
+• RD_max computed under AR(1) drift (same perturbation grid as Q2).
+• Training protocol identical across all groups.
+• Proxy metrics computed using compute_paper3_proxies(G).
+• H = 32.
+• Topologies drawn from WS-Flex generator + baselines as defined in Section 3.
+
+Interpretation Goal
+-------------------
+This plot should demonstrate:
+1. Modest, non-monotonic alignment between proxy score and robustness.
+2. Structural clustering of robust topologies in proxy space.
+3. Proxy metrics function as organizational descriptors.
+4. Metrics improve screening efficiency but do not replace training.
+
+The plot must communicate structure without overstating predictive power.

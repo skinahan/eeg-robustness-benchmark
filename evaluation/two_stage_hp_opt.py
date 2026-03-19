@@ -1327,8 +1327,14 @@ def get_model_architecture_space(model_name):
     # Plot 2 topology study runtime-registered models
     if model_name.startswith("plot2_"):
         return cnn_wiredcfc_architecture_space
+    # Paper 3 experiments (sanity check, mini selection, exp2; ws_flex/dense from nas_pilot_dir)
+    if model_name.startswith("paper3_"):
+        return cnn_wiredcfc_architecture_space
     # Wiring robustness experiment (CNNWiredCfCMin base)
     if model_name.startswith("wiring_graph_"):
+        return cnn_wiredcfc_architecture_space
+    # Orientation sensitivity experiment (random_oriented vs symmetric)
+    if model_name.startswith("orient_"):
         return cnn_wiredcfc_architecture_space
     if model_name == "ncp_baseline_32":
         return cnn_wiredcfc_architecture_space
@@ -1378,7 +1384,7 @@ def get_model_architecture_space(model_name):
         raise KeyError(
             f"Unknown model_name for architecture space: {model_name}. "
             f"Known models: {sorted(architecture_registry.keys())} "
-            f"(plus dynamic prefixes: wiredcfc_arch*, branched_wiredcfc_arch*, branched_lstm_arch*, hydra_v2*, hydra_v3*, nas_pilot_*, plot2_*, wiring_graph_*)"
+            f"(plus dynamic prefixes: wiredcfc_arch*, branched_wiredcfc_arch*, branched_lstm_arch*, hydra_v2*, hydra_v3*, nas_pilot_*, plot2_*, paper3_*, wiring_graph_*, orient_*)"
         )
     return architecture_registry[model_name]
 
@@ -1390,8 +1396,14 @@ def get_model_training_space(model_name):
     # Plot 2 topology study runtime-registered models
     if model_name.startswith("plot2_"):
         return cnn_wiredcfc_training_space
+    # Paper 3 experiments (sanity check, mini selection, exp2; ws_flex/dense from nas_pilot_dir)
+    if model_name.startswith("paper3_"):
+        return cnn_wiredcfc_training_space
     # Wiring robustness experiment (CNNWiredCfCMin base)
     if model_name.startswith("wiring_graph_"):
+        return cnn_wiredcfc_training_space
+    # Orientation sensitivity experiment (random_oriented vs symmetric)
+    if model_name.startswith("orient_"):
         return cnn_wiredcfc_training_space
     if model_name == "ncp_baseline_32":
         return cnn_wiredcfc_training_space
@@ -1441,7 +1453,7 @@ def get_model_training_space(model_name):
         raise KeyError(
             f"Unknown model_name for training space: {model_name}. "
             f"Known models: {sorted(training_registry.keys())} "
-            f"(plus dynamic prefixes: wiredcfc_arch*, branched_wiredcfc_arch*, branched_lstm_arch*, hydra_v2*, hydra_v3*, nas_pilot_*, plot2_*, wiring_graph_*)"
+            f"(plus dynamic prefixes: wiredcfc_arch*, branched_wiredcfc_arch*, branched_lstm_arch*, hydra_v2*, hydra_v3*, nas_pilot_*, plot2_*, paper3_*, wiring_graph_*, orient_*)"
         )
     return training_registry[model_name]
 

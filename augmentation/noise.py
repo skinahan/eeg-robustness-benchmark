@@ -104,16 +104,11 @@ def interpolate_eog_topography_to_montage(source_montage, target_montage, source
     interpolated_matrix = np.zeros((len(target_channels), n_regressors))
     
     for reg_idx in range(n_regressors):
-    # For each target channel, find the closest source channel and use its value
         for target_idx in range(len(target_channels)):
             target_coord = target_coords[target_idx]
-    
-    # Find the closest source channel
-    distances = np.linalg.norm(source_coords - target_coord, axis=1)
-    closest_source_idx = np.argmin(distances)
-    
-    # Use the value from the closest source channel
-    interpolated_matrix[target_idx, reg_idx] = source_matrix[closest_source_idx, reg_idx]
+            distances = np.linalg.norm(source_coords - target_coord, axis=1)
+            closest_source_idx = np.argmin(distances)
+            interpolated_matrix[target_idx, reg_idx] = source_matrix[closest_source_idx, reg_idx]
     
     return interpolated_matrix
 
@@ -422,10 +417,25 @@ def inject_realistic_eog_artifacts_with_coverage(data, info, template_path, mont
     not all(ch in current_ch_names for ch in source_channels))
     
     if needs_interpolation:
-        # Use standard_1020 montage for source, but pass the actual target montage object
-        mixing_matrix = interpolate_eog_topography_to_montage(
-        'standard_1020', current_montage, template['mixing_matrix']
+        # Use standard_1020 for BOTH source and target so coordinates match (DigMontage from
+        # info can have different coord_frame, causing wrong nearest-neighbor mapping).
+        full_matrix = interpolate_eog_topography_to_montage(
+            'standard_1020', 'standard_1020', template['mixing_matrix']
         )
+        # Filter to our channels: full_matrix is (94, 2) for standard_1020; extract rows for current_ch_names
+        montage_1020 = make_standard_montage('standard_1020')
+        full_ch_names = list(montage_1020.get_positions()['ch_pos'].keys())
+        mixing_matrix = np.zeros((len(current_ch_names), full_matrix.shape[1]))
+        for i, ch in enumerate(current_ch_names):
+            if ch in full_ch_names:
+                j = full_ch_names.index(ch)
+                mixing_matrix[i] = full_matrix[j]
+            else:
+                # Fallback: nearest of the 19 source channels by name similarity
+                src_ch = ['Fp1', 'Fp2', 'F3', 'F4', 'C3', 'C4', 'P3', 'P4', 'O1', 'O2',
+                          'F7', 'F8', 'T3', 'T4', 'T5', 'T6', 'Fz', 'Cz', 'Pz']
+                j = min(range(len(src_ch)), key=lambda k: abs(ord(ch[0]) - ord(src_ch[k][0])) if len(ch) else 99)
+                mixing_matrix[i] = template['mixing_matrix'][j]
     else:
         # Use template directly if montage matches
         mixing_matrix = template['mixing_matrix']

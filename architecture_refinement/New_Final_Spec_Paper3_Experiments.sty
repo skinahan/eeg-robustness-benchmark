@@ -1,0 +1,612 @@
+PAPER 3 (NeurIPS) — FINAL EXPERIMENT SPECIFICATION (PLOT 1–4 + SANITY CHECK)
+Version: 2026-02-18
+Goal: Produce conclusive, reproducible evidence for the claim:
+  “Robust wired CfC architectures can be efficiently plucked from the WS-Flex population using training-free graph proxy metrics
+   that are extremely cheap to evaluate relative to training and robustness sweeps.”
+
+CRITICAL ALIGNMENT REQUIREMENT (FIRST-PASS PIPELINE)
+This spec MUST match the first-pass architecture_refinement procedure:
+  • Generator search space includes: H (units), k_degree, p_rewiring, target_clustering C*, target_path_length L*, and a deterministic seed.
+  • Proxy objectives:
+      TE proxy = degree entropy (NOT adjacency spectral entropy), normalized by /5.0 and clipped to [0,1]
+      ORC proxy = |mean Ollivier–Ricci curvature|, normalized by /10.0 and clipped to [0,1]
+  • Connectivity constraint: disconnected graphs are rejected (do not update optimizer / dataset)
+  • Graph-to-CfC conversion uses BIDIRECTIONAL wiring:
+      For each undirected edge (u,v): set A[u,v]=1 and A[v,u]=1 (diagonal zero)
+  • Seed handling: s_g is not optimized; it is deterministic per trial (e.g., trial.number)
+
+--------------------------------------------------------------------------------
+0) MOTIVATION, CONTEXT, AND WHY WE PIVOTED
+--------------------------------------------------------------------------------
+Problem:
+  Training and robustness evaluation for recurrent models is expensive. For each candidate topology, we must:
+    (i) train to convergence (or early-stop), and
+    (ii) sweep perturbation intensities across multiple seeds.
+  Sample-and-train enumeration (prior graph-performance correlation studies) becomes impractical for wired CfC.
+
+Limitations of prior attempts (internal):
+  Earlier framing emphasized “TPE beats Random” in constrained graph space. Empirically, TPE did not reliably improve extreme-value discovery
+  in proxy space under equal budgets; variance and selection instability made it difficult to claim a stronger sampler is the key novelty.
+
+Reframed contribution:
+  The novelty is not the specific sampler, but the compute-aware two-stage procedure:
+    Stage A: training-free proxy mapping and screening over WS-Flex graphs
+    Stage B: train/evaluate only a small subset that is proxy-extreme and proxy-diverse
+
+This spec defines 3 experiments (Plot 1–3) that directly support:
+  Claim 1: Proxy mapping is cheap and reveals a broad structured landscape (Plot 1)
+  Claim 2: Proxy-selected topologies yield better robustness after training under matched protocol than uniform selection and standard baselines (Plot 2)
+  Claim 3: Proxies organize trained robustness/accuracy into interpretable regions and improve “hit-rate” into robust regimes (Plot 3)
+Plus a sanity-check: extreme “best proxy” vs “worst proxy” topology (Best/Worst test)
+
+--------------------------------------------------------------------------------
+1) COMMON DEFINITIONS (EQUATIONS) — USED IN ALL EXPERIMENTS
+--------------------------------------------------------------------------------
+
+1.1 Graph generator and constraints
+  Candidate graph G_u = (V,E), undirected, |V| = H.
+
+  Generator parameters (first-pass aligned):
+    θ = (H, k, p, C*, L*, s_g)
+    H ∈ [10,128]  (units)
+    k ∈ {2,4,6,...,24}, k < H  (even)
+    p ∈ [0,1]  (p_rewiring)
+    C* ∈ [0.01, 1.0] (target clustering)
+    L* ∈ [1.0, 4.5] (target path length)
+    s_g deterministic per trial (NOT optimized)
+
+  Connectivity constraint:
+    If G_u is disconnected, reject and resample (no proxy record, or record separately as “rejected”; must not update the sampler).
+
+1.2 Graph-to-CfC adjacency mask (bidirectional conversion)
+  For each undirected edge (u,v) ∈ E with indices i,j:
+    A_ij = 1 and A_ji = 1
+  A_ii = 0 (diagonal zero)
+  Active recurrent edges:
+    E_active = Σ_{i,j} A_ij = 2|E|  (given bidirectional conversion)
+
+1.3 Proxy metrics (first-pass aligned)
+  Degree-entropy proxy (TE):
+    Let d(v) be degree of node v, and π(m) the empirical distribution over degree values m.
+      TE(G) = - Σ_m π(m) log π(m)
+      \hat{TE}(G) = clip( TE(G) / 5.0 , 0, 1 )
+
+  Ollivier–Ricci curvature proxy (ORC):
+    Mean edge curvature:
+      ORC(G) = (1/|E|) Σ_{(x,y)∈E} κ(x,y)
+    Proxy uses magnitude only:
+      \widehat{|ORC|}(G) = clip( |ORC(G)| / 10.0 , 0, 1 )
+    IMPORTANT: Signed ORC is NOT optimized (may be analyzed post-hoc only, clearly labeled).
+
+  Two-dimensional proxy objective:
+    f(G) = ( \hat{TE}(G), \widehat{|ORC|}(G) )
+
+  Scalar proxy score (only for “best vs worst” sanity check; NOT a training objective):
+    s(G) = 0.5 * ( \hat{TE}(G) + \widehat{|ORC|}(G) )
+
+1.4 Robustness evaluation metric (trained models)
+  Let a_t be performance (ROC-AUC) under drift intensity level t, and a_0 clean performance.
+  Relative performance curve:
+    r_t = a_t / a_0
+  Maximum relative degradation:
+    RD_max = max_t ( (a_0 - a_t) / a_0 ) = max_t (1 - r_t)
+
+  (Optional additional summary if already in codebase: AUPC / area-under-performance curve; use only if implemented consistently.)
+
+1.5 Perturbation model (AR(1) drift)
+  ε_t = ρ ε_{t-1} + η_t,   η_t ~ N(0, σ^2)
+  Input perturbation: x_t + ε_t
+  Drift intensity grid: pre-defined discrete levels; must be identical for all trained models.
+
+--------------------------------------------------------------------------------
+2) SHARED REPRODUCIBILITY REQUIREMENTS (NEURIPS-STYLE)
+--------------------------------------------------------------------------------
+R1. Locked data protocol:
+  • Dataset: BNCI2014_001 motor imagery
+  • Evaluation mode: cross-session (as currently stated)
+  • Splits and preprocessing must be identical across all models/topologies.
+  • If a split is currently generated by code:
+      If split is deterministic given a seed, fix that seed and log it.
+      Otherwise, pre-generate split indices once and reuse for all runs (recommended).
+
+R2. Locked training protocol:
+  • Optimizer: Adam
+  • Max epochs: 200
+  • Early stopping: patience 20
+  • All hyperparameters fixed across models/topologies (unless explicitly specified as a conditional).
+  • S seeds per topology (recommend S = 5, consistent with current draft).
+  • Log: seed, topology ID, generator params, proxy values, runtime, best epoch, final metrics.
+
+R3. Locked robustness protocol:
+  • Same perturbation grid for all models.
+  • Same evaluation metrics computed on the same test set.
+  • If robustness evaluation has stochasticity (e.g., drift noise draws), fix a perturbation RNG seed per (topology, model seed, intensity)
+    so curves are comparable and repeatable.
+
+R4. Capacity controls:
+  • Main plots should hold H fixed (strongly recommended) to avoid confounding.
+  • Random sparse CfC baseline must be sparsity-matched:
+      Option A (preferred): match E_active per selected topology.
+      Option B: match average E_active across selected set (less strict; only if code cannot easily match per-topology).
+  • Report parameter counts and E_active in Appendix.
+
+R5. Reporting:
+  • Use mean + 95% CI (bootstrap) for plots with curves.
+  • State exactly what the CI is over:
+      Prefer bootstrap over all (topology, seed) units (or over seeds nested in topology).
+
+--------------------------------------------------------------------------------
+3) DEFAULTS (RECOMMENDED) — WITH CONDITIONAL OPTIONS FOR CODEBASE REALITY
+--------------------------------------------------------------------------------
+These defaults are chosen to “work” under time constraints while supporting strong claims.
+
+Proxy-stage defaults:
+  N_proxy = 500  (proxy-evaluated connected graphs)
+  Sampler: any (TPE or uniform). Do NOT make “sampler superiority” the claim.
+  Record rejected graphs count separately (connectivity filter rate).
+
+Selection defaults:
+  K = 12  (trained WS-Flex topologies per selection method)
+  Diversity: stratify in proxy plane (binning) OR k-medoids in proxy plane.
+
+Training defaults:
+  S = 5 seeds per topology (already in draft)
+  H fixed for main plots:
+    If existing “paper3 benchmark” code has a default H (often 32 in CfC experiments), use that.
+    Otherwise set H = 32 and document it as a fixed capacity for the main experiments.
+
+Perturbation defaults:
+  Use existing AR(1) drift grid in current Plot 2 / benchmark scripts.
+  If the grid is defined via (ρ,σ):
+    Define an ordered intensity index t for plotting (lowest→highest). Keep mapping fixed and documented.
+
+Conditional options:
+  • If existing code already computes AUPC_total and related robustness summaries consistently, use those as secondary.
+    Otherwise, stick to RD_max and r_t curves (simpler and robust).
+  • If existing wiring instantiation expects directed edges but your converter provides bidirectional A, proceed (this matches your clarified converter).
+    If existing code duplicates edges internally, ensure you do not accidentally double-count (validate E_active=2|E| empirically).
+
+--------------------------------------------------------------------------------
+4) EXPERIMENT 1 (PLOT 1): PROXY LANDSCAPE + COST ADVANTAGE
+--------------------------------------------------------------------------------
+Motivation:
+  Establish that proxy evaluation is cheap and yields a broad structural landscape; this justifies the two-stage method.
+
+Core question:
+  Does WS-Flex produce a diverse proxy distribution in ( \hat{TE}, \widehat{|ORC|} ) under a fixed proxy budget,
+  and is proxy evaluation orders of magnitude cheaper than training + robustness sweeps?
+
+Inputs:
+  • Fixed H (main) + allowed generator params within bounds.
+  • N_proxy connected graphs.
+
+Procedure:
+  E1.1 Proxy sampling loop:
+    For trial i in 1..(until N_proxy connected graphs collected):
+      - Deterministically set s_g (e.g., i or trial.number).
+      - Sample θ within bounds (sampler can be TPE or uniform; log which).
+      - Generate G_u = G(θ).
+      - If disconnected: reject; increment reject counter; resample (do not update sampler if that is first-pass behavior).
+      - Compute \hat{TE}(G_u), \widehat{|ORC|}(G_u).
+      - Store record: θ, proxies, graph stats (|E|, E_active), runtime.
+
+  E1.2 Proxy Pareto + selection overlay:
+      - Compute Pareto set P in proxy space using f(G).
+      - Select K graphs for training using diversity selection:
+          Option A (preferred, simple): bin proxy space into a BxB grid (e.g., B=6) and sample from occupied Pareto bins.
+          Option B: k-medoids / k-centers clustering in proxy plane on Pareto set, choose K cluster centers.
+
+  E1.3 Cost accounting:
+      - Measure wall-clock time for:
+          (a) average proxy eval time per graph (including generation + both metrics)
+          (b) average training+robustness time per trained model (per seed), from existing training logs
+      - Report ratio = full_eval_time / proxy_time (should be >> 100)
+
+Plot output (Plot 1 specification):
+  Panel A: Scatter of all proxy graphs in ( \hat{TE}, \widehat{|ORC|} )
+    - All graphs: light markers
+    - Pareto set: highlighted
+    - Selected K: large markers + labels (S1..SK)
+
+  Panel B: Cost bars (log scale recommended)
+    - Proxy eval time per graph
+    - Training+robustness time per model (per seed)
+    - Annotate ratio
+
+Expected results / hypotheses:
+  H1: Proxy space exhibits broad coverage (not a narrow line), and Pareto set is nontrivial.
+  H2: Proxy evaluation is orders of magnitude cheaper than full evaluation.
+
+Go/No-go checks (must run before proceeding):
+  - If Pareto set size is tiny (<10 at N_proxy=500), selection may be unstable; increase N_proxy or broaden generator bounds (only within first-pass allowed bounds).
+  - If cost ratio is not large, method narrative weakens; verify timing measurement correctness (exclude I/O overhead, include training to convergence).
+
+Reuse vs updates:
+  Reuse:
+    - Existing WS-Flex generator implementation and metric computation.
+  Update:
+    - Ensure TE metric used is DEGREE ENTROPY normalized /5.0 clipped.
+    - Ensure ORC uses magnitude normalized /10.0 clipped.
+    - Ensure disconnected graphs rejected consistently with first-pass.
+    - Implement/confirm Pareto extraction + diversity selection (if not already present).
+
+--------------------------------------------------------------------------------
+5) EXPERIMENT 2 (PLOT 2): PROXY-BASED “PLUCKING” IMPROVES TRAINED ROBUSTNESS
+--------------------------------------------------------------------------------
+Motivation:
+  This is the central NeurIPS claim: proxy screening concentrates expensive training on topologies that tend to be more robust
+  than uniform selection and standard baselines, under matched training.
+
+Core question:
+  Under identical training and robustness protocols, do proxy-selected WS-Flex topologies yield lower RD_max (and better r_t curves)
+  than (i) uniform WS-Flex selection and (ii) dense/random-sparse/NCP baselines?
+
+Groups (all trained/evaluated under identical protocol):
+  G1: Proxy-selected WS-Flex (K topologies; selected from Experiment 1’s proxy pool using Pareto+diversity)
+  G2: Uniform-selected WS-Flex (K topologies; sampled uniformly from the same admissible generator space; must be independent of G1)
+  G3: Dense CfC baseline (S seeds)
+  G4: Random sparse CfC baseline, sparsity matched (S seeds)
+  G5: NCP wiring baseline (S seeds)
+
+Critical control:
+  Fix H for all (recommended for main plot). If your code currently varies H, lock H for Plot 2.
+
+Procedure:
+  E2.1 Train models:
+    For each topology in G1 and G2:
+      For each seed s in 1..S:
+        - Instantiate wired CfC using bidirectional mask A (E_active tracked).
+        - Train under locked protocol; log best checkpoint and final test metrics.
+    For baselines:
+      - Train Dense CfC with same training protocol for S seeds.
+      - Train NCP wiring with same protocol for S seeds.
+      - Train Random sparse CfC:
+          Option A (preferred): for each WS-Flex topology, generate a random mask with same E_active and train those (pairs).
+          Option B: match average E_active of G1 and train S seeds (weaker control; only if code complexity/time is prohibitive).
+
+  E2.2 Robustness evaluation:
+    For each trained run:
+      - Evaluate clean a_0.
+      - Evaluate a_t across drift intensity grid.
+      - Compute r_t = a_t/a_0 and RD_max.
+
+Plot output (Plot 2 specification):
+  One panel (with optional inset):
+    - x-axis: drift intensity index t (ordered)
+    - y-axis: relative performance r_t = a_t/a_0
+    - Curves: mean across runs for each group (G1..G5)
+    - Uncertainty: 95% CI band (bootstrap)
+  Optional inset (or second small panel if space):
+    - Distribution of RD_max per group (violin/box) + CI
+
+Statistical reporting (minimal but defensible):
+  - Report group means and 95% CI for RD_max.
+  - Report a simple nonparametric test or effect size:
+      Option A: Cliff’s delta between G1 and G2; and between G1 and Dense/Random-sparse.
+      Option B: bootstrap difference in means with CI (recommended: simple and aligned with CI bands).
+  - Do not overclaim deterministic prediction; claim is improved selection efficiency / hit-rate.
+
+Expected results / hypotheses:
+  H3: Proxy-selected WS-Flex (G1) yields lower RD_max than uniform WS-Flex (G2).
+  H4: Proxy-selected WS-Flex is competitive with or better than dense/random-sparse CfC and NCP under RD_max, without collapsing clean AUC.
+
+Go/No-go checks:
+  - If G1 ≈ G2 on RD_max, main claim “pluck via proxies” fails; pivot to “topology matters” only (we want to avoid this).
+    Mitigation if this happens:
+      • Increase K modestly (e.g., 12→16) if compute allows.
+      • Strengthen diversity selection on Pareto set (avoid selecting many similar points).
+      • Verify that proxies and selection are computed correctly (TE definition, ORC magnitude, clipping).
+  - If random sparse baseline is not properly matched, reviewers will challenge results. Ensure matching is logged.
+
+Reuse vs updates:
+  Reuse:
+    - Existing training pipeline, dataset loading, drift perturbation evaluation, RD_max computation (if already used).
+  Update:
+    - Add “uniform-selected WS-Flex” trained set if not already present.
+    - Ensure random sparse baseline truly matches E_active (preferred).
+    - Ensure plotting uses relative performance r_t for comparability.
+
+--------------------------------------------------------------------------------
+6) EXPERIMENT 3 (PLOT 3): PROXIES AS STRUCTURAL COORDINATES (ORGANIZE TRAINED LANDSCAPE + HIT-RATE)
+--------------------------------------------------------------------------------
+Motivation:
+  Even if correlation is modest, proxies are valuable if they provide a coordinate system that helps find robust regions.
+  NeurIPS reviewers often accept “proxies organize” more readily than “proxies perfectly predict.”
+
+Core questions:
+  Q3a: In the proxy plane ( \hat{TE}, \widehat{|ORC|} ), do trained robustness outcomes cluster into identifiable regions/bands?
+  Q3b: Does proxy-based selection increase the probability of landing in the “robust” subset compared to uniform?
+
+Inputs:
+  Use the trained results from Experiment 2 (no new training required).
+
+Procedure:
+  E3.1 Proxy-plane robustness map:
+    - For each trained topology (WS-Flex only: G1 and G2):
+        record point ( \hat{TE}, \widehat{|ORC|} ) and its robustness metric (RD_max or AUPC).
+    - Create a binned aggregation in proxy plane:
+        Option A (simple): 2D grid bins; compute mean RD_max in each occupied bin.
+        Option B (smoother): kNN smoothing in proxy plane (avoid if code/time constraints).
+
+  E3.2 Robustness–accuracy tradeoff scatter:
+    - For each trained run:
+        x = a_0 (clean ROC-AUC)
+        y = RD_max (lower better)   [or y = AUPC higher better if available]
+      Mark whether run is from proxy-selected or uniform-selected topology.
+    - Goal: show proxy selection concentrates in favorable region (high a_0, low RD_max).
+
+  E3.3 Hit-rate analysis (primary statistic for “pluckability”):
+    Define “robust set” threshold:
+      Option A (recommended): robust = lowest 20% RD_max among WS-Flex trained runs.
+      Option B: robust = RD_max < τ where τ is a fixed domain threshold (only if you have a compelling τ).
+    Compute:
+      hit_rate_proxy = P(robust | topology ∈ G1)
+      hit_rate_uniform = P(robust | topology ∈ G2)
+    Report hit-rate ratio and bootstrap CI for the difference.
+
+Plot output (Plot 3 specification):
+  Panel A: Proxy plane scatter (trained WS-Flex only)
+    - x: \hat{TE}, y: \widehat{|ORC|}
+    - color: RD_max (or AUPC)
+    - marker: selected vs uniform
+    - optional: binned heatmap underlay to show region structure
+
+  Panel B: Accuracy–robustness scatter
+    - x: clean AUC a_0
+    - y: RD_max
+    - marker/color: selected vs uniform
+    - optional: show baseline points (dense/random-sparse/NCP) in a separate legend color; if included, clearly note they have no proxy coordinates.
+
+Expected results / hypotheses:
+  H5: Robustness is not purely random in proxy space; robust models cluster in regions (bands) in the proxy plane.
+  H6: hit_rate_proxy > hit_rate_uniform (proxy improves chance of selecting robust models).
+
+Go/No-go checks:
+  - If hit-rate improvement is absent, your narrative weakens. If correlation is low but hit-rate is improved, that’s acceptable and often stronger.
+  - If both are absent, the proxy story is in trouble; verify metric implementations and selection procedure.
+
+Reuse vs updates:
+  Reuse:
+    - Results tables/logs from Experiment 2.
+  Update:
+    - Add hit-rate computation and bootstrap CI.
+    - Add proxy-plane binned aggregation (minimal code).
+
+--------------------------------------------------------------------------------
+7) SANITY CHECK (BEST VS WORST PROXY EXTREMES) — MUST RUN
+--------------------------------------------------------------------------------
+Motivation:
+  A simple, reviewer-friendly “does the proxy mean anything at all?” check.
+  This reduces risk: if it fails, you learn immediately and can adjust selection messaging.
+
+Design:
+  From the SAME proxy pool used in Experiment 1 (same H, same bounds):
+    - Best proxy graph: argmax s(G) where s(G)=0.5*(\hat{TE} + \widehat{|ORC|})
+    - Worst proxy graph: argmin s(G)
+
+Training/eval:
+  Train both topologies for S seeds under the same protocol.
+  Evaluate robustness curves and RD_max.
+
+Output:
+  Option A (appendix figure): Two curves best vs worst with 95% CI band.
+  Option B (main inset): If separation is large and stable.
+
+Expected results:
+  H7: Best-proxy topology shows better robustness curve / lower RD_max than worst-proxy topology.
+
+Go/No-go:
+  - If worst consistently beats best, do NOT claim scalar proxy “predicts robustness.”
+    Instead, emphasize Pareto+diversity selection as an exploration tool (proxies as coordinates), and keep sanity check in appendix with discussion.
+
+Reuse vs updates:
+  Reuse:
+    - Same training and robustness eval pipeline.
+  Update:
+    - Add “extreme selector” that picks argmax/argmin s(G) from proxy dataset.
+
+--------------------------------------------------------------------------------
+8) IMPLEMENTATION CHECKLIST (WHAT TO REUSE VS WHAT TO ADD)
+--------------------------------------------------------------------------------
+Reuse existing structures/methods/scripts (likely already present in architecture_refinement pipeline):
+  • WS-Flex graph generation under bounds and deterministic seed
+  • Connectivity filtering
+  • ORC computation and averaging
+  • Degree entropy computation (ensure this is what is currently used for TE in code)
+  • Proxy logging dataframe/CSV
+  • CfC wiring instantiation hook (masking recurrent matrices with A)
+  • Training pipeline (fixed optimizer schedule, early stopping)
+  • Drift perturbation evaluation and RD_max computation
+
+Add/Update functionality (minimal, high-impact):
+  U1. Ensure TE is degree entropy normalized /5 clipped; update any residual “spectral TE” code/appendix references (already fixed in paper text).
+  U2. Ensure ORC proxy is magnitude normalized /10 clipped.
+  U3. Confirm bidirectional adjacency conversion in wiring converter (A[u,v]=A[v,u]=1).
+  U4. Implement Pareto extraction in proxy plane (if not already).
+  U5. Implement diversity-based selection of K from Pareto set (grid binning recommended).
+  U6. Implement uniform WS-Flex selection baseline trained set (K graphs).
+  U7. Implement sparsity-matched random sparse CfC baseline (preferred per-topology).
+  U8. Implement hit-rate computation + bootstrap CI.
+  U9. Implement best-vs-worst selector by scalar score s(G).
+
+Conditional options (choose based on existing code defaults):
+  • If code already outputs AUPC_total consistently:
+      - Use AUPC_total as an additional robustness summary in Plot 2 inset and Plot 3 coloring.
+    Else:
+      - Use RD_max only (simplest and robust).
+  • If code currently varies H during search:
+      - For main plots: fix H to the code’s default (or set H=32) to avoid confounding; move multi-H analysis to appendix.
+  • If perturbation evaluation uses stochastic drift draws per call:
+      - Fix drift RNG seed per (run, intensity) to ensure reproducible curves.
+    Else:
+      - Proceed with existing deterministic evaluation.
+
+--------------------------------------------------------------------------------
+9) EXPECTED DELIVERABLES (WHAT YOU SHOULD HAVE WHEN DONE)
+--------------------------------------------------------------------------------
+D1. Plot 1 (main): proxy landscape scatter with Pareto + selected K, plus cost ratio panel.
+D2. Plot 2 (main): robustness curves r_t with CI for proxy-selected vs uniform + baselines; RD_max inset.
+D3. Plot 3 (main): proxy plane colored by trained robustness + accuracy-robustness scatter; hit-rate numbers in caption/text.
+D4. Plot 4 (main): bar chart comparing mean clean ROC-AUC and mean RD_max across G1–G5, with 95% bootstrap CI.
+D5. Sanity check (appendix or inset): best vs worst proxy robustness curves + RD_max.
+D6. Appendix tables:
+    - For each trained topology: θ, \hat{TE}, \widehat{|ORC|}, |E|, E_active, parameter count, clean AUC, RD_max.
+D7. Reproducibility package:
+    - Fixed config file(s), seeds, split indices, and a single “run_all_paper3_plots” script that regenerates all figures from raw logs.
+
+--------------------------------------------------------------------------------
+10) FINAL “FAIL-SAFE” SEQUENCE (DO THIS IN ORDER)
+--------------------------------------------------------------------------------
+Step 1: Run Experiment 1 proxy collection and verify:
+  - TE and ORC are computed with the correct definitions and clipping
+  - proxy plane is broad; Pareto is nontrivial
+
+Step 2: Run SANITY CHECK (best vs worst) early:
+  - If it strongly separates: confidence increased
+  - If it does not: do NOT abandon; proceed with Pareto+diversity (proxies as coordinates) and rely on hit-rate in Plot 3
+
+Step 3: Train Experiment 2 groups with fixed H and sparsity-matched baseline.
+Step 4: Generate Plot 2; confirm proxy-selected beats uniform in RD_max (or at minimum shows better hit-rate for robust set).
+Step 5: Generate Plot 3; compute hit-rate and show proxy-plane organization.
+Step 6: Generate Plot 4; show architecture comparison bar chart.
+
+This spec is intentionally conservative: it minimizes moving parts, aligns with first-pass implementation, and produces a NeurIPS-friendly
+set of results even if proxy→robustness correlation is modest (hit-rate + organization are the key).
+
+--------------------------------------------------------------------------------
+11) IMPLEMENTATION REFERENCE (architecture_refinement/paper3)
+--------------------------------------------------------------------------------
+This section documents the concrete implementation in architecture_refinement/paper3.
+All scripts and functions are named for reference; the description is in plain English.
+
+11.1 Master script and run order
+  The entry point is run_all_paper3_plots.py. It executes in strict order:
+    1. Experiment 1 (proxy collection)
+    2. Sanity Check (best vs worst)
+    3. Experiment 2 (train G1..G5)
+    4. Experiment 3 (aggregation and analysis)
+    5. Plot generation (Plots 1–4)
+  Each step can be skipped via flags (--skip-exp1, --skip-sanity, etc.).
+
+  Default output root: architecture_refinement/outputs/paper3
+  Subdirectories: experiment1/, sanity_check/, experiment2/, experiment3/
+  Plots: plot1_proxy_landscape.pdf, plot2_robustness_curves.pdf, plot3_proxy_plane.pdf, plot4_architecture_comparison.pdf
+
+11.2 Proxy metric computation
+  All proxy values are computed by architecture_refinement.metrics_te_orc.compute_paper3_proxies.
+  It takes a networkx graph and returns (te_hat, orc_hat):
+    - Degree entropy (Shannon entropy of the empirical degree distribution) is computed, divided by 5.0, and clipped to [0,1].
+    - Ollivier–Ricci curvature is computed as the mean over edges, the magnitude is taken, divided by 10.0, and clipped to [0,1].
+  The graph generator is architecture_refinement.ws_flex_generator.build_plain_ws_flex (Watts–Strogatz ring lattice).
+
+11.3 Experiment 1 (run_paper3_experiment1.py)
+  Run: python -m architecture_refinement.paper3.run_paper3_experiment1 --output-dir <path>
+
+  Procedure:
+    - Samples N_proxy graphs (default 500) from the parameter space: k ∈ {2,4,...,24}, p ∈ [0,1], graph_seed random.
+    - For each trial, the graph is built with seed = trial (deterministic per trial).
+    - Disconnected graphs are rejected; the loop continues until N_proxy connected graphs are collected.
+    - For each accepted graph, compute_paper3_proxies is called and the result is stored.
+    - Pareto front is extracted in the (te_hat, orc_hat) plane (max-max objective).
+    - K graphs (default 12) are selected from the Pareto set using diversity: a 6×6 grid bins the proxy plane; bins are sorted by occupancy; one graph is drawn per bin until K are selected.
+    - Selected architectures are written as JSON files in selected_architectures/ with schema_version 2, including hidden_adj_undirected for bidirectional wiring.
+
+  Outputs:
+    - proxy_pool.csv: all proxy-evaluated graphs with H, k, p, graph_seed, te_hat, orc_hat, n_edges, E_active, runtime_sec.
+    - selected_proxy.csv: the K selected subset.
+    - selected_architectures/*.json: one JSON per selected topology.
+    - experiment1_summary.json: n_proxy, rejected_count, pareto_size, K_selected, mean_proxy_time_sec.
+
+11.4 Sanity Check (run_paper3_sanity_check.py)
+  Run: python -m architecture_refinement.paper3.run_paper3_sanity_check --experiment1-dir <path> --output-dir <path>
+
+  Procedure:
+    - Loads proxy_pool.csv from Experiment 1.
+    - Computes scalar score s = 0.5 * (te_hat + orc_hat) for each row.
+    - Best graph: row with maximum s.
+    - Worst graph: row with minimum s.
+    - Builds both architectures from (k, p, graph_seed) and writes them to sanity_check_pilot/selected_architectures.
+    - For each of the two models and S seeds (default 5), invokes the unified experiment runner in test_perturb mode.
+    - Collects test_perturb results (clean_roc_auc, RD_max, intensity-level r_t) from the results directory.
+    - Aggregates mean RD_max and 95% bootstrap CI.
+
+  Outputs:
+    - sanity_check_manifest.json: best/worst model names, te_hat, orc_hat, s.
+    - sanity_check_summary.json: best_RD_max_mean, worst_RD_max_mean, 95% bootstrap CIs.
+    - sanity_check_curves.csv: intensity-level r_t for plotting.
+
+11.5 Experiment 2 (run_paper3_experiment2.py)
+  Run: python -m architecture_refinement.paper3.run_paper3_experiment2 --experiment1-dir <path> --output-dir <path>
+
+  Procedure:
+    - G1: Copies the K proxy-selected architectures from Experiment 1 into experiment2_pilot/selected_architectures.
+    - G2: Samples K new WS-Flex graphs uniformly (k ∈ {2,...,24}, p ∈ [0,1], independent graph_seed). Uses a fixed RNG seed (202607) distinct from Experiment 1.
+    - G3: Creates a dense CfC baseline (complete graph on H nodes).
+    - G4: Creates a random sparse CfC baseline with E_active matching the average E_active of G1.
+    - G5: Creates an NCP wiring baseline (ncp_autoncp, units=H, sparsity=0.5).
+    - Writes experiment2_manifest.json with group names and model lists.
+    - For each (model, seed) in G1..G5, invokes evaluation.unified_experiment_runner.py in test_perturb mode.
+    - The unified runner trains on clean data, then evaluates robustness by sweeping AR(1) drift intensities across a grid.
+
+  Training and robustness:
+    - Mode: test_perturb.
+    - Dataset: BNCI2014_001 motor imagery.
+    - Eval mode: CrossSession.
+    - Perturbation: ar1_drift.
+    - Intensity grid: 20 steps from saturation file; alpha grid [0, 0.25, 0.5, 0.75, 1.0] for correlated noise.
+    - Seeds: 42, 43, ..., 42+S-1.
+
+  Outputs:
+    - experiment2_manifest.json: H, K, S, dataset, groups (G1..G5 model lists).
+    - experiment2_pilot/selected_architectures/*.json: all architectures.
+    - Results are written by the unified runner to results/MotorImagery/BNCI2014_001/<model>/CrossSessionEvaluation/<seed>/.../test_perturb/*.csv.
+
+11.6 Experiment 3 (run_paper3_experiment3.py)
+  Run: python -m architecture_refinement.paper3.run_paper3_experiment3 --experiment2-dir <path> --experiment1-dir <path> --output-dir <path>
+
+  Procedure:
+    - Loads experiment2_manifest.json to obtain model lists for G1..G5.
+    - For each model in G1..G5 and each seed, scans the results directory for test_perturb CSV files.
+    - Extracts clean_roc_auc and RD_max for each run. RD_max = max_t(1 - r_t) where r_t = corrupted_roc_auc / clean_roc_auc.
+    - For G1 and G2, proxy values (te_hat, orc_hat) are read from architecture JSONs. If missing (e.g. G2 uniform), they are computed on-the-fly from the graph using compute_paper3_proxies.
+    - G3, G4, G5 have no proxy coordinates; they are included for the architecture comparison plot.
+    - Hit-rate: "robust" = RD_max in the lowest 20% among WS-Flex runs (G1 + G2 only). Computes hit_rate_proxy = P(robust | G1) and hit_rate_uniform = P(robust | G2) with bootstrap CI for the difference.
+    - Binned proxy-plane aggregation: 6×6 grid over (te_hat, orc_hat); mean RD_max per bin.
+
+  Outputs:
+    - experiment3_results.csv: model, group, seed, te_hat, orc_hat, clean_roc_auc, RD_max for all runs.
+    - experiment3_summary.json: hit_rate_proxy, hit_rate_uniform, hit_rate_diff, hit_rate_diff_ci, proxy_plane_bin_means.
+
+11.7 Plotting (plotting.py)
+  All plots are saved as PDF at 300 dpi.
+
+  Plot 1 (plot1): Proxy landscape scatter (Panel A), time bars (Panel B), and FLOPS bars (Panel C).
+    - Inputs: proxy_pool.csv, selected_proxy.csv, experiment1_summary.json.
+    - Panel A: scatter of all proxy points in (te_hat, orc_hat); selected K highlighted with circles and labels S1..SK; axis limits data-driven with y-axis capped at 0.05.
+    - Panel B: bar chart of proxy eval time vs training+robustness time (log scale).
+    - Panel C: bar chart of estimated FLOPS for proxy vs full eval (log scale). Uses mean_proxy_flops_est, mean_full_flops_est from summary if present; else defaults ~1e7 (proxy) and ~1e12 (full).
+
+  Plot 2 (plot2): Robustness curves and performance–robustness scatter.
+    - Inputs: experiment3_results.csv, experiment2_manifest.json.
+    - Panel A: r_t curves (intensity vs r_t) for G1 and G2 from intensity-level test_perturb data; mean and 95% bootstrap CI.
+    - Panel B: scatter of clean ROC-AUC vs RD_max for G1 and G2; labeled "Performance vs robustness".
+
+  Plot 3 (plot3): Proxy plane and performance–proxy score scatter.
+    - Inputs: experiment3_results.csv.
+    - Panel A: scatter of (te_hat, orc_hat) colored by RD_max for G1 and G2.
+    - Panel B: scatter of clean ROC-AUC vs scalar proxy robustness score (te_hat + |orc_hat|) for G1 and G2.
+
+  Plot 4 (plot4): Architecture comparison bar chart.
+    - Inputs: experiment3_results.csv.
+    - Two panels: mean clean ROC-AUC by group (G1–G5) and mean RD_max by group.
+    - Groups: Proxy-selected (G1), Uniform (G2), Dense CfC (G3), Random sparse (G4), NCP (G5).
+    - Error bars: 95% bootstrap CI (1000 bootstrap samples).
+
+11.8 Results directory layout
+  The unified experiment runner writes to:
+    results/<paradigm>/<dataset>/<model_short_id>/CrossSessionEvaluation/<seed>/<subject>/<session>/test_perturb/*.csv
+  Model short_id is a hash of the model name for path shortening. CSV files contain columns: noise_type, intensity, corrupted_roc_auc, clean_roc_auc (or clean_score).
+
+11.9 Known implementation notes
+  - Experiment 1 uses trial index as the graph seed for build_plain_ws_flex, but stores graph_seed from the parameter sampler. If reconstructing from stored (k, p, graph_seed), the graph may differ from the one used for proxy computation. This is a known inconsistency; the stored proxy values are correct for the graph that was actually built.
+  - G2 uniform architectures are created with te_hat and orc_hat as NaN initially; Experiment 3 computes them on-the-fly from the graph when needed for plotting.

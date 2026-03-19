@@ -4,29 +4,17 @@ Orientation Sensitivity Experiment: random_oriented vs symmetric wiring conversi
 
 PURPOSE
 -------
-Test whether using symmetric (bidirectional) wiring instead of random_oriented when
-converting WS-Flex graphs to Wired CfC improves robustness. Current NAS pilot and
-Plot 2 studies use random_oriented, which picks one direction per undirected edge
-and may hurt performance by reducing information flow and redundancy.
-
-HYPOTHESIS
-----------
-Symmetric wiring preserves the full bidirectional connectivity of WS graphs and may
-yield better AUPC/robustness than random_oriented, which arbitrarily destroys half
-the connections.
+Single-graph test: compare random_oriented vs symmetric wiring on ONE WS-Flex graph.
 
 SCOPE (minimal)
 ---------------
-- 2–3 fixed WS graphs (sparse, moderate, dense regimes)
-- For each graph: two models — random_oriented and symmetric (same hidden_adj_undirected)
+- 1 fixed WS graph (k=8, p=0.3)
+- 2 models: orient_ro (random_oriented) and orient_sym (symmetric) — same hidden_adj_undirected
 - 1 subject, 1 seed
-- AR(1) drift perturbation (primary Plot 2 stress test)
+- AR(1) drift perturbation
 - BNCI2014_001, CrossSession
 
-OUTPUT
-------
-- pilot_dir/selected_architectures/*.json (paired architectures)
-- pilot_dir/orientation_sensitivity_report.json (AUPC, clean ROC-AUC, max_drop by orientation)
+Model names are intentionally distinct (orient_ro, orient_sym) to avoid result/cache collision.
 """
 
 from __future__ import annotations
@@ -34,6 +22,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -51,12 +40,8 @@ if str(_REPO_ROOT) not in sys.path:
 from architecture_refinement.arbitrary_wiring import WsFlexHiddenWiring
 from architecture_refinement.plot2_smoke_utils import compute_smoke_robustness_metrics, summarize_wiring_mask
 
-# Minimal graph set: one per regime (sparse, moderate, dense)
-REGIME_GRAPHS = [
-    {"regime": "sparse", "k": 4, "p": 0.3},
-    {"regime": "moderate", "k": 8, "p": 0.3},
-    {"regime": "dense", "k": 14, "p": 0.3},
-]
+# Single graph for isolation test
+SINGLE_GRAPH = {"k": 8, "p": 0.3}
 
 
 def _make_ws_graph(H: int, k: int, p: float, seed: int) -> nx.Graph:
@@ -107,61 +92,68 @@ def main() -> None:
     selected_dir = out_dir / "selected_architectures"
     selected_dir.mkdir(parents=True, exist_ok=True)
 
-    model_names: List[str] = []
+    k = SINGLE_GRAPH["k"]
+    p = SINGLE_GRAPH["p"]
+    graph_seed = hash((args.seed, "single")) % (2**31 - 1)
+    wiring_seed = graph_seed + 1
+
+    G = _make_ws_graph(H, k, p, seed=graph_seed)
+    if not nx.is_connected(G):
+        for p_retry in [0.5, 0.7, 1.0]:
+            G = _make_ws_graph(H, k, p_retry, seed=graph_seed + 1000)
+            if nx.is_connected(G):
+                break
+        else:
+            raise RuntimeError(f"Could not generate connected graph for k={k}")
+
+    undirected_adj = _undirected_hidden_adj(G, H)
+
+    # Use maximally distinct model names to avoid result/cache collision
+    model_names: List[str] = ["orient_ro", "orient_sym"]
+    orientations = {"orient_ro": "random_oriented", "orient_sym": "symmetric"}
+
+    # CRITICAL: Use SEPARATE pilot dirs per model so the registry never loads both
+    # in the same process. This guarantees no factory closure or shared-state mix-up.
+    pilot_dirs: Dict[str, Path] = {}
     selected_rows: List[Dict[str, Any]] = []
 
-    for cfg in REGIME_GRAPHS:
-        regime = cfg["regime"]
-        k = cfg["k"]
-        p = cfg["p"]
-        graph_seed = hash((args.seed, regime)) % (2**31 - 1)
-        wiring_seed = graph_seed + 1
-
-        G = _make_ws_graph(H, k, p, seed=graph_seed)
-        if not nx.is_connected(G):
-            for p_retry in [0.5, 0.7, 1.0]:
-                G = _make_ws_graph(H, k, p_retry, seed=graph_seed + 1000)
-                if nx.is_connected(G):
-                    break
-            else:
-                raise RuntimeError(f"Could not generate connected graph for regime {regime} k={k}")
-
-        undirected_adj = _undirected_hidden_adj(G, H)
-
-        for orientation in ("random_oriented", "symmetric"):
-            directed_adj = _oriented_hidden_adj(G, H, orientation, seed=wiring_seed)
-            model_name = f"orient_{regime}_{orientation}"
-            model_names.append(model_name)
-            arch = {
-                "schema_version": 2,
-                "run_id": "orientation_sensitivity",
-                "method": "orientation_sensitivity",
-                "rank": 1,
-                "model_name": model_name,
-                "H": H,
-                "wiring_kind": "ws_flex",
-                "hidden_edge_orientation": orientation,
-                "regime": regime,
-                "k": k,
-                "p": p,
-                "graph_seed": graph_seed,
-                "wiring_seed": wiring_seed,
-                "hidden_adj_undirected": undirected_adj.tolist(),
-                "hidden_adj_directed": directed_adj.tolist(),
-            }
-            with open(selected_dir / f"{model_name}.json", "w", encoding="utf-8") as f:
-                json.dump(arch, f, indent=2)
-            selected_rows.append({
-                "model_name": model_name,
-                "method": "orientation_sensitivity",
-                "wiring_kind": "ws_flex",
-                "regime": regime,
-                "orientation": orientation,
-                "k": k,
-                "p": p,
-                "graph_seed": graph_seed,
-                "wiring_seed": wiring_seed,
-            })
+    for model_name, orientation in orientations.items():
+        directed_adj = _oriented_hidden_adj(G, H, orientation, seed=wiring_seed)
+        arch = {
+            "schema_version": 2,
+            "run_id": "orientation_sensitivity",
+            "method": "orientation_sensitivity",
+            "rank": 1,
+            "model_name": model_name,
+            "H": H,
+            "wiring_kind": "ws_flex",
+            "hidden_edge_orientation": orientation,
+            "k": k,
+            "p": p,
+            "graph_seed": graph_seed,
+            "wiring_seed": wiring_seed,
+            "hidden_adj_undirected": undirected_adj.tolist(),
+            "hidden_adj_directed": directed_adj.tolist(),
+        }
+        # Write to main selected_dir (for analyzer) and to model-specific pilot dir
+        arch_path = selected_dir / f"{model_name}.json"
+        with open(arch_path, "w", encoding="utf-8") as f:
+            json.dump(arch, f, indent=2)
+        pilot_dir = out_dir / f"pilot_{model_name}"
+        pilot_arch_dir = pilot_dir / "selected_architectures"
+        pilot_arch_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy(arch_path, pilot_arch_dir / f"{model_name}.json")
+        pilot_dirs[model_name] = pilot_dir
+        selected_rows.append({
+            "model_name": model_name,
+            "method": "orientation_sensitivity",
+            "wiring_kind": "ws_flex",
+            "orientation": orientation,
+            "k": k,
+            "p": p,
+            "graph_seed": graph_seed,
+            "wiring_seed": wiring_seed,
+        })
 
     # Manifest and selected_architectures.csv
     diagnostics_dir = out_dir / "diagnostics"
@@ -204,14 +196,28 @@ def main() -> None:
         print("Dry run: would invoke unified_experiment_runner for each model. Exit.")
         return
 
+    # Clear model cache for orient_ro and orient_sym to prevent loading a cached model
+    # from the other orientation, which would produce identical scores.
     repo_root = _REPO_ROOT
+    cache_root = repo_root / "model_cache" / "BNCI2014_001"
+    if cache_root.exists():
+        for d in cache_root.iterdir():
+            if d.is_dir() and d.name in ("orient_ro", "orient_sym"):
+                try:
+                    shutil.rmtree(d)
+                    print(f"[ORIENT] Cleared model cache: {d}")
+                except OSError as e:
+                    print(f"[ORIENT] Warning: could not clear cache {d}: {e}")
+
     runner_script = repo_root / "evaluation" / "unified_experiment_runner.py"
     for model_name in model_names:
+        # Use model-specific pilot dir so registry loads ONLY this model (no closure mix-up)
+        pilot_dir = pilot_dirs[model_name]
         cmd = [
             args.python,
             str(runner_script),
             "--nas_pilot_dir",
-            str(out_dir),
+            str(pilot_dir),
             "--model",
             model_name,
             "--dataset",
@@ -283,26 +289,11 @@ def main() -> None:
         if mn not in mid_drop_by_model:
             mid_drop_by_model[mn] = float("nan")
 
-    # Per-regime comparison: symmetric vs random_oriented
-    regime_comparisons: Dict[str, Dict[str, Any]] = {}
-    for cfg in REGIME_GRAPHS:
-        regime = cfg["regime"]
-        ro = f"orient_{regime}_random_oriented"
-        sym = f"orient_{regime}_symmetric"
-        delta_aupc = float(results_by_model.get(sym, float("nan")) - results_by_model.get(ro, float("nan")))
-        delta_clean = float(clean_roc_auc_by_model.get(sym, float("nan")) - clean_roc_auc_by_model.get(ro, float("nan")))
-        delta_max_drop = float(max_drop_by_model.get(ro, float("nan")) - max_drop_by_model.get(sym, float("nan")))
-        regime_comparisons[regime] = {
-            "random_oriented_aupc": results_by_model.get(ro, float("nan")),
-            "symmetric_aupc": results_by_model.get(sym, float("nan")),
-            "delta_aupc_sym_minus_ro": delta_aupc,
-            "random_oriented_clean_roc_auc": clean_roc_auc_by_model.get(ro, float("nan")),
-            "symmetric_clean_roc_auc": clean_roc_auc_by_model.get(sym, float("nan")),
-            "delta_clean_sym_minus_ro": delta_clean,
-            "random_oriented_max_drop": max_drop_by_model.get(ro, float("nan")),
-            "symmetric_max_drop": max_drop_by_model.get(sym, float("nan")),
-            "delta_max_drop_ro_minus_sym": delta_max_drop,
-        }
+    # Single comparison: orient_sym vs orient_ro
+    ro, sym = "orient_ro", "orient_sym"
+    delta_aupc = float(results_by_model.get(sym, float("nan")) - results_by_model.get(ro, float("nan")))
+    delta_clean = float(clean_roc_auc_by_model.get(sym, float("nan")) - clean_roc_auc_by_model.get(ro, float("nan")))
+    delta_max_drop = float(max_drop_by_model.get(ro, float("nan")) - max_drop_by_model.get(sym, float("nan")))
 
     report = {
         "schema_version": 1,
@@ -312,20 +303,27 @@ def main() -> None:
         "clean_roc_auc_by_model": clean_roc_auc_by_model,
         "max_drop_by_model": max_drop_by_model,
         "mid_drop_by_model": mid_drop_by_model,
-        "regime_comparisons": regime_comparisons,
+        "comparison": {
+            "orient_ro": "random_oriented",
+            "orient_sym": "symmetric",
+            "delta_aupc_sym_minus_ro": delta_aupc,
+            "delta_clean_sym_minus_ro": delta_clean,
+            "delta_max_drop_ro_minus_sym": delta_max_drop,
+        },
         "mask_stats_by_model": mask_stats_by_model,
         "interpretation": (
-            "delta_aupc_sym_minus_ro > 0 means symmetric is more robust (higher AUPC). "
-            "delta_max_drop_ro_minus_sym > 0 means symmetric degrades less (lower max_drop)."
+            "delta_aupc_sym_minus_ro > 0 means symmetric is more robust. "
+            "delta_max_drop_ro_minus_sym > 0 means symmetric degrades less."
         ),
     }
     with open(out_dir / "orientation_sensitivity_report.json", "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2)
 
     print(f"\nReport written to {out_dir / 'orientation_sensitivity_report.json'}")
-    print("\n--- Regime comparisons (symmetric vs random_oriented) ---")
-    for regime, comp in regime_comparisons.items():
-        print(f"  {regime}: delta_AUPC={comp['delta_aupc_sym_minus_ro']:.4f}, delta_clean_ROC={comp['delta_clean_sym_minus_ro']:.4f}, delta_max_drop={comp['delta_max_drop_ro_minus_sym']:.4f}")
+    print("\n--- Single comparison: orient_sym vs orient_ro ---")
+    print(f"  orient_ro (random_oriented): AUPC={results_by_model.get(ro, float('nan')):.4f}, clean={clean_roc_auc_by_model.get(ro, float('nan')):.4f}, max_drop={max_drop_by_model.get(ro, float('nan')):.4f}")
+    print(f"  orient_sym (symmetric):      AUPC={results_by_model.get(sym, float('nan')):.4f}, clean={clean_roc_auc_by_model.get(sym, float('nan')):.4f}, max_drop={max_drop_by_model.get(sym, float('nan')):.4f}")
+    print(f"  delta: AUPC={delta_aupc:.4f}, clean={delta_clean:.4f}, max_drop={delta_max_drop:.4f}")
 
 
 if __name__ == "__main__":

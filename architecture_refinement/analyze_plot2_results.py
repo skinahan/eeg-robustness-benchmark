@@ -484,13 +484,13 @@ def main() -> None:
     sel = _load_selected_architectures(plot2_dir)
 
     # F1: Validate method labels; fail hard on unknown methods
-    known_methods = {"baseline_a", "baseline_b", "tpe", "baseline", "external_random", "random_stratified"}
+    known_methods = {"baseline_a", "baseline_b", "tpe", "baseline", "external_random", "random_stratified", "orientation_sensitivity"}
     methods_in_sel = set(sel["method"].astype(str).unique()) if "method" in sel.columns else set()
     unknown = methods_in_sel - known_methods
     if unknown:
         raise ValueError(
             f"F1: selected_architectures contains unknown method(s): {unknown}. "
-            "Known: baseline_a, baseline_b, tpe, baseline, external_random, random_stratified. "
+            "Known: baseline_a, baseline_b, tpe, baseline, external_random, random_stratified, orientation_sensitivity. "
             "Do not add new methods without updating analysis groups."
         )
 

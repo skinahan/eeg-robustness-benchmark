@@ -227,6 +227,32 @@ def ollivier_ricci_mean(
     return orc, debug
 
 
+def compute_paper3_proxies(
+    G: nx.Graph,
+    *,
+    orc_alpha: float = 0.5,
+    orc_max_edges: Optional[int] = None,
+) -> Tuple[float, float]:
+    """
+    Paper 3 spec-aligned proxy metrics (New_Final_Spec_Paper3_Experiments.sty).
+
+    TE_hat(G) = clip(degree_entropy_raw(G) / 5.0, 0, 1)
+    |ORC|_hat(G) = clip(|ORC(G)| / 10.0, 0, 1)
+
+    Returns:
+        (te_hat, orc_hat) for use in proxy plane and selection.
+    """
+    H_raw = degree_entropy_raw(G)
+    te_hat = float(np.clip(H_raw / 5.0, 0.0, 1.0))
+
+    orc_signed, _ = ollivier_ricci_mean(
+        G, alpha=orc_alpha, max_edges=orc_max_edges, return_edge_curvatures=False
+    )
+    orc_hat = float(np.clip(abs(orc_signed) / 10.0, 0.0, 1.0))
+
+    return te_hat, orc_hat
+
+
 def compute_te_orc(
     G: nx.Graph,
     *,

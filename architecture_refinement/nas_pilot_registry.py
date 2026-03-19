@@ -12,7 +12,11 @@ from architecture_refinement.arbitrary_wiring import WsFlexHiddenWiring
 from models.cnn_wiredcfc_min import create_cnnwiredcfc_min_classifier
 
 
-def register_nas_pilot_models(pilot_dir: str | Path) -> List[str]:
+def register_nas_pilot_models(
+    pilot_dir: str | Path,
+    *,
+    default_hidden_edge_orientation: str | None = None,
+) -> List[str]:
     """
     Register all NAS pilot models found under:
       <pilot_dir>/selected_architectures/*.json
@@ -20,6 +24,10 @@ def register_nas_pilot_models(pilot_dir: str | Path) -> List[str]:
     Each JSON is expected to include at least:
       - model_name
       - wiring_kind (optional; default: "ws_flex")
+      - hidden_edge_orientation (optional; default from default_hidden_edge_orientation or "random_oriented")
+
+    default_hidden_edge_orientation: When set (e.g. "symmetric" for Paper 3), used when
+      JSON lacks "hidden_edge_orientation". Paper 3 spec requires bidirectional wiring.
 
     Supported wiring kinds:
       - "ws_flex" (default): requires `hidden_adj_undirected` and `wiring_seed`
@@ -79,9 +87,14 @@ def register_nas_pilot_models(pilot_dir: str | Path) -> List[str]:
             G = nx.from_numpy_array((hidden_adj != 0).astype(np.int8))
             if not nx.is_connected(G):
                 raise ValueError("Hidden graph is disconnected (pilot constraint).")
-            orientation = str(arch_dict.get("hidden_edge_orientation", "random_oriented"))
+            orientation = str(
+                arch_dict.get(
+                    "hidden_edge_orientation",
+                    default_hidden_edge_orientation or "random_oriented",
+                )
+            )
             if orientation not in ("symmetric", "random_oriented", "as_is"):
-                orientation = "random_oriented"
+                orientation = default_hidden_edge_orientation or "random_oriented"
             return WsFlexHiddenWiring(
                 input_size=1,
                 hidden_graph=G,

@@ -24,6 +24,9 @@ results/
 .idea/
 .vscode/
 
+# Archive directory - omitted from published version (contains ncps-master, topology_optimization, diagnostic scripts, legacy docs)
+_archive/
+
 # Exempt .model_registry from gitignore (track model registration files)
 !.model_registry/
 !.model_registry/**

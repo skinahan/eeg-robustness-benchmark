@@ -1,0 +1,24 @@
+\begin{table}[t]
+  \caption{\textbf{Motor imagery performance and robustness (BNCI2014\_001, Cross-session, Baseline).}
+  Clean ROC-AUC is measured on unperturbed test data. Robustness is summarized by Area Under the Perturbation Curve (AUPC) under Gaussian noise, synthetic EOG artifacts, and channel dropout. Values are mean$\pm$std across seeds. Bold indicates entries whose $(\mu \pm \sigma)$ interval overlaps with the highest $(\mu \pm \sigma)$ interval in that column.}
+  \label{tab:mi_clean_aupc_combined}
+  \begin{center}
+    \begin{small}
+      \begin{sc}
+        \abovespace
+        \begin{tabular}{lcccc}
+          \toprule
+          \textbf{Model} & \textbf{Clean ROC-AUC $\uparrow$} & \textbf{AUPC (Gaussian) $\uparrow$} & \textbf{AUPC (EOG) $\uparrow$} & \textbf{AUPC (Dropout) $\uparrow$} \\
+          \midrule
+          EEGNet      & \textbf{$0.740 \pm 0.164$} & $0.631 \pm 0.008$ & $0.586 \pm 0.019$ & \textbf{$0.606 \pm 0.005$} \\
+          REEGNet     & \textbf{$0.703 \pm 0.146$} & $0.550 \pm 0.007$ & $0.626 \pm 0.014$ & $0.555 \pm 0.007$ \\
+          CNN-NCPv2   & \textbf{$0.737 \pm 0.155$} & $0.580 \pm 0.013$ & $0.615 \pm 0.019$ & $0.577 \pm 0.008$ \\
+          HYDRA       & \textbf{$0.734 \pm 0.183$} & \textbf{$0.667 \pm 0.007$} & \textbf{$0.677 \pm 0.027$} & \textbf{$0.602 \pm 0.003$} \\
+          \bottomrule
+        \end{tabular}
+        \belowspace
+      \end{sc}
+    \end{small}
+  \end{center}
+  \vskip -0.1in
+\end{table}
