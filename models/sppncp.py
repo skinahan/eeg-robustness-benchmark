@@ -1,7 +1,7 @@
 # SPP EEG Feature extractor originally implemented by IMICs-Lab: https://github.com/imics-lab/eeg-transfer-learning
 import math
 from braindecode.models.base import EEGModuleMixin
-from braindecode.models.modules import Ensure4d
+from braindecode.modules import Ensure4d
 from einops.layers.torch import Rearrange
 from ncps.torch import CfC
 from ncps.wirings import AutoNCP
@@ -142,7 +142,8 @@ def create_sppncp_classifier(
         feature_dim=1,         # Output dimension per timestep
         lr=1e-3,
         batch_size=64,
-        weight_decay=1e-3
+        weight_decay=1e-3,
+        **kwargs,
 ):
     from globals import get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS, EEGCLASSIFIER_VERBOSE
 

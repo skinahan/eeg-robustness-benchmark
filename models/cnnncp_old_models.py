@@ -7,7 +7,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from braindecode import EEGClassifier
 import torch
 from braindecode.models.base import EEGModuleMixin
-from braindecode.models.modules import Ensure4d
+from braindecode.modules import Ensure4d
 from torch import nn
 from ncps.torch import LTC, CfC
 from ncps.wirings import AutoNCP

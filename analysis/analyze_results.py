@@ -124,6 +124,7 @@ def format_model_name_for_display(model_name):
         'cnn_ncp': 'CNN-NCP',
         'cnn_ncp_v2': 'CNN-NCP',
         'eegnet': 'EEGNet',
+        'ctnet': 'CTNet',
         'reegnet': 'REEGNet',
         'branched_wiredcfc_arch4': 'HYDRA',
         'hydra': 'HYDRA',

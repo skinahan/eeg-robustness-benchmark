@@ -258,7 +258,7 @@ class DIVANCP(EEGModuleMixin, nn.Module):
                 nn.init.constant_(module.bias, 0.0)
 
 
-def create_diva_ncp_classifier(n_chans, n_times, n_outputs):
+def create_diva_ncp_classifier(n_chans, n_times, n_outputs, **kwargs):
     """Create the official CNNCfCv2 classifier."""
     seed = get_seed()
     gradient_clip_value = 1.0

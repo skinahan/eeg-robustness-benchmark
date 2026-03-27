@@ -391,7 +391,7 @@ class DIVAInspiredEEG(EEGModuleMixin, nn.Module):
 
 # ---------- Helper to build a classifier (Skorch/Braindecode) ----------
 
-def create_diva_full_classifier(n_chans, n_times, n_outputs):
+def create_diva_full_classifier(n_chans, n_times, n_outputs, **kwargs):
     """
     Create the DIVA Full (DIVAInspiredEEG) classifier.
     

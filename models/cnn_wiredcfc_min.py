@@ -285,6 +285,7 @@ def create_cnnwiredcfc_min_classifier(
     mixed_memory: bool = True,
     gradient_clip_value: float = 1.0,
     use_torch_compile: bool = False,
+    **kwargs,
 ):
     """Factory for the NAS pilot minimal CNN→WiredCfC classifier."""
     seed = get_seed()

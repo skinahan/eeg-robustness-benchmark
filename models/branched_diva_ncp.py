@@ -126,7 +126,7 @@ class BranchedDIVANCP(BranchedDIVABase):
         return x_seq
 
 
-def create_branched_diva_ncp_classifier(n_chans, n_times, n_outputs):
+def create_branched_diva_ncp_classifier(n_chans, n_times, n_outputs, **kwargs):
     """Create the BranchedDIVANCP classifier."""
     seed = get_seed()
     gradient_clip_value = 1.0

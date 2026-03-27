@@ -787,6 +787,15 @@ class UnifiedExperimentRunner:
             n_times = X_sample.shape[2]
         
         return n_chans, n_times
+
+    def _model_factory_kwargs(self, n_chans: int, n_times: int, n_outputs: int) -> dict:
+        """Args for registry model factories, including sfreq for Braindecode EEGModuleMixin models (e.g. CTNet)."""
+        return {
+            "n_chans": n_chans,
+            "n_times": n_times,
+            "n_outputs": n_outputs,
+            "sfreq": get_dataset_sampling_rate(self.dataset),
+        }
     
     def _create_model(self, n_chans: int, n_times: int, n_outputs: int = None, try_cache: bool = True, fold_idx: Optional[int] = None):
         """
@@ -871,7 +880,7 @@ class UnifiedExperimentRunner:
             print(f"[CACHE] Cache loading disabled (current_subject={self.current_subject}, current_session={self.current_session})")
         
         # Create new model
-        model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
+        model = self.model_fn(**self._model_factory_kwargs(n_chans, n_times, n_outputs))
         assert(model is not None)
         # Set common model parameters with dataset-specific max_epochs
         # Pass eval_mode to get CrossSubject-specific epoch limit (20 epochs)
@@ -931,7 +940,7 @@ class UnifiedExperimentRunner:
                         n_outputs = 4
                     else:
                         n_outputs = 2  # MotorImagery and BI2015a (P300) both have 2 classes
-                base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
+                base_model = self.model_fn(**self._model_factory_kwargs(n_chans, n_times, n_outputs))
                 base_model.max_epochs = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
                 return TrainOnlyNoiseClassifier(
                     base_pipeline=base_model,
@@ -946,7 +955,7 @@ class UnifiedExperimentRunner:
                         n_outputs = 4
                     else:
                         n_outputs = 2  # MotorImagery and BI2015a (P300) both have 2 classes
-                base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
+                base_model = self.model_fn(**self._model_factory_kwargs(n_chans, n_times, n_outputs))
                 base_model.max_epochs = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
                 return ConcatenatedNoiseAugmenter(
                     base_pipeline=base_model,
@@ -961,7 +970,7 @@ class UnifiedExperimentRunner:
                         n_outputs = 4
                     else:
                         n_outputs = 2  # MotorImagery and BI2015a (P300) both have 2 classes
-                base_model = self.model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
+                base_model = self.model_fn(**self._model_factory_kwargs(n_chans, n_times, n_outputs))
                 base_model.max_epochs = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
                 return base_model
         else:

@@ -19,6 +19,7 @@ from skorch.helper import SliceDataset
 from sklearn.metrics import roc_auc_score
 
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
+from config import get_dataset_sampling_rate
 
 
 def format_params(param_block, prefix):
@@ -364,6 +365,8 @@ def run_optuna_stage(
         # Note: Lee2019_SSVEP uses 1000 Hz, so resample should be provided explicitly
         resample = 250.0
 
+    sfreq = float(resample)
+
     check_time = False
     
     # Determine n_chans and n_times from input data
@@ -377,7 +380,7 @@ def run_optuna_stage(
         print(f"[INFO] Auto-detected n_outputs={n_outputs} from number of unique classes in y")
     
     # Use a mutable container to allow recreating the model inside objective() when wiring_arch_index changes
-    model_container = [model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)]
+    model_container = [model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs, sfreq=sfreq)]
     # model_container[0].verbose = 0
     # model_container[0].callbacks = []
     # model_container[0].train_split = None
@@ -410,7 +413,8 @@ def run_optuna_stage(
                 n_chans=n_chans, 
                 n_times=n_times, 
                 n_outputs=n_outputs,
-                wiring_arch_index=wiring_arch_index
+                wiring_arch_index=wiring_arch_index,
+                sfreq=sfreq,
             )
         
         model = model_container[0]
@@ -515,6 +519,8 @@ def alternate_optuna_stage(
         # Default to 250 Hz (common for MotorImagery and ERP datasets)
         # Note: Lee2019_SSVEP uses 1000 Hz, so resample should be provided explicitly
         resample = 250.0
+
+    sfreq = float(get_dataset_sampling_rate(dataset)) if dataset else float(resample)
     
     # Determine n_chans and n_times from input data
     n_chans = X_train.shape[1]
@@ -522,7 +528,7 @@ def alternate_optuna_stage(
     
     # Determine n_outputs from y if not provided
     n_outputs = len(np.unique(y_train))
-    model = model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
+    model = model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs, sfreq=sfreq)
     def objective(trial):
         # Sample hyperparameters
         params = param_space_fn(trial, param_prefix)
@@ -1363,6 +1369,7 @@ def get_model_architecture_space(model_name):
     
     architecture_registry = {
         "eegnet": eegnet_architecture_space,
+        "ctnet": ctnet_architecture_space,
         "reegnet": reegnet_architecture_space,
         "cnn_ncp": cnn_ncp_architecture_space,
         "cnn_ncp_v2": cnn_ncp_architecture_space,
@@ -1432,6 +1439,7 @@ def get_model_training_space(model_name):
     
     training_registry = {
         "eegnet": eegnet_training_space,
+        "ctnet": ctnet_training_space,
         "reegnet": reegnet_training_space,
         "cnn_ncp": cnn_ncp_training_space,
         "cnn_ncp_v2": cnn_ncp_training_space,
@@ -1662,6 +1670,38 @@ def eegnet_training_space(trial, prefix):
         f"{prefix}module__drop_prob": trial.suggest_float(f"{prefix}module__drop_prob", 0.1, 0.5),
         f"{prefix}optimizer__lr": trial.suggest_loguniform(f"{prefix}optimizer__lr", 1e-6, 1e-2),
         f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(f"{prefix}optimizer__weight_decay", 1e-6, 1e-2),
+        f"{prefix}batch_size": trial.suggest_categorical(f"{prefix}batch_size", [4, 8, 16, 32, 64]),
+    }
+
+
+def ctnet_architecture_space(trial, prefix):
+    """Braindecode CTNet: https://braindecode.org/stable/generated/braindecode.models.CTNet.html"""
+    return {
+        f"{prefix}module__num_heads": trial.suggest_categorical(
+            f"{prefix}module__num_heads", [2, 4, 8]
+        ),
+        f"{prefix}module__embed_dim": trial.suggest_categorical(
+            f"{prefix}module__embed_dim", [32, 40, 48, 64]
+        ),
+        f"{prefix}module__num_layers": trial.suggest_int(f"{prefix}module__num_layers", 4, 8),
+        f"{prefix}module__kernel_size": trial.suggest_int(
+            f"{prefix}module__kernel_size", 32, 128, step=16
+        ),
+    }
+
+
+def ctnet_training_space(trial, prefix):
+    return {
+        f"{prefix}module__cnn_drop_prob": trial.suggest_float(
+            f"{prefix}module__cnn_drop_prob", 0.1, 0.5
+        ),
+        f"{prefix}module__final_drop_prob": trial.suggest_float(
+            f"{prefix}module__final_drop_prob", 0.2, 0.6
+        ),
+        f"{prefix}optimizer__lr": trial.suggest_loguniform(f"{prefix}optimizer__lr", 1e-6, 1e-2),
+        f"{prefix}optimizer__weight_decay": trial.suggest_loguniform(
+            f"{prefix}optimizer__weight_decay", 1e-6, 1e-2
+        ),
         f"{prefix}batch_size": trial.suggest_categorical(f"{prefix}batch_size", [4, 8, 16, 32, 64]),
     }
 
@@ -1966,13 +2006,15 @@ def multi_objective_optuna_stage(
     if resample is None:
         resample = 250.0
 
+    sfreq = float(resample)
+
     # Determine n_chans and n_times from input data
     n_chans = X_train.shape[1]
     n_times = X_train.shape[2] if len(X_train.shape) > 2 else int(resample * 4)
     
     # Determine n_outputs from y if not provided
     n_outputs = len(np.unique(y_train))
-    model = model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs)
+    model = model_fn(n_chans=n_chans, n_times=n_times, n_outputs=n_outputs, sfreq=sfreq)
     model.verbose = 1
     model.callbacks = []
     model.train_split = None

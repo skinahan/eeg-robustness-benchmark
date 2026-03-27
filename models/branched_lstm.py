@@ -125,7 +125,7 @@ class BranchedLSTM(BranchedDIVABase):
         return x_seq
 
 
-def create_branched_lstm_classifier(n_chans, n_times, n_outputs):
+def create_branched_lstm_classifier(n_chans, n_times, n_outputs, **kwargs):
     """Create the BranchedLSTM classifier."""
     seed = get_seed()
     gradient_clip_value = 1.0

@@ -5,7 +5,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from braindecode import EEGClassifier
 import torch
 from braindecode.models.base import EEGModuleMixin
-from braindecode.models.modules import Ensure4d
+from braindecode.modules import Ensure4d
 from torch import nn
 from ncps.torch import LTC, CfC
 from ncps.wirings import AutoNCP
@@ -224,7 +224,7 @@ import torch.nn as nn
 from torch.nn.utils.parametrizations import spectral_norm
 
 # Assumes you have these in scope, as in your original:
-# from braindecode.models.modules import EEGModuleMixin
+# EEGModuleMixin: braindecode.models.base
 # from ncps.torch import CfC, AutoNCP
 # from your_utils import get_seed   # or replace with a fixed seed if preferred
 
@@ -1626,7 +1626,7 @@ class CNNWiredCfC(EEGModuleMixin, nn.Module):
         return self.wiring.get_wiring_summary()
 
 
-def create_cnnncfc_v2_classifier(n_chans, n_times, n_outputs):
+def create_cnnncfc_v2_classifier(n_chans, n_times, n_outputs, **kwargs):
     """Create the official CNNCfCv2 classifier."""
     seed = get_seed()
     gradient_clip_value = 1.0
@@ -1668,7 +1668,7 @@ def create_cnnncfc_v2_classifier(n_chans, n_times, n_outputs):
     return classifier
 
 
-def create_cnnncfc_compact_classifier(n_chans, n_times, n_outputs):
+def create_cnnncfc_compact_classifier(n_chans, n_times, n_outputs, **kwargs):
     """Create the compact CNNCfC_Compact classifier."""
     # Create a custom classifier for the ultra-simplified model
     from braindecode import EEGClassifier
@@ -1719,7 +1719,8 @@ def create_cnnncpv2_classifier(
         lr=1e-3,
         batch_size=32,
         weight_decay=0,
-        gradient_clip_value=1.0
+        gradient_clip_value=1.0,
+        **kwargs,
 ):
     classifier = CNNNCPv4GaussianRobust
     seed = get_seed()
@@ -1771,6 +1772,7 @@ def create_cnnncp_classifier(
         gradient_clip_value=1.0,
         max_epochs=None,
         early_stopping=True,
+        **kwargs,
     ):
         classifier = CNNNCPv3
         seed = get_seed()
@@ -1830,6 +1832,7 @@ def create_cnnncp_residual_skip_classifier(
         gradient_clip_value=1.0,
         max_epochs=None,
         early_stopping=True,
+        **kwargs,
 ):
     """Same training setup as create_cnnncp_classifier; module is CNNNCPv3ResidualSkip."""
     classifier = CNNNCPv3ResidualSkip
@@ -1889,7 +1892,8 @@ def create_cnnsmallworld_classifier(
         temporal_stride=4,
         max_seq_length=250,
         n_modules=4,
-        rewiring_prob=0.2
+        rewiring_prob=0.2,
+        **kwargs,
 ):
     """Create a CNNSmallWorld classifier with ModularSmallWorldWiring."""
     if net_size < n_outputs + 3:
@@ -2089,7 +2093,8 @@ def create_cnnwiredcfc_classifier(
         temporal_kernel_size=3,
         temporal_stride=4,
         max_seq_length=250,
-        mixed_memory=True  # Add mixed_memory parameter
+        mixed_memory=True,  # Add mixed_memory parameter
+        **kwargs,
 ):
     """Create a CNNWiredCfC classifier with arbitrary wiring."""
     seed = get_seed()
@@ -2138,7 +2143,7 @@ def create_cnnwiredcfc_classifier(
     return cnn_wiredcfc_net
 
 
-def create_ncp_only_classifier(n_chans, n_times, n_outputs, gradient_clip_value=1.0):
+def create_ncp_only_classifier(n_chans, n_times, n_outputs, gradient_clip_value=1.0, **kwargs):
     """Create a NCPOnlyModel classifier."""
     seed = get_seed()
     criterion = torch.nn.CrossEntropyLoss
@@ -2177,7 +2182,7 @@ def create_ncp_only_classifier(n_chans, n_times, n_outputs, gradient_clip_value=
     return ncp_only_net
 
 
-def create_cfc_only_classifier(n_chans, n_times, n_outputs, gradient_clip_value=1.0):
+def create_cfc_only_classifier(n_chans, n_times, n_outputs, gradient_clip_value=1.0, **kwargs):
     """Create a CfCOnlyModel classifier."""
     seed = get_seed()
     criterion = torch.nn.CrossEntropyLoss

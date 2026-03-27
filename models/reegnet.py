@@ -360,7 +360,7 @@ class REEGNet(EEGModuleMixin, nn.Sequential):
         return x  # no softmax
 
 
-def create_reegnet_classifier(n_chans=22, n_times=1001, n_outputs=2):
+def create_reegnet_classifier(n_chans=22, n_times=1001, n_outputs=2, **kwargs):
     seed = get_seed()
     return EEGClassifier(
         REEGNet,
