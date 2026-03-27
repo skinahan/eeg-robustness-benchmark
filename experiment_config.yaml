@@ -3,20 +3,25 @@
 
 # Dataset configurations
 datasets:
-  BNCI2014_001:
-    name: "BNCI2014_001"
-    paradigm: "MotorImagery"
-    subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9]  # All subjects
+  # BNCI2014_001:
+  #   name: "BNCI2014_001"
+  #   paradigm: "MotorImagery"
+  #   subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9]  # All subjects
     
-  Lee2019_SSVEP:
-    name: "Lee2019_SSVEP"
-    paradigm: "SSVEP"
+  Lee2019_MI:
+    name: "Lee2019_MI"
+    paradigm: "MotorImagery"
     subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54]
 
-  BI2015a:
-    name: "BI2015a"
-    paradigm: "ERP"
-    subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43]
+  # Lee2019_SSVEP:
+  #   name: "Lee2019_SSVEP"
+  #   paradigm: "SSVEP"
+  #   subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54]
+
+  # BI2015a:
+  #   name: "BI2015a"
+  #   paradigm: "ERP"
+  #   subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43]
     
 
 # Model configurations
@@ -51,17 +56,17 @@ models:
   # Ablation study models
   # Baseline (already registered above)
   # Ablation 1-4: Single component ablations
-   - name: "branched_wiredcfc_arch4_no_carry_gate"
-     display_name: "HYDRA - No Carry Gate"
+  #  - name: "branched_wiredcfc_arch4_no_carry_gate"
+  #    display_name: "HYDRA - No Carry Gate"
      
-   - name: "branched_wiredcfc_arch4_no_branching"
-     display_name: "HYDRA - No Branching"
+  #  - name: "branched_wiredcfc_arch4_no_branching"
+  #    display_name: "HYDRA - No Branching"
      
-   - name: "branched_lstm_arch4_equivalent"
-     display_name: "HYDRA - LSTM Equivalent"
+  #  - name: "branched_lstm_arch4_equivalent"
+  #    display_name: "HYDRA - LSTM Equivalent"
      
-   - name: "branched_wiredcfc_arch4_no_snr_gate"
-     display_name: "HYDRA - No SNR Gate"
+  #  - name: "branched_wiredcfc_arch4_no_snr_gate"
+  #    display_name: "HYDRA - No SNR Gate"
   
   # Ablation 5-8: Combination ablations (CfC-based)
   #  - name: "branched_wiredcfc_arch4_no_carry_gate_no_branching"
@@ -117,14 +122,14 @@ models:
 # Evaluation modes
 eval_modes:
   - "CrossSession"
-  - "WithinSession"
-  - "CrossSubject"
+  # - "WithinSession"
+  # - "CrossSubject"
 
 noise_types:
   - "gaussian"
   - "dropout"
   - "eog"
-  - "spike"
+  # - "spike"
 
 # Noise perturbation configuration
 noise_perturbation:

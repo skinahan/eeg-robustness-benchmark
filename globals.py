@@ -86,14 +86,14 @@ def get_max_epochs_for_dataset(dataset: str, eval_mode: str = None) -> int:
     Returns:
         int: Max epochs for the dataset and evaluation mode.
              - CrossSubject: Always 20 (for performance reasons)
-             - Lee2019_SSVEP and BI2015a: 100
+             - Lee2019_SSVEP, Lee2019_MI, and BI2015a: 100
              - Otherwise: 200
     """
     # CrossSubject evaluation is much slower, so use fewer epochs
     if eval_mode == "CrossSubject":
         return 20
     
-    if dataset in ["Lee2019_SSVEP", "BI2015a"]:
+    if dataset in ["Lee2019_SSVEP", "Lee2019_MI", "BI2015a"]:
         return 100
     return DEFAULT_MAX_EPOCHS
 
