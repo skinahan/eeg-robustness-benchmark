@@ -9,7 +9,7 @@ This script provides a complete automation solution for EEG experiments:
 4. Generates shell scripts with missing experiment commands
 
 Usage:
-    python experiment_automation.py [--config CONFIG_FILE] [--output-dir OUTPUT_DIR]
+    python experiment_automation.py [--config CONFIG_FILE] [--output-dir OUTPUT_DIR] [--no-tuned]
 """
 
 import os
@@ -35,7 +35,7 @@ from tqdm import tqdm
 class ExperimentAutomation:
     """Main class for experiment automation."""
     
-    def __init__(self, config_file: str = "experiment_config.yaml", preaggregated_results_file: str = None, local: bool = False, use_cached: bool = False, use_optimized: bool = True, legacy: bool = False):
+    def __init__(self, config_file: str = "experiment_config.yaml", preaggregated_results_file: str = None, local: bool = False, use_cached: bool = False, use_optimized: bool = True, legacy: bool = False, no_tuned: bool = False):
         """Initialize the automation system with configuration.
         
         Args:
@@ -45,9 +45,13 @@ class ExperimentAutomation:
             use_cached: If True, use cached processed results
             use_optimized: If True, use optimized multirun job-level approach (default: True)
             legacy: If True, use legacy experimental protocol (no subject chunking). Can also be set in config file.
+            no_tuned: If True, only baseline (tune=False) jobs are expected; tuned multiruns are omitted.
         """
         self.config_file = config_file
         self.config = self._load_config()
+        self.tune_flags = [False] if no_tuned else [False, True]
+        if no_tuned:
+            print("[INFO] --no-tuned: expecting only baseline (non-tuned) multirun jobs")
         # Legacy mode can be set via config file or parameter (parameter takes precedence)
         config_legacy = self.config.get('experiment_settings', {}).get('legacy', False)
         self.legacy = legacy if legacy else config_legacy
@@ -285,7 +289,7 @@ class ExperimentAutomation:
         # Pre-extract values for faster iteration
         dataset_items = list(datasets.items())
         model_names = [model['name'] for model in models]
-        tune_flags = [False, True]
+        tune_flags = self.tune_flags
         
         print(f"[INFO] Generating combinations from:")
         print(f"   - Datasets: {len(dataset_items)}")
@@ -294,7 +298,7 @@ class ExperimentAutomation:
         print(f"   - Seeds: {len(seeds)}")
         print(f"   - Noise types: {len(noise_types)}")
         print(f"   - Intensities: Dynamic (based on saturation points)")
-        print(f"   - Tune flags: {len(tune_flags)}")
+        print(f"   - Tune flags: {len(tune_flags)} ({tune_flags})")
         
         # Generate combinations using nested loops since intensities are now dynamic
         # We can't use itertools.product with dynamic intensities
@@ -390,7 +394,7 @@ class ExperimentAutomation:
         eval_modes = self.config['eval_modes']
         seeds = self.config['seeds']
         noise_types = self.config['noise_types']
-        tune_flags = [False, True]
+        tune_flags = self.tune_flags
         
         expected_jobs = []
         
@@ -401,7 +405,7 @@ class ExperimentAutomation:
         print(f"   - Models: {len(model_names)}")
         print(f"   - Eval modes: {len(eval_modes)}")
         print(f"   - Seeds: {len(seeds)}")
-        print(f"   - Tune flags: {len(tune_flags)}")
+        print(f"   - Tune flags: {len(tune_flags)} ({tune_flags})")
         
         for dataset_name, dataset_config in datasets.items():
             subjects = dataset_config['subjects']
@@ -1917,7 +1921,7 @@ class ExperimentAutomation:
         models = [model['name'] for model in self.config['models']]
         eval_modes = self.config['eval_modes']
         seeds = self.config['seeds']
-        tune_flags = [False, True]
+        tune_flags = self.tune_flags
         
         # Generate expected multirun jobs to check against
         expected_jobs = self.generate_expected_multirun_jobs()
@@ -2124,12 +2128,17 @@ def main():
                        help="Use original approach (generates all individual combinations). Default is optimized approach.")
     parser.add_argument("--legacy", action="store_true",
                        help="Use legacy experimental protocol (disables subject chunking and other memory optimizations to match original behavior)")
+    parser.add_argument("--no-tuned", action="store_true", dest="no_tuned",
+                       help="Only consider baseline (non-tuned) multirun jobs; omit tuned runs from expected jobs and generated scripts")
     
     args = parser.parse_args()
     
     # Initialize automation system
     use_optimized = not args.use_original  # Default to optimized unless --use-original is specified
-    automation = ExperimentAutomation(args.config, args.preaggregated_results, args.local, args.use_cached, use_optimized, legacy=args.legacy)
+    automation = ExperimentAutomation(
+        args.config, args.preaggregated_results, args.local, args.use_cached, use_optimized,
+        legacy=args.legacy, no_tuned=args.no_tuned,
+    )
     
     if args.aggregate_only:
         # Only aggregate results (ignore pre-aggregated file for this mode)

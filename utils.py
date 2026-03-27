@@ -68,6 +68,22 @@ def short_run_id(model_name: str, length: int = 12) -> str:
     return h[:length]
 
 
+def results_paradigm_folder(dataset: str) -> str:
+    """
+    Top-level directory name under results/ for unified runner outputs:
+    results/<ParadigmFolder>/<dataset>/...
+
+    Uses exact MOABB dataset codes only — do not infer via substrings like 'Lee2019',
+    because Lee2019_MI and Lee2019_SSVEP share a prefix but use different folders
+    (MotorImagery vs SSVEP).
+    """
+    if dataset == "Lee2019_SSVEP":
+        return "SSVEP"
+    if dataset == "BI2015a":
+        return "ERP"
+    return "MotorImagery"
+
+
 def create_output_path(model, seed, subject, session, mode, session_type='WithinSessionEvaluation', paradigm='MotorImagery', dataset='BNCI2014_001', others=[], use_short_run_id=True):
     if not session_type.endswith("Evaluation"):
         session_type = f"{session_type}Evaluation"

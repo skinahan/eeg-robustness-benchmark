@@ -20,6 +20,7 @@ from models.branched_wiredcfc import create_branched_wiredcfc_classifier
 from models.hydra import create_hydra_v2_classifier
 from models.diva_full import create_diva_full_classifier
 from models.sppncp import create_sppncp_classifier
+from models.ctnet import create_ctnet_classifier
 
 # Import the integration functions for CNNWiredCfC models
 from architecture_refinement.integrate_with_evaluation import create_model_factory_from_architecture
@@ -77,6 +78,7 @@ def get_base_model_registry():
     """Get the base model registry with standard models."""
     return {
         "eegnet": create_eegnet_classifier,
+        "ctnet": create_ctnet_classifier,
         "reegnet": create_reegnet_classifier,
         "cnn_ncp": create_cnnncp_classifier,
         "cnn_ncp_residual_skip": create_cnnncp_residual_skip_classifier,
