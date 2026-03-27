@@ -246,7 +246,11 @@ def main() -> int:
     )
     parser.add_argument("--target-snr-db", type=float, default=-5.0)
     parser.add_argument("--python", type=str, default=sys.executable)
-    parser.add_argument("--overwrite", action="store_true")
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Forward to unified_experiment_runner: re-run even when cached results exist.",
+    )
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument(
         "--no-hail-mary-stability",

@@ -19,6 +19,8 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+from architecture_refinement.paper3.hail_mary_cli import add_overwrite_arguments, can_write_output
+
 VAL_KEYS = ("valid_roc_auc", "validation_roc_auc", "valid_auc", "roc_auc", "val_roc_auc")
 TRAIN_LOSS_KEYS = ("train_loss", "loss")
 
@@ -160,6 +162,7 @@ def run_cli() -> int:
     parser.add_argument("--seeds", type=int, nargs="*", default=None)
     parser.add_argument("--checkpoint-epochs", type=str, default="5,10,20,50")
     parser.add_argument("--output-csv", type=str, default="architecture_refinement/outputs/hail_mary/analysis/learnability_longform.csv")
+    add_overwrite_arguments(parser)
     args = parser.parse_args()
 
     rr = Path(args.results_root)
@@ -183,6 +186,8 @@ def run_cli() -> int:
     out = Path(args.output_csv)
     if not out.is_absolute():
         out = _REPO_ROOT / out
+    if not can_write_output(out, overwrite=args.overwrite):
+        return 0
     out.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(out, index=False)
     print(f"Wrote {out} ({len(df)} rows)")

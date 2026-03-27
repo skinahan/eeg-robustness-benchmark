@@ -17,6 +17,8 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+from architecture_refinement.paper3.hail_mary_cli import add_overwrite_arguments, can_write_output
+
 
 def _find_perturb_csvs(run_dir: Path) -> List[Path]:
     if not run_dir.exists():
@@ -160,6 +162,7 @@ def main() -> int:
     parser.add_argument("--seeds", type=int, nargs="*", default=None)
     parser.add_argument("--noise-type", type=str, default="gaussian")
     parser.add_argument("--output-csv", type=str, default="architecture_refinement/outputs/hail_mary/analysis/sensitivity_longform.csv")
+    add_overwrite_arguments(parser)
     args = parser.parse_args()
 
     rr = Path(args.results_root)
@@ -182,6 +185,8 @@ def main() -> int:
     out = Path(args.output_csv)
     if not out.is_absolute():
         out = _REPO_ROOT / out
+    if not can_write_output(out, overwrite=args.overwrite):
+        return 0
     out.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(out, index=False)
     print(f"Wrote {out} ({len(df)} rows)")

@@ -24,6 +24,7 @@ from architecture_refinement.config import default_config
 from architecture_refinement.metrics_te_orc import compute_paper3_proxies
 from architecture_refinement.topology_analyzer import TopologyAnalyzer
 from architecture_refinement.ws_flex_generator import build_plain_ws_flex
+from architecture_refinement.paper3.hail_mary_cli import add_overwrite_arguments
 
 DEFAULT_H = 32
 # Document §7: sparse k=4, medium k=10, dense k=16; p ∈ {0.05, 0.30, 0.80}
@@ -167,8 +168,13 @@ def main() -> int:
         help="Writes topology_manifest.* and hail_mary_pilot/selected_architectures/",
     )
     parser.add_argument("--H", type=int, default=DEFAULT_H)
+    add_overwrite_arguments(parser)
     args = parser.parse_args()
     out = _REPO_ROOT / args.output_dir if not Path(args.output_dir).is_absolute() else Path(args.output_dir)
+    manifest = out / "topology_manifest.json"
+    if not args.overwrite and manifest.exists():
+        print(f"[skip] {manifest} exists (use --overwrite to rebuild)")
+        return 0
     res = run_build_panel(out, H=args.H)
     print(json.dumps(res["summary"], indent=2))
     print(f"Wrote {res['csv']}")

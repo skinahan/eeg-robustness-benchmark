@@ -18,6 +18,8 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+from architecture_refinement.paper3.hail_mary_cli import add_overwrite_arguments, can_write_output
+
 
 def load_topology_manifest(panel_dir: Path) -> pd.DataFrame:
     mj = panel_dir / "topology_manifest.json"
@@ -174,6 +176,7 @@ def main() -> int:
     parser.add_argument("--sensitivity-csv", type=str, default="architecture_refinement/outputs/hail_mary/analysis/sensitivity_longform.csv")
     parser.add_argument("--output-dir", type=str, default="architecture_refinement/outputs/hail_mary/analysis")
     parser.add_argument("--no-figures", action="store_true")
+    add_overwrite_arguments(parser)
     args = parser.parse_args()
 
     panel = Path(args.topology_panel_dir)
@@ -193,13 +196,16 @@ def main() -> int:
     if not out_dir.is_absolute():
         out_dir = _REPO_ROOT / out_dir
 
+    merged_path = out_dir / "merged_run_table.csv"
+    if not can_write_output(merged_path, overwrite=args.overwrite):
+        return 0
+
     topo = load_topology_manifest(panel)
     learn = pd.read_csv(learn_path) if learn_path.exists() else pd.DataFrame()
     stab = pd.read_csv(stab_path) if stab_path.exists() else None
     sens = pd.read_csv(sens_path) if sens_path.exists() else None
 
     merged = merge_tables(topo, learn, stab, sens)
-    merged_path = out_dir / "merged_run_table.csv"
     out_dir.mkdir(parents=True, exist_ok=True)
     merged.to_csv(merged_path, index=False)
 
