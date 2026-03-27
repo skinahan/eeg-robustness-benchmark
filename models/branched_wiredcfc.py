@@ -229,7 +229,14 @@ def create_branched_wiredcfc_classifier(n_chans, n_times, n_outputs, wiring, **k
     
     # Update with any provided parameters
     default_params.update(kwargs)
-    
+
+    # Optional bin params (e.g. bin_len=512, bin_stride=512 for single-bin/unbranched benchmark)
+    extra_module = {}
+    if 'bin_len' in default_params:
+        extra_module['module__bin_len'] = default_params['bin_len']
+    if 'bin_stride' in default_params:
+        extra_module['module__bin_stride'] = default_params['bin_stride']
+
     classifier = EEGClassifier(
         BranchedWiredCfC,
         criterion=torch.nn.CrossEntropyLoss,
@@ -254,6 +261,7 @@ def create_branched_wiredcfc_classifier(n_chans, n_times, n_outputs, wiring, **k
         module__backbone_units=default_params['backbone_units'],
         module__backbone_layers=default_params['backbone_layers'],
         module__backbone_dropout=default_params['backbone_dropout'],
+        **extra_module,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
         callbacks=[

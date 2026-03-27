@@ -1106,6 +1106,7 @@ def collect_all_results_unified():
     # Define all dataset-paradigm combinations
     dataset_paradigms = [
         ("MotorImagery", "BNCI2014_001"),
+        ("MotorImagery", "Lee2019_MI"),
         ("SSVEP", "Lee2019_SSVEP"),
         ("ERP", "BI2015a")
     ]

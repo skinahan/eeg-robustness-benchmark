@@ -58,7 +58,7 @@ from globals import set_seeds, get_seed
 from models.branched_lstm import create_branched_lstm_classifier
 from architecture_refinement.arbitrary_wiring import load_architecture_from_file
 from evaluation.unified_experiment_runner import UnifiedExperimentRunner
-from moabb.datasets import BNCI2014_001, Lee2019_SSVEP, BI2015a
+from moabb.datasets import BNCI2014_001, Lee2019_MI, Lee2019_SSVEP, BI2015a
 
 # Import ablation model variants (from same directory)
 # Use absolute import since project_root is added to sys.path
@@ -280,6 +280,8 @@ def run_ablation_experiment(
         try:
             if dataset == "BNCI2014_001":
                 dataset_obj = BNCI2014_001()
+            elif dataset == "Lee2019_MI":
+                dataset_obj = Lee2019_MI()
             elif dataset == "Lee2019_SSVEP":
                 dataset_obj = Lee2019_SSVEP()
             elif dataset == "BI2015a":
@@ -298,6 +300,8 @@ def run_ablation_experiment(
             # Default subjects based on dataset
             if dataset == "BNCI2014_001":
                 subjects = list(range(1, 10))
+            elif dataset == "Lee2019_MI":
+                subjects = list(range(1, 55))  # 54 subjects
             elif dataset == "Lee2019_SSVEP":
                 subjects = list(range(1, 55))  # 54 subjects
             elif dataset == "BI2015a":
@@ -803,7 +807,7 @@ Examples:
         "--dataset",
         type=str,
         default=DEFAULT_DATASET,
-        choices=["BNCI2014_001", "Lee2019_SSVEP", "BI2015a"],
+        choices=["BNCI2014_001", "Lee2019_MI", "Lee2019_SSVEP", "BI2015a"],
         help="Dataset to use for the experiment"
     )
     parser.add_argument(

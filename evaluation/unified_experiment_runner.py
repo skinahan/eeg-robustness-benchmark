@@ -65,7 +65,7 @@ from evaluation.chunked_subject_trainer import train_with_subject_chunks, evalua
 import json
 
 # Import MOABB components
-from moabb.datasets import BNCI2014_001, Lee2019_SSVEP, BI2015a
+from moabb.datasets import BNCI2014_001, Lee2019_MI, Lee2019_SSVEP, BI2015a
 from moabb.evaluations import WithinSessionEvaluation, CrossSessionEvaluation
 from moabb.evaluations.utils import create_save_path, save_model_cv, save_model_list
 from mne.epochs import BaseEpochs
@@ -659,7 +659,9 @@ class UnifiedExperimentRunner:
         if noise_type in ("gain_drift", "offset_drift"):
             pass  # use default gain_drift_rho, offset_drift_rho
         if noise_type == "temporal_jitter":
-            kwargs["jitter_sfreq"] = float(getattr(self, "test_perturb_jitter_sfreq", 250.0))
+            kwargs["jitter_sfreq"] = float(
+                getattr(self, "test_perturb_jitter_sfreq", get_dataset_sampling_rate(self.dataset))
+            )
         if noise_type == "spatial_dropout":
             kwargs["spatial_dropout_cluster_size"] = float(getattr(self, "test_perturb_spatial_dropout_cluster_size", 0.25))
         if noise_type == "ar1_plus_gain_drift":
@@ -674,6 +676,10 @@ class UnifiedExperimentRunner:
         """Setup dataset and paradigm based on configuration."""
         if self.dataset == "BNCI2014_001":
             self.dataset_obj = BNCI2014_001()
+            self.dataset_obj.subject_list = self.subjects
+            self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
+        elif self.dataset == "Lee2019_MI":
+            self.dataset_obj = Lee2019_MI()
             self.dataset_obj.subject_list = self.subjects
             self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
         elif self.dataset == "Lee2019_SSVEP":
@@ -2952,7 +2958,7 @@ def main():
     # Note: We validate at runtime in UnifiedExperimentRunner.__init__ instead of here
     # to allow for custom model variants registered after import
     parser.add_argument("--model", type=str, required=True)
-    parser.add_argument("--dataset", type=str, default="BNCI2014_001", choices=["BNCI2014_001", "Lee2019_SSVEP", "BI2015a"])
+    parser.add_argument("--dataset", type=str, default="BNCI2014_001", choices=["BNCI2014_001", "Lee2019_MI", "Lee2019_SSVEP", "BI2015a"])
     parser.add_argument("--subjects", type=int, nargs="+", required=True)
     parser.add_argument("--mode", type=str, required=True, 
                         choices=["test_perturb", "multirun", "aggregate_only"])
@@ -3063,7 +3069,12 @@ def main():
         action="store_true",
         help="Disable the underfitting-triggered retraining pass (keeps training protocol fixed).",
     )
-    
+    parser.add_argument(
+        "--hail_mary_stability",
+        action="store_true",
+        help="Hail Mary Ch.5: log batch_train_loss_var per epoch via CfC callback (sets HAIL_MARY_STABILITY).",
+    )
+
     # Memory management: Check for environment variable to set memory limit
     max_memory_gb = os.environ.get('PYTHON_MAX_MEMORY_GB')
     if max_memory_gb:
@@ -3077,6 +3088,9 @@ def main():
         max_memory_mb = None
     
     args = parser.parse_args()
+
+    if getattr(args, "hail_mary_stability", False):
+        os.environ["HAIL_MARY_STABILITY"] = "1"
 
     # Register NAS pilot models (scalable alternative to per-run .model_registry python files)
     if args.nas_pilot_dir:
@@ -3162,6 +3176,9 @@ def main():
             if args.dataset == "BNCI2014_001":
                 temp_dataset_obj = BNCI2014_001()
                 temp_dataset_obj.subject_list = args.subjects
+            elif args.dataset == "Lee2019_MI":
+                temp_dataset_obj = Lee2019_MI()
+                temp_dataset_obj.subject_list = args.subjects
             elif args.dataset == "Lee2019_SSVEP":
                 temp_dataset_obj = Lee2019_SSVEP()
                 temp_dataset_obj.subject_list = args.subjects
@@ -3242,6 +3259,9 @@ def main():
         try:
             if args.dataset == "BNCI2014_001":
                 temp_dataset_obj = BNCI2014_001()
+                temp_dataset_obj.subject_list = args.subjects
+            elif args.dataset == "Lee2019_MI":
+                temp_dataset_obj = Lee2019_MI()
                 temp_dataset_obj.subject_list = args.subjects
             elif args.dataset == "Lee2019_SSVEP":
                 temp_dataset_obj = Lee2019_SSVEP()

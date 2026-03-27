@@ -883,6 +883,60 @@ class CNNNCPv3(EEGModuleMixin, nn.Module):
                 nn.init.constant_(module.bias, 0)
 
 
+class CNNNCPv3ResidualSkip(CNNNCPv3):
+    """
+    CNN-NCP (CNNNCPv3) with an additive residual path around the NCP recurrent compartment.
+
+    Pre-NCP features [B, T', F2] are projected to NCP output dim F1 and added to the NCP output
+    (no learned carry gate). Matches the early HYDRA-style "skip over recurrence" ablation pattern.
+    """
+
+    def __init__(self, n_chans, n_times, n_outputs, **kwargs):
+        super().__init__(n_chans, n_times, n_outputs, **kwargs)
+        F2 = self.depthwise_conv.out_channels
+        ncp_out = self.sep_depthwise.in_channels
+        self.residual_proj = nn.Conv1d(F2, ncp_out, kernel_size=1, bias=False)
+        nn.init.xavier_uniform_(self.residual_proj.weight, gain=0.25)
+
+    def forward(self, x):
+        x = x.unsqueeze(1)
+        x = self.conv1(x)
+        x = self.bn1(x)
+        x = self.elu(x)
+
+        x = self.depthwise_conv(x)
+        x = self.bn2(x)
+        x = self.elu(x)
+
+        x = self.avgpool(x)
+        x = self.dropout(x)
+
+        x = x.permute(0, 3, 2, 1)
+        num_features = x.shape[3]
+        x = x.contiguous().view(x.shape[0], x.shape[1], num_features)
+
+        if self.temporal_downsampler is not None:
+            x = self.temporal_downsampler(x.permute(0, 2, 1)).permute(0, 2, 1)
+
+        residual = x
+        x, _ = self.ncp(x)
+        r_skip = self.residual_proj(residual.permute(0, 2, 1)).permute(0, 2, 1)
+        x = x + r_skip
+
+        x = x.permute(0, 2, 1).unsqueeze(3)
+
+        x = self.sep_depthwise(x)
+        x = self.sep_pointwise(x)
+        x = self.bn3(x)
+        x = self.elu(x)
+        x = self.dropout2(x)
+
+        x = self.global_pool(x)
+        x = x.view(x.shape[0], -1)
+        x = self.fc(x)
+        return x
+
+
 # Stochastic Depth implementation for regularization
 class StochasticDepth(nn.Module):
     def __init__(self, p=0.1):
@@ -1714,12 +1768,22 @@ def create_cnnncp_classifier(
         batch_size=64,
         weight_decay=5e-4,
         classifier_type=3,
-        gradient_clip_value=1.0
+        gradient_clip_value=1.0,
+        max_epochs=None,
+        early_stopping=True,
     ):
         classifier = CNNNCPv3
         seed = get_seed()
         # Use standard cross entropy loss
         criterion = torch.nn.CrossEntropyLoss
+
+        epochs = DEFAULT_MAX_EPOCHS if max_epochs is None else int(max_epochs)
+        callbacks = []
+        if early_stopping:
+            callbacks.append(get_early_stopping_callback())
+        callbacks.append(
+            GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2)
+        )
 
         cnn_ncp_net = EEGClassifier(
             classifier,
@@ -1728,7 +1792,7 @@ def create_cnnncp_classifier(
             optimizer__lr=lr,
             optimizer__weight_decay=weight_decay,
             batch_size=batch_size,
-            max_epochs=DEFAULT_MAX_EPOCHS,
+            max_epochs=epochs,
             module__n_chans=n_chans,
             module__n_times=n_times,
             module__n_outputs=n_outputs,
@@ -1736,10 +1800,7 @@ def create_cnnncp_classifier(
             module__sparsity=net_sparsity,
             train_split=ValidSplit(0.2, stratified=True, random_state=seed),
             device='cuda' if torch.cuda.is_available() else 'cpu',
-            callbacks=[
-                get_early_stopping_callback(),
-                GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2)
-            ],
+            callbacks=callbacks,
             verbose=EEGCLASSIFIER_VERBOSE
         )
         if torch.cuda.is_available():
@@ -1754,6 +1815,62 @@ def create_cnnncp_classifier(
             cnn_ncp_net.initialize()
 
         return cnn_ncp_net
+
+
+def create_cnnncp_residual_skip_classifier(
+        n_chans,
+        n_times,
+        n_outputs,
+        net_size=19,
+        net_sparsity=0.7,
+        lr=1e-4,
+        batch_size=64,
+        weight_decay=5e-4,
+        classifier_type=3,
+        gradient_clip_value=1.0,
+        max_epochs=None,
+        early_stopping=True,
+):
+    """Same training setup as create_cnnncp_classifier; module is CNNNCPv3ResidualSkip."""
+    classifier = CNNNCPv3ResidualSkip
+    seed = get_seed()
+    criterion = torch.nn.CrossEntropyLoss
+
+    epochs = DEFAULT_MAX_EPOCHS if max_epochs is None else int(max_epochs)
+    callbacks = []
+    if early_stopping:
+        callbacks.append(get_early_stopping_callback())
+    callbacks.append(
+        GradientNormClipping(gradient_clip_value=gradient_clip_value, gradient_clip_norm_type=2)
+    )
+
+    cnn_ncp_net = EEGClassifier(
+        classifier,
+        criterion=criterion,
+        optimizer=torch.optim.AdamW,
+        optimizer__lr=lr,
+        optimizer__weight_decay=weight_decay,
+        batch_size=batch_size,
+        max_epochs=epochs,
+        module__n_chans=n_chans,
+        module__n_times=n_times,
+        module__n_outputs=n_outputs,
+        module__ncp_hidden_dim=net_size,
+        module__sparsity=net_sparsity,
+        train_split=ValidSplit(0.2, stratified=True, random_state=seed),
+        device='cuda' if torch.cuda.is_available() else 'cpu',
+        callbacks=callbacks,
+        verbose=EEGCLASSIFIER_VERBOSE
+    )
+    # Skip torch.compile: compiled graphs for CNNNCPv3ResidualSkip have shown unstable training
+    # (valid accuracy stuck at chance) while eager mode matches base CNN-NCP training dynamics.
+    if torch.cuda.is_available():
+        cnn_ncp_net.initialize()
+        cnn_ncp_net.module_.cuda()
+    else:
+        cnn_ncp_net.initialize()
+
+    return cnn_ncp_net
 
 
 def create_cnnsmallworld_classifier(

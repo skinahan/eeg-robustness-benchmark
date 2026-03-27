@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 from skorch.dataset import ValidSplit
 from skorch.callbacks import GradientNormClipping
 from braindecode import EEGClassifier
@@ -250,6 +252,20 @@ class CNNWiredCfCMin(EEGModuleMixin, nn.Module):
         return x
 
 
+def _build_cfc_callbacks(gradient_clip_value: float):
+    cbs = [
+        get_early_stopping_callback(),
+        GradientNormClipping(
+            gradient_clip_value=float(gradient_clip_value), gradient_clip_norm_type=2
+        ),
+    ]
+    if str(os.environ.get("HAIL_MARY_STABILITY", "")).lower() in ("1", "true", "yes"):
+        from architecture_refinement.paper3.hail_mary_stability_callback import HailMaryStabilityCallback
+
+        cbs.append(HailMaryStabilityCallback())
+    return cbs
+
+
 def create_cnnwiredcfc_min_classifier(
     n_chans: int,
     n_times: int,
@@ -296,12 +312,7 @@ def create_cnnwiredcfc_min_classifier(
         module__mixed_memory=bool(mixed_memory),
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device="cuda" if torch.cuda.is_available() else "cpu",
-        callbacks=[
-            get_early_stopping_callback(),
-            GradientNormClipping(
-                gradient_clip_value=float(gradient_clip_value), gradient_clip_norm_type=2
-            ),
-        ],
+        callbacks=_build_cfc_callbacks(gradient_clip_value),
         verbose=EEGCLASSIFIER_VERBOSE,
     )
 

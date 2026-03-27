@@ -3,7 +3,11 @@ from moabb.datasets import BNCI2014_001, Lee2019_SSVEP, BI2015a
 from moabb.paradigms import MotorImagery, SSVEP, P300
 from models.eegnet import create_eegnet_classifier
 from models.reegnet import create_reegnet_classifier
-from models.cnnncp import create_cnnncpv2_classifier, create_cnnncp_classifier
+from models.cnnncp import (
+    create_cnnncpv2_classifier,
+    create_cnnncp_classifier,
+    create_cnnncp_residual_skip_classifier,
+)
 from models.branched_ncp import create_cnnncp_branched_bins_classifier
 from models.cnnncp import create_cnnncfc_v2_classifier, create_cnnncfc_compact_classifier
 from models.cnnncp import create_cnnsmallworld_classifier, create_cnnwiredcfc_classifier
@@ -75,6 +79,7 @@ def get_base_model_registry():
         "eegnet": create_eegnet_classifier,
         "reegnet": create_reegnet_classifier,
         "cnn_ncp": create_cnnncp_classifier,
+        "cnn_ncp_residual_skip": create_cnnncp_residual_skip_classifier,
         "cnn_ncp_v2": create_cnnncpv2_classifier,
         "cnn_ncp_branch": create_cnnncp_branched_bins_classifier,
         "cnncfc_v2": create_cnnncfc_v2_classifier,
@@ -532,13 +537,14 @@ def get_dataset_sampling_rate(dataset="BNCI2014_001"):
     Get the appropriate sampling rate (Hz) for a given dataset.
     
     Args:
-        dataset: Dataset name ("BNCI2014_001", "Lee2019_SSVEP", "BI2015a")
+        dataset: Dataset name ("BNCI2014_001", "Lee2019_MI", "Lee2019_SSVEP", "BI2015a")
     
     Returns:
         Sampling rate in Hz (float)
     """
     dataset_rates = {
         "BNCI2014_001": 250.0,      # MOABB provides this dataset at 250 Hz
+        "Lee2019_MI": 1000.0,       # OpenBMI MI split (same native rate as Lee2019_SSVEP)
         "Lee2019_SSVEP": 1000.0,    # Native sampling rate is 1000 Hz
         "BI2015a": 512.0             # Typical ERP datasets are 250 Hz, verify with actual data
     }
@@ -575,6 +581,15 @@ def get_paradigm(resample=None, dataset="BNCI2014_001"):
             tmax=1.0,
             baseline=None,  # Use None instead of (None, 0) to avoid the TypeError
             resample=resample
+        )
+    elif dataset == "Lee2019_MI":
+        return MotorImagery(
+            events=["left_hand", "right_hand"],
+            fmin=8, fmax=35,
+            tmin=0.0, tmax=None,
+            baseline=None,
+            resample=resample,
+            n_classes=2,
         )
     else:  # Default to MotorImagery for BNCI2014_001
         return MotorImagery(

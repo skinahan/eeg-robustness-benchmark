@@ -38,7 +38,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.insert(0, project_root)
 
-from moabb.datasets import BNCI2014_001, Lee2019_SSVEP, BI2015a
+from moabb.datasets import BNCI2014_001, Lee2019_MI, Lee2019_SSVEP, BI2015a
 from moabb.paradigms import MotorImagery, SSVEP, P300
 from models.eegnet import create_eegnet_classifier
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor
@@ -163,6 +163,13 @@ class AdaptiveSaturationDetector:
                 "paradigm_type": "SSVEP", 
                 "n_classes": 4,
                 "subjects": [3],  # Use first 2 subjects
+                "resample": None
+            },
+            "Lee2019_MI": {
+                "dataset_class": Lee2019_MI,
+                "paradigm_type": "MotorImagery",
+                "n_classes": 2,
+                "subjects": [3],
                 "resample": None
             },
             "BI2015a": {
