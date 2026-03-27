@@ -55,6 +55,7 @@ def normalize_dataset_name(dataset):
     mapping = {
         "BI2015a": "BI2015a (ERP)",
         "BNCI2014_001": r"BNCI2014\_001 (MI)",
+        "Lee2019_MI": r"Lee2019\_MI (MI)",
         "Lee2019_SSVEP": r"Lee2019\_SSVEP"
     }
     result = mapping.get(dataset, dataset)
@@ -123,7 +124,7 @@ def generate_omnibus_table(data, metric_name, metric_key, tune, output_lines):
     
     # Collect all rows
     rows = []
-    for dataset in ["BI2015a", "BNCI2014_001", "Lee2019_SSVEP"]:
+    for dataset in ["BI2015a", "BNCI2014_001", "Lee2019_MI", "Lee2019_SSVEP"]:
         if dataset not in data:
             continue
         for eval_mode in ["CrossSession", "WithinSession", "CrossSubject"]:
@@ -299,12 +300,12 @@ def main():
     generate_omnibus_table(data, "Clean ROC-AUC", "clean_roc_auc", True, output_lines)
     
     # 3. Clean ROC-AUC Pairwise tests (untuned) - split by dataset
-    for dataset in ["BI2015a", "BNCI2014_001", "Lee2019_SSVEP"]:
+    for dataset in ["BI2015a", "BNCI2014_001", "Lee2019_MI", "Lee2019_SSVEP"]:
         if dataset in data:
             generate_pairwise_table(data, "Clean ROC-AUC", "clean_roc_auc", False, dataset, output_lines)
     
     # 4. Clean ROC-AUC Pairwise tests (tuned) - split by dataset
-    for dataset in ["BI2015a", "BNCI2014_001", "Lee2019_SSVEP"]:
+    for dataset in ["BI2015a", "BNCI2014_001", "Lee2019_MI", "Lee2019_SSVEP"]:
         if dataset in data:
             generate_pairwise_table(data, "Clean ROC-AUC", "clean_roc_auc", True, dataset, output_lines)
     
@@ -315,12 +316,12 @@ def main():
     generate_omnibus_table(data, "AUPC", "aupc_collapsed", True, output_lines)
     
     # 7. AUPC Pairwise tests (untuned) - split by dataset
-    for dataset in ["BI2015a", "BNCI2014_001", "Lee2019_SSVEP"]:
+    for dataset in ["BI2015a", "BNCI2014_001", "Lee2019_MI", "Lee2019_SSVEP"]:
         if dataset in data:
             generate_pairwise_table(data, "AUPC", "aupc_collapsed", False, dataset, output_lines)
     
     # 8. AUPC Pairwise tests (tuned) - split by dataset
-    for dataset in ["BI2015a", "BNCI2014_001", "Lee2019_SSVEP"]:
+    for dataset in ["BI2015a", "BNCI2014_001", "Lee2019_MI", "Lee2019_SSVEP"]:
         if dataset in data:
             generate_pairwise_table(data, "AUPC", "aupc_collapsed", True, dataset, output_lines)
     

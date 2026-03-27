@@ -23,7 +23,7 @@ _REPO_ROOT = _THIS_DIR.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from utils import short_run_id
+from utils import results_paradigm_folder, short_run_id
 
 H = 32
 ALPHA_GRID = [0.0, 0.25, 0.5, 0.75, 1.0]
@@ -325,7 +325,7 @@ def run_eval(
 
 def collect_max_drop(repo_root: Path, dataset: str, model_id: str, seed: int, noise_type: str) -> Optional[float]:
     """Collect max_drop for one model + noise type."""
-    paradigm = "MotorImagery" if "BNCI" in dataset or "BI2015" in dataset else "SSVEP"
+    paradigm = results_paradigm_folder(dataset)
     base = Path(repo_root) / "results" / paradigm / dataset
     for stem in [short_run_id(model_id), model_id]:
         path = base / stem / "CrossSessionEvaluation" / str(seed)

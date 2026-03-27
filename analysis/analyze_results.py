@@ -32,6 +32,12 @@ PLOT_YLIM_CONFIG = {
         'csv_dynamic': True,
         'csv_padding': 0.1,
     },
+    'Lee2019_MI': {
+        'performance_max': 1.0,
+        'rd_max': 1.0,
+        'csv_dynamic': True,
+        'csv_padding': 0.1,
+    },
     'BI2015a': {
         'performance_max': 1.0,
         'rd_max': 1.0,
@@ -418,6 +424,8 @@ def aggregate_results(input_dir):
                 combined_df['dataset'] = 'BNCI2014_001'
             elif 'Lee2019_SSVEP' in input_dir:
                 combined_df['dataset'] = 'Lee2019_SSVEP'
+            elif 'Lee2019_MI' in input_dir:
+                combined_df['dataset'] = 'Lee2019_MI'
             elif 'BI2015a' in input_dir:
                 combined_df['dataset'] = 'BI2015a'
             else:
@@ -2668,8 +2676,10 @@ def plot_custom_comparison(df, filters=None, x_var='intensity', y_var='corrupted
         if len(unique_datasets) == 1:
             dataset = unique_datasets[0]
         else:
-            # Default based on paradigm in df if available
-            if 'paradigm' in df.columns and len(df) > 0:
+            # Prefer explicit dataset column when multiple rows share a paradigm (e.g. MotorImagery for BNCI vs Lee2019_MI)
+            if 'dataset' in df.columns and len(df) > 0 and pd.notna(df['dataset'].iloc[0]):
+                dataset = df['dataset'].iloc[0]
+            elif 'paradigm' in df.columns and len(df) > 0:
                 paradigm = df['paradigm'].iloc[0]
                 if paradigm == 'SSVEP':
                     dataset = 'Lee2019_SSVEP'
@@ -3739,6 +3749,7 @@ if __name__ == '__main__':
     # Define dataset configurations
     dataset_configs = {
         'BNCI2014_001': {'label': 'MotorImagery/BNCI2014_001'},
+        'Lee2019_MI': {'label': 'MotorImagery/Lee2019_MI'},
         'Lee2019_SSVEP': {'label': 'SSVEP/Lee2019_SSVEP'},
         'BI2015a': {'label': 'ERP/BI2015a'}
     }

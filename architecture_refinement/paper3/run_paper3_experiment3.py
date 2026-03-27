@@ -24,7 +24,7 @@ if str(_REPO_ROOT) not in sys.path:
 
 from architecture_refinement.metrics_te_orc import compute_paper3_proxies
 from architecture_refinement.paper3.arch_graph_utils import graph_from_architecture
-from utils import short_run_id
+from utils import results_paradigm_folder, short_run_id
 
 
 def _collect_perturb_results(
@@ -35,7 +35,7 @@ def _collect_perturb_results(
     noise_type: str,
 ) -> Optional[Dict[str, Any]]:
     """Collect clean_roc_auc, RD_max for one (model, seed)."""
-    paradigm = "MotorImagery" if "BNCI" in dataset else "SSVEP"
+    paradigm = results_paradigm_folder(dataset)
     base = repo_root / "results" / paradigm / dataset
     for stem in [short_run_id(model_name), model_name]:
         path = base / stem / "CrossSessionEvaluation" / str(seed)

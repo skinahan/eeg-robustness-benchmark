@@ -27,7 +27,7 @@ import networkx as nx
 
 from architecture_refinement.ws_flex_generator import build_plain_ws_flex
 from architecture_refinement.paper3.run_paper3_experiment2 import _make_dense_arch
-from utils import short_run_id
+from utils import results_paradigm_folder, short_run_id
 
 DEFAULT_H = 32
 DEFAULT_S_MINI = 2
@@ -101,7 +101,7 @@ def _collect_perturb_results(
     noise_type: str,
 ) -> Optional[Dict[str, Any]]:
     """Collect clean_roc_auc, corrupted_roc_auc by intensity, RD_max."""
-    paradigm = "MotorImagery" if "BNCI" in dataset else "SSVEP"
+    paradigm = results_paradigm_folder(dataset)
     base = repo_root / "results" / paradigm / dataset
     for stem in [short_run_id(model_name), model_name]:
         path = base / stem / "CrossSessionEvaluation" / str(seed)

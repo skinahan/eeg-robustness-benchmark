@@ -139,7 +139,7 @@ def calculate_rauc_summary(
     df : pd.DataFrame
         Full results dataframe with test_perturb results
     dataset : str
-        Dataset name (BNCI2014_001, Lee2019_SSVEP, BI2015a)
+        Dataset name (BNCI2014_001, Lee2019_MI, Lee2019_SSVEP, BI2015a)
     saturation_dict : dict, optional
         Dictionary of saturation points for filtering intensities
     group_by_cols : list, optional
@@ -469,6 +469,12 @@ def generate_rauc_report(
             'input_dir': os.path.join(results_dir, 'MotorImagery/BNCI2014_001/'),
             'csv_path': os.path.join(results_dir, 'MotorImagery/BNCI2014_001/all_results.csv'),
             'dataset': 'BNCI2014_001'
+        },
+        {
+            'label': 'MotorImagery/Lee2019_MI',
+            'input_dir': os.path.join(results_dir, 'MotorImagery/Lee2019_MI/'),
+            'csv_path': os.path.join(results_dir, 'MotorImagery/Lee2019_MI/all_results.csv'),
+            'dataset': 'Lee2019_MI'
         },
         {
             'label': 'SSVEP/Lee2019_SSVEP',

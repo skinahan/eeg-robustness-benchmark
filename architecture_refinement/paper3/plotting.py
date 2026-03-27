@@ -132,9 +132,10 @@ def _collect_intensity_level_data(
     noise_type: str,
 ) -> Optional[Tuple[np.ndarray, np.ndarray, float]]:
     """Collect (intensities, r_t, clean_roc_auc) for one run. Returns None if not found."""
-    paradigm = "MotorImagery" if "BNCI" in dataset else "SSVEP"
+    from utils import results_paradigm_folder, short_run_id
+
+    paradigm = results_paradigm_folder(dataset)
     base = repo_root / "results" / paradigm / dataset
-    from utils import short_run_id
     for stem in [short_run_id(model_name), model_name]:
         path = base / stem / "CrossSessionEvaluation" / str(seed)
         if not path.exists():

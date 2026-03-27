@@ -4,6 +4,9 @@ Paper 3 Experiment 2 (Plot 2): Proxy-selected vs Uniform vs Baselines.
 Trains G1 (proxy-selected WS-Flex), G2 (uniform WS-Flex), G3 (Dense CfC),
 G4 (Random sparse, sparsity-matched), G5 (NCP) under identical protocol.
 Evaluates robustness (AR(1) drift), outputs r_t curves and RD_max.
+
+Use ``--n-per-family N`` for Option B: matched N topologies per family (ER-dense G3,
+random-sparse G4, distinct NCP wirings G5) for inferential family contrast.
 """
 
 from __future__ import annotations
@@ -148,7 +151,50 @@ def _make_dense_arch(H: int, model_name: str) -> Dict[str, Any]:
     }
 
 
-def _make_ncp_arch(H: int, model_name: str, output_size: int = 16, sparsity: float = 0.5) -> Dict[str, Any]:
+def _make_er_dense_arch(H: int, model_name: str, graph_seed: int) -> Dict[str, Any]:
+    """
+    Distinct dense random graph per graph_seed (high-p ER), for matched-n Option B.
+    Same JSON schema as other ws_flex adjacency architectures.
+    """
+    rng = np.random.default_rng(graph_seed)
+    G = None
+    for _ in range(400):
+        p = float(rng.uniform(0.82, 0.995))
+        g = nx.erdos_renyi_graph(H, p, seed=int(rng.integers(0, 2**31 - 1)))
+        if nx.is_connected(g):
+            G = g
+            break
+    if G is None:
+        G = nx.complete_graph(H)
+    adj = nx.to_numpy_array(G, dtype=np.int8)
+    adj = (adj != 0).astype(np.int8)
+    n_edges = int(G.number_of_edges())
+    return {
+        "schema_version": 2,
+        "model_name": model_name,
+        "H": H,
+        "wiring_kind": "ws_flex",
+        "hidden_edge_orientation": "symmetric",
+        "k": -1,
+        "p": -1.0,
+        "graph_seed": int(graph_seed),
+        "wiring_seed": int(graph_seed),
+        "te_hat": float("nan"),
+        "orc_hat": float("nan"),
+        "n_edges": n_edges,
+        "E_active": 2 * n_edges,
+        "hidden_adj_undirected": adj.tolist(),
+        "baseline_type": "dense_er",
+    }
+
+
+def _make_ncp_arch(
+    H: int,
+    model_name: str,
+    output_size: int = 16,
+    sparsity: float = 0.5,
+    wiring_seed: int = 202603,
+) -> Dict[str, Any]:
     return {
         "schema_version": 2,
         "model_name": model_name,
@@ -156,7 +202,7 @@ def _make_ncp_arch(H: int, model_name: str, output_size: int = 16, sparsity: flo
         "units": H,
         "output_size": output_size,
         "sparsity_level": sparsity,
-        "wiring_seed": 202603,
+        "wiring_seed": int(wiring_seed),
         "baseline_type": "ncp",
     }
 
@@ -167,6 +213,7 @@ def run_experiment2(
     H: int = DEFAULT_H,
     K: int = DEFAULT_K,
     S: int = DEFAULT_S,
+    n_per_family: Optional[int] = None,
     dataset: str = "BNCI2014_001",
     eval_mode: str = "CrossSession",
     subjects: Optional[List[int]] = None,
@@ -178,6 +225,11 @@ def run_experiment2(
 ) -> Dict[str, Any]:
     """
     Run Experiment 2: train G1..G5, evaluate robustness.
+
+    If ``n_per_family`` is set (e.g. 5), each group G1–G5 has exactly that many distinct
+    topologies (Option B matched-n): G1 first n from Exp1, G2 n uniform WS-Flex, G3 n ER-dense,
+    G4 n random sparse (E matched to G1 mean), G5 n NCP wirings (distinct wiring_seed).
+    If None, legacy behavior: K models for G1/G2 and one model each for G3–G5.
     """
     if subjects is None:
         subjects = list(range(1, 10))
@@ -202,14 +254,24 @@ def run_experiment2(
             dst = selected_dir / p.name
             dst.write_text(json.dumps(arch, indent=2))
             g1_models.append(arch["model_name"])
-    if len(g1_models) < K:
-        raise FileNotFoundError(f"Experiment 1 has only {len(g1_models)} selected architectures, need {K}")
+
+    n_ws = int(n_per_family) if n_per_family is not None else int(K)
+    if n_ws < 2:
+        raise ValueError("Need n_per_family >= 2 (or K >= 2) for meaningful matched families")
+
+    if len(g1_models) < n_ws:
+        raise FileNotFoundError(
+            f"Experiment 1 has only {len(g1_models)} selected architectures, need at least {n_ws}"
+        )
+
+    if n_per_family is not None:
+        g1_models = g1_models[:n_ws]
 
     # G2: Uniform-selected WS-Flex (independent of G1)
     rng = np.random.default_rng(202607)  # Different seed from Exp1
     g2_models: List[str] = []
     attempts = 0
-    while len(g2_models) < K and attempts < 5000:
+    while len(g2_models) < n_ws and attempts < 5000:
         attempts += 1
         k = int(rng.choice(K_VALUES))
         p = float(rng.uniform(0.0, 1.0))
@@ -240,30 +302,60 @@ def run_experiment2(
         (selected_dir / f"{model_name}.json").write_text(json.dumps(arch, indent=2))
         g2_models.append(model_name)
 
-    # G3: Dense CfC
-    dense_model = "paper3_exp2_dense"
-    dense_arch = _make_dense_arch(H, dense_model)
-    dense_arch["group"] = "G3_dense"
-    (selected_dir / f"{dense_model}.json").write_text(json.dumps(dense_arch, indent=2))
-
-    # G4: Random sparse - Option B for simplicity: match average E_active of G1
+    # G4/G3 need average E_active from G1 (same folder as written)
     g1_E_active = []
     for m in g1_models:
-        a = json.loads((selected_dir / f"{m}.json").read_text())
+        a = json.loads((selected_dir / f"{m}.json").read_text(encoding="utf-8"))
         g1_E_active.append(int(a.get("E_active", 0)))
     avg_E = int(np.mean(g1_E_active)) if g1_E_active else 256
-    rand_model = "paper3_exp2_random_sparse"
-    rand_arch = _make_random_sparse_arch(H, avg_E, 202608, rand_model)
-    rand_arch["group"] = "G4_random_sparse"
-    (selected_dir / f"{rand_model}.json").write_text(json.dumps(rand_arch, indent=2))
 
-    # G5: NCP
-    ncp_model = "paper3_exp2_ncp"
-    ncp_arch = _make_ncp_arch(H, ncp_model)
-    ncp_arch["group"] = "G5_ncp"
-    (selected_dir / f"{ncp_model}.json").write_text(json.dumps(ncp_arch, indent=2))
+    g3_models: List[str] = []
+    g4_models: List[str] = []
+    g5_models: List[str] = []
 
-    manifest = {
+    if n_per_family is not None:
+        n = int(n_per_family)
+        base = 913_000 + H * 17
+        for i in range(n):
+            dense_model = f"paper3_exp2_dense_{i+1:02d}"
+            dense_arch = _make_er_dense_arch(H, dense_model, graph_seed=base + i * 7919)
+            dense_arch["group"] = "G3_dense"
+            (selected_dir / f"{dense_model}.json").write_text(json.dumps(dense_arch, indent=2))
+            g3_models.append(dense_model)
+
+        for i in range(n):
+            rand_model = f"paper3_exp2_random_sparse_{i+1:02d}"
+            rand_arch = _make_random_sparse_arch(H, avg_E, 202608 + i * 9973, rand_model)
+            rand_arch["group"] = "G4_random_sparse"
+            (selected_dir / f"{rand_model}.json").write_text(json.dumps(rand_arch, indent=2))
+            g4_models.append(rand_model)
+
+        for i in range(n):
+            ncp_model = f"paper3_exp2_ncp_{i+1:02d}"
+            ncp_arch = _make_ncp_arch(H, ncp_model, wiring_seed=202_603 + i * 10_007)
+            ncp_arch["group"] = "G5_ncp"
+            (selected_dir / f"{ncp_model}.json").write_text(json.dumps(ncp_arch, indent=2))
+            g5_models.append(ncp_model)
+    else:
+        dense_model = "paper3_exp2_dense"
+        dense_arch = _make_dense_arch(H, dense_model)
+        dense_arch["group"] = "G3_dense"
+        (selected_dir / f"{dense_model}.json").write_text(json.dumps(dense_arch, indent=2))
+        g3_models = [dense_model]
+
+        rand_model = "paper3_exp2_random_sparse"
+        rand_arch = _make_random_sparse_arch(H, avg_E, 202608, rand_model)
+        rand_arch["group"] = "G4_random_sparse"
+        (selected_dir / f"{rand_model}.json").write_text(json.dumps(rand_arch, indent=2))
+        g4_models = [rand_model]
+
+        ncp_model = "paper3_exp2_ncp"
+        ncp_arch = _make_ncp_arch(H, ncp_model)
+        ncp_arch["group"] = "G5_ncp"
+        (selected_dir / f"{ncp_model}.json").write_text(json.dumps(ncp_arch, indent=2))
+        g5_models = [ncp_model]
+
+    manifest: Dict[str, Any] = {
         "H": H,
         "K": K,
         "S": S,
@@ -272,13 +364,16 @@ def run_experiment2(
         "groups": {
             "G1": g1_models,
             "G2": g2_models,
-            "G3": [dense_model],
-            "G4": [rand_model],
-            "G5": [ncp_model],
+            "G3": g3_models,
+            "G4": g4_models,
+            "G5": g5_models,
         },
         "perturbation_types": ["ar1_drift"],
         "target_snr_db": target_snr_db,
     }
+    if n_per_family is not None:
+        manifest["n_per_family"] = int(n_per_family)
+        manifest["matched_families_option_b"] = True
     (output_dir / "experiment2_manifest.json").write_text(json.dumps(manifest, indent=2))
 
     if dry_run:
@@ -288,7 +383,7 @@ def run_experiment2(
     sat_path = str(_REPO_ROOT / saturation_file) if not Path(saturation_file).is_absolute() else saturation_file
     pert_params = {"ar1_drift": {"rho": 0.97}}
     seeds = list(range(42, 42 + S))
-    all_models = g1_models + g2_models + [dense_model, rand_model, ncp_model]
+    all_models = g1_models + g2_models + g3_models + g4_models + g5_models
     jobs = [(m, s) for m in all_models for s in seeds]
     failed = []
     for model_name, seed in jobs:
@@ -333,6 +428,14 @@ def main():
     parser.add_argument("--python", type=str, default=sys.executable)
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--n-per-family",
+        type=int,
+        default=None,
+        metavar="N",
+        help="Option B: exactly N distinct topologies per G1–G5 (requires Exp1 with at least N proxies). "
+        "Uses ER-dense G3, random-sparse G4, multi-seed NCP G5.",
+    )
     args = parser.parse_args()
 
     exp1_dir = Path(args.experiment1_dir)
@@ -345,6 +448,7 @@ def main():
         H=args.H,
         K=args.K,
         S=args.S,
+        n_per_family=args.n_per_family,
         dataset=args.dataset,
         eval_mode=args.eval_mode,
         subjects=args.subjects,

@@ -6,6 +6,15 @@ No new training required. Implements:
 2. Stratification by k/E_active to control for degree
 3. Subject-level robustness decomposition
 4. Q3 metric-robustness alignment (proxy score vs RD_max scatter)
+
+For Q3 advisor follow-ups (stratified pool sampling + selection bar chart), see
+run_paper3_q3_stratified_pipeline.py (orchestrates discover + train + collect + plots),
+run_paper3_q3_stratified_train.py, run_paper3_q3_stratified_collect.py, and
+run_paper3_q3_stratified_analysis.py.
+
+Forensic Pass (variance vs topology, regime heatmaps, WS-Flex diversity, fragility): run_paper3_forensic_pass.py;
+targeted multi-seed rerun + ICC: run_paper3_forensic_rerun.py.
+Option B (G1–G5 family contrast, Kruskal–Wallis / exploratory pairwise): run_paper3_option_b_family_contrast.py.
 """
 
 from __future__ import annotations
@@ -24,7 +33,7 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from utils import short_run_id
+from utils import results_paradigm_folder, short_run_id
 
 
 def _load_experiment3_results(exp3_dir: Path) -> pd.DataFrame:
@@ -265,7 +274,7 @@ def _collect_perturb_results_by_subject(
     Collect RD_max per (model, seed, subject) from test_perturb CSVs.
     Infers subject from path (sub-001 -> 1). Aggregates across sessions per subject (mean).
     """
-    paradigm = "MotorImagery" if "BNCI" in dataset else "SSVEP"
+    paradigm = results_paradigm_folder(dataset)
     base = repo_root / "results" / paradigm / dataset
     raw: List[Dict[str, Any]] = []
 

@@ -5,8 +5,9 @@ Plot EEG montages and EOG artifact spatial distribution.
 This script creates scalp maps for:
 1. BNCI2014_001 montage
 2. BI2015a montage
-3. Lee2019_SSVEP montage
-4. EOG artifact spatial distribution from simEOG dataset
+3. Lee2019_MI montage
+4. Lee2019_SSVEP montage
+5. EOG artifact spatial distribution from simEOG dataset
 """
 
 import os
@@ -23,7 +24,7 @@ import scipy.io
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from moabb.datasets import BNCI2014_001, BI2015a, Lee2019_SSVEP
+from moabb.datasets import BNCI2014_001, BI2015a, Lee2019_MI, Lee2019_SSVEP
 from config import get_paradigm
 
 
@@ -36,6 +37,9 @@ def get_dataset_info(dataset_name):
         subject_id = 1
     elif dataset_name == "BI2015a":
         dataset = BI2015a()
+        subject_id = 1
+    elif dataset_name == "Lee2019_MI":
+        dataset = Lee2019_MI()
         subject_id = 1
     elif dataset_name == "Lee2019_SSVEP":
         dataset = Lee2019_SSVEP()
@@ -270,7 +274,19 @@ def main():
         output_dir / "bi2015a_montage.pdf"
     )
     
-    # 3. Plot Lee2019_SSVEP montage
+    # 3. Plot Lee2019_MI montage
+    print("\n" + "="*60)
+    print("Plotting Lee2019_MI montage")
+    print("="*60)
+    info_lee_mi, raw_lee_mi, _ = get_dataset_info("Lee2019_MI")
+    plot_montage_scalp_map(
+        info_lee_mi,
+        raw_lee_mi,
+        "Lee2019_MI",
+        output_dir / "lee2019_mi_montage.pdf"
+    )
+    
+    # 4. Plot Lee2019_SSVEP montage
     print("\n" + "="*60)
     print("Plotting Lee2019_SSVEP montage")
     print("="*60)
@@ -282,7 +298,7 @@ def main():
         output_dir / "lee2019_ssvep_montage.pdf"
     )
     
-    # 4. Plot EOG artifact spatial distribution from simEOG
+    # 5. Plot EOG artifact spatial distribution from simEOG
     print("\n" + "="*60)
     print("Plotting EOG artifact spatial distribution")
     print("="*60)

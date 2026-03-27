@@ -25,7 +25,7 @@ _REPO_ROOT = _THIS_DIR.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from utils import short_run_id
+from utils import results_paradigm_folder, short_run_id
 
 # Pilot defaults from spec
 MODEL_ID = "plot2_pilot_cnn_cfc"
@@ -160,12 +160,7 @@ def run_unified_runner(
 
 def _results_base_path(repo_root: Path, dataset: str, model_id: str, seed: int) -> Path:
     """Base path for unified runner results (Paradigm/Dataset/Model/...). Prefers short run id (new layout)."""
-    if "BNCI" in dataset or "BI2015" in dataset:
-        paradigm = "MotorImagery"
-    elif "Lee2019" in dataset:
-        paradigm = "SSVEP"
-    else:
-        paradigm = "MotorImagery"
+    paradigm = results_paradigm_folder(dataset)
     base_short = Path(repo_root) / "results" / paradigm / dataset / short_run_id(model_id) / "CrossSessionEvaluation" / str(seed)
     base_long = Path(repo_root) / "results" / paradigm / dataset / model_id / "CrossSessionEvaluation" / str(seed)
     return base_short if base_short.exists() else base_long
@@ -178,7 +173,7 @@ def collect_raw_results(
     seed: int,
 ) -> pd.DataFrame:
     """Glob all test_perturb CSVs for this model/seed and concatenate (checks short and long path)."""
-    paradigm = "SSVEP" if "Lee2019" in dataset else ("ERP" if "BI2015" in dataset else "MotorImagery")
+    paradigm = results_paradigm_folder(dataset)
     base_short = Path(repo_root) / "results" / paradigm / dataset / short_run_id(model_id) / "CrossSessionEvaluation" / str(seed)
     base_long = Path(repo_root) / "results" / paradigm / dataset / model_id / "CrossSessionEvaluation" / str(seed)
     csvs = []

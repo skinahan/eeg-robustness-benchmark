@@ -4,6 +4,9 @@ Paper 3 Experiment 1 (Plot 1): Proxy Landscape + Cost Advantage.
 Collects N_proxy connected WS-Flex graphs, computes spec-aligned proxy metrics
 (te_hat, orc_hat), extracts Pareto front, selects K via grid-binning diversity.
 Outputs proxy_pool.csv, selected_proxy.csv, and cost accounting.
+
+After changing WS seed alignment, re-run Experiment 1 once so proxy_pool.csv and
+selected_architectures match trained graphs (required for Q3 stratified sampling).
 """
 
 from __future__ import annotations
@@ -37,7 +40,7 @@ B_GRID = 6
 
 
 def _sample_params(rng: np.random.Generator) -> Tuple[int, float, int]:
-    """Sample (k, p, graph_seed) within bounds. s_g = trial index passed separately."""
+    """Sample (k, p, graph_seed). graph_seed is the Watts–Strogatz RNG seed (same as Exp2 G2)."""
     k = int(rng.choice(K_VALUES))
     p = float(rng.uniform(0.0, 1.0))
     graph_seed = int(rng.integers(0, 2**31 - 1))
@@ -114,10 +117,10 @@ def run_experiment1(
     while len(records) < N_proxy:
         trial += 1
         k, p, graph_seed = _sample_params(rng)
-        s_g = trial  # deterministic per trial
 
         t0 = time.perf_counter()
-        G = build_plain_ws_flex(H, k, p, s_g)
+        # graph_seed must match stored field so proxy_pool, Pareto selection, and JSON adjacency agree.
+        G = build_plain_ws_flex(H, k, p, graph_seed)
         if not nx.is_connected(G):
             rejected += 1
             continue
@@ -130,6 +133,7 @@ def run_experiment1(
         E_active = 2 * n_edges  # bidirectional
 
         records.append({
+            "trial_index": trial,
             "H": H,
             "k": k,
             "p": p,
@@ -149,7 +153,10 @@ def run_experiment1(
     with open(pool_path, "w", newline="") as f:
         w = csv.DictWriter(
             f,
-            fieldnames=["H", "k", "p", "graph_seed", "te_hat", "orc_hat", "n_edges", "E_active", "runtime_sec"],
+            fieldnames=[
+                "trial_index", "H", "k", "p", "graph_seed",
+                "te_hat", "orc_hat", "n_edges", "E_active", "runtime_sec",
+            ],
         )
         w.writeheader()
         w.writerows(records)
@@ -174,7 +181,10 @@ def run_experiment1(
     with open(selected_path, "w", newline="") as f:
         w = csv.DictWriter(
             f,
-            fieldnames=["H", "k", "p", "graph_seed", "te_hat", "orc_hat", "n_edges", "E_active", "runtime_sec"],
+            fieldnames=[
+                "trial_index", "H", "k", "p", "graph_seed",
+                "te_hat", "orc_hat", "n_edges", "E_active", "runtime_sec",
+            ],
         )
         w.writeheader()
         w.writerows(selected_records)

@@ -24,7 +24,7 @@ _THIS_DIR = Path(__file__).resolve().parent
 _REPO_ROOT = _THIS_DIR.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
-from utils import short_run_id
+from utils import results_paradigm_folder, short_run_id
 
 
 def _load_analysis_artifacts(plot2_dir: Path) -> Tuple[pd.DataFrame, pd.DataFrame, Dict[str, Any]]:
@@ -53,7 +53,7 @@ def _load_raw_results_sample(repo_root: Path, plot2_dir: Path, model_name: str) 
         return pd.DataFrame()
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     dataset = str(manifest.get("dataset", "BNCI2014_001"))
-    paradigm = "MotorImagery" if "BNCI" in dataset or "BI2015" in dataset else "SSVEP"
+    paradigm = results_paradigm_folder(dataset)
     eval_mode = str(manifest.get("eval_mode", "CrossSession"))
     if not eval_mode.endswith("Evaluation"):
         eval_mode = f"{eval_mode}Evaluation"
