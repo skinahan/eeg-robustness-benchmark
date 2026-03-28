@@ -21,7 +21,7 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from architecture_refinement.paper3.hail_mary_cli import add_overwrite_arguments, can_write_output
+from architecture_refinement.paper3.hail_mary_cli import add_overwrite_arguments, can_write_output, results_model_segment
 
 
 def _parse_history(path: Path) -> List[Dict[str, Any]]:
@@ -76,7 +76,8 @@ def collect_stability_longform(
     rows: List[Dict[str, Any]] = []
     for model_name in model_names:
         for seed in seeds:
-            base = results_root / paradigm / dataset / model_name / "CrossSessionEvaluation" / str(seed)
+            model_segment = results_model_segment(model_name)
+            base = results_root / paradigm / dataset / model_segment / "CrossSessionEvaluation" / str(seed)
             paths = sorted(base.rglob("training_history/history*.json")) if base.exists() else []
             if not paths:
                 rows.append({"model_name": model_name, "seed": seed, "n_history_files": 0})

@@ -18,6 +18,9 @@ dependencies:
   - xz=5.4.6
   - zlib=1.2.13
   - pip:
+      # MOABB >=1.4 requires numpy>=2.0, scikit-learn>=1.6, mne-bids>=0.17 (for 1.5.0).
+      # Upgrade these together. If pip fails on Windows with WinError 5 on numpy *.pyd,
+      # close IDEs/processes using this env, or run the shell as Administrator, then retry.
       - aiohappyeyeballs==2.4.4
       - aiohttp==3.11.11
       - aiosignal==1.3.2
@@ -52,13 +55,13 @@ dependencies:
       - matplotlib==3.10.0
       - memory-profiler==0.61.0
       - mne==1.11.0
-      - mne-bids==0.16.0
+      - mne-bids==0.17.0
       - moabb==1.5.0
       - mpmath==1.3.0
       - multidict==6.1.0
       - ncps==1.0.1
       - networkx==3.4.2
-      - numpy==1.26.4
+      - numpy==2.2.6
       - packaging==24.2
       - pandas==2.2.3
       - pillow==11.1.0
@@ -74,7 +77,7 @@ dependencies:
       - pytz==2025.1
       - pyyaml==6.0.2
       - requests==2.32.3
-      - scikit-learn==1.3.1
+      - scikit-learn==1.7.2
       - scikit-optimize==0.10.2
       - scipy==1.15.1
       - seaborn==0.12.2

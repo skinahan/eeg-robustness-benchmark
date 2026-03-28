@@ -45,6 +45,7 @@ from analysis.statistical_analysis import (
     AnalysisConfig,
     aggregate_seeds,
     compute_aupc_per_subject,
+    compute_clean_scores_per_subject,
     compute_rd_per_subject,
     build_inference_dataset,
     check_normality,
@@ -536,10 +537,12 @@ def prepare_subject_level_data(
     
     # Step 3: Compute RD per subject
     df_rd = compute_rd_per_subject(df_points, config)
-    
+
+    df_clean = compute_clean_scores_per_subject(df_points, config)
+
     # Step 4: Build inference dataset (collapsed and resolved)
     # Note: We'll merge 'ablation' back after this step to avoid duplicate column issues
-    df_resolved, df_collapsed = build_inference_dataset(df_aupc, df_rd, config)
+    df_resolved, df_collapsed = build_inference_dataset(df_aupc, df_rd, df_clean, config)
     
     # Preserve 'ablation' column: merge it back from df_points
     # The AUPC/RD functions and build_inference_dataset don't include 'ablation' in grouping,

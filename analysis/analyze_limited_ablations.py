@@ -29,7 +29,7 @@ Secondary outcome:
 import os
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
@@ -49,6 +49,7 @@ from analysis.statistical_analysis import (
     AnalysisConfig,
     aggregate_seeds,
     compute_aupc_per_subject,
+    compute_clean_scores_per_subject,
     compute_rd_per_subject,
     build_inference_dataset,
     check_normality,
@@ -86,11 +87,15 @@ ABLATION_NAMES = {
 
 def load_limited_ablation_results(
     unified_file: Optional[str] = None,
+    *,
+    datasets: Optional[Sequence[str]] = None,
+    eval_mode_substr: Optional[str] = "CrossSession",
 ) -> pd.DataFrame:
     """
     Load and filter unified results to the limited ablation setting:
-    - Dataset: BNCI2014_001
-    - Eval mode: CrossSession
+    - Dataset(s): BNCI2014_001 by default; pass ``datasets`` to include others
+    - Eval mode: substring match (default CrossSession); pass ``eval_mode_substr=None``
+      to include all eval modes (use with care)
     - Mode: test_perturb (no *_tune)
     - tune == False (if present)
     - Models: baseline + ablations 1–4
@@ -113,8 +118,9 @@ def load_limited_ablation_results(
 
     # Filter dataset
     if "dataset" in df.columns:
-        df = df[df["dataset"] == "BNCI2014_001"].copy()
-        print(f"[INFO] Filtered to BNCI2014_001: {len(df)} rows")
+        ds = list(datasets) if datasets is not None else ["BNCI2014_001"]
+        df = df[df["dataset"].isin(ds)].copy()
+        print(f"[INFO] Filtered to datasets {ds}: {len(df)} rows")
     else:
         raise KeyError("Expected 'dataset' column in unified results")
 
@@ -127,17 +133,17 @@ def load_limited_ablation_results(
         df = df[~mode_norm.str.contains("_tune", na=False)].copy()
         print(f"[INFO] Filtered to non-tuned modes: {len(df)} rows")
 
-    # Filter eval_mode to CrossSession
-    if "eval_mode" in df.columns:
+    # Filter eval_mode (substring, e.g. CrossSession / CrossSubject)
+    if eval_mode_substr is not None and "eval_mode" in df.columns:
         eval_mode_norm = (
             df["eval_mode"]
             .astype(str)
             .str.replace("Evaluation", "", regex=False)
             .str.strip()
         )
-        df = df[eval_mode_norm.str.contains("CrossSession", case=False, na=False)].copy()
-        print(f"[INFO] Filtered to CrossSession eval_mode: {len(df)} rows")
-    else:
+        df = df[eval_mode_norm.str.contains(eval_mode_substr, case=False, na=False)].copy()
+        print(f"[INFO] Filtered to eval_mode containing {eval_mode_substr!r}: {len(df)} rows")
+    elif eval_mode_substr is not None:
         raise KeyError("Expected 'eval_mode' column in unified results")
 
     # Filter mode to test_perturb
@@ -371,6 +377,9 @@ def prepare_subject_level_data(
     # Step 3: Compute RD per subject/model/noise_type
     df_rd = compute_rd_per_subject(df_points, config)
 
+    # Step 3a: Clean ROC-AUC per subject/model (required by build_inference_dataset)
+    df_clean = compute_clean_scores_per_subject(df_points, config)
+
     # Step 3b: Compute worst-case RD (max relative_drop over intensities)
     rd_worst_resolved = pd.DataFrame()
     rd_worst_collapsed = pd.DataFrame()
@@ -415,7 +424,7 @@ def prepare_subject_level_data(
             )
 
     # Step 4: Build inference dataset (resolved + collapsed)
-    df_resolved, df_collapsed = build_inference_dataset(df_aupc, df_rd, config)
+    df_resolved, df_collapsed = build_inference_dataset(df_aupc, df_rd, df_clean, config)
 
     # Attach worst-case RD to resolved and collapsed datasets if available
     if not df_resolved.empty and not rd_worst_resolved.empty:

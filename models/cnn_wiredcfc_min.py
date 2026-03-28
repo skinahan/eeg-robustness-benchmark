@@ -259,7 +259,13 @@ def _build_cfc_callbacks(gradient_clip_value: float):
             gradient_clip_value=float(gradient_clip_value), gradient_clip_norm_type=2
         ),
     ]
-    if str(os.environ.get("HAIL_MARY_STABILITY", "")).lower() in ("1", "true", "yes"):
+    _stab = str(os.environ.get("HAIL_MARY_STABILITY", "")).lower() in ("1", "true", "yes")
+    _learn = str(os.environ.get("HAIL_MARY_LEARNABILITY_METRICS", "")).lower() in ("1", "true", "yes")
+    if _stab or _learn:
+        from architecture_refinement.paper3.hail_mary_valid_roc_scoring import make_valid_roc_auc_epoch_scoring
+
+        cbs.append(make_valid_roc_auc_epoch_scoring())
+    if _stab:
         from architecture_refinement.paper3.hail_mary_stability_callback import HailMaryStabilityCallback
 
         cbs.append(HailMaryStabilityCallback())

@@ -14,6 +14,10 @@ Supports:
 """
 
 import os
+
+# Before torch/numpy/MKL (Windows): avoid OMP Error #15 / duplicate libiomp5md.dll
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
+
 import sys
 import torch
 import argparse
@@ -26,7 +30,7 @@ try:
 except ImportError:
     resource = None
 from datetime import datetime
-from typing import List, Dict, Any, Tuple, Optional
+from typing import List, Dict, Any, Tuple, Optional, Callable
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import StratifiedKFold, LeaveOneGroupOut, GroupKFold
@@ -45,7 +49,13 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.insert(0, project_root)
 
-from config import MODEL_REGISTRY, get_model_registry, get_paradigm, get_dataset_sampling_rate
+from config import (
+    MODEL_REGISTRY,
+    get_model_registry,
+    get_paradigm,
+    get_dataset_sampling_rate,
+    classification_num_classes,
+)
 from globals import set_seeds, DEFAULT_MAX_EPOCHS, UNDERFITTING_THRESHOLD, get_max_epochs_for_dataset, get_underfitting_threshold_for_dataset
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
 from evaluation.two_stage_hp_opt import alternate_two_stage_optuna, run_two_stage_optuna, format_params, get_all_model_params
@@ -64,8 +74,30 @@ from evaluation.periodic_checkpoint_callback import create_periodic_checkpoint_c
 from evaluation.chunked_subject_trainer import train_with_subject_chunks, evaluate_with_subject_chunks
 import json
 
-# Import MOABB components
-from moabb.datasets import BNCI2014_001, Lee2019_MI, Lee2019_SSVEP, BI2015a
+# Import MOABB components (Chang2025/Yang2025 need moabb>=~1.4; see environment.yml)
+from moabb.datasets import (
+    BNCI2014_001,
+    Lee2019_MI,
+    Lee2019_SSVEP,
+    BI2015a,
+    Shin2017A,
+)
+try:
+    from moabb.datasets import Chang2025, Yang2025
+except ImportError:  # older MOABB (e.g. 1.2.x)
+    Chang2025 = None  # type: ignore[misc, assignment]
+    Yang2025 = None  # type: ignore[misc, assignment]
+
+
+def _require_moabb_dataset_ctor(name: str, ctor):
+    if ctor is None:
+        raise ImportError(
+            f"{name} is not available in your installed MOABB. "
+            "Install a recent moabb (e.g. pip install moabb==1.5.0) to match environment.yml."
+        )
+    return ctor
+
+
 from moabb.evaluations import WithinSessionEvaluation, CrossSessionEvaluation
 from moabb.evaluations.utils import create_save_path, save_model_cv, save_model_list
 from mne.epochs import BaseEpochs
@@ -477,6 +509,8 @@ class UnifiedExperimentRunner:
         legacy: bool = False,
         # Disable the underfitting-based retraining pass (keeps training protocol fixed).
         disable_underfitting_retrain: bool = False,
+        # Lee2019_MI: training-side sliding windows (1s / 0.5s stride); val = fixed first 1s crop.
+        lee2019_mi_train_sliding_window: bool = True,
         # ---- test_perturb configuration (pilot-safe; defaults preserve old behavior) ----
         test_perturb_noise_types: Optional[List[str]] = None,
         test_perturb_num_steps: int = 20,
@@ -513,6 +547,8 @@ class UnifiedExperimentRunner:
         self.subject_chunk_size = subject_chunk_size
         self.legacy = legacy
         self.disable_underfitting_retrain = bool(disable_underfitting_retrain)
+        self.lee2019_mi_train_sliding_window = bool(lee2019_mi_train_sliding_window)
+        self._lee2019_mi_sliding_logged = False
 
         # test_perturb settings (used only in _evaluate_perturb)
         self.test_perturb_noise_types = test_perturb_noise_types
@@ -690,8 +726,25 @@ class UnifiedExperimentRunner:
             self.dataset_obj = BI2015a()
             self.dataset_obj.subject_list = self.subjects
             self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
+        elif self.dataset == "Shin2017A":
+            self.dataset_obj = Shin2017A(accept=True)
+            self.dataset_obj.subject_list = self.subjects
+            self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
+        elif self.dataset == "Chang2025":
+            Ctor = _require_moabb_dataset_ctor("Chang2025", Chang2025)
+            self.dataset_obj = Ctor(paradigm_type="MI")
+            self.dataset_obj.subject_list = self.subjects
+            self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
+        elif self.dataset == "Yang2025":
+            Ctor = _require_moabb_dataset_ctor("Yang2025", Yang2025)
+            self.dataset_obj = Ctor(paradigm_type="2C")
+            self.dataset_obj.subject_list = self.subjects
+            self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
         else:
             raise ValueError(f"Unsupported dataset: {self.dataset}")
+
+    def _classification_num_classes(self) -> int:
+        return classification_num_classes(self.dataset)
     
     def _create_output_paths(self):
         """Create output and HDF5 paths for the experiment."""
@@ -786,7 +839,83 @@ class UnifiedExperimentRunner:
             n_chans = X_sample.shape[1]
             n_times = X_sample.shape[2]
         
+        if self._lee2019_mi_sliding_window_enabled():
+            win, _, _ = self._lee2019_mi_window_params()
+            n_times = win
         return n_chans, n_times
+
+    def _lee2019_mi_sliding_window_enabled(self) -> bool:
+        return self.dataset == "Lee2019_MI" and getattr(
+            self, "lee2019_mi_train_sliding_window", True
+        )
+
+    def _lee2019_mi_window_params(self) -> Tuple[int, int, int]:
+        from evaluation.mi_sliding_window import lee2019_mi_sliding_params
+
+        sf = float(get_dataset_sampling_rate("Lee2019_MI"))
+        return lee2019_mi_sliding_params(sf)
+
+    def _maybe_log_lee2019_mi_sliding_window_once(self) -> None:
+        if getattr(self, "_lee2019_mi_sliding_logged", False):
+            return
+        self._lee2019_mi_sliding_logged = True
+        if self._lee2019_mi_sliding_window_enabled():
+            win, stride, crop = self._lee2019_mi_window_params()
+            print(
+                f"[Lee2019_MI] Training-side sliding windows enabled: win_samples={win}, "
+                f"stride_samples={stride}, val crop start={crop} "
+                f"(disable with --no-lee2019-mi-train-sliding-window)"
+            )
+
+    def _apply_lee2019_mi_sliding_window_fold(
+        self,
+        X_train: np.ndarray,
+        y_train: np.ndarray,
+        X_valid: np.ndarray,
+        y_valid: np.ndarray,
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        from evaluation.mi_sliding_window import fixed_crop_batch, sliding_window_tensor
+
+        win, stride, crop_start = self._lee2019_mi_window_params()
+        if X_train.dtype == np.float64:
+            X_train = X_train.astype(np.float32)
+        if X_valid.dtype == np.float64:
+            X_valid = X_valid.astype(np.float32)
+        X_tr, y_tr = sliding_window_tensor(X_train, y_train, win, stride)
+        X_va, y_va = fixed_crop_batch(X_valid, y_valid, crop_start, win)
+        return X_tr, y_tr, X_va, y_va
+
+    def _lee2019_mi_chunk_train_preprocess(
+        self,
+    ) -> Optional[Callable[[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]]:
+        if not self._lee2019_mi_sliding_window_enabled():
+            return None
+        win, stride, _ = self._lee2019_mi_window_params()
+
+        def _fn(
+            X: np.ndarray, y: np.ndarray
+        ) -> Tuple[np.ndarray, np.ndarray]:
+            from evaluation.mi_sliding_window import sliding_window_tensor
+
+            return sliding_window_tensor(X, y, win, stride)
+
+        return _fn
+
+    def _lee2019_mi_chunk_eval_preprocess(
+        self,
+    ) -> Optional[Callable[[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]]:
+        if not self._lee2019_mi_sliding_window_enabled():
+            return None
+        win, _, crop_start = self._lee2019_mi_window_params()
+
+        def _fn(
+            X: np.ndarray, y: np.ndarray
+        ) -> Tuple[np.ndarray, np.ndarray]:
+            from evaluation.mi_sliding_window import fixed_crop_batch
+
+            return fixed_crop_batch(X, y, crop_start, win)
+
+        return _fn
 
     def _model_factory_kwargs(self, n_chans: int, n_times: int, n_outputs: int) -> dict:
         """Args for registry model factories, including sfreq for Braindecode EEGModuleMixin models (e.g. CTNet)."""
@@ -810,12 +939,10 @@ class UnifiedExperimentRunner:
         """
         # Determine number of outputs based on dataset
         if n_outputs is None:
-            if self.dataset == "Lee2019_SSVEP":
-                n_outputs = 4  # SSVEP has 4 classes
-            elif self.dataset == "BI2015a":
+            if self.dataset == "BI2015a":
                 n_outputs = 2  # P300 ERP has 2 classes (target vs non-target)
             else:
-                n_outputs = 2  # MotorImagery has 2 classes
+                n_outputs = classification_num_classes(self.dataset)
         
         # Try to load from cache first (only for non-noise modes and when try_cache=True)
         # Skip cache loading if overwrite is True (user explicitly wants to retrain)
@@ -936,10 +1063,10 @@ class UnifiedExperimentRunner:
         if self.mode in ['perturb', 'perturb_notune']:
             def wrapped_model_fn(n_chans, n_times, n_outputs=None):
                 if n_outputs is None:
-                    if self.dataset == "Lee2019_SSVEP":
-                        n_outputs = 4
+                    if self.dataset == "BI2015a":
+                        n_outputs = 2
                     else:
-                        n_outputs = 2  # MotorImagery and BI2015a (P300) both have 2 classes
+                        n_outputs = classification_num_classes(self.dataset)
                 base_model = self.model_fn(**self._model_factory_kwargs(n_chans, n_times, n_outputs))
                 base_model.max_epochs = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
                 return TrainOnlyNoiseClassifier(
@@ -951,10 +1078,10 @@ class UnifiedExperimentRunner:
         elif self.mode in ['augment', 'augment_notune']:
             def wrapped_model_fn(n_chans, n_times, n_outputs=None):
                 if n_outputs is None:
-                    if self.dataset == "Lee2019_SSVEP":
-                        n_outputs = 4
+                    if self.dataset == "BI2015a":
+                        n_outputs = 2
                     else:
-                        n_outputs = 2  # MotorImagery and BI2015a (P300) both have 2 classes
+                        n_outputs = classification_num_classes(self.dataset)
                 base_model = self.model_fn(**self._model_factory_kwargs(n_chans, n_times, n_outputs))
                 base_model.max_epochs = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
                 return ConcatenatedNoiseAugmenter(
@@ -966,10 +1093,10 @@ class UnifiedExperimentRunner:
         elif is_test_perturb_mode(self.mode):
             def wrapped_model_fn(n_chans, n_times, n_outputs=None):
                 if n_outputs is None:
-                    if self.dataset == "Lee2019_SSVEP":
-                        n_outputs = 4
+                    if self.dataset == "BI2015a":
+                        n_outputs = 2
                     else:
-                        n_outputs = 2  # MotorImagery and BI2015a (P300) both have 2 classes
+                        n_outputs = classification_num_classes(self.dataset)
                 base_model = self.model_fn(**self._model_factory_kwargs(n_chans, n_times, n_outputs))
                 base_model.max_epochs = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
                 return base_model
@@ -1030,19 +1157,13 @@ class UnifiedExperimentRunner:
         """
         # Set current_session for proper cache key generation
         self.current_session = session
+
+        self._maybe_log_lee2019_mi_sliding_window_once()
+        tp = self._lee2019_mi_chunk_train_preprocess()
+        ep = self._lee2019_mi_chunk_eval_preprocess()
         
-        # Determine data dimensions (need to load at least one sample to get shape)
-        # For efficiency, we'll load just the first training subject to get dimensions
-        if len(train_subjects) > 0:
-            sample_X, _, _ = self.paradigm.get_data(
-                self.dataset_obj, subjects=[train_subjects[0]]
-            )
-            n_chans, n_times = sample_X.shape[1], sample_X.shape[2]
-            del sample_X
-            gc.collect()
-        else:
-            # Fallback: use defaults or determine from dataset
-            n_chans, n_times = self._determine_data_dimensions()
+        # Determine data dimensions (n_times matches model input; Lee2019_MI sliding uses 1s crop length)
+        n_chans, n_times = self._determine_data_dimensions()
         
         # Create model
         model = self._create_model(n_chans, n_times, fold_idx=fold_idx)
@@ -1079,6 +1200,24 @@ class UnifiedExperimentRunner:
             if isinstance(y_valid_hpo[0], str):
                 label_encoder = LabelEncoder()
                 y_valid_hpo = label_encoder.fit_transform(y_valid_hpo)
+
+            if self._lee2019_mi_sliding_window_enabled():
+                from evaluation.mi_sliding_window import (
+                    expand_metadata_for_sliding_windows,
+                    fixed_crop_batch,
+                    sliding_window_tensor,
+                )
+
+                win, stride, crop_start = self._lee2019_mi_window_params()
+                metadata_train_hpo = expand_metadata_for_sliding_windows(
+                    metadata_train_hpo, X_train_hpo, win, stride
+                )
+                X_train_hpo, y_train_hpo = sliding_window_tensor(
+                    X_train_hpo, y_train_hpo, win, stride
+                )
+                X_valid_hpo, y_valid_hpo = fixed_crop_batch(
+                    X_valid_hpo, y_valid_hpo, crop_start, win
+                )
             
             # Run HPO (which internally uses chunked training)
             hpo_results = self._run_hyperparameter_optimization(
@@ -1104,7 +1243,8 @@ class UnifiedExperimentRunner:
                 train_subjects=train_subjects,
                 chunk_size=self.subject_chunk_size,
                 max_epochs_per_chunk=None,  # Use model's max_epochs
-                verbose=True
+                verbose=True,
+                train_preprocess=tp,
             )
             
             # Save training history (if needed - may need to adapt this)
@@ -1133,13 +1273,14 @@ class UnifiedExperimentRunner:
             dataset_obj=self.dataset_obj,
             eval_subjects=eval_subjects,
             chunk_size=self.subject_chunk_size,
-            verbose=True
+            verbose=True,
+            eval_preprocess=ep,
         )
         
         evaluation_time = time.time() - start_time
         
         # Compute metrics
-        num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+        num_classes = self._classification_num_classes()
         metrics = compute_classification_metrics(y_valid_all, y_pred_proba_all, num_classes)
         
         # Handle different modes
@@ -1161,6 +1302,14 @@ class UnifiedExperimentRunner:
                     y_valid_all_perturb = label_encoder.transform(y_valid_all_perturb)
                 else:
                     y_valid_all_perturb = LabelEncoder().fit_transform(y_valid_all_perturb)
+
+            if self._lee2019_mi_sliding_window_enabled():
+                from evaluation.mi_sliding_window import fixed_crop_batch
+
+                win, _, crop_start = self._lee2019_mi_window_params()
+                X_valid_all, y_valid_all_perturb = fixed_crop_batch(
+                    X_valid_all, y_valid_all_perturb, crop_start, win
+                )
             
             # Evaluate perturbations
             perturb_results = self._evaluate_perturb(
@@ -1233,6 +1382,19 @@ class UnifiedExperimentRunner:
         
         # Set current_session BEFORE creating model (critical for cache key generation)
         self.current_session = session
+
+        self._maybe_log_lee2019_mi_sliding_window_once()
+        if self._lee2019_mi_sliding_window_enabled():
+            if self.tune and metadata_train is not None:
+                from evaluation.mi_sliding_window import expand_metadata_for_sliding_windows
+
+                win, stride, _ = self._lee2019_mi_window_params()
+                metadata_train = expand_metadata_for_sliding_windows(
+                    metadata_train, X_train, win, stride
+                )
+            X_train, y_train, X_valid, y_valid = self._apply_lee2019_mi_sliding_window_fold(
+                X_train, y_train, X_valid, y_valid
+            )
         
         if self.tune:
             # Apply two-stage hyperparameter optimization on X_train before evaluation on X_valid.
@@ -1441,7 +1603,8 @@ class UnifiedExperimentRunner:
                 train_subjects=self.train_subjects,
                 chunk_size=self.subject_chunk_size,
                 max_epochs_per_chunk=None,  # Use model's max_epochs
-                verbose=True
+                verbose=True,
+                train_preprocess=self._lee2019_mi_chunk_train_preprocess(),
             )
         else:
             # Use standard training (loads all data at once)
@@ -1473,16 +1636,17 @@ class UnifiedExperimentRunner:
                 dataset_obj=self.dataset_obj,
                 eval_subjects=self.eval_subjects,
                 chunk_size=self.subject_chunk_size,
-                verbose=True
+                verbose=True,
+                eval_preprocess=self._lee2019_mi_chunk_eval_preprocess(),
             )
-            num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+            num_classes = self._classification_num_classes()
             metrics_clean = compute_classification_metrics(y_valid_all, y_pred_proba_all, num_classes)
             validation_score = metrics_clean["roc_auc"]
         else:
             # Standard evaluation (X_valid already loaded)
             with torch.no_grad():
                 y_pred_proba = final_model.predict_proba(X_valid)
-                num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+                num_classes = self._classification_num_classes()
                 metrics_clean = compute_classification_metrics(y_valid, y_pred_proba, num_classes)
                 validation_score = metrics_clean["roc_auc"]
         
@@ -1517,7 +1681,8 @@ class UnifiedExperimentRunner:
                             train_subjects=self.train_subjects,
                             chunk_size=self.subject_chunk_size,
                             max_epochs_per_chunk=None,
-                            verbose=True
+                            verbose=True,
+                            train_preprocess=self._lee2019_mi_chunk_train_preprocess(),
                         )
                     else:
                         final_model.fit(X_train, y_train)
@@ -1545,15 +1710,16 @@ class UnifiedExperimentRunner:
                             dataset_obj=self.dataset_obj,
                             eval_subjects=self.eval_subjects,
                             chunk_size=self.subject_chunk_size,
-                            verbose=True
+                            verbose=True,
+                            eval_preprocess=self._lee2019_mi_chunk_eval_preprocess(),
                         )
-                        num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+                        num_classes = self._classification_num_classes()
                         metrics_retrain = compute_classification_metrics(y_valid_retrain, y_pred_proba_retrain, num_classes)
                         new_clean_score = metrics_retrain["roc_auc"]
                     else:
                         with torch.no_grad():
                             y_pred_proba = final_model.predict_proba(X_valid)
-                            num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+                            num_classes = self._classification_num_classes()
                             metrics_retrain = compute_classification_metrics(y_valid, y_pred_proba, num_classes)
                             new_clean_score = metrics_retrain["roc_auc"]
                     clean_score = max(clean_score, new_clean_score)
@@ -1631,7 +1797,7 @@ class UnifiedExperimentRunner:
         model.module_.eval()
         with torch.no_grad():
             y_pred_proba = model.predict_proba(X_valid)
-            num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+            num_classes = self._classification_num_classes()
             metrics_clean = compute_classification_metrics(y_valid, y_pred_proba, num_classes)
             validation_score = metrics_clean["roc_auc"]
         evaluation_time = time.time() - start_time
@@ -1698,7 +1864,7 @@ class UnifiedExperimentRunner:
         with torch.no_grad():
             # Compute clean metrics once for efficiency
             y_pred_proba_clean = trained_model.predict_proba(X_valid)
-            num_classes_clean = 4 if self.dataset == "Lee2019_SSVEP" else 2
+            num_classes_clean = self._classification_num_classes()
             metrics_clean = compute_classification_metrics(y_valid, y_pred_proba_clean, num_classes_clean)
             # Memory optimization: Delete prediction array after computing metrics
             del y_pred_proba_clean
@@ -1871,7 +2037,7 @@ class UnifiedExperimentRunner:
                     # Evaluate on corrupted data
                     start_time = time.time()                
                     y_pred_proba_corrupted = trained_model.predict_proba(X_valid_corrupted)
-                    num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+                    num_classes = self._classification_num_classes()
                     metrics_corrupted = compute_classification_metrics(y_valid, y_pred_proba_corrupted, num_classes)
                     corrupted_score = metrics_corrupted["roc_auc"]
                     evaluation_time = time.time() - start_time
@@ -1971,7 +2137,7 @@ class UnifiedExperimentRunner:
         model.module_.eval()
         with torch.no_grad():
             y_pred_proba = model.predict_proba(X_valid)
-            num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+            num_classes = self._classification_num_classes()
             metrics_clean = compute_classification_metrics(y_valid, y_pred_proba, num_classes)
             clean_score = metrics_clean["roc_auc"]
         evaluation_time = time.time() - start_time
@@ -2011,7 +2177,7 @@ class UnifiedExperimentRunner:
                 model.module_.eval()
                 with torch.no_grad():
                     y_pred_proba = model.predict_proba(X_valid)
-                    num_classes = 4 if self.dataset == "Lee2019_SSVEP" else 2
+                    num_classes = self._classification_num_classes()
                     metrics_retrain = compute_classification_metrics(y_valid, y_pred_proba, num_classes)
                     new_clean_score = metrics_retrain["roc_auc"]
                 clean_score = max(clean_score, new_clean_score)
@@ -2967,7 +3133,20 @@ def main():
     # Note: We validate at runtime in UnifiedExperimentRunner.__init__ instead of here
     # to allow for custom model variants registered after import
     parser.add_argument("--model", type=str, required=True)
-    parser.add_argument("--dataset", type=str, default="BNCI2014_001", choices=["BNCI2014_001", "Lee2019_MI", "Lee2019_SSVEP", "BI2015a"])
+    parser.add_argument(
+        "--dataset",
+        type=str,
+        default="BNCI2014_001",
+        choices=[
+            "BNCI2014_001",
+            "Lee2019_MI",
+            "Lee2019_SSVEP",
+            "BI2015a",
+            "Shin2017A",
+            "Chang2025",
+            "Yang2025",
+        ],
+    )
     parser.add_argument("--subjects", type=int, nargs="+", required=True)
     parser.add_argument("--mode", type=str, required=True, 
                         choices=["test_perturb", "multirun", "aggregate_only"])
@@ -3061,6 +3240,14 @@ def main():
     parser.add_argument("--tune", action="store_true")
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--aggregate", action="store_true")
+    parser.add_argument(
+        "--no-lee2019-mi-train-sliding-window",
+        action="store_true",
+        help=(
+            "For Lee2019_MI only: disable training-side sliding-window augmentation "
+            "(1s windows, 0.5s stride; validation uses a fixed first-1s crop). Default: enabled."
+        ),
+    )
     
     # Fold-by-fold execution for CrossSubject mode (memory optimization)
     parser.add_argument("--fold_idx", type=int, default=None,
@@ -3083,6 +3270,11 @@ def main():
         action="store_true",
         help="Hail Mary Ch.5: log batch_train_loss_var per epoch via CfC callback (sets HAIL_MARY_STABILITY).",
     )
+    parser.add_argument(
+        "--hail_mary_learnability_metrics",
+        action="store_true",
+        help="Hail Mary Ch.5: log per-epoch valid_roc_auc via EpochScoring (sets HAIL_MARY_LEARNABILITY_METRICS).",
+    )
 
     # Memory management: Check for environment variable to set memory limit
     max_memory_gb = os.environ.get('PYTHON_MAX_MEMORY_GB')
@@ -3100,6 +3292,8 @@ def main():
 
     if getattr(args, "hail_mary_stability", False):
         os.environ["HAIL_MARY_STABILITY"] = "1"
+    if getattr(args, "hail_mary_learnability_metrics", False):
+        os.environ["HAIL_MARY_LEARNABILITY_METRICS"] = "1"
 
     # Register NAS pilot models (scalable alternative to per-run .model_registry python files)
     if args.nas_pilot_dir:
@@ -3194,6 +3388,17 @@ def main():
             elif args.dataset == "BI2015a":
                 temp_dataset_obj = BI2015a()
                 temp_dataset_obj.subject_list = args.subjects
+            elif args.dataset == "Shin2017A":
+                temp_dataset_obj = Shin2017A(accept=True)
+                temp_dataset_obj.subject_list = args.subjects
+            elif args.dataset == "Chang2025":
+                Ctor = _require_moabb_dataset_ctor("Chang2025", Chang2025)
+                temp_dataset_obj = Ctor(paradigm_type="MI")
+                temp_dataset_obj.subject_list = args.subjects
+            elif args.dataset == "Yang2025":
+                Ctor = _require_moabb_dataset_ctor("Yang2025", Yang2025)
+                temp_dataset_obj = Ctor(paradigm_type="2C")
+                temp_dataset_obj.subject_list = args.subjects
             temp_paradigm = get_paradigm(resample=None, dataset=args.dataset)
         except Exception as e:
             print(f"Warning: Could not create temporary dataset/paradigm for session detection: {e}")
@@ -3252,6 +3457,9 @@ def main():
                     test_perturb_ar1_rho=getattr(args, "test_perturb_ar1_rho", 0.97),
                     test_perturb_emg_f_low=getattr(args, "test_perturb_emg_f_low", 20.0),
                     plot2_diagnostics_dir=getattr(args, "plot2_diagnostics_dir", None),
+                    lee2019_mi_train_sliding_window=not getattr(
+                        args, "no_lee2019_mi_train_sliding_window", False
+                    ),
                 )
                 results = runner.run_experiment()
                 print(f"Experiment completed successfully. Results shape: {results.shape}")
@@ -3277,6 +3485,17 @@ def main():
                 temp_dataset_obj.subject_list = args.subjects
             elif args.dataset == "BI2015a":
                 temp_dataset_obj = BI2015a()
+                temp_dataset_obj.subject_list = args.subjects
+            elif args.dataset == "Shin2017A":
+                temp_dataset_obj = Shin2017A(accept=True)
+                temp_dataset_obj.subject_list = args.subjects
+            elif args.dataset == "Chang2025":
+                Ctor = _require_moabb_dataset_ctor("Chang2025", Chang2025)
+                temp_dataset_obj = Ctor(paradigm_type="MI")
+                temp_dataset_obj.subject_list = args.subjects
+            elif args.dataset == "Yang2025":
+                Ctor = _require_moabb_dataset_ctor("Yang2025", Yang2025)
+                temp_dataset_obj = Ctor(paradigm_type="2C")
                 temp_dataset_obj.subject_list = args.subjects
             temp_paradigm = get_paradigm(resample=None, dataset=args.dataset)
         except Exception as e:
@@ -3341,6 +3560,9 @@ def main():
                 test_perturb_ar1_rho=getattr(args, "test_perturb_ar1_rho", 0.97),
                 test_perturb_emg_f_low=getattr(args, "test_perturb_emg_f_low", 20.0),
                 plot2_diagnostics_dir=getattr(args, "plot2_diagnostics_dir", None),
+                lee2019_mi_train_sliding_window=not getattr(
+                    args, "no_lee2019_mi_train_sliding_window", False
+                ),
             )
             
             results = runner.run_experiment()

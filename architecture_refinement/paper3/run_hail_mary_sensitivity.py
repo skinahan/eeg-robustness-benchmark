@@ -17,7 +17,7 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from architecture_refinement.paper3.hail_mary_cli import add_overwrite_arguments, can_write_output
+from architecture_refinement.paper3.hail_mary_cli import add_overwrite_arguments, can_write_output, results_model_segment
 
 
 def _find_perturb_csvs(run_dir: Path) -> List[Path]:
@@ -25,7 +25,10 @@ def _find_perturb_csvs(run_dir: Path) -> List[Path]:
         return []
     out: List[Path] = []
     for p in run_dir.rglob("*.csv"):
-        if "test_perturb" in p.name.lower() or "perturb" in p.name.lower():
+        name_l = p.name.lower()
+        path_l = str(p).lower()
+        # Short-path outputs use .../test_perturb/tp_<id>_s###_seed#.csv (no "perturb" in filename).
+        if "test_perturb" in path_l or "perturb" in name_l or name_l.startswith("tp_"):
             out.append(p)
     return sorted(set(out))
 
@@ -113,7 +116,8 @@ def collect_sensitivity_longform(
     rows: List[Dict[str, Any]] = []
     for model_name in model_names:
         for seed in seeds:
-            base = results_root / paradigm / dataset / model_name / "CrossSessionEvaluation" / str(seed)
+            model_segment = results_model_segment(model_name)
+            base = results_root / paradigm / dataset / model_segment / "CrossSessionEvaluation" / str(seed)
             csvs = _find_perturb_csvs(base)
             if not csvs:
                 rows.append({"model_name": model_name, "seed": seed, "error": "no_csv"})

@@ -79,6 +79,8 @@ def _run_unified_job(
     ]
     if hail_mary_stability:
         cmd.append("--hail_mary_stability")
+    else:
+        cmd.append("--hail_mary_learnability_metrics")
     cmd = [c for c in cmd if c]
     proc = subprocess.run(cmd, cwd=str(repo_root), check=False)
     return int(proc.returncode)

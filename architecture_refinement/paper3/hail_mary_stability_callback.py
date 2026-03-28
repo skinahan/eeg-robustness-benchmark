@@ -5,9 +5,12 @@ Within-epoch batch variance:
   Reads per-batch `train_loss` / `valid_loss` from `net.history[-1]['batches']`
   (same as NeuralNet.run_single_epoch `record_batch`).
 
-When there is only one training batch per epoch (common when train split fits in one
-batch at batch_size=64), within-epoch spread is reported as **0.0** (same as numpy
+When there is only one training batch per epoch (common when the train split fits in one
+batch at the configured batch size), within-epoch spread is reported as **0.0** (same as numpy
 ``np.var([x])``) so logs and JSON avoid NaN; interpret with ``n_train_batches_recorded``.
+For cross-topology stability comparisons, prefer epoch-to-epoch metrics
+(``train_loss_epoch_abs_delta``, ``valid_loss_epoch_to_epoch_var``, rolling std) when batch variance is always zero.
+
 Epoch-level metrics use **0.0** on the first epoch (no prior epoch to compare)
 and **0.0** rolling std until at least two epochs exist.
 

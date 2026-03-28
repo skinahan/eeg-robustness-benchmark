@@ -1,4 +1,8 @@
+import os
 import sys
+
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
+
 from moabb.datasets import BNCI2014_001, Lee2019_SSVEP, BI2015a
 from moabb.paradigms import MotorImagery, SSVEP, P300
 from models.eegnet import create_eegnet_classifier
@@ -54,9 +58,11 @@ DEFAULT_PARADIGM = MotorImagery(
     n_classes=2
 )
 
-# SSVEP paradigm for Lee2019_SSVEP dataset
+# SSVEP paradigm for Lee2019_SSVEP dataset (event keys must match moabb.datasets.Lee2019_SSVEP)
+_LEE2019_SSVEP_EVENTS = ["12.0", "8.57", "6.67", "5.45"]
 DEFAULT_SSVEP_PARADIGM = SSVEP(
     n_classes=4,
+    events=_LEE2019_SSVEP_EVENTS,
     tmin=0.0,
     tmax=4.0,
     baseline=None,
@@ -534,6 +540,15 @@ try:
 except Exception as e:
     verbose_print(f"WARNING: Could not initialize default architectures: {e}")
 
+def classification_num_classes(dataset: str) -> int:
+    """Output class count for metrics and EEG classifiers (unified runner)."""
+    if dataset == "Lee2019_SSVEP":
+        return 4
+    if dataset == "Chang2025":
+        return 3
+    return 2
+
+
 def get_dataset_sampling_rate(dataset="BNCI2014_001"):
     """
     Get the appropriate sampling rate (Hz) for a given dataset.
@@ -548,7 +563,10 @@ def get_dataset_sampling_rate(dataset="BNCI2014_001"):
         "BNCI2014_001": 250.0,      # MOABB provides this dataset at 250 Hz
         "Lee2019_MI": 1000.0,       # OpenBMI MI split (same native rate as Lee2019_SSVEP)
         "Lee2019_SSVEP": 1000.0,    # Native sampling rate is 1000 Hz
-        "BI2015a": 512.0             # Typical ERP datasets are 250 Hz, verify with actual data
+        "BI2015a": 512.0,           # Typical ERP datasets are 250 Hz, verify with actual data
+        "Shin2017A": 200.0,
+        "Chang2025": 1000.0,
+        "Yang2025": 1000.0,
     }
     return dataset_rates.get(dataset, 250.0)  # Default to 250 Hz if unknown
 
@@ -570,6 +588,7 @@ def get_paradigm(resample=None, dataset="BNCI2014_001"):
     if dataset == "Lee2019_SSVEP":
         return SSVEP(
             n_classes=4,
+            events=_LEE2019_SSVEP_EVENTS,
             tmin=0.0,
             tmax=4.0,
             baseline=None,
@@ -585,13 +604,58 @@ def get_paradigm(resample=None, dataset="BNCI2014_001"):
             resample=resample
         )
     elif dataset == "Lee2019_MI":
+        # Lee2019_MI raw trials are 4 s of MI after cue (dataset interval [0, 4] s). MOABB and
+        # Lee et al. (2019) note that *online* decoding in the paper used [1.0, 3.5] s within
+        # that window (stable sustained imagery, fewer onset/offset transients). Using the full
+        # [0, 4] s window here produced chronically poor valid_acc / underfitting with EEGNet on
+        # CrossSession (100 trials per split)—aligning the crop with the paper fixes separability.
+        #
+        # Bandpass: 8–30 Hz (μ/β MI band; common in MI literature vs default 8–32 in MOABB MotorImagery).
         return MotorImagery(
             events=["left_hand", "right_hand"],
-            fmin=8, fmax=35,
-            tmin=0.0, tmax=None,
+            fmin=8,
+            fmax=30,
+            tmin=0.5,
+            tmax=3.5,
             baseline=None,
             resample=resample,
             n_classes=2,
+        )
+    elif dataset == "Shin2017A":
+        # Feasibility smoke: full 10 s task window per MOABB (tmin/tmax relative to MI event).
+        return MotorImagery(
+            events=["left_hand", "right_hand"],
+            fmin=8,
+            fmax=35,
+            tmin=0.0,
+            tmax=10.0,
+            baseline=None,
+            resample=resample,
+            n_classes=2,
+        )
+    elif dataset == "Yang2025":
+        # Feasibility smoke: 4 s MI segment (exclude cue/rest); 2-class paradigm.
+        return MotorImagery(
+            events=["left_hand", "right_hand"],
+            fmin=8,
+            fmax=35,
+            tmin=0.0,
+            tmax=4.0,
+            baseline=None,
+            resample=resample,
+            n_classes=2,
+        )
+    elif dataset == "Chang2025":
+        # Feasibility smoke: 4 s task interval; MOABB MI paradigm is 3-class.
+        return MotorImagery(
+            events=["left_hand", "right_hand", "both_hands"],
+            fmin=8,
+            fmax=35,
+            tmin=0.0,
+            tmax=4.0,
+            baseline=None,
+            resample=resample,
+            n_classes=3,
         )
     else:  # Default to MotorImagery for BNCI2014_001
         return MotorImagery(

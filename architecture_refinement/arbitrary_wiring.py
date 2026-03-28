@@ -21,8 +21,8 @@ import numpy as np
 
 
 
-InputStrategy = Literal["dense", "degree_proportional"]
-OutputStrategy = Literal["dense", "uniform"]
+InputStrategy = Literal["dense", "degree_proportional", "random_io", "degree_weighted_io"]
+OutputStrategy = Literal["dense", "uniform", "random_io", "degree_weighted_io"]
 EdgeOrientation = Literal["symmetric", "random_oriented", "as_is"]
 
 
@@ -150,6 +150,22 @@ class WsFlexHiddenWiring(Wiring):
             for h in hidden_order:
                 chosen_inputs = rng.choice(I, size=min(fan_in, I), replace=False)
                 W[chosen_inputs, I + h] = 1.0
+        elif self.input_strategy == "random_io":
+            rng = np.random.default_rng(self.seed)
+            fan_in = self.fan_in_inputs or max(1, int(np.round(np.log2(max(2, I + H)))))
+            hidden_order = rng.permutation(H)
+            for h in hidden_order:
+                chosen_inputs = rng.choice(I, size=min(fan_in, I), replace=False)
+                W[chosen_inputs, I + h] = 1.0
+        elif self.input_strategy == "degree_weighted_io":
+            rng = np.random.default_rng(self.seed)
+            fan_in = self.fan_in_inputs or max(1, int(np.round(np.log2(max(2, I + H)))))
+            deg = self._hidden_degrees().astype(np.float64)
+            probs = (deg + 1e-8) / (deg.sum() + 1e-8)
+            hidden_order = rng.choice(H, size=H, replace=False, p=probs)
+            for h in hidden_order:
+                chosen_inputs = rng.choice(I, size=min(fan_in, I), replace=False)
+                W[chosen_inputs, I + h] = 1.0
         else:
             raise ValueError(f"Unknown input_strategy: {self.input_strategy}")
 
@@ -168,6 +184,20 @@ class WsFlexHiddenWiring(Wiring):
             fan_in = self.fan_in_hidden_per_output or max(1, int(np.round(np.log2(max(2, H)))))
             for o in range(O):
                 chosen_hidden = rng.choice(H, size=min(fan_in, H), replace=False)
+                W[I + chosen_hidden, I + H + o] = 1.0
+        elif self.output_strategy == "random_io":
+            rng = np.random.default_rng(self.seed + 1)
+            fan_in = self.fan_in_hidden_per_output or max(1, int(np.round(np.log2(max(2, H)))))
+            for o in range(O):
+                chosen_hidden = rng.choice(H, size=min(fan_in, H), replace=False)
+                W[I + chosen_hidden, I + H + o] = 1.0
+        elif self.output_strategy == "degree_weighted_io":
+            rng = np.random.default_rng(self.seed + 1)
+            fan_in = self.fan_in_hidden_per_output or max(1, int(np.round(np.log2(max(2, H)))))
+            deg = self._hidden_degrees().astype(np.float64)
+            probs = (deg + 1e-8) / (deg.sum() + 1e-8)
+            for o in range(O):
+                chosen_hidden = rng.choice(H, size=min(fan_in, H), replace=False, p=probs)
                 W[I + chosen_hidden, I + H + o] = 1.0
         else:
             raise ValueError(f"Unknown output_strategy: {self.output_strategy}")

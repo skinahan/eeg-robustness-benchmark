@@ -1,0 +1,37 @@
+probe_training:
+  epochs: 1
+  batch_size: 64
+  learning_rate: 0.001
+  optimizer: adamw
+  early_stopping: false
+  save_checkpoint: true
+  save_train_log: true
+probe_seeds: [11]
+probe_subset:
+  source_split: validation
+  max_examples: 32
+  stratified: true
+  probe_subset_seed: 123
+  save_indices_path: experiments/nas_proxy_followup/manifests/probe_subset_indices.json
+probe_run_manifest: experiments/nas_proxy_followup/manifests/probe_run_manifest.csv
+probe_output_dir: experiments/nas_proxy_followup/outputs/probe_runs
+
+jacobian_proxy:
+  enabled: false
+  method: power_iteration
+  num_power_iters: 10
+  selected_time_steps: null
+  log_transform: true
+  compute_max: true
+  compute_expansive_fraction: true
+
+fd_proxy:
+  enabled: true
+  noise_std: 0.01
+  num_repeats: 2
+
+model:
+  D_in: 16
+  H: 32
+  n_outputs: 2
+  hidden_edge_orientation: symmetric

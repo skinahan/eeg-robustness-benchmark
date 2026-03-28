@@ -33,3 +33,10 @@ def can_write_output(path: Path, *, overwrite: bool) -> bool:
         print(f"[skip] Output exists: {path} (use --overwrite to replace)")
         return False
     return True
+
+
+def results_model_segment(model_name: str) -> str:
+    """Matches utils.create_output_path(..., use_short_run_id=True) folder segment."""
+    from utils import short_run_id
+
+    return short_run_id(model_name, length=12)

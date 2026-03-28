@@ -1,4 +1,7 @@
 import os
+
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
+
 import torch
 import numpy as np
 from braindecode.util import set_random_seeds
@@ -72,6 +75,18 @@ def get_early_stopping_callback():
         load_best=EARLY_STOPPING_LOAD_BEST
     )
 
+
+def get_default_eeg_classifier_callbacks():
+    """
+    Callback list for Braindecode EEGClassifier factories (EEGNet, CTNet, REEGNet, etc.).
+
+    Keeps early stopping identical across these models: one EarlyStopping from
+    get_early_stopping_callback() (valid_loss, patience/threshold/load_best from globals above).
+    The experiment runner may append cache checkpoints after model construction.
+    """
+    return [get_early_stopping_callback()]
+
+
 # Default max_epochs - increased to allow more training time
 DEFAULT_MAX_EPOCHS = 200  # Increased from 100
 
@@ -93,7 +108,14 @@ def get_max_epochs_for_dataset(dataset: str, eval_mode: str = None) -> int:
     if eval_mode == "CrossSubject":
         return 20
     
-    if dataset in ["Lee2019_SSVEP", "Lee2019_MI", "BI2015a"]:
+    if dataset in [
+        "Lee2019_SSVEP",
+        "Lee2019_MI",
+        "BI2015a",
+        "Shin2017A",
+        "Chang2025",
+        "Yang2025",
+    ]:
         return 100
     return DEFAULT_MAX_EPOCHS
 
@@ -116,6 +138,8 @@ def get_underfitting_threshold_for_dataset(dataset: str) -> float:
     """
     if dataset == "Lee2019_SSVEP":
         return 0.35  # 4 classes, random chance = 0.25
+    if dataset == "Chang2025":
+        return 0.50  # 3-class MI; random chance ≈ 0.33
     # Default for 2-class problems
     return UNDERFITTING_THRESHOLD  # 0.70 for 2-class problems
 

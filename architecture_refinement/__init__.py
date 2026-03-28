@@ -20,14 +20,22 @@ __author__ = "EEG Noise Robustness Team"
 from .graph_generator import ModularSmallWorldGraphGenerator
 from .topology_analyzer import TopologyAnalyzer
 from .optimizer import MultiObjectiveOptimizer
-from .architecture_converter import WiredCfCConverter
 from .utils import setup_logging, create_experiment_logger
 
 __all__ = [
     "ModularSmallWorldGraphGenerator",
-    "TopologyAnalyzer", 
+    "TopologyAnalyzer",
     "MultiObjectiveOptimizer",
     "WiredCfCConverter",
     "setup_logging",
-    "create_experiment_logger"
+    "create_experiment_logger",
 ]
+
+
+def __getattr__(name: str):
+    """Lazy import: WiredCfCConverter pulls in Torch; keep package import light."""
+    if name == "WiredCfCConverter":
+        from .architecture_converter import WiredCfCConverter
+
+        return WiredCfCConverter
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

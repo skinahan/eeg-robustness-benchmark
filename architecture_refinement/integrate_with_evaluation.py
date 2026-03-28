@@ -96,7 +96,7 @@ def create_model_factory_from_architecture(architecture_file: str,
     Returns:
         Model factory function
     """
-    def model_factory(n_chans, n_times, n_outputs):
+    def model_factory(n_chans, n_times, n_outputs, **kwargs):
         return create_wiredcfc_model_from_architecture(
             architecture_file, n_chans, n_times, n_outputs, logger
         )

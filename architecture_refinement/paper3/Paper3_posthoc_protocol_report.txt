@@ -1,0 +1,363 @@
+================================================================================
+PAPER 3 — POST-HOC PROTOCOL REPORT (REPRODUCIBILITY / CHECKLIST ANSWERS)
+================================================================================
+
+Generated for: checklist in Paper_3_experiments_posthoc_reporting.md
+Report date: 2026-03-27
+Git commit (repository): 5728f56738c4a29f4a5abaa306fb337898efba7d
+
+--------------------------------------------------------------------------------
+PROVENANCE — LATEST COMPLETE MAIN PAPER 3 RESULTS USED HERE
+--------------------------------------------------------------------------------
+
+Discovery method: architecture_refinement.paper3.run_paper3_q3_stratified_pipeline.discover_paper3_runs(Path("architecture_refinement/outputs")) with pick_best_run(require_complete=True).
+
+Primary experiment3 bundle (newest complete):
+  CSV path:
+    e:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments\architecture_refinement\outputs\paper3\experiment3_matched_n5\experiment3_results.csv
+  CSV modification time (UTC): 2026-03-27 14:43:44 UTC
+  Rows (data): 125 (= header + 125 rows); experiment3_summary.json confirms n_rows=125
+
+  Associated experiment1:
+    e:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments\architecture_refinement\outputs\paper3\experiment1
+  Associated experiment2 (OPTION B matched n=5 — authoritative for this CSV):
+    e:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments\architecture_refinement\outputs\paper3\experiment2_matched_n5\experiment2_manifest.json
+
+Note: discover_paper3_runs resolves sibling folders named "experiment1" and "experiment2". A separate folder
+  ...\paper3\experiment2\
+exists with a different (legacy) manifest (12+12+1+1+1 models). For counts and claims that match
+experiment3_matched_n5, always use experiment2_matched_n5/experiment2_manifest.json, not the legacy
+experiment2 manifest.
+
+Experiment 1 on-disk pool (this run):
+  proxy_pool.csv line count: 501 lines (= 500 candidates + header)
+  selected_proxy.csv line count: 13 lines (= 12 selected + header)
+  Defaults in code (run_paper3_experiment1.py): N_proxy=500, K=12, Pareto + 6x6 grid diversity selection.
+
+Stratified Q3 post-hoc (G_strat pilot) — on-disk folder:
+  e:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments\architecture_refinement\outputs\paper3\q3_stratified_pilot\
+
+  Artifacts present:
+  - q3_stratified_manifest.json  (mtime local disk: 2026-03-26 11:48)
+  - q3_stratified_sample_plan.json  (same)
+  - q3_stratified_experiment3_results.csv  (mtime: 2026-03-26 10:30)
+  - selected_architectures\  (architecture JSONs for trained G_strat models)
+
+  From q3_stratified_manifest.json:
+  - S = 3 training seeds: 42, 43, 44
+  - Perturbation: ar1_drift, target_snr_db = -5.0 (same SNR target as main Exp2 jobs)
+  - groups["G_strat"]: 97 model names (paper3_q3_strat_01 .. paper3_q3_strat_97)
+  - Points at experiment1 / experiment2 under ...\paper3\experiment1 and ...\paper3\experiment2 (legacy sibling paths)
+
+  From q3_stratified_sample_plan.json:
+  - Stratification: 2d_proxy_plane; n_target = 100; n_bins_te = 10 × n_bins_orc = 10
+  - train_model_count = 97; reuse_g1_count = 3 (reuse rows from main G1 for analysis, not necessarily in this CSV)
+
+  From q3_stratified_experiment3_results.csv (collected perturb rows only):
+  - 90 data rows = 30 distinct models (paper3_q3_strat_01 .. paper3_q3_strat_30) × 3 seeds each
+  - The manifest still lists 97 G_strat models; 67 models have no rows in this CSV yet (incomplete or partial
+    collect vs full manifest — do not treat 97 as fully evaluated in the results file).
+
+  Note: discover_paper3_runs() skips directories whose path contains "q3_stratified", so this pilot does not
+  appear in that discovery helper; the path above is the correct location for the stratified post-hoc run.
+
+Empirical test_perturb CSVs under results/MotorImagery/BNCI2014_001/ were not present in this workspace;
+intensity schedule and noise mapping are therefore documented from code and from the experiment2 launcher
+(run_paper3_experiment2.py) that generated the training jobs for this run.
+
+--------------------------------------------------------------------------------
+1. AR(1) INTENSITY SCHEDULE
+--------------------------------------------------------------------------------
+
+1.1 Evaluated intensity levels (normalized alpha grid)
+
+  For Paper 3 Experiment 2, the unified runner is invoked with a fixed list (same for all models in this run):
+
+    ALPHA_GRID = [0.0, 0.25, 0.5, 0.75, 1.0]
+
+  Source: architecture_refinement/paper3/run_paper3_experiment2.py (constant ALPHA_GRID).
+
+  - Total points: 5
+  - Spacing: linearly spaced in alpha (step 0.25 from 0 to 1).
+  - This is NOT 11 equally spaced levels in raw sigma; it is five normalized alpha values.
+
+1.2 Mapping from intensity to AR(1) noise strength
+
+  In evaluation/unified_experiment_runner.py, _evaluate_perturb, for correlated noise types including
+  ar1_drift, when test_perturb_gaussian_alpha_grid is set:
+
+    intensity = alpha * alpha_max
+
+  where alpha_max is produced by _get_alpha_max_for_correlated_noise(noise_type, X_valid, split_id=...).
+  That routine calibrates noise power so that at intensity=alpha_max, the signal-to-noise ratio matches
+  test_perturb_target_snr_db (default in Exp2: -5.0 dB for this manifest; see experiment2_manifest.json).
+
+  Therefore:
+  - sigma(p) is NOT "p * RMS(signal)" as a single global formula in code.
+  - Instead: alpha is the normalized knob in [0,1]; alpha_max is data-dependent per (split, fold, session)
+    calibration using a fixed calibration seed _CALIBRATION_SEED = 202602 (see unified_experiment_runner.py).
+
+1.3 AR(1) process parameters (fixed vs variable)
+
+  - phi (AR coefficient): controlled by CLI --test_perturb_ar1_rho. Experiment 2 passes rho = 0.97 in
+    perturbation_params for ar1_drift (run_paper3_experiment2.py: manifest uses pert_params
+    {"ar1_drift": {"rho": 0.97}}).
+  - This is fixed across models and seeds for a given launch (same CLI for all jobs in that pilot).
+  - It is NOT 0.9 unless you explicitly changed the flag; the default pipeline uses 0.97.
+
+1.4 Randomness and fair comparison
+
+  Correlated noise augmentors use self.seed when no explicit seed is passed in the per-intensity loop
+  (_make_correlated_noise_augmentor(..., seed=self.seed) for evaluation perturbations).
+
+  Important nuance:
+  - The same training seed and the same perturbation protocol apply to every model in the study.
+  - Identical additive noise tensors across two different models are NOT guaranteed, because noise is
+    applied to that run's validation tensor X_valid, which differs across sessions/folds and across runs
+    if the underlying data slice differs.
+  - For a single model and a single (model, seed), the sweep is deterministic given the code path.
+
+--------------------------------------------------------------------------------
+2. SAMPLE SIZES
+--------------------------------------------------------------------------------
+
+2.1 Within-family (Experiment 1 — proxy pool and G1 selection)
+
+  - Candidate graphs sampled for the pool: N_proxy = 500 (default; confirmed by proxy_pool.csv row count).
+  - Topologies selected for downstream training (G1): K = 12 (default; confirmed by selected_proxy.csv
+    with 12 data rows).
+  - Selection mechanism: Pareto front on (te_hat, orc_hat) plus 6x6 grid binning diversity
+    (_select_k_from_pareto_grid), not simple top-k by a single proxy scalar.
+
+2.2 Out-of-family (Experiment 2 — latest complete results: Option B matched n=5)
+
+  Authoritative manifest: .../experiment2_matched_n5/experiment2_manifest.json
+
+  - Number of families: 5 (G1..G5)
+  - Topologies per family: 5 per group (n_per_family = 5, matched_families_option_b = true)
+  - Total distinct models: 5 * 5 = 25
+  - G1 models: five proxy-selected architectures (paper3_exp1_proxy_S1, S10, S11, S12, S2)
+  - G2: five uniform WS-Flex (paper3_exp2_uniform_1 .. _5)
+  - G3: five ER-dense graphs (paper3_exp2_dense_01 .. _05)
+  - G4: five random sparse graphs matched to mean E_active from G1 (paper3_exp2_random_sparse_01 .. _05)
+  - G5: five distinct NCP wirings (paper3_exp2_ncp_01 .. _05)
+
+2.3 Stratified Q3 post-hoc
+
+  Empirical (see PROVENANCE, q3_stratified_pilot): sample plan uses 10×10 bins, n_target=100, 2d_proxy_plane;
+  manifest lists 97 G_strat models and S=3 seeds (42–44). Collected q3_stratified_experiment3_results.csv
+  currently holds 30 models × 3 seeds (paper3_q3_strat_01–30). For merge/analysis behavior with main
+  experiment3_results.csv, see run_paper3_q3_stratified_analysis.py (reuse G1 seeds from main manifest
+  where applicable).
+
+--------------------------------------------------------------------------------
+3. RANDOM SEEDS / REPEATS
+--------------------------------------------------------------------------------
+
+  From experiment2_matched_n5/experiment2_manifest.json: S = 5
+
+  Seeds used in run_paper3_experiment3.py for aggregation:
+    seeds = range(42, 42 + S)  =>  42, 43, 44, 45, 46
+
+  What varies across seeds:
+  - Weight initialization, training minibatch order, and internal validation split (ValidSplit uses the
+    run seed), not the topology JSON.
+
+  Total training+eval jobs for mainline (this run):
+    25 models * 5 seeds = 125 runs (matches experiment3_results.csv row count).
+
+  Stratified Q3 pilot (q3_stratified_pilot): manifest S = 3 (seeds 42, 43, 44). Collected
+    q3_stratified_experiment3_results.csv has 90 rows = 30 models × 3 seeds (partial relative to 97
+    models listed in q3_stratified_manifest.json).
+
+--------------------------------------------------------------------------------
+4. FAIRNESS / CONTROL VARIABLES
+--------------------------------------------------------------------------------
+
+  Documented single source: architecture_refinement/paper3/Paper3_Experimental_Details.md
+
+  - Same CNN front-end and CfC-style wiring factory (create_cnnwiredcfc_min_classifier via nas_pilot_registry)
+  - H = 32 for WS-Flex architectures in this manifest
+  - Training: AdamW-style hyperparameters as in models/cnn_wiredcfc_min.py (lr=1e-3, batch_size=64,
+    weight_decay=1e-3, gradient_clip_value=1.0); max_epochs for BNCI2014_001 CrossSession = 200
+    (globals.get_max_epochs_for_dataset)
+  - Early stopping: valid_loss, patience 20, threshold 1e-5, load_best (globals.get_early_stopping_callback)
+
+  Parameter counts:
+  - Not numerically verified in this environment (moabb/torch stack not available for a live count).
+  - Order-of-magnitude note from architecture_refinement/outputs/paper3/complexity_analysis.txt: roughly
+    4k–15k parameters depending on wiring; G5 NCP and dense baselines can differ from sparse WS-Flex.
+  - Do not claim exact equality of parameter counts across all groups without per-checkpoint counts.
+
+--------------------------------------------------------------------------------
+5. EVALUATION PROTOCOL CONSISTENCY
+--------------------------------------------------------------------------------
+
+  - Dataset: BNCI2014_001, eval_mode CrossSession (Leave-one-session-out per MOABB).
+  - All models in this run use the same evaluation mode and subject list (default subjects 1..9 in Exp2).
+  - Internal validation: 80/20 stratified ValidSplit on training-session data only; held-out session is
+    never used for training (Paper3_Experimental_Details.md).
+
+  Perturbation protocol (from job template in run_paper3_experiment2._run_unified_job):
+  - mode test_perturb
+  - noise types: ar1_drift only
+  - same saturation file path, alpha grid, target_snr_db=-5.0, and ar1 rho=0.97 for every model in the pilot.
+
+  Same noise seed policy per run: augmentor tied to training seed (self.seed). Identical corrupted tensors
+  across different models is not the same as "same RNG seed" because inputs differ.
+
+--------------------------------------------------------------------------------
+6. METRICS COMPUTATION
+--------------------------------------------------------------------------------
+
+6.1 Primary Paper 3 Experiment 3 metric: RD_max
+
+  Source: architecture_refinement/paper3/run_paper3_experiment3.py, _collect_perturb_results
+
+  For each (model, seed) and noise_type ar1_drift:
+    r_t = corrupted_roc_auc / clean_roc_auc   (vector over intensity rows in the collected CSV)
+    RD_max = max_t (1 - r_t)
+
+  Relative to clean: r_t is normalized by clean ROC-AUC; degradation is expressed as 1 - r_t.
+
+6.2 AUPC
+
+  run_paper3_experiment3 does NOT compute AUPC or area-under-the-curve over the full grid.
+
+  Auxiliary script: architecture_refinement/paper3/run_hail_mary_sensitivity.py defines
+  mini_AUPC_RD_trapz_alpha_0_0p25_0p5 using numpy.trapz over relative degradation at alpha 0, 0.25, 0.5
+  only (not the full [0,0.25,0.5,0.75,1] grid used for RD_max).
+
+  If the manuscript mentions "AUPC", specify which script and which alpha grid; do not equate it with
+  RD_max from the main experiment3 CSV.
+
+6.3 ROC-AUC as input to RD_max
+
+  The metric feeding r_t is ROC-AUC on the held-out session (binary classification), from
+  evaluation/metrics.py compute_classification_metrics (consistent with Paper3_Experimental_Details.md).
+
+--------------------------------------------------------------------------------
+7. STATISTICAL TESTING (OUT-OF-FAMILY / FAMILY CONTRAST)
+--------------------------------------------------------------------------------
+
+  Source: architecture_refinement/paper3/run_paper3_option_b_family_contrast.py
+
+  - Omnibus: Kruskal–Wallis across groups, using one RD_max value per topology per group, where
+    RD_max = mean over seeds per (group, model) (topology_means_table).
+  - Exploratory pairwise: Mann–Whitney U (two-sided) vs pooled G1+G2 and among G3–G5 as documented in that
+    script.
+
+  Unit of analysis:
+  - Option B family contrast: topology-level (one aggregated RD_max per model after averaging seeds).
+  - Experiment 3 hit-rate / hit_rate_diff in experiment3_summary.json: uses per-row (model, seed) binary
+    "robust" flags (not topology-level aggregation). g1_n = 25 in the summary is the count of G1 rows
+    (5 topologies x 5 seeds), not "5".
+
+--------------------------------------------------------------------------------
+8. SANITY CHECKS
+--------------------------------------------------------------------------------
+
+  - Data leakage: CrossSession holds out an entire session for testing; no overlap between train and test
+    sessions within a fold (Paper3_Experimental_Details.md).
+
+  - One trained model per (model, seed), evaluated across all intensity levels: test_perturb trains on
+    clean data; perturbation only in _evaluate_perturb after training (unified_experiment_runner.py).
+
+  - Caveat on _collect_perturb_results: it walks rglob("*.csv") and returns the first matching test_perturb
+    file. If multiple CSVs exist per run, the choice can depend on filesystem order. This workspace did not
+    include raw per-session CSVs to verify single-file vs multi-file aggregation.
+
+--------------------------------------------------------------------------------
+AMBIGUITY / LIMITATIONS (EXPLICIT)
+--------------------------------------------------------------------------------
+
+  - phi = 0.9 in informal prose vs rho = 0.97 in the Paper 3 Exp2 launcher.
+  - RD_max (main pipeline) vs mini-AUPC (Hail Mary auxiliary) — different definitions.
+  - "Identical perturbations across models" vs identical protocol and seeds: same schedule, not
+    necessarily identical noise tensors on different X_valid.
+  - discovery "complete" bundle uses sibling experiment2/; matched manifest is under experiment2_matched_n5/.
+  - Stratified Q3: full results live under q3_stratified_pilot (see PROVENANCE); collected CSV is partial
+    relative to the 97-model manifest (30 models with rows as of this report).
+
+--------------------------------------------------------------------------------
+FINAL SUMMARY (WHAT THIS REPORT LOCKS DOWN)
+--------------------------------------------------------------------------------
+
+  - Noise levels: five normalized alphas [0, 0.25, 0.5, 0.75, 1.0]; intensity = alpha * alpha_max with
+    alpha_max SNR-calibrated per split (target_snr_db = -5.0 in this manifest).
+  - AR(1) coefficient rho = 0.97 in the standard Exp2 job template.
+  - Latest complete experiment3_results.csv: 125 rows; 25 models x 5 seeds; Option B matched n=5 per family.
+  - Experiment 1 pool: 500 candidates; 12 selected for Plot 1 / G1 pool; matched run uses 5 of those
+    proxies for G1 in Exp2 matched n5 (see manifest).
+  - Seeds: 42..46 for S=5.
+  - Primary robustness statistic for experiment3: RD_max from ROC-AUC ratios; not AUPC unless using
+    Hail Mary sensitivity script.
+  - Family-level statistics (Option B): Kruskal–Wallis + Mann–Whitney on topology-mean RD_max; hit-rate in
+    experiment3_summary uses per-row (model, seed) units.
+
+--------------------------------------------------------------------------------
+SUPPLEMENTAL Q&A (from codebase)
+--------------------------------------------------------------------------------
+
+Q: How do we determine alpha_max for AR(1) noise?
+
+A: For noise types in the correlated path (including ar1_drift), alpha_max is computed in
+   evaluation/unified_experiment_runner.py by UnifiedExperimentRunner._get_alpha_max_for_correlated_noise.
+
+   Procedure (same for AR(1) as for other correlated types; AR(1)-specific behavior enters only through
+   the augmentor’s transform at unit intensity):
+
+   1) Take the current validation tensor X_sample (epochs × channels × time) for the fold/session being
+      evaluated. A cache key includes (dataset, noise_type, split_id, perturbation params including
+      test_perturb_ar1_rho, target_snr_db).
+
+   2) Build an EEGNoiseAugmentor with noise_type=ar1_drift, intensity=1.0, seed=_CALIBRATION_SEED (202602),
+      and ar1_rho from --test_perturb_ar1_rho (default 0.97). Apply transform to get unit-strength noise:
+      eps = augmentor.transform(X_sample) - X_sample.
+
+   3) Compute mean signal energy per epoch (summed over channels and time, averaged over epochs):
+        mean_X_sq = sum(X_sample**2) / n_epochs
+      and mean squared noise at unit intensity:
+        mean_eps_sq = sum(eps**2) / n_epochs
+      If mean_eps_sq is invalid, fall back to alpha_max_0dB = 1.0.
+
+   4) alpha_max_0dB = sqrt(mean_X_sq / mean_eps_sq). This is the scale factor such that using intensity
+      equal to this value would correspond to the “0 dB” reference in the SNR definition used below (ratio
+      of total signal power to total noise power in this aggregate sense).
+
+   5) Let target_db = test_perturb_target_snr_db (Paper 3 manifests use -5.0). Then:
+        alpha_max = alpha_max_0dB * 10^(-target_db / 20).
+      So for target_db = -5 dB, alpha_max is larger than the 0 dB reference by a factor 10^(5/20).
+
+   6) Invalid values clamp to alpha_max = 1.0. The result is cached so the same split/params/target_db
+      do not recompute.
+
+   Evaluation intensities on the normalized grid are then intensity = alpha * alpha_max for each alpha in
+   test_perturb_gaussian_alpha_grid (e.g. 0, 0.25, …, 1). Rows in CSV may record alpha = intensity/alpha_max
+   and alpha_max for traceability.
+
+Q: How is alpha (normalized grid) mapped to actual noise magnitude?
+
+A: Two steps: (1) normalized alpha on [0,1] becomes a scalar intensity; (2) intensity scales the AR(1)
+   noise tensor added to the EEG.
+
+   (1) From evaluation/unified_experiment_runner.py (_evaluate_perturb, correlated path):
+        intensity = alpha * alpha_max
+      where alpha is one entry in test_perturb_gaussian_alpha_grid and alpha_max is from
+      _get_alpha_max_for_correlated_noise (see previous Q).
+
+   (2) From augmentation/noise.py, EEGNoiseAugmentor._apply_ar1_drift:
+      - For each epoch, an AR(1) process eps is generated per channel with rho = ar1_rho (default 0.97),
+        innovations scaled so the stationary variance of eps is 1 per channel (sigma_eta = sqrt(1 - rho^2)).
+      - The corrupted signal is:
+          X_aug = X + intensity * eps
+      So “actual noise magnitude” is linear in intensity: the additive noise field is intensity times a
+      fixed-scale unit-variance AR(1) process (same random stream/seed behavior as elsewhere in that method).
+
+   At alpha = 0, intensity = 0 and no noise is added. At alpha = 1, intensity = alpha_max (the SNR-calibrated
+   ceiling for that validation split). Intermediate alphas linearly interpolate noise power between 0 and
+   that ceiling in the sense of scaling eps, not by redefining eps.
+
+================================================================================
+END OF REPORT
+================================================================================

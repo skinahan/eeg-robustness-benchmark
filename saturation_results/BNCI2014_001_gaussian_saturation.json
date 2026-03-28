@@ -3,13 +3,13 @@
   "dataset": "BNCI2014_001",
   "saturation_point": 100.0,
   "confidence_interval": [
-    0.5149121776739202,
-    0.6047508881697014
+    0.6219650205761318,
+    0.8219650205761317
   ],
   "chance_threshold": 0.56,
-  "performance_at_saturation": 0.5598315329218108,
-  "performance_std": 0.03969520690437866,
-  "is_statistically_significant": true,
-  "detection_method": "simplified_below_chance",
-  "timestamp": "2025-10-17 12:55:45"
+  "performance_at_saturation": 0.7219650205761318,
+  "performance_std": 0.1,
+  "is_statistically_significant": false,
+  "detection_method": "coarse_exploration_only",
+  "timestamp": "2026-03-27 12:43:48"
 }

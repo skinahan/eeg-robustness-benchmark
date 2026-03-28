@@ -1,0 +1,6 @@
+perturbation_eval:
+  family: gaussian
+  levels: [0.0, 0.25, 0.50]
+  perturbation_seed: 999
+  repeats_per_level: 1
+perturbation_output: experiments/nas_proxy_followup/outputs/evaluation/local_perturbation_results.csv

@@ -5,7 +5,7 @@ from skorch.dataset import ValidSplit
 from skorch.callbacks import LRScheduler
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
-from globals import get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS, EEGCLASSIFIER_VERBOSE
+from globals import get_seed, get_default_eeg_classifier_callbacks, DEFAULT_MAX_EPOCHS, EEGCLASSIFIER_VERBOSE
 
 
 def create_eegnet_classifier(n_chans, n_times, n_outputs, seed=get_seed(), **kwargs):
@@ -35,6 +35,6 @@ def create_eegnet_classifier(n_chans, n_times, n_outputs, seed=get_seed(), **kwa
         module__final_conv_length='auto',
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[get_early_stopping_callback()],
+        callbacks=get_default_eeg_classifier_callbacks(),
         verbose=EEGCLASSIFIER_VERBOSE
     )

@@ -11,7 +11,7 @@ from typing import Optional
 from sklearn.base import TransformerMixin, BaseEstimator
 import numpy as np
 
-from globals import get_seed, get_early_stopping_callback, DEFAULT_MAX_EPOCHS, EEGCLASSIFIER_VERBOSE
+from globals import get_seed, get_default_eeg_classifier_callbacks, DEFAULT_MAX_EPOCHS, EEGCLASSIFIER_VERBOSE
 
 
 class To4DArray(TransformerMixin, BaseEstimator):
@@ -377,6 +377,6 @@ def create_reegnet_classifier(n_chans=22, n_times=1001, n_outputs=2, **kwargs):
         module__lstm_hidden_size=32,
         train_split=ValidSplit(0.2, stratified=True, random_state=seed),
         device='cuda' if torch.cuda.is_available() else 'cpu',
-        callbacks=[get_early_stopping_callback()],
+        callbacks=get_default_eeg_classifier_callbacks(),
         verbose=EEGCLASSIFIER_VERBOSE
     )

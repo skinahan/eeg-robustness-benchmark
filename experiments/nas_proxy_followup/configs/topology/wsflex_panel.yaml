@@ -1,0 +1,8 @@
+hidden_size: 32
+k_values: [4, 8, 12, 16]
+p_values: [0.05, 0.3, 0.8]
+graphs_per_regime: 8
+enforce_connected: true
+save_graph_objects: true
+output_manifest: experiments/nas_proxy_followup/manifests/topology_panel.csv
+graph_output_dir: experiments/nas_proxy_followup/outputs/topology_panel

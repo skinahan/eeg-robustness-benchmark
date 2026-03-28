@@ -1,0 +1,16 @@
+topology_panel_path: experiments/nas_proxy_followup/manifests/topology_panel.csv
+probe_metrics_aggregated: experiments/nas_proxy_followup/outputs/probe_runs/probe_metrics_aggregated.csv
+mapping_schemes:
+  - deterministic_baseline
+  - random_io_anchors
+  - degree_weighted_io_anchors
+downstream_training:
+  epochs: 200
+  batch_size: 64
+  learning_rate: 0.001
+  optimizer: adamw
+  early_stopping: true
+  save_best_checkpoint: true
+training_seeds: [101, 202, 303]
+downstream_run_manifest: experiments/nas_proxy_followup/manifests/downstream_run_manifest.csv
+downstream_output_dir: experiments/nas_proxy_followup/outputs/downstream_runs

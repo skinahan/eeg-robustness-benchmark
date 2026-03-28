@@ -81,10 +81,10 @@ def enhanced_cv_training_loop(
         # Fit with early stopping
         start_time = time.time()
         
-        # Add early stopping callback if supported
+        # Add early stopping callback if supported (same rule as EEGClassifier factories)
         if hasattr(model, 'callbacks'):
-            from globals import get_early_stopping_callback
-            model.callbacks = [get_early_stopping_callback()]
+            from globals import get_default_eeg_classifier_callbacks
+            model.callbacks = get_default_eeg_classifier_callbacks()
         
         model.fit(X_train_part, y_train_part)
         

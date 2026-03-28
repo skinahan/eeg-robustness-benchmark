@@ -29,8 +29,8 @@ models:
    - name: "eegnet"
      display_name: "EEGNet"
 
-   - name: "ctnet"
-     display_name: "CTNet"
+  #  - name: "ctnet"
+  #    display_name: "CTNet"
     
    - name: "reegnet"
      display_name: "REEGNet"

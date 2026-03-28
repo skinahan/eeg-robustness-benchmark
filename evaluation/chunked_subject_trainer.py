@@ -10,7 +10,7 @@ large numbers of subjects.
 import numpy as np
 import torch
 import gc
-from typing import List, Tuple, Optional, Dict, Any
+from typing import List, Tuple, Optional, Dict, Any, Callable
 from sklearn.preprocessing import LabelEncoder
 from braindecode import EEGClassifier
 
@@ -22,7 +22,8 @@ def train_with_subject_chunks(
     train_subjects: List[int],
     chunk_size: int = 3,
     max_epochs_per_chunk: Optional[int] = None,
-    verbose: bool = True
+    verbose: bool = True,
+    train_preprocess: Optional[Callable[[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]] = None,
 ) -> EEGClassifier:
     """
     Train a model incrementally by loading training subjects in chunks.
@@ -40,6 +41,7 @@ def train_with_subject_chunks(
         max_epochs_per_chunk: Maximum epochs to train on each chunk.
                              If None, uses model's max_epochs setting.
         verbose: Whether to print progress information
+        train_preprocess: If set, applied to (X_chunk, y_chunk) after load (e.g. Lee2019_MI sliding windows).
     
     Returns:
         Trained model (same object, modified in place)
@@ -110,6 +112,11 @@ def train_with_subject_chunks(
         if verbose:
             chunk_size_mb = X_chunk.nbytes / 1024 / 1024
             print(f"[CHUNKED_TRAINING] Chunk loaded: shape={X_chunk.shape}, size={chunk_size_mb:.2f} MB")
+
+        if train_preprocess is not None:
+            X_chunk, y_chunk = train_preprocess(X_chunk, y_chunk)
+            if verbose:
+                print(f"[CHUNKED_TRAINING] After train_preprocess: X={X_chunk.shape}, y={y_chunk.shape}")
         
         # CRITICAL: For subsequent chunks, we MUST use warm_start=True to preserve
         # model weights and optimizer state. Without this, skorch will reinitialize
@@ -203,7 +210,8 @@ def evaluate_with_subject_chunks(
     dataset_obj,
     eval_subjects: List[int],
     chunk_size: int = 3,
-    verbose: bool = True
+    verbose: bool = True,
+    eval_preprocess: Optional[Callable[[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Evaluate a model by loading validation subjects in chunks.
@@ -219,6 +227,7 @@ def evaluate_with_subject_chunks(
         eval_subjects: List of subject IDs to use for evaluation
         chunk_size: Number of subjects to load per chunk (default: 3)
         verbose: Whether to print progress information
+        eval_preprocess: If set, applied to (X_chunk, y_chunk) before predict_proba (e.g. fixed crop).
     
     Returns:
         Tuple of (y_true_all, y_pred_proba_all) - aggregated predictions
@@ -266,6 +275,11 @@ def evaluate_with_subject_chunks(
         if verbose:
             chunk_size_mb = X_chunk.nbytes / 1024 / 1024
             print(f"[CHUNKED_EVAL] Chunk loaded: shape={X_chunk.shape}, size={chunk_size_mb:.2f} MB")
+
+        if eval_preprocess is not None:
+            X_chunk, y_chunk = eval_preprocess(X_chunk, y_chunk)
+            if verbose:
+                print(f"[CHUNKED_EVAL] After eval_preprocess: X={X_chunk.shape}, y={y_chunk.shape}")
         
         # Evaluate on chunk
         with torch.no_grad():
@@ -302,7 +316,9 @@ def train_and_evaluate_with_chunks(
     train_chunk_size: int = 3,
     eval_chunk_size: int = 3,
     max_epochs_per_chunk: Optional[int] = None,
-    verbose: bool = True
+    verbose: bool = True,
+    train_preprocess: Optional[Callable[[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]] = None,
+    eval_preprocess: Optional[Callable[[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]] = None,
 ) -> Tuple[EEGClassifier, np.ndarray, np.ndarray]:
     """
     Train and evaluate a model using chunked subject loading.
@@ -332,7 +348,8 @@ def train_and_evaluate_with_chunks(
         train_subjects=train_subjects,
         chunk_size=train_chunk_size,
         max_epochs_per_chunk=max_epochs_per_chunk,
-        verbose=verbose
+        verbose=verbose,
+        train_preprocess=train_preprocess,
     )
     
     # Evaluate with chunks
@@ -342,7 +359,8 @@ def train_and_evaluate_with_chunks(
         dataset_obj=dataset_obj,
         eval_subjects=eval_subjects,
         chunk_size=eval_chunk_size,
-        verbose=verbose
+        verbose=verbose,
+        eval_preprocess=eval_preprocess,
     )
     
     return model, y_true, y_pred_proba

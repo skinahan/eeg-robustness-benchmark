@@ -1,0 +1,6 @@
+experiment_name: nas_proxy_followup
+nas_proxy_root: null
+output_root: experiments/nas_proxy_followup/outputs
+manifests_root: experiments/nas_proxy_followup/manifests
+device: cuda
+num_workers: 4

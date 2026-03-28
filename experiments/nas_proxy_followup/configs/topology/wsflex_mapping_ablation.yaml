@@ -1,0 +1,13 @@
+topology_panel_path: experiments/nas_proxy_followup/manifests/topology_panel.csv
+mapping_schemes:
+  - deterministic_baseline
+  - random_io_anchors
+  - degree_weighted_io_anchors
+num_realizations_per_graph: 5
+compare_hidden_mask_only: true
+compare_full_realization: true
+save_realized_masks: true
+input_size: 16
+output_size: 32
+realization_manifest: experiments/nas_proxy_followup/manifests/topology_panel_realization.csv
+realization_output_dir: experiments/nas_proxy_followup/outputs/realization_analysis

@@ -2,6 +2,11 @@
 Hail Mary Block A: extract learnability metrics from training_history/*.json.
 
 Aggregates per (model_name, seed) across CrossSession folds (mean over history files).
+
+Per-epoch ``valid_roc_auc`` is written when training uses ``--hail_mary_stability``
+or ``--hail_mary_learnability_metrics`` (see ``hail_mary_valid_roc_scoring``).
+If ROC is present but **non-finite on every epoch** (logged NaNs), we fall back to
+``valid_acc``, then balanced-accuracy keys, before train-loss-only summaries.
 """
 
 from __future__ import annotations
@@ -19,9 +24,12 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from architecture_refinement.paper3.hail_mary_cli import add_overwrite_arguments, can_write_output
+from architecture_refinement.paper3.hail_mary_cli import add_overwrite_arguments, can_write_output, results_model_segment
 
-VAL_KEYS = ("valid_roc_auc", "validation_roc_auc", "valid_auc", "roc_auc", "val_roc_auc")
+VAL_KEYS_ROC = ("valid_roc_auc", "validation_roc_auc", "valid_auc", "roc_auc", "val_roc_auc")
+VAL_KEYS_BALANCED = ("valid_balanced_accuracy", "balanced_accuracy")
+# Skorch/EEGClassifier: when valid_roc_auc is logged but always NaN (e.g. scorer edge cases), valid_acc is usually finite.
+VAL_KEYS_ACC = ("valid_acc", "valid_accuracy")
 TRAIN_LOSS_KEYS = ("train_loss", "loss")
 
 
@@ -51,29 +59,61 @@ def summarize_one_history(hist: List[Dict[str, Any]], checkpoint_epochs: List[in
     if not hist:
         return {}
 
-    vals = []
+    vals_roc: List[float] = []
+    vals_bal: List[float] = []
+    vals_acc: List[float] = []
     trains = []
     for ep in hist:
-        v = _pick_scalar(ep, VAL_KEYS)
+        v = _pick_scalar(ep, VAL_KEYS_ROC)
         if v is not None:
-            vals.append(v)
+            vals_roc.append(v)
+        vb = _pick_scalar(ep, VAL_KEYS_BALANCED)
+        if vb is not None:
+            vals_bal.append(vb)
+        va = _pick_scalar(ep, VAL_KEYS_ACC)
+        if va is not None:
+            vals_acc.append(va)
         t = _pick_scalar(ep, TRAIN_LOSS_KEYS)
         if t is not None:
             trains.append(t)
 
     out: Dict[str, float] = {}
-    if vals:
-        arr = np.array(vals, dtype=float)
+    if vals_roc:
+        arr = np.array(vals_roc, dtype=float)
         best_i = int(np.nanargmax(arr))
         out["best_val_roc_auc"] = float(arr[best_i])
         out["epoch_best_val"] = float(best_i + 1)
-        out["final_val_roc_auc"] = float(vals[-1])
+        out["final_val_roc_auc"] = float(vals_roc[-1])
         for ce in checkpoint_epochs:
             idx = ce - 1
-            if 0 <= idx < len(vals):
-                out[f"val_roc_auc_epoch_{ce}"] = float(vals[idx])
+            if 0 <= idx < len(vals_roc):
+                out[f"val_roc_auc_epoch_{ce}"] = float(vals_roc[idx])
             else:
                 out[f"val_roc_auc_epoch_{ce}"] = float("nan")
+    elif vals_bal:
+        arr = np.array(vals_bal, dtype=float)
+        best_i = int(np.nanargmax(arr))
+        out["best_val_balanced_accuracy"] = float(arr[best_i])
+        out["epoch_best_val"] = float(best_i + 1)
+        out["final_val_balanced_accuracy"] = float(vals_bal[-1])
+        for ce in checkpoint_epochs:
+            idx = ce - 1
+            if 0 <= idx < len(vals_bal):
+                out[f"val_balanced_accuracy_epoch_{ce}"] = float(vals_bal[idx])
+            else:
+                out[f"val_balanced_accuracy_epoch_{ce}"] = float("nan")
+    elif vals_acc:
+        arr = np.array(vals_acc, dtype=float)
+        best_i = int(np.nanargmax(arr))
+        out["best_val_accuracy"] = float(arr[best_i])
+        out["epoch_best_val"] = float(best_i + 1)
+        out["final_val_accuracy"] = float(vals_acc[-1])
+        for ce in checkpoint_epochs:
+            idx = ce - 1
+            if 0 <= idx < len(vals_acc):
+                out[f"val_accuracy_epoch_{ce}"] = float(vals_acc[idx])
+            else:
+                out[f"val_accuracy_epoch_{ce}"] = float("nan")
     if trains:
         out["final_train_loss"] = float(trains[-1])
         out["mean_train_loss"] = float(np.nanmean(trains))
@@ -87,7 +127,8 @@ def collect_histories_for_run(
     seed: int,
 ) -> List[Path]:
     paradigm = "MotorImagery"
-    base = results_root / paradigm / dataset / model_name / "CrossSessionEvaluation" / str(seed)
+    model_segment = results_model_segment(model_name)
+    base = results_root / paradigm / dataset / model_segment / "CrossSessionEvaluation" / str(seed)
     if not base.exists():
         return []
     return sorted(base.rglob("training_history/history*.json"))

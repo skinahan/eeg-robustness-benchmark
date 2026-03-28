@@ -3,13 +3,13 @@
   "dataset": "BI2015a",
   "saturation_point": 100.0,
   "confidence_interval": [
-    0.8232777777777778,
-    1.0232777777777777
+    0.8516481481481482,
+    1.051648148148148
   ],
   "chance_threshold": 0.56,
-  "performance_at_saturation": 0.9232777777777778,
+  "performance_at_saturation": 0.9516481481481481,
   "performance_std": 0.1,
   "is_statistically_significant": false,
   "detection_method": "coarse_exploration_only",
-  "timestamp": "2025-11-29 19:25:16"
+  "timestamp": "2026-03-27 12:52:20"
 }

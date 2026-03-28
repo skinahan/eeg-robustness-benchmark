@@ -1,0 +1,180 @@
+================================================================================
+HYDRA LIMITED ABLATION STUDIES - PAPER SUMMARY
+================================================================================
+Generated: 2026-03-28 12:00:30
+Unified results source: E:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments\evaluation\results\unified_all_results.csv
+
+Metrics (aligned with benchmark / analyze_limited_ablations):
+  Clean ROC-AUC: unperturbed test ROC-AUC; summarized as mean ± std across subjects.
+  AUPC: area under the perturbation curve (ROC-AUC vs intensity), noise types collapsed,
+        normalized (see AnalysisConfig.normalize_aupc in statistical_analysis).
+  RD: rd_collapsed = mean relative drop ( (clean - corrupted)/clean ) across noise types.
+  RD_worst: max relative drop over intensities (and noise types in worst collapsed).
+
+--------------------------------------------------------------------------------
+INVENTORY: (dataset × eval protocol) rows in unified file for HYDRA ablation models
+--------------------------------------------------------------------------------
+      dataset eval_mode_display  n_rows
+ BNCI2014_001      CrossSession   36000
+ BNCI2014_001      CrossSubject    6000
+ BNCI2014_001     WithinSession   28800
+Lee2019_SSVEP      CrossSession   43200
+Lee2019_SSVEP      CrossSubject    1200
+Lee2019_SSVEP     WithinSession   43200
+      BI2015a      CrossSession   51600
+      BI2015a      CrossSubject    1200
+      BI2015a     WithinSession   51600
+
+--------------------------------------------------------------------------------
+MI - BNCI2014_001
+eval_mode (display): CrossSession | filter substring: CrossSession
+--------------------------------------------------------------------------------
+                  ablation                ablation_name  n_subjects   clean_roc_auc  aupc_collapsed    rd_collapsed rd_worst_collapsed
+   ablation1_no_carry_gate    Ablation 1: No Carry Gate           9 0.7175 ± 0.1822 0.6416 ± 0.1417 0.0964 ± 0.0375    0.2577 ± 0.1229
+    ablation2_no_branching     Ablation 2: No Branching           9 0.7240 ± 0.1848 0.6508 ± 0.1406 0.0943 ± 0.0411    0.2682 ± 0.1370
+ablation3_lstm_replacement Ablation 3: LSTM Replacement           9 0.7463 ± 0.1833 0.6710 ± 0.1496 0.0971 ± 0.0331    0.2781 ± 0.1298
+     ablation4_no_snr_gate      Ablation 4: No SNR Gate           9 0.7213 ± 0.1789 0.6490 ± 0.1379 0.0933 ± 0.0426    0.2527 ± 0.1212
+                  baseline        Baseline (Full HYDRA)           9 0.7344 ± 0.1884 0.6570 ± 0.1487 0.0985 ± 0.0343    0.2788 ± 0.1172
+
+  Paired baseline vs ablation tests (subject-level, abbreviated):
+               ablation_name             metric metric_type  mean_difference  p_value  cohens_dz
+Ablation 3: LSTM Replacement     aupc_collapsed     primary        -0.013987 0.007812  -1.028526
+Ablation 3: LSTM Replacement       rd_collapsed     primary         0.001414 0.570312   0.059000
+Ablation 3: LSTM Replacement rd_worst_collapsed     primary         0.000691 0.734375   0.016757
+Ablation 3: LSTM Replacement      clean_roc_auc   secondary        -0.011844 0.496094  -0.380446
+    Ablation 2: No Branching     aupc_collapsed     primary         0.006186 0.317924   0.355029
+    Ablation 2: No Branching       rd_collapsed     primary         0.004213 0.509485   0.230127
+    Ablation 2: No Branching rd_worst_collapsed     primary         0.010584 0.363664   0.321060
+    Ablation 2: No Branching      clean_roc_auc   secondary         0.010423 0.069130   0.699402
+   Ablation 1: No Carry Gate     aupc_collapsed     primary         0.015437 0.060469   0.728055
+   Ablation 1: No Carry Gate       rd_collapsed     primary         0.002114 0.720284   0.123660
+   Ablation 1: No Carry Gate rd_worst_collapsed     primary         0.021122 0.006728   1.208526
+   Ablation 1: No Carry Gate      clean_roc_auc   secondary         0.016912 0.085641   0.653377
+     Ablation 4: No SNR Gate     aupc_collapsed     primary         0.008021 0.186054   0.482167
+     Ablation 4: No SNR Gate       rd_collapsed     primary         0.005209 0.385423   0.306025
+     Ablation 4: No SNR Gate rd_worst_collapsed     primary         0.026107 0.007812   1.094796
+     Ablation 4: No SNR Gate      clean_roc_auc   secondary         0.013105 0.110781   0.597569
+
+--------------------------------------------------------------------------------
+MI - BNCI2014_001
+eval_mode (display): CrossSubject | filter substring: CrossSubject
+--------------------------------------------------------------------------------
+                  ablation                ablation_name  n_subjects   clean_roc_auc  aupc_collapsed    rd_collapsed rd_worst_collapsed
+   ablation1_no_carry_gate    Ablation 1: No Carry Gate           3 0.7137 ± 0.0377 0.6350 ± 0.0442 0.1102 ± 0.0214    0.2623 ± 0.0227
+    ablation2_no_branching     Ablation 2: No Branching           3 0.7599 ± 0.0749 0.6666 ± 0.0574 0.1261 ± 0.0261    0.3171 ± 0.0680
+ablation3_lstm_replacement Ablation 3: LSTM Replacement           3 0.7556 ± 0.0710 0.6401 ± 0.0491 0.1592 ± 0.0400    0.3179 ± 0.0476
+     ablation4_no_snr_gate      Ablation 4: No SNR Gate           3 0.7672 ± 0.0691 0.6652 ± 0.0511 0.1361 ± 0.0320    0.3263 ± 0.0607
+                  baseline        Baseline (Full HYDRA)           3 0.7176 ± 0.0518 0.6526 ± 0.0444 0.0963 ± 0.0145    0.2849 ± 0.0510
+
+  Paired baseline vs ablation tests (subject-level, abbreviated):
+               ablation_name             metric metric_type  mean_difference  p_value  cohens_dz
+Ablation 3: LSTM Replacement     aupc_collapsed     primary         0.012502 0.340716   0.715930
+Ablation 3: LSTM Replacement       rd_collapsed     primary        -0.062881 0.126957  -1.461803
+Ablation 3: LSTM Replacement rd_worst_collapsed     primary        -0.033013 0.388734  -0.630629
+Ablation 3: LSTM Replacement      clean_roc_auc   secondary        -0.038064 0.377667  -0.649161
+    Ablation 2: No Branching     aupc_collapsed     primary        -0.014084 0.375140  -0.653479
+    Ablation 2: No Branching       rd_collapsed     primary        -0.029741 0.177838  -1.179250
+    Ablation 2: No Branching rd_worst_collapsed     primary        -0.032225 0.289795  -0.823699
+    Ablation 2: No Branching      clean_roc_auc   secondary        -0.042338 0.214417  -1.036636
+   Ablation 1: No Carry Gate     aupc_collapsed     primary         0.017540 0.339789   0.717712
+   Ablation 1: No Carry Gate       rd_collapsed     primary        -0.013827 0.571559  -0.387154
+   Ablation 1: No Carry Gate rd_worst_collapsed     primary         0.022554 1.000000   0.505698
+   Ablation 1: No Carry Gate      clean_roc_auc   secondary         0.003834 0.865162   0.111110
+     Ablation 4: No SNR Gate     aupc_collapsed     primary        -0.012662 0.446003  -0.543336
+     Ablation 4: No SNR Gate       rd_collapsed     primary        -0.039756 0.197728  -1.097317
+     Ablation 4: No SNR Gate rd_worst_collapsed     primary        -0.041371 0.241426  -0.950562
+     Ablation 4: No SNR Gate      clean_roc_auc   secondary        -0.049657 0.241138  -0.951412
+
+--------------------------------------------------------------------------------
+MI - BNCI2014_001
+eval_mode (display): WithinSession | filter substring: WithinSession
+--------------------------------------------------------------------------------
+                  ablation                ablation_name  n_subjects   clean_roc_auc  aupc_collapsed    rd_collapsed rd_worst_collapsed
+   ablation1_no_carry_gate    Ablation 1: No Carry Gate           9 0.7387 ± 0.1599 0.6468 ± 0.1260 0.1135 ± 0.0319    0.2774 ± 0.1033
+    ablation2_no_branching     Ablation 2: No Branching           9 0.7523 ± 0.1670 0.6586 ± 0.1301 0.1146 ± 0.0357    0.2870 ± 0.1137
+ablation3_lstm_replacement Ablation 3: LSTM Replacement           9 0.7689 ± 0.1565 0.6780 ± 0.1476 0.1183 ± 0.0192    0.2883 ± 0.0852
+                  baseline        Baseline (Full HYDRA)           9 0.7472 ± 0.1659 0.6598 ± 0.1342 0.1091 ± 0.0268    0.2817 ± 0.1073
+  NOTE: Fewer than five ablation variants in this slice (some variants missing from aggregated metrics / unified results for this protocol).
+
+  Paired baseline vs ablation tests (subject-level, abbreviated):
+               ablation_name             metric metric_type  mean_difference  p_value  cohens_dz
+Ablation 3: LSTM Replacement     aupc_collapsed     primary        -0.018231 0.006829  -1.205099
+Ablation 3: LSTM Replacement       rd_collapsed     primary        -0.009234 0.359030  -0.324348
+Ablation 3: LSTM Replacement rd_worst_collapsed     primary        -0.006606 0.598378  -0.182803
+Ablation 3: LSTM Replacement      clean_roc_auc   secondary        -0.021754 0.003906  -1.276213
+    Ablation 2: No Branching     aupc_collapsed     primary         0.001162 0.779436   0.096556
+    Ablation 2: No Branching       rd_collapsed     primary        -0.005476 0.478692  -0.247689
+    Ablation 2: No Branching rd_worst_collapsed     primary        -0.005253 0.574151  -0.195272
+    Ablation 2: No Branching      clean_roc_auc   secondary        -0.005190 0.388139  -0.304192
+   Ablation 1: No Carry Gate     aupc_collapsed     primary         0.012978 0.058296   0.735876
+   Ablation 1: No Carry Gate       rd_collapsed     primary        -0.004368 0.533213  -0.217044
+   Ablation 1: No Carry Gate rd_worst_collapsed     primary         0.004314 0.300781   0.089627
+   Ablation 1: No Carry Gate      clean_roc_auc   secondary         0.008405 0.250000   0.307867
+
+--------------------------------------------------------------------------------
+SSVEP - Lee2019_SSVEP
+eval_mode (display): CrossSession | filter substring: CrossSession
+--------------------------------------------------------------------------------
+ablation         ablation_name  n_subjects   clean_roc_auc  aupc_collapsed    rd_collapsed rd_worst_collapsed
+baseline Baseline (Full HYDRA)          54 0.6749 ± 0.1003 0.5976 ± 0.0586 0.1022 ± 0.0487    0.2413 ± 0.0992
+  NOTE: Only Full HYDRA (baseline) appears in aggregated metrics for this slice. Ablation-variant runs are likely absent from unified_all_results.csv for this dataset/protocol.
+
+--------------------------------------------------------------------------------
+SSVEP - Lee2019_SSVEP
+eval_mode (display): CrossSubject | filter substring: CrossSubject
+--------------------------------------------------------------------------------
+ablation         ablation_name  n_subjects   clean_roc_auc  aupc_collapsed    rd_collapsed rd_worst_collapsed
+baseline Baseline (Full HYDRA)           3 0.8079 ± 0.0692 0.6773 ± 0.0536 0.1575 ± 0.0107    0.3678 ± 0.0614
+  NOTE: Only Full HYDRA (baseline) appears in aggregated metrics for this slice. Ablation-variant runs are likely absent from unified_all_results.csv for this dataset/protocol.
+
+--------------------------------------------------------------------------------
+SSVEP - Lee2019_SSVEP
+eval_mode (display): WithinSession | filter substring: WithinSession
+--------------------------------------------------------------------------------
+ablation         ablation_name  n_subjects   clean_roc_auc  aupc_collapsed    rd_collapsed rd_worst_collapsed
+baseline Baseline (Full HYDRA)          54 0.6988 ± 0.1025 0.6127 ± 0.0583 0.1064 ± 0.0521    0.2565 ± 0.1037
+  NOTE: Only Full HYDRA (baseline) appears in aggregated metrics for this slice. Ablation-variant runs are likely absent from unified_all_results.csv for this dataset/protocol.
+
+--------------------------------------------------------------------------------
+ERP - BI2015a
+eval_mode (display): CrossSession | filter substring: CrossSession
+--------------------------------------------------------------------------------
+ablation         ablation_name  n_subjects   clean_roc_auc  aupc_collapsed    rd_collapsed rd_worst_collapsed
+baseline Baseline (Full HYDRA)          43 0.8513 ± 0.0531 0.7512 ± 0.0493 0.1191 ± 0.0221    0.4088 ± 0.0383
+  NOTE: Only Full HYDRA (baseline) appears in aggregated metrics for this slice. Ablation-variant runs are likely absent from unified_all_results.csv for this dataset/protocol.
+
+--------------------------------------------------------------------------------
+ERP - BI2015a
+eval_mode (display): CrossSubject | filter substring: CrossSubject
+--------------------------------------------------------------------------------
+ablation         ablation_name  n_subjects   clean_roc_auc  aupc_collapsed    rd_collapsed rd_worst_collapsed
+baseline Baseline (Full HYDRA)           3 0.7606 ± 0.0361 0.6706 ± 0.0366 0.1203 ± 0.0062    0.3413 ± 0.0322
+  NOTE: Only Full HYDRA (baseline) appears in aggregated metrics for this slice. Ablation-variant runs are likely absent from unified_all_results.csv for this dataset/protocol.
+
+--------------------------------------------------------------------------------
+ERP - BI2015a
+eval_mode (display): WithinSession | filter substring: WithinSession
+--------------------------------------------------------------------------------
+ablation         ablation_name  n_subjects   clean_roc_auc  aupc_collapsed    rd_collapsed rd_worst_collapsed
+baseline Baseline (Full HYDRA)          43 0.7504 ± 0.0548 0.6735 ± 0.0475 0.1014 ± 0.0163    0.3242 ± 0.0553
+  NOTE: Only Full HYDRA (baseline) appears in aggregated metrics for this slice. Ablation-variant runs are likely absent from unified_all_results.csv for this dataset/protocol.
+
+--------------------------------------------------------------------------------
+MAIN PAPER - COMPACT TABLE (four variants: Full HYDRA, No CfC, No MTB, No Residual)
+Context: dataset=BNCI2014_001, eval=CrossSession
+--------------------------------------------------------------------------------
+Model Variant    | Clean AUC              | AUPC                   | RD                    
+------------------------------------------------------------------------------------------
+Full HYDRA       | 0.7344 ± 0.1884        | 0.6570 ± 0.1487        | 0.0985 ± 0.0343       
+No Residual      | 0.7175 ± 0.1822        | 0.6416 ± 0.1417        | 0.0964 ± 0.0375       
+No MTB           | 0.7240 ± 0.1848        | 0.6508 ± 0.1406        | 0.0943 ± 0.0411       
+No CfC           | 0.7463 ± 0.1833        | 0.6710 ± 0.1496        | 0.0971 ± 0.0331       
+
+--------------------------------------------------------------------------------
+APPENDIX - Ablation 4 (No SNR gate) and extra detail
+--------------------------------------------------------------------------------
+  No SNR gate: Clean AUC 0.7213 ± 0.1789, AUPC 0.6490 ± 0.1379, 
+    RD 0.0933 ± 0.0426, RD_worst 0.2527 ± 0.1212, n_subjects=9
+
+Full per-ablation CSVs and noise-resolved tables can be regenerated with `python analysis/analyze_limited_ablations.py`.
+================================================================================

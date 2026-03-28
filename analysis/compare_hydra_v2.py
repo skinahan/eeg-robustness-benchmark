@@ -40,6 +40,7 @@ from analysis.statistical_analysis import (
     AnalysisConfig,
     aggregate_seeds,
     compute_aupc_per_subject,
+    compute_clean_scores_per_subject,
     compute_rd_per_subject,
     build_inference_dataset,
     check_normality,
@@ -284,20 +285,11 @@ def compute_hydra_robustness_metrics(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd
     df_rd = compute_rd_per_subject(df_points, config)
     print(f"  [OK] Computed RD for {len(df_rd)} subject-model-noise_type combinations")
 
+    df_clean = compute_clean_scores_per_subject(df_points, config)
+
     # Step 4: Build inference dataset
     print("  [INFO] Building inference dataset...")
-    df_resolved, df_collapsed = build_inference_dataset(df_aupc, df_rd, config)
-
-    # Add clean_roc_auc to collapsed data if available
-    if "clean_roc_auc" in df_points.columns and not df_collapsed.empty:
-        clean_map = (
-            df_points.groupby(["dataset", "eval_mode", "tune", "subject", "model"])["clean_roc_auc"]
-            .mean()
-            .reset_index()
-        )
-        df_collapsed = df_collapsed.merge(
-            clean_map, on=["dataset", "eval_mode", "tune", "subject", "model"], how="left"
-        )
+    df_resolved, df_collapsed = build_inference_dataset(df_aupc, df_rd, df_clean, config)
 
     # Add model display names
     df_resolved["model_display"] = df_resolved["model"].map(MODEL_DISPLAY_NAMES).fillna(df_resolved["model"])
