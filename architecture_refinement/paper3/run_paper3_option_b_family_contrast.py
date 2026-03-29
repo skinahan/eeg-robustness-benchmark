@@ -31,7 +31,7 @@ GROUP_LABELS = {
     "G2": "G2 Uniform WS-Flex",
     "G3": "G3 Dense CfC",
     "G4": "G4 Random sparse",
-    "G5": "G5 NCP (1 wiring)",
+    "G5": "G5 NCP",
 }
 
 

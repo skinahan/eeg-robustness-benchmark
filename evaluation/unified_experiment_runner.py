@@ -1160,6 +1160,28 @@ class UnifiedExperimentRunner:
             raise ValueError(f"Unsupported eval_mode: {self.eval_mode}")
         
         return cv_splitter, cv_metadata
+
+    def _require_cross_session_sessions(self, metadata: pd.DataFrame, subject: int) -> None:
+        """
+        CrossSession uses LeaveOneGroupOut on the session column; it is undefined with a single group.
+        Abort with a clear message if this subject's data has fewer than two distinct sessions.
+        """
+        if "session" not in metadata.columns:
+            print(
+                "[ERROR] CrossSession evaluation requires a 'session' column in trial metadata, "
+                f"but it is missing (dataset={self.dataset!r}, subject={subject}). Aborting."
+            )
+            sys.exit(1)
+        unique = metadata["session"].unique()
+        n_sessions = len(unique)
+        if n_sessions < 2:
+            print(
+                "[ERROR] CrossSession evaluation requires at least two distinct sessions "
+                f"(LeaveOneGroupOut). Subject {subject} has only {n_sessions} session(s): "
+                f"{unique.tolist()!r} (dataset={self.dataset!r}). "
+                "Use WithinSession, choose subjects with multiple sessions, or fix metadata. Aborting."
+            )
+            sys.exit(1)
     
     def _evaluate_cv_fold_chunked(
         self,
@@ -2573,6 +2595,8 @@ class UnifiedExperimentRunner:
                 # Get data
                 X, y, metadata = self.paradigm.get_data(self.dataset_obj, subjects=[subject])
                 y_encoded = LabelEncoder().fit_transform(y)
+                if self.eval_mode == "CrossSession":
+                    self._require_cross_session_sessions(metadata, subject)
                 
                 # Prepare cross-validation
                 cv_splitter, cv_metadata = self.prepare_data_cv()

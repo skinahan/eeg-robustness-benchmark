@@ -24,7 +24,140 @@ if str(_REPO_ROOT) not in sys.path:
 
 from architecture_refinement.metrics_te_orc import compute_paper3_proxies
 from architecture_refinement.paper3.arch_graph_utils import graph_from_architecture
+from architecture_refinement.paper3.cnn_wiredcfc_min_core import count_trainable_params_cnn_wiredcfc_core
+from architecture_refinement.pilot_architecture_wiring import build_wiring_from_architecture_dict
 from utils import results_paradigm_folder, short_run_id
+
+
+def count_trainable_params_for_models(
+    pilot_dir: Path,
+    model_names: List[str],
+    *,
+    n_chans: int = 22,
+    n_times: int = 1000,
+    n_outputs: int = 2,
+) -> Dict[str, Any]:
+    """
+    Trainable parameter counts matching ``CNNWiredCfCMin`` / ``create_cnnwiredcfc_min_classifier``
+    (see ``cnn_wiredcfc_min_core``), without importing braindecode or ``config``.
+
+    ``n_times`` matches BNCI2014_001 MotorImagery trials used in Paper 3; parameter count does
+    not depend on ``n_times`` for this architecture (no dynamic layers).
+    """
+    pilot_dir = Path(pilot_dir).resolve()
+    sel = pilot_dir / "selected_architectures"
+    if not sel.is_dir():
+        raise FileNotFoundError(f"Missing selected_architectures: {sel}")
+
+    per_model: Dict[str, int] = {}
+    missing: List[str] = []
+    errors: Dict[str, str] = {}
+    for name in model_names:
+        path = sel / f"{name}.json"
+        if not path.is_file():
+            missing.append(name)
+            continue
+        try:
+            arch = json.loads(path.read_text(encoding="utf-8"))
+            w = build_wiring_from_architecture_dict(
+                arch,
+                default_hidden_edge_orientation="symmetric",
+                arch_path=str(path),
+            )
+            nparams = count_trainable_params_cnn_wiredcfc_core(
+                n_chans, n_times, n_outputs, w
+            )
+            per_model[name] = int(nparams)
+        except Exception as e:
+            errors[name] = str(e)
+
+    vals = np.array(list(per_model.values()), dtype=float)
+    out: Dict[str, Any] = {
+        "n_chans": n_chans,
+        "n_times": n_times,
+        "n_outputs": n_outputs,
+        "per_model": per_model,
+        "n_counted": len(per_model),
+        "missing_json": missing,
+        "errors": errors,
+        "note": (
+            "Counts from architecture_refinement.paper3.cnn_wiredcfc_min_core.CNNWiredCfCMinCore; "
+            "aligned with models.cnn_wiredcfc_min.CNNWiredCfCMin."
+        ),
+    }
+    if len(vals):
+        out["overall_mean"] = float(vals.mean())
+        out["overall_std"] = float(vals.std(ddof=1)) if len(vals) > 1 else 0.0
+        out["overall_min"] = int(vals.min())
+        out["overall_max"] = int(vals.max())
+    return out
+
+
+def summarize_parameter_counts_from_experiment3_csv(
+    results_csv: Path,
+    pilot_dir: Path,
+    *,
+    n_chans: int = 22,
+    n_times: int = 1000,
+    n_outputs: int = 2,
+) -> Dict[str, Any]:
+    """Mean/std/min/max per group (G1..G5) and overall for models listed in experiment3_results.csv."""
+    df = pd.read_csv(results_csv)
+    if "model" not in df.columns or "group" not in df.columns:
+        raise ValueError(f"Expected columns model, group in {results_csv}")
+    models = df["model"].astype(str).unique().tolist()
+    base = count_trainable_params_for_models(
+        pilot_dir,
+        models,
+        n_chans=n_chans,
+        n_times=n_times,
+        n_outputs=n_outputs,
+    )
+    per_model = base["per_model"]
+    group_stats: Dict[str, Any] = {}
+    for g in sorted(df["group"].unique()):
+        names = df[df["group"] == g]["model"].astype(str).unique().tolist()
+        gv = [per_model[m] for m in names if m in per_model]
+        arr = np.array(gv, dtype=float)
+        if len(arr) == 0:
+            continue
+        group_stats[str(g)] = {
+            "n_models": len(gv),
+            "mean": float(arr.mean()),
+            "std": float(arr.std(ddof=1)) if len(arr) > 1 else 0.0,
+            "min": int(arr.min()),
+            "max": int(arr.max()),
+        }
+    base["by_group"] = group_stats
+
+    # Stratified summary: G1–G4 are CNN+WiredCfC with topology-varying masks (same param tensor shapes);
+    # G5 uses AutoNCP wiring (different parameterization / count).
+    mg = df[["model", "group"]].drop_duplicates()
+    g14 = [
+        per_model[m]
+        for m, g in zip(mg["model"].astype(str), mg["group"].astype(str))
+        if g in ("G1", "G2", "G3", "G4") and m in per_model
+    ]
+    g5 = [per_model[m] for m, g in zip(mg["model"].astype(str), mg["group"].astype(str)) if g == "G5" and m in per_model]
+    if g14:
+        a14 = np.array(g14, dtype=float)
+        base["g1_g4_cnn_wiredcfc"] = {
+            "n_models": len(g14),
+            "mean": float(a14.mean()),
+            "std": float(a14.std(ddof=1)) if len(a14) > 1 else 0.0,
+            "min": int(a14.min()),
+            "max": int(a14.max()),
+        }
+    if g5:
+        a5 = np.array(g5, dtype=float)
+        base["g5_ncp"] = {
+            "n_models": len(g5),
+            "mean": float(a5.mean()),
+            "std": float(a5.std(ddof=1)) if len(a5) > 1 else 0.0,
+            "min": int(a5.min()),
+            "max": int(a5.max()),
+        }
+    return base
 
 
 def _collect_perturb_results(
@@ -238,6 +371,23 @@ def main():
     parser.add_argument("--output-dir", type=str, default="architecture_refinement/outputs/paper3_experiment3")
     parser.add_argument("--dataset", type=str, default="BNCI2014_001")
     parser.add_argument("--robust-percentile", type=float, default=20.0)
+    parser.add_argument(
+        "--report-parameter-counts-only",
+        action="store_true",
+        help=(
+            "Only compute trainable parameter counts for models in --results-csv using "
+            "experiment2 pilot JSONs; write JSON next to results. Skips RD_max / hit-rate."
+        ),
+    )
+    parser.add_argument(
+        "--results-csv",
+        type=str,
+        default=None,
+        help="experiment3_results.csv (required with --report-parameter-counts-only).",
+    )
+    parser.add_argument("--n-chans", type=int, default=22)
+    parser.add_argument("--n-times", type=int, default=1000)
+    parser.add_argument("--n-outputs", type=int, default=2)
     args = parser.parse_args()
 
     exp2_dir = Path(args.experiment2_dir)
@@ -246,6 +396,28 @@ def main():
         exp2_dir = _REPO_ROOT / exp2_dir
     if not exp1_dir.is_absolute():
         exp1_dir = _REPO_ROOT / exp1_dir
+
+    if args.report_parameter_counts_only:
+        if not args.results_csv:
+            print("--report-parameter-counts-only requires --results-csv", file=sys.stderr)
+            return 2
+        results_csv = Path(args.results_csv)
+        if not results_csv.is_absolute():
+            results_csv = _REPO_ROOT / results_csv
+        pilot = exp2_dir / "experiment2_pilot"
+        summary = summarize_parameter_counts_from_experiment3_csv(
+            results_csv,
+            pilot,
+            n_chans=args.n_chans,
+            n_times=args.n_times,
+            n_outputs=args.n_outputs,
+        )
+        out_json = results_csv.parent / "experiment3_parameter_counts.json"
+        out_json.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+        print(json.dumps(summary, indent=2))
+        print(f"[Exp3] Wrote {out_json}")
+        return 0
+
     out_dir = _REPO_ROOT / args.output_dir
     run_experiment3(
         experiment2_dir=exp2_dir,
