@@ -30,7 +30,7 @@ try:
 except ImportError:
     resource = None
 from datetime import datetime
-from typing import List, Dict, Any, Tuple, Optional, Callable
+from typing import List, Dict, Any, Tuple, Optional, Callable, Mapping
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import StratifiedKFold, LeaveOneGroupOut, GroupKFold
@@ -56,8 +56,8 @@ from config import (
     MODEL_REGISTRY,
     get_model_registry,
     get_paradigm,
-    get_dataset_sampling_rate,
     classification_num_classes,
+    resolve_paradigm_resample_hz,
 )
 from globals import set_seeds, DEFAULT_MAX_EPOCHS, UNDERFITTING_THRESHOLD, get_max_epochs_for_dataset, get_underfitting_threshold_for_dataset
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor, ConcatenatedNoiseAugmenter
@@ -76,6 +76,7 @@ from evaluation.model_cache_manager import ModelCacheManager
 from evaluation.periodic_checkpoint_callback import create_periodic_checkpoint_callback, create_model_cache_callback
 from evaluation.chunked_subject_trainer import train_with_subject_chunks, evaluate_with_subject_chunks
 import json
+import yaml
 
 # Import MOABB components (Chang2025/Yang2025 need moabb>=~1.4; see environment.yml)
 from moabb.datasets import (
@@ -513,6 +514,8 @@ class UnifiedExperimentRunner:
         disable_underfitting_retrain: bool = False,
         # Lee2019_MI: training-side sliding windows (1s / 0.5s stride); val = fixed first 1s crop.
         lee2019_mi_train_sliding_window: bool = True,
+        # Shin2017A: same sliding-window protocol as Lee2019_MI (1s / 0.5s stride); val = first 1s crop.
+        shin2017a_train_sliding_window: bool = True,
         # ---- test_perturb configuration (pilot-safe; defaults preserve old behavior) ----
         test_perturb_noise_types: Optional[List[str]] = None,
         test_perturb_num_steps: int = 20,
@@ -530,6 +533,13 @@ class UnifiedExperimentRunner:
         test_perturb_emg_f_low: float = 20.0,
         # Plot 2 PATCH 0.2: optional dir to write perturbation_fingerprint.json
         plot2_diagnostics_dir: Optional[str] = None,
+        # MOABB paradigm pipeline (per-dataset YAML); keys include resample (Hz), train_sliding_window (Lee2019_MI, Shin2017A).
+        pipeline: Optional[Mapping[str, Any]] = None,
+        pipeline_resample_hz: Optional[float] = None,
+        # Shin2017A + EEGNet only: optional overrides for config.get_shin2017a_eegnet_factory_extras()
+        shin2017a_eegnet_optimizer_lr: Optional[float] = None,
+        shin2017a_eegnet_batch_size: Optional[int] = None,
+        shin2017a_eegnet_weight_decay: Optional[float] = None,
     ):
         self.model = model
         self.dataset = dataset
@@ -549,8 +559,15 @@ class UnifiedExperimentRunner:
         self.subject_chunk_size = subject_chunk_size
         self.legacy = legacy
         self.disable_underfitting_retrain = bool(disable_underfitting_retrain)
+        self.pipeline = dict(pipeline) if pipeline else None
+        self._paradigm_resample_hz = resolve_paradigm_resample_hz(
+            self.dataset,
+            self.pipeline,
+            pipeline_resample_hz,
+        )
         self.lee2019_mi_train_sliding_window = bool(lee2019_mi_train_sliding_window)
-        self._lee2019_mi_sliding_logged = False
+        self.shin2017a_train_sliding_window = bool(shin2017a_train_sliding_window)
+        self._train_sliding_logged = False
 
         # test_perturb settings (used only in _evaluate_perturb)
         self.test_perturb_noise_types = test_perturb_noise_types
@@ -566,6 +583,9 @@ class UnifiedExperimentRunner:
         self.test_perturb_ar1_rho = float(test_perturb_ar1_rho)
         self.test_perturb_emg_f_low = float(test_perturb_emg_f_low)
         self.plot2_diagnostics_dir = plot2_diagnostics_dir
+        self.shin2017a_eegnet_optimizer_lr = shin2017a_eegnet_optimizer_lr
+        self.shin2017a_eegnet_batch_size = shin2017a_eegnet_batch_size
+        self.shin2017a_eegnet_weight_decay = shin2017a_eegnet_weight_decay
         self._perturbation_fingerprint_written = False
         # Cache for alpha_max per (dataset, noise_type, split_id, params) for correlated perturbations (Spec 3 PATCH 2)
         self._correlated_alpha_max_cache = {}
@@ -681,7 +701,7 @@ class UnifiedExperimentRunner:
 
     def _eog_noise_augmentor_kwargs(self) -> Dict[str, Any]:
         """Extra kwargs for EEGNoiseAugmentor when applying EOG (montage + timing)."""
-        return {"eog_sfreq": float(get_dataset_sampling_rate(self.dataset))}
+        return {"eog_sfreq": float(self._paradigm_resample_hz)}
 
     def _make_correlated_noise_augmentor(self, noise_type: str, intensity: float, seed: Optional[int] = None):
         """Build EEGNoiseAugmentor for correlated noise with optional escalation params. seed=None uses self.seed (Spec 3)."""
@@ -702,7 +722,7 @@ class UnifiedExperimentRunner:
             pass  # use default gain_drift_rho, offset_drift_rho
         if noise_type == "temporal_jitter":
             kwargs["jitter_sfreq"] = float(
-                getattr(self, "test_perturb_jitter_sfreq", get_dataset_sampling_rate(self.dataset))
+                getattr(self, "test_perturb_jitter_sfreq", self._paradigm_resample_hz)
             )
         if noise_type == "spatial_dropout":
             kwargs["spatial_dropout_cluster_size"] = float(getattr(self, "test_perturb_spatial_dropout_cluster_size", 0.25))
@@ -716,38 +736,39 @@ class UnifiedExperimentRunner:
 
     def _setup_dataset_and_paradigm(self):
         """Setup dataset and paradigm based on configuration."""
+        rs = self._paradigm_resample_hz
         if self.dataset == "BNCI2014_001":
             self.dataset_obj = BNCI2014_001()
             self.dataset_obj.subject_list = self.subjects
-            self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
+            self.paradigm = get_paradigm(resample=rs, dataset=self.dataset)
         elif self.dataset == "Lee2019_MI":
             self.dataset_obj = Lee2019_MI()
             fix_moabb_lee2019_session_filter(self.dataset_obj)
             self.dataset_obj.subject_list = self.subjects
-            self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
+            self.paradigm = get_paradigm(resample=rs, dataset=self.dataset)
         elif self.dataset == "Lee2019_SSVEP":
             self.dataset_obj = Lee2019_SSVEP()
             fix_moabb_lee2019_session_filter(self.dataset_obj)
             self.dataset_obj.subject_list = self.subjects
-            self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
+            self.paradigm = get_paradigm(resample=rs, dataset=self.dataset)
         elif self.dataset == "BI2015a":
             self.dataset_obj = BI2015a()
             self.dataset_obj.subject_list = self.subjects
-            self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
+            self.paradigm = get_paradigm(resample=rs, dataset=self.dataset)
         elif self.dataset == "Shin2017A":
             self.dataset_obj = Shin2017A(accept=True)
             self.dataset_obj.subject_list = self.subjects
-            self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
+            self.paradigm = get_paradigm(resample=rs, dataset=self.dataset)
         elif self.dataset == "Chang2025":
             Ctor = _require_moabb_dataset_ctor("Chang2025", Chang2025)
             self.dataset_obj = Ctor(paradigm_type="MI")
             self.dataset_obj.subject_list = self.subjects
-            self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
+            self.paradigm = get_paradigm(resample=rs, dataset=self.dataset)
         elif self.dataset == "Yang2025":
             Ctor = _require_moabb_dataset_ctor("Yang2025", Yang2025)
             self.dataset_obj = Ctor(paradigm_type="2C")
             self.dataset_obj.subject_list = self.subjects
-            self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
+            self.paradigm = get_paradigm(resample=rs, dataset=self.dataset)
         else:
             raise ValueError(f"Unsupported dataset: {self.dataset}")
 
@@ -847,8 +868,8 @@ class UnifiedExperimentRunner:
             n_chans = X_sample.shape[1]
             n_times = X_sample.shape[2]
         
-        if self._lee2019_mi_sliding_window_enabled():
-            win, _, _ = self._lee2019_mi_window_params()
+        if self._train_sliding_window_enabled():
+            win, _, _ = self._sliding_window_params()
             n_times = win
         return n_chans, n_times
 
@@ -857,23 +878,47 @@ class UnifiedExperimentRunner:
             self, "lee2019_mi_train_sliding_window", True
         )
 
-    def _lee2019_mi_window_params(self) -> Tuple[int, int, int]:
+    def _shin2017a_sliding_window_enabled(self) -> bool:
+        return self.dataset == "Shin2017A" and getattr(
+            self, "shin2017a_train_sliding_window", True
+        )
+
+    def _train_sliding_window_enabled(self) -> bool:
+        """Lee2019_MI and/or Shin2017A training-side augmentation (mutually exclusive by dataset per run)."""
+        return self._lee2019_mi_sliding_window_enabled() or self._shin2017a_sliding_window_enabled()
+
+    def _sliding_window_params(self) -> Tuple[int, int, int]:
+        """1 s window, 0.5 s stride, first-window val crop; uses effective paradigm resample (Hz)."""
         from evaluation.mi_sliding_window import lee2019_mi_sliding_params
 
-        sf = float(get_dataset_sampling_rate("Lee2019_MI"))
-        return lee2019_mi_sliding_params(sf)
+        return lee2019_mi_sliding_params(float(self._paradigm_resample_hz))
+
+    def _lee2019_mi_window_params(self) -> Tuple[int, int, int]:
+        return self._sliding_window_params()
+
+    def _maybe_log_train_sliding_window_once(self) -> None:
+        if self._train_sliding_logged:
+            return
+        self._train_sliding_logged = True
+        if not self._train_sliding_window_enabled():
+            return
+        win, stride, crop = self._sliding_window_params()
+        if self._lee2019_mi_sliding_window_enabled():
+            print(
+                f"[Lee2019_MI] Training-side sliding windows: win_samples={win}, "
+                f"stride_samples={stride}, val crop start={crop} "
+                f"(disable: --no-lee2019-mi-train-sliding-window)"
+            )
+        elif self._shin2017a_sliding_window_enabled():
+            print(
+                f"[Shin2017A] Training-side sliding windows (same protocol as Lee2019_MI): "
+                f"win_samples={win}, stride_samples={stride}, val crop start={crop}; "
+                f"eval uses one fixed crop per trial (disable: --no-shin2017a-train-sliding-window)"
+            )
 
     def _maybe_log_lee2019_mi_sliding_window_once(self) -> None:
-        if getattr(self, "_lee2019_mi_sliding_logged", False):
-            return
-        self._lee2019_mi_sliding_logged = True
-        if self._lee2019_mi_sliding_window_enabled():
-            win, stride, crop = self._lee2019_mi_window_params()
-            print(
-                f"[Lee2019_MI] Training-side sliding windows enabled: win_samples={win}, "
-                f"stride_samples={stride}, val crop start={crop} "
-                f"(disable with --no-lee2019-mi-train-sliding-window)"
-            )
+        """Backward-compatible alias for _maybe_log_train_sliding_window_once."""
+        self._maybe_log_train_sliding_window_once()
 
     def _apply_lee2019_mi_sliding_window_fold(
         self,
@@ -884,7 +929,7 @@ class UnifiedExperimentRunner:
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         from evaluation.mi_sliding_window import fixed_crop_batch, sliding_window_tensor
 
-        win, stride, crop_start = self._lee2019_mi_window_params()
+        win, stride, crop_start = self._sliding_window_params()
         if X_train.dtype == np.float64:
             X_train = X_train.astype(np.float32)
         if X_valid.dtype == np.float64:
@@ -896,9 +941,9 @@ class UnifiedExperimentRunner:
     def _lee2019_mi_chunk_train_preprocess(
         self,
     ) -> Optional[Callable[[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]]:
-        if not self._lee2019_mi_sliding_window_enabled():
+        if not self._train_sliding_window_enabled():
             return None
-        win, stride, _ = self._lee2019_mi_window_params()
+        win, stride, _ = self._sliding_window_params()
 
         def _fn(
             X: np.ndarray, y: np.ndarray
@@ -912,9 +957,9 @@ class UnifiedExperimentRunner:
     def _lee2019_mi_chunk_eval_preprocess(
         self,
     ) -> Optional[Callable[[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]]:
-        if not self._lee2019_mi_sliding_window_enabled():
+        if not self._train_sliding_window_enabled():
             return None
-        win, _, crop_start = self._lee2019_mi_window_params()
+        win, _, crop_start = self._sliding_window_params()
 
         def _fn(
             X: np.ndarray, y: np.ndarray
@@ -927,12 +972,23 @@ class UnifiedExperimentRunner:
 
     def _model_factory_kwargs(self, n_chans: int, n_times: int, n_outputs: int) -> dict:
         """Args for registry model factories, including sfreq for Braindecode EEGModuleMixin models (e.g. CTNet)."""
-        return {
+        kw: Dict[str, Any] = {
             "n_chans": n_chans,
             "n_times": n_times,
             "n_outputs": n_outputs,
-            "sfreq": get_dataset_sampling_rate(self.dataset),
+            "sfreq": float(self._paradigm_resample_hz),
         }
+        if self.dataset == "Shin2017A" and self.model == "eegnet":
+            from config import get_shin2017a_eegnet_factory_extras
+
+            kw.update(get_shin2017a_eegnet_factory_extras())
+            if self.shin2017a_eegnet_optimizer_lr is not None:
+                kw["optimizer__lr"] = float(self.shin2017a_eegnet_optimizer_lr)
+            if self.shin2017a_eegnet_batch_size is not None:
+                kw["batch_size"] = int(self.shin2017a_eegnet_batch_size)
+            if self.shin2017a_eegnet_weight_decay is not None:
+                kw["optimizer__weight_decay"] = float(self.shin2017a_eegnet_weight_decay)
+        return kw
     
     def _create_model(self, n_chans: int, n_times: int, n_outputs: int = None, try_cache: bool = True, fold_idx: Optional[int] = None):
         """
@@ -1134,11 +1190,11 @@ class UnifiedExperimentRunner:
             cv_metadata: Metadata needed for logging results
         """
         if self.eval_mode == "WithinSession":
-            # Use StratifiedKFold for within-session evaluation
-            cv_splitter = StratifiedKFold(n_splits=5, shuffle=True, random_state=self.seed)
+            # StratifiedKFold k=3 matches MOABB v1.5.1 WithinSessionEvaluation
+            cv_splitter = StratifiedKFold(n_splits=3, shuffle=True, random_state=self.seed)
             cv_metadata = {
                 "cv_type": "StratifiedKFold",
-                "n_splits": 5,
+                "n_splits": 3,
                 "split_level": "within_session"
             }
         elif self.eval_mode == "CrossSession":
@@ -1200,7 +1256,7 @@ class UnifiedExperimentRunner:
         # Set current_session for proper cache key generation
         self.current_session = session
 
-        self._maybe_log_lee2019_mi_sliding_window_once()
+        self._maybe_log_train_sliding_window_once()
         tp = self._lee2019_mi_chunk_train_preprocess()
         ep = self._lee2019_mi_chunk_eval_preprocess()
         
@@ -1243,14 +1299,14 @@ class UnifiedExperimentRunner:
                 label_encoder = LabelEncoder()
                 y_valid_hpo = label_encoder.fit_transform(y_valid_hpo)
 
-            if self._lee2019_mi_sliding_window_enabled():
+            if self._train_sliding_window_enabled():
                 from evaluation.mi_sliding_window import (
                     expand_metadata_for_sliding_windows,
                     fixed_crop_batch,
                     sliding_window_tensor,
                 )
 
-                win, stride, crop_start = self._lee2019_mi_window_params()
+                win, stride, crop_start = self._sliding_window_params()
                 metadata_train_hpo = expand_metadata_for_sliding_windows(
                     metadata_train_hpo, X_train_hpo, win, stride
                 )
@@ -1345,10 +1401,10 @@ class UnifiedExperimentRunner:
                 else:
                     y_valid_all_perturb = LabelEncoder().fit_transform(y_valid_all_perturb)
 
-            if self._lee2019_mi_sliding_window_enabled():
+            if self._train_sliding_window_enabled():
                 from evaluation.mi_sliding_window import fixed_crop_batch
 
-                win, _, crop_start = self._lee2019_mi_window_params()
+                win, _, crop_start = self._sliding_window_params()
                 X_valid_all, y_valid_all_perturb = fixed_crop_batch(
                     X_valid_all, y_valid_all_perturb, crop_start, win
                 )
@@ -1425,12 +1481,12 @@ class UnifiedExperimentRunner:
         # Set current_session BEFORE creating model (critical for cache key generation)
         self.current_session = session
 
-        self._maybe_log_lee2019_mi_sliding_window_once()
-        if self._lee2019_mi_sliding_window_enabled():
+        self._maybe_log_train_sliding_window_once()
+        if self._train_sliding_window_enabled():
             if self.tune and metadata_train is not None:
                 from evaluation.mi_sliding_window import expand_metadata_for_sliding_windows
 
-                win, stride, _ = self._lee2019_mi_window_params()
+                win, stride, _ = self._sliding_window_params()
                 metadata_train = expand_metadata_for_sliding_windows(
                     metadata_train, X_train, win, stride
                 )
@@ -1478,8 +1534,8 @@ class UnifiedExperimentRunner:
             X_train = X_train.astype(np.float32)
             print(f"[MEMORY] Converted X_train to float32 before hyperparameter optimization. Shape: {X_train.shape}, Memory saved: {X_train.nbytes / 1024**3:.2f} GB")
 
-        # Get dataset-specific sampling rate
-        resample_rate = get_dataset_sampling_rate(self.dataset)
+        # MOABB paradigm resample (Hz); matches loaded epochs and model sfreq
+        resample_rate = float(self._paradigm_resample_hz)
         
         # Determine if we should use noise-aware optimization
         # Pass chunked training parameters if using chunked training
@@ -3157,6 +3213,53 @@ class UnifiedExperimentRunner:
                 print(f"[WARNING] Could not write test_perturb_manifest.json: {e}")
 
 
+def _load_pipeline_from_experiment_config(
+    config_path: Optional[str], dataset: str
+) -> Optional[Dict[str, Any]]:
+    """Read ``datasets.<dataset>.pipeline`` from experiment_config-style YAML."""
+    if not config_path:
+        return None
+    try:
+        with open(config_path, "r", encoding="utf-8") as f:
+            cfg = yaml.safe_load(f)
+    except Exception as e:
+        raise ValueError(f"Could not load --experiment-config {config_path!r}: {e}") from e
+    datasets = (cfg or {}).get("datasets") or {}
+    ent = datasets.get(dataset)
+    if not isinstance(ent, dict):
+        return None
+    pipe = ent.get("pipeline")
+    if pipe is None:
+        return None
+    if not isinstance(pipe, dict):
+        raise ValueError(f"datasets.{dataset}.pipeline must be a mapping, got {type(pipe)}")
+    return dict(pipe)
+
+
+def _resolve_lee2019_mi_train_sliding_window(
+    pipeline: Optional[Dict[str, Any]],
+    no_cli_flag: bool,
+) -> bool:
+    """CLI ``--no-lee2019-mi-train-sliding-window`` overrides YAML ``train_sliding_window``."""
+    if no_cli_flag:
+        return False
+    if pipeline and "train_sliding_window" in pipeline:
+        return bool(pipeline["train_sliding_window"])
+    return True
+
+
+def _resolve_shin2017a_train_sliding_window(
+    pipeline: Optional[Dict[str, Any]],
+    no_cli_flag: bool,
+) -> bool:
+    """CLI ``--no-shin2017a-train-sliding-window`` overrides YAML ``train_sliding_window``."""
+    if no_cli_flag:
+        return False
+    if pipeline and "train_sliding_window" in pipeline:
+        return bool(pipeline["train_sliding_window"])
+    return True
+
+
 def main():
     """Main entry point for the unified experiment runner."""
     # Load any custom model registrations from .model_registry directory
@@ -3295,10 +3398,56 @@ def main():
         action="store_true",
         help=(
             "For Lee2019_MI only: disable training-side sliding-window augmentation "
-            "(1s windows, 0.5s stride; validation uses a fixed first-1s crop). Default: enabled."
+            "(1s windows, 0.5s stride; validation uses a fixed first-1s crop). Default: enabled. "
+            "Overrides datasets.<dataset>.pipeline.train_sliding_window in --experiment-config."
         ),
     )
-    
+    parser.add_argument(
+        "--no-shin2017a-train-sliding-window",
+        action="store_true",
+        help=(
+            "For Shin2017A only: disable training-side sliding-window augmentation "
+            "(same 1s / 0.5s stride protocol as Lee2019_MI; validation uses a fixed first-1s crop). "
+            "Default: enabled. Overrides datasets.Shin2017A.pipeline.train_sliding_window in YAML."
+        ),
+    )
+    parser.add_argument(
+        "--experiment-config",
+        type=str,
+        default=None,
+        help=(
+            "YAML (e.g. experiment_config.yaml) with optional datasets.<dataset>.pipeline: "
+            "resample (Hz), train_sliding_window (Lee2019_MI, Shin2017A)."
+        ),
+    )
+    parser.add_argument(
+        "--pipeline-resample-hz",
+        type=float,
+        default=None,
+        help=(
+            "Override MOABB paradigm resample (Hz). Lee2019_MI unified default is 128; "
+            "use 1000 to reproduce legacy native-rate runs. Overrides pipeline.resample in YAML."
+        ),
+    )
+    parser.add_argument(
+        "--shin2017a-eegnet-lr",
+        type=float,
+        default=None,
+        help="Shin2017A + EEGNet only: override AdamW lr (default from config.get_shin2017a_eegnet_factory_extras).",
+    )
+    parser.add_argument(
+        "--shin2017a-eegnet-batch-size",
+        type=int,
+        default=None,
+        help="Shin2017A + EEGNet only: override batch size.",
+    )
+    parser.add_argument(
+        "--shin2017a-eegnet-weight-decay",
+        type=float,
+        default=None,
+        help="Shin2017A + EEGNet only: override AdamW weight_decay (default 1e-4 in config).",
+    )
+
     # Fold-by-fold execution for CrossSubject mode (memory optimization)
     parser.add_argument("--fold_idx", type=int, default=None,
                         help="Specific fold to process (for CrossSubject mode, 0-2). If not provided, processes all folds.")
@@ -3339,6 +3488,23 @@ def main():
         max_memory_mb = None
     
     args = parser.parse_args()
+
+    pipeline_cfg = _load_pipeline_from_experiment_config(
+        getattr(args, "experiment_config", None), args.dataset
+    )
+    lee2019_mi_sliding = _resolve_lee2019_mi_train_sliding_window(
+        pipeline_cfg,
+        getattr(args, "no_lee2019_mi_train_sliding_window", False),
+    )
+    shin2017a_mi_sliding = _resolve_shin2017a_train_sliding_window(
+        pipeline_cfg,
+        getattr(args, "no_shin2017a_train_sliding_window", False),
+    )
+    paradigm_rs = resolve_paradigm_resample_hz(
+        args.dataset,
+        pipeline_cfg,
+        getattr(args, "pipeline_resample_hz", None),
+    )
 
     if getattr(args, "hail_mary_stability", False):
         os.environ["HAIL_MARY_STABILITY"] = "1"
@@ -3451,7 +3617,7 @@ def main():
                 Ctor = _require_moabb_dataset_ctor("Yang2025", Yang2025)
                 temp_dataset_obj = Ctor(paradigm_type="2C")
                 temp_dataset_obj.subject_list = args.subjects
-            temp_paradigm = get_paradigm(resample=None, dataset=args.dataset)
+            temp_paradigm = get_paradigm(resample=paradigm_rs, dataset=args.dataset)
         except Exception as e:
             print(f"Warning: Could not create temporary dataset/paradigm for session detection: {e}")
         
@@ -3509,9 +3675,13 @@ def main():
                     test_perturb_ar1_rho=getattr(args, "test_perturb_ar1_rho", 0.97),
                     test_perturb_emg_f_low=getattr(args, "test_perturb_emg_f_low", 20.0),
                     plot2_diagnostics_dir=getattr(args, "plot2_diagnostics_dir", None),
-                    lee2019_mi_train_sliding_window=not getattr(
-                        args, "no_lee2019_mi_train_sliding_window", False
-                    ),
+                    pipeline=pipeline_cfg,
+                    pipeline_resample_hz=getattr(args, "pipeline_resample_hz", None),
+                    lee2019_mi_train_sliding_window=lee2019_mi_sliding,
+                    shin2017a_train_sliding_window=shin2017a_mi_sliding,
+                    shin2017a_eegnet_optimizer_lr=getattr(args, "shin2017a_eegnet_lr", None),
+                    shin2017a_eegnet_batch_size=getattr(args, "shin2017a_eegnet_batch_size", None),
+                    shin2017a_eegnet_weight_decay=getattr(args, "shin2017a_eegnet_weight_decay", None),
                 )
                 results = runner.run_experiment()
                 print(f"Experiment completed successfully. Results shape: {results.shape}")
@@ -3551,7 +3721,7 @@ def main():
                 Ctor = _require_moabb_dataset_ctor("Yang2025", Yang2025)
                 temp_dataset_obj = Ctor(paradigm_type="2C")
                 temp_dataset_obj.subject_list = args.subjects
-            temp_paradigm = get_paradigm(resample=None, dataset=args.dataset)
+            temp_paradigm = get_paradigm(resample=paradigm_rs, dataset=args.dataset)
         except Exception as e:
             print(f"Warning: Could not create temporary dataset/paradigm for session detection: {e}")
         
@@ -3614,9 +3784,13 @@ def main():
                 test_perturb_ar1_rho=getattr(args, "test_perturb_ar1_rho", 0.97),
                 test_perturb_emg_f_low=getattr(args, "test_perturb_emg_f_low", 20.0),
                 plot2_diagnostics_dir=getattr(args, "plot2_diagnostics_dir", None),
-                lee2019_mi_train_sliding_window=not getattr(
-                    args, "no_lee2019_mi_train_sliding_window", False
-                ),
+                pipeline=pipeline_cfg,
+                pipeline_resample_hz=getattr(args, "pipeline_resample_hz", None),
+                lee2019_mi_train_sliding_window=lee2019_mi_sliding,
+                shin2017a_train_sliding_window=shin2017a_mi_sliding,
+                shin2017a_eegnet_optimizer_lr=getattr(args, "shin2017a_eegnet_lr", None),
+                shin2017a_eegnet_batch_size=getattr(args, "shin2017a_eegnet_batch_size", None),
+                shin2017a_eegnet_weight_decay=getattr(args, "shin2017a_eegnet_weight_decay", None),
             )
             
             results = runner.run_experiment()

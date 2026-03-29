@@ -158,7 +158,7 @@ class NoiseWithinSessionEvaluation(WithinSessionEvaluation):
             session_mask = metadata["session"] == session
             X_mask = X[session_mask]
             y_mask = y_encoded[session_mask]
-            cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=self.seed)
+            cv = StratifiedKFold(n_splits=3, shuffle=True, random_state=self.seed)
             # Evaluate on clean data first
             start_time = time.time()
             fold_scores = []

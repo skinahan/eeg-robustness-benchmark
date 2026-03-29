@@ -460,7 +460,7 @@ def main():
     X_test_t = torch.from_numpy(X_test).float().permute(0, 2, 1)
     y_test_t = torch.from_numpy(y_test).long()
 
-    n_splits = 5
+    n_splits = 3  # MOABB v1.5.1 WithinSessionEvaluation
     skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=seed)
 
     fold_results = []

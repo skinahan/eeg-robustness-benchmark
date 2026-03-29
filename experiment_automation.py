@@ -9,7 +9,7 @@ This script provides a complete automation solution for EEG experiments:
 4. Generates shell scripts with missing experiment commands
 
 Usage:
-    python experiment_automation.py [--config CONFIG_FILE] [--output-dir OUTPUT_DIR] [--no-tuned]
+    python experiment_automation.py [--config CONFIG_FILE] [--output-dir OUTPUT_DIR] [--no-tuned] [--overwrite]
 """
 
 import os
@@ -35,7 +35,7 @@ from tqdm import tqdm
 class ExperimentAutomation:
     """Main class for experiment automation."""
     
-    def __init__(self, config_file: str = "experiment_config.yaml", preaggregated_results_file: str = None, local: bool = False, use_cached: bool = False, use_optimized: bool = True, legacy: bool = False, no_tuned: bool = False):
+    def __init__(self, config_file: str = "experiment_config.yaml", preaggregated_results_file: str = None, local: bool = False, use_cached: bool = False, use_optimized: bool = True, legacy: bool = False, no_tuned: bool = False, overwrite: bool = False):
         """Initialize the automation system with configuration.
         
         Args:
@@ -46,6 +46,7 @@ class ExperimentAutomation:
             use_optimized: If True, use optimized multirun job-level approach (default: True)
             legacy: If True, use legacy experimental protocol (no subject chunking). Can also be set in config file.
             no_tuned: If True, only baseline (tune=False) jobs are expected; tuned multiruns are omitted.
+            overwrite: If True, generated jobs pass --overwrite to unified_experiment_runner (re-run even when cached results exist).
         """
         self.config_file = config_file
         self.config = self._load_config()
@@ -63,6 +64,9 @@ class ExperimentAutomation:
         self.local = local
         self.use_cached = use_cached
         self.use_optimized = use_optimized  # Use optimized approach by default
+        self.overwrite = overwrite
+        if self.overwrite:
+            print("[INFO] --overwrite: generated jobs will pass --overwrite to unified_experiment_runner")
         # Performance optimization caches
         self._cached_noise_intensities = {}  # (dataset, noise_type) -> intensities array
         self._cached_existing_signatures = None
@@ -426,7 +430,8 @@ class ExperimentAutomation:
                                         'seed': seed,
                                         'tune': tune_flag,
                                         'noise_types': noise_types,  # All noise types
-                                        'mode': 'multirun'
+                                        'mode': 'multirun',
+                                        'pipeline': dataset_config.get('pipeline'),
                                     }
                                     expected_jobs.append(job)
                             else:
@@ -440,7 +445,8 @@ class ExperimentAutomation:
                                     'seed': seed,
                                     'tune': tune_flag,
                                     'noise_types': noise_types,  # All noise types
-                                    'mode': 'multirun'
+                                    'mode': 'multirun',
+                                    'pipeline': dataset_config.get('pipeline'),
                                 }
                                 expected_jobs.append(job)
         
@@ -1195,6 +1201,9 @@ class ExperimentAutomation:
                 # Multiple subjects for Cross-Subject
                 subjects = list(subjects_or_subject)
             
+            ds_cfg = next(
+                config for name, config in self.config['datasets'].items() if name == dataset
+            )
             multirun_job = {
                 'dataset': dataset,
                 'eval_mode': eval_mode,
@@ -1203,7 +1212,8 @@ class ExperimentAutomation:
                 'model': model,
                 'seed': seed,
                 'mode': 'multirun',  # This will generate test_perturb results
-                'paradigm': next(config['paradigm'] for name, config in self.config['datasets'].items() if name == dataset)
+                'paradigm': ds_cfg['paradigm'],
+                'pipeline': ds_cfg.get('pipeline'),
             }
             missing_experiments.append(multirun_job)
         
@@ -1283,7 +1293,10 @@ class ExperimentAutomation:
             f.write("sys.path.insert(0, project_root)\n")
             f.write("sys.path.insert(0, os.path.join(project_root, 'evaluation'))\n\n")
             
-            f.write("from evaluation.unified_experiment_runner import UnifiedExperimentRunner\n")
+            f.write(
+                "from evaluation.unified_experiment_runner import "
+                "UnifiedExperimentRunner, _resolve_lee2019_mi_train_sliding_window\n"
+            )
             f.write("from evaluation.experiment_utils import collect_all_results_unified\n")
             f.write("from globals import set_seeds\n\n")
             
@@ -1321,7 +1334,10 @@ class ExperimentAutomation:
             f.write("    # Re-import modules in the subprocess (necessary for multiprocessing)\n")
             f.write("    sys.path.insert(0, project_root)\n")
             f.write("    sys.path.insert(0, os.path.join(project_root, 'evaluation'))\n")
-            f.write("    from evaluation.unified_experiment_runner import UnifiedExperimentRunner\n")
+            f.write(
+                "    from evaluation.unified_experiment_runner import "
+                "UnifiedExperimentRunner, _resolve_lee2019_mi_train_sliding_window\n"
+            )
             f.write("    from globals import set_seeds\n")
             f.write("    \n")
             f.write("    print(f'\\n{\"-\"*60}')\n")
@@ -1333,8 +1349,11 @@ class ExperimentAutomation:
             
             f.write("    # Set seed for reproducibility\n")
             f.write("    set_seeds(exp_config['seed'])\n\n")
-            
             f.write("    try:\n")
+            f.write(
+                "        lee2019_sw = _resolve_lee2019_mi_train_sliding_window("
+                "exp_config.get('pipeline'), False)\n"
+            )
             f.write("        # Create and run experiment\n")
             f.write("        # For CrossSubject mode, use chunked training to reduce memory usage\n")
             f.write("        # subject_chunk_size=3 loads 3 subjects at a time (default)\n")
@@ -1351,9 +1370,11 @@ class ExperimentAutomation:
             f.write("            noise_type='gaussian',  # multirun handles all noise types\n")
             f.write("            intensity=10.0,  # multirun handles all intensities\n")
             f.write("            tune=exp_config['tune'],\n")
-            f.write("            overwrite=False,\n")
+            f.write(f"            overwrite={self.overwrite},\n")
             f.write("            subject_chunk_size=subject_chunk_size,  # Enable chunked training for CrossSubject (unless legacy mode)\n")
-            f.write("            legacy=USE_LEGACY_MODE  # Use legacy experimental protocol if enabled\n")
+            f.write("            legacy=USE_LEGACY_MODE,  # Use legacy experimental protocol if enabled\n")
+            f.write("            pipeline=exp_config.get('pipeline'),\n")
+            f.write("            lee2019_mi_train_sliding_window=lee2019_sw,\n")
             f.write("        )\n\n")
             
             f.write("        results = runner.run_experiment()\n")
@@ -1400,6 +1421,8 @@ class ExperimentAutomation:
                 f.write(f"            'tune': {exp['tune']},\n")
                 f.write(f"            'model': '{exp['model']}',\n")
                 f.write(f"            'seed': {exp['seed']},\n")
+                if exp.get("pipeline") is not None:
+                    f.write(f"            'pipeline': {repr(exp['pipeline'])},\n")
                 f.write(f"            'paradigm': '{exp['paradigm']}'\n")
                 f.write("        },\n")
             f.write("    ]\n\n")
@@ -1414,6 +1437,8 @@ class ExperimentAutomation:
                 f.write(f"            'tune': {exp['tune']},\n")
                 f.write(f"            'model': '{exp['model']}',\n")
                 f.write(f"            'seed': {exp['seed']},\n")
+                if exp.get("pipeline") is not None:
+                    f.write(f"            'pipeline': {repr(exp['pipeline'])},\n")
                 f.write(f"            'paradigm': '{exp['paradigm']}'\n")
                 f.write("        },\n")
             f.write("    ]\n\n")
@@ -1830,11 +1855,13 @@ class ExperimentAutomation:
                         # Time increased slightly to account for running 3 folds + aggregation
                         slurm_args = "--time=3-00:00:00 --mem=96G"
                 
-                # Format: sbatch {slurm_args} unified_eval_script.sh {subject} {dataset} {eval_mode} {tune_flag} {model} {seed} [legacy_flag]
+                # Format: sbatch {slurm_args} unified_eval_script.sh ... {seed} [overwrite_flag]
+                # CrossSubject fold-by-fold: ... {seed} {legacy_flag} {overwrite_flag}
                 # Use CrossSubject-specific script for CrossSubject eval mode
                 # UPDATED: Use fold-by-fold script for CrossSubject to reduce memory usage (unless legacy mode)
                 # Legacy mode uses the original script without fold-by-fold processing
                 # Chunked training (subject_chunk_size=3) is automatically enabled via run_crosssubject_folds.py (unless legacy mode)
+                overwrite_flag = "true" if self.overwrite else "false"
                 if exp['eval_mode'] == 'CrossSubject':
                     if self.legacy:
                         # Legacy mode: use original script without fold-by-fold processing
@@ -1847,11 +1874,11 @@ class ExperimentAutomation:
                 # Pass legacy flag if enabled (only for fold-by-fold script)
                 legacy_flag = "true" if self.legacy else "false"
                 if exp['eval_mode'] == 'CrossSubject' and not self.legacy:
-                    # Only pass legacy flag to fold-by-fold script
-                    command = f"sbatch {slurm_args} {script_name} {subjects_str} {exp['dataset']} {exp['eval_mode']} {tune_flag} {model} {seed} {legacy_flag}"
+                    # fold-by-fold: legacy then overwrite
+                    command = f"sbatch {slurm_args} {script_name} {subjects_str} {exp['dataset']} {exp['eval_mode']} {tune_flag} {model} {seed} {legacy_flag} {overwrite_flag}"
                 else:
-                    # Other scripts don't need legacy flag (legacy mode uses different script)
-                    command = f"sbatch {slurm_args} {script_name} {subjects_str} {exp['dataset']} {exp['eval_mode']} {tune_flag} {model} {seed}"
+                    # Within/CrossSession or CrossSubject legacy: optional trailing overwrite arg
+                    command = f"sbatch {slurm_args} {script_name} {subjects_str} {exp['dataset']} {exp['eval_mode']} {tune_flag} {model} {seed} {overwrite_flag}"
                 
                 # Write sbatch command
                 f.write(f"# Multirun Job {i}/{len(self.missing_experiments)}\n")
@@ -2130,6 +2157,8 @@ def main():
                        help="Use legacy experimental protocol (disables subject chunking and other memory optimizations to match original behavior)")
     parser.add_argument("--no-tuned", action="store_true", dest="no_tuned",
                        help="Only consider baseline (non-tuned) multirun jobs; omit tuned runs from expected jobs and generated scripts")
+    parser.add_argument("--overwrite", action="store_true",
+                       help="Pass --overwrite to unified_experiment_runner in generated local/cluster jobs (re-run even when cached results exist)")
     
     args = parser.parse_args()
     
@@ -2137,7 +2166,7 @@ def main():
     use_optimized = not args.use_original  # Default to optimized unless --use-original is specified
     automation = ExperimentAutomation(
         args.config, args.preaggregated_results, args.local, args.use_cached, use_optimized,
-        legacy=args.legacy, no_tuned=args.no_tuned,
+        legacy=args.legacy, no_tuned=args.no_tuned, overwrite=args.overwrite,
     )
     
     if args.aggregate_only:

@@ -664,11 +664,11 @@ class UnifiedExperimentRunner:
             cv_metadata: Metadata needed for logging results
         """
         if self.eval_mode == "WithinSession":
-            # Use StratifiedKFold for within-session evaluation
-            cv_splitter = StratifiedKFold(n_splits=5, shuffle=True, random_state=self.seed)
+            # StratifiedKFold k=3 matches MOABB v1.5.1 WithinSessionEvaluation
+            cv_splitter = StratifiedKFold(n_splits=3, shuffle=True, random_state=self.seed)
             cv_metadata = {
                 "cv_type": "StratifiedKFold",
-                "n_splits": 5,
+                "n_splits": 3,
                 "split_level": "within_session"
             }
         elif self.eval_mode == "CrossSession":

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Generated multirun sbatch automation script
-# Generated on: 2026-03-29 14:07:38
+# Generated on: 2026-03-29 14:18:13
 # Total missing multirun jobs: 1350
 
 set -e  # Exit on any error
@@ -15,7 +15,7 @@ echo "Total multirun jobs to submit: 1350"
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1 submitted successfully"
 else
@@ -31,7 +31,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 2/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 2 submitted successfully"
 else
@@ -47,7 +47,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 3/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 3 submitted successfully"
 else
@@ -63,7 +63,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 4/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 4 submitted successfully"
 else
@@ -79,7 +79,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 5/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 5 submitted successfully"
 else
@@ -95,7 +95,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 6/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 6 submitted successfully"
 else
@@ -111,7 +111,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 7/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 7 submitted successfully"
 else
@@ -127,7 +127,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 8/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 8 submitted successfully"
 else
@@ -143,7 +143,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 9/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 9 submitted successfully"
 else
@@ -159,7 +159,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 10/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 10 submitted successfully"
 else
@@ -175,7 +175,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 11/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 11 submitted successfully"
 else
@@ -191,7 +191,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 12/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 12 submitted successfully"
 else
@@ -207,7 +207,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 13/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 13 submitted successfully"
 else
@@ -223,7 +223,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 14/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 14 submitted successfully"
 else
@@ -239,7 +239,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 15/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 15 submitted successfully"
 else
@@ -255,7 +255,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 16/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 16 submitted successfully"
 else
@@ -271,7 +271,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 17/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 17 submitted successfully"
 else
@@ -287,7 +287,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 18/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 18 submitted successfully"
 else
@@ -303,7 +303,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 19/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 19 submitted successfully"
 else
@@ -319,7 +319,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 20/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 20 submitted successfully"
 else
@@ -335,7 +335,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 21/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 21 submitted successfully"
 else
@@ -351,7 +351,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 22/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 22 submitted successfully"
 else
@@ -367,7 +367,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 23/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 23 submitted successfully"
 else
@@ -383,7 +383,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 24/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 24 submitted successfully"
 else
@@ -399,7 +399,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 25/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 25 submitted successfully"
 else
@@ -415,7 +415,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 26/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 26 submitted successfully"
 else
@@ -431,7 +431,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 27/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 27 submitted successfully"
 else
@@ -447,7 +447,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 28/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 28 submitted successfully"
 else
@@ -463,7 +463,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 29/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 29 submitted successfully"
 else
@@ -479,7 +479,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 30/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 30 submitted successfully"
 else
@@ -495,7 +495,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 31/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 31 submitted successfully"
 else
@@ -511,7 +511,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 32/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 32 submitted successfully"
 else
@@ -527,7 +527,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 33/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 33 submitted successfully"
 else
@@ -543,7 +543,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 34/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 34 submitted successfully"
 else
@@ -559,7 +559,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 35/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 35 submitted successfully"
 else
@@ -575,7 +575,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 36/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 36 submitted successfully"
 else
@@ -591,7 +591,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 37/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 37 submitted successfully"
 else
@@ -607,7 +607,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 38/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 38 submitted successfully"
 else
@@ -623,7 +623,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 39/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 39 submitted successfully"
 else
@@ -639,7 +639,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 40/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 40 submitted successfully"
 else
@@ -655,7 +655,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 41/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 41 submitted successfully"
 else
@@ -671,7 +671,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 42/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 42 submitted successfully"
 else
@@ -687,7 +687,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 43/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 43 submitted successfully"
 else
@@ -703,7 +703,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 44/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 44 submitted successfully"
 else
@@ -719,7 +719,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 45/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 45 submitted successfully"
 else
@@ -735,7 +735,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 46/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 46 submitted successfully"
 else
@@ -751,7 +751,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 47/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 47 submitted successfully"
 else
@@ -767,7 +767,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 48/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 48 submitted successfully"
 else
@@ -783,7 +783,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 49/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 49 submitted successfully"
 else
@@ -799,7 +799,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 50/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 50 submitted successfully"
 else
@@ -815,7 +815,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 51/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 51 submitted successfully"
 else
@@ -831,7 +831,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 52/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 52 submitted successfully"
 else
@@ -847,7 +847,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 53/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 53 submitted successfully"
 else
@@ -863,7 +863,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 54/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false eegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false eegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 54 submitted successfully"
 else
@@ -879,7 +879,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 55/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 55 submitted successfully"
 else
@@ -895,7 +895,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 56/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 56 submitted successfully"
 else
@@ -911,7 +911,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 57/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 57 submitted successfully"
 else
@@ -927,7 +927,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 58/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 58 submitted successfully"
 else
@@ -943,7 +943,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 59/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 59 submitted successfully"
 else
@@ -959,7 +959,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 60/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 60 submitted successfully"
 else
@@ -975,7 +975,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 61/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 61 submitted successfully"
 else
@@ -991,7 +991,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 62/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 62 submitted successfully"
 else
@@ -1007,7 +1007,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 63/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 63 submitted successfully"
 else
@@ -1023,7 +1023,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 64/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 64 submitted successfully"
 else
@@ -1039,7 +1039,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 65/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 65 submitted successfully"
 else
@@ -1055,7 +1055,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 66/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 66 submitted successfully"
 else
@@ -1071,7 +1071,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 67/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 67 submitted successfully"
 else
@@ -1087,7 +1087,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 68/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 68 submitted successfully"
 else
@@ -1103,7 +1103,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 69/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 69 submitted successfully"
 else
@@ -1119,7 +1119,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 70/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 70 submitted successfully"
 else
@@ -1135,7 +1135,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 71/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 71 submitted successfully"
 else
@@ -1151,7 +1151,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 72/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 72 submitted successfully"
 else
@@ -1167,7 +1167,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 73/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 73 submitted successfully"
 else
@@ -1183,7 +1183,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 74/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 74 submitted successfully"
 else
@@ -1199,7 +1199,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 75/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 75 submitted successfully"
 else
@@ -1215,7 +1215,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 76/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 76 submitted successfully"
 else
@@ -1231,7 +1231,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 77/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 77 submitted successfully"
 else
@@ -1247,7 +1247,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 78/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 78 submitted successfully"
 else
@@ -1263,7 +1263,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 79/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 79 submitted successfully"
 else
@@ -1279,7 +1279,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 80/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 80 submitted successfully"
 else
@@ -1295,7 +1295,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 81/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 81 submitted successfully"
 else
@@ -1311,7 +1311,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 82/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 82 submitted successfully"
 else
@@ -1327,7 +1327,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 83/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 83 submitted successfully"
 else
@@ -1343,7 +1343,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 84/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 84 submitted successfully"
 else
@@ -1359,7 +1359,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 85/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 85 submitted successfully"
 else
@@ -1375,7 +1375,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 86/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 86 submitted successfully"
 else
@@ -1391,7 +1391,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 87/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 87 submitted successfully"
 else
@@ -1407,7 +1407,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 88/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 88 submitted successfully"
 else
@@ -1423,7 +1423,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 89/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 89 submitted successfully"
 else
@@ -1439,7 +1439,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 90/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 90 submitted successfully"
 else
@@ -1455,7 +1455,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 91/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 91 submitted successfully"
 else
@@ -1471,7 +1471,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 92/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 92 submitted successfully"
 else
@@ -1487,7 +1487,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 93/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 93 submitted successfully"
 else
@@ -1503,7 +1503,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 94/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 94 submitted successfully"
 else
@@ -1519,7 +1519,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 95/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 95 submitted successfully"
 else
@@ -1535,7 +1535,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 96/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 96 submitted successfully"
 else
@@ -1551,7 +1551,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 97/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 97 submitted successfully"
 else
@@ -1567,7 +1567,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 98/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 98 submitted successfully"
 else
@@ -1583,7 +1583,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 99/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 99 submitted successfully"
 else
@@ -1599,7 +1599,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 100/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 100 submitted successfully"
 else
@@ -1615,7 +1615,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 101/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 101 submitted successfully"
 else
@@ -1631,7 +1631,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 102/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 102 submitted successfully"
 else
@@ -1647,7 +1647,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 103/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 103 submitted successfully"
 else
@@ -1663,7 +1663,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 104/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 104 submitted successfully"
 else
@@ -1679,7 +1679,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 105/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 105 submitted successfully"
 else
@@ -1695,7 +1695,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 106/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 106 submitted successfully"
 else
@@ -1711,7 +1711,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 107/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 107 submitted successfully"
 else
@@ -1727,7 +1727,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 108/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false eegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false eegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 108 submitted successfully"
 else
@@ -1743,7 +1743,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 109/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 109 submitted successfully"
 else
@@ -1759,7 +1759,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 110/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 110 submitted successfully"
 else
@@ -1775,7 +1775,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 111/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 111 submitted successfully"
 else
@@ -1791,7 +1791,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 112/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 112 submitted successfully"
 else
@@ -1807,7 +1807,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 113/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 113 submitted successfully"
 else
@@ -1823,7 +1823,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 114/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 114 submitted successfully"
 else
@@ -1839,7 +1839,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 115/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 115 submitted successfully"
 else
@@ -1855,7 +1855,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 116/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 116 submitted successfully"
 else
@@ -1871,7 +1871,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 117/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 117 submitted successfully"
 else
@@ -1887,7 +1887,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 118/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 118 submitted successfully"
 else
@@ -1903,7 +1903,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 119/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 119 submitted successfully"
 else
@@ -1919,7 +1919,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 120/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 120 submitted successfully"
 else
@@ -1935,7 +1935,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 121/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 121 submitted successfully"
 else
@@ -1951,7 +1951,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 122/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 122 submitted successfully"
 else
@@ -1967,7 +1967,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 123/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 123 submitted successfully"
 else
@@ -1983,7 +1983,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 124/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 124 submitted successfully"
 else
@@ -1999,7 +1999,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 125/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 125 submitted successfully"
 else
@@ -2015,7 +2015,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 126/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 126 submitted successfully"
 else
@@ -2031,7 +2031,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 127/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 127 submitted successfully"
 else
@@ -2047,7 +2047,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 128/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 128 submitted successfully"
 else
@@ -2063,7 +2063,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 129/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 129 submitted successfully"
 else
@@ -2079,7 +2079,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 130/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 130 submitted successfully"
 else
@@ -2095,7 +2095,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 131/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 131 submitted successfully"
 else
@@ -2111,7 +2111,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 132/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 132 submitted successfully"
 else
@@ -2127,7 +2127,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 133/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 133 submitted successfully"
 else
@@ -2143,7 +2143,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 134/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 134 submitted successfully"
 else
@@ -2159,7 +2159,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 135/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 135 submitted successfully"
 else
@@ -2175,7 +2175,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 136/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 136 submitted successfully"
 else
@@ -2191,7 +2191,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 137/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 137 submitted successfully"
 else
@@ -2207,7 +2207,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 138/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 138 submitted successfully"
 else
@@ -2223,7 +2223,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 139/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 139 submitted successfully"
 else
@@ -2239,7 +2239,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 140/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 140 submitted successfully"
 else
@@ -2255,7 +2255,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 141/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 141 submitted successfully"
 else
@@ -2271,7 +2271,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 142/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 142 submitted successfully"
 else
@@ -2287,7 +2287,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 143/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 143 submitted successfully"
 else
@@ -2303,7 +2303,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 144/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 144 submitted successfully"
 else
@@ -2319,7 +2319,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 145/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 145 submitted successfully"
 else
@@ -2335,7 +2335,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 146/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 146 submitted successfully"
 else
@@ -2351,7 +2351,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 147/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 147 submitted successfully"
 else
@@ -2367,7 +2367,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 148/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 148 submitted successfully"
 else
@@ -2383,7 +2383,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 149/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 149 submitted successfully"
 else
@@ -2399,7 +2399,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 150/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 150 submitted successfully"
 else
@@ -2415,7 +2415,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 151/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 151 submitted successfully"
 else
@@ -2431,7 +2431,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 152/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 152 submitted successfully"
 else
@@ -2447,7 +2447,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 153/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 153 submitted successfully"
 else
@@ -2463,7 +2463,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 154/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 154 submitted successfully"
 else
@@ -2479,7 +2479,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 155/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 155 submitted successfully"
 else
@@ -2495,7 +2495,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 156/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 156 submitted successfully"
 else
@@ -2511,7 +2511,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 157/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 157 submitted successfully"
 else
@@ -2527,7 +2527,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 158/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 158 submitted successfully"
 else
@@ -2543,7 +2543,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 159/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 159 submitted successfully"
 else
@@ -2559,7 +2559,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 160/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 160 submitted successfully"
 else
@@ -2575,7 +2575,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 161/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 161 submitted successfully"
 else
@@ -2591,7 +2591,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 162/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false eegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false eegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 162 submitted successfully"
 else
@@ -2607,7 +2607,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 163/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 163 submitted successfully"
 else
@@ -2623,7 +2623,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 164/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 164 submitted successfully"
 else
@@ -2639,7 +2639,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 165/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 165 submitted successfully"
 else
@@ -2655,7 +2655,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 166/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 166 submitted successfully"
 else
@@ -2671,7 +2671,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 167/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 167 submitted successfully"
 else
@@ -2687,7 +2687,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 168/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 168 submitted successfully"
 else
@@ -2703,7 +2703,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 169/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 169 submitted successfully"
 else
@@ -2719,7 +2719,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 170/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 170 submitted successfully"
 else
@@ -2735,7 +2735,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 171/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 171 submitted successfully"
 else
@@ -2751,7 +2751,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 172/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 172 submitted successfully"
 else
@@ -2767,7 +2767,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 173/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 173 submitted successfully"
 else
@@ -2783,7 +2783,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 174/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 174 submitted successfully"
 else
@@ -2799,7 +2799,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 175/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 175 submitted successfully"
 else
@@ -2815,7 +2815,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 176/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 176 submitted successfully"
 else
@@ -2831,7 +2831,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 177/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 177 submitted successfully"
 else
@@ -2847,7 +2847,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 178/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 178 submitted successfully"
 else
@@ -2863,7 +2863,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 179/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 179 submitted successfully"
 else
@@ -2879,7 +2879,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 180/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 180 submitted successfully"
 else
@@ -2895,7 +2895,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 181/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 181 submitted successfully"
 else
@@ -2911,7 +2911,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 182/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 182 submitted successfully"
 else
@@ -2927,7 +2927,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 183/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 183 submitted successfully"
 else
@@ -2943,7 +2943,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 184/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 184 submitted successfully"
 else
@@ -2959,7 +2959,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 185/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 185 submitted successfully"
 else
@@ -2975,7 +2975,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 186/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 186 submitted successfully"
 else
@@ -2991,7 +2991,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 187/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 187 submitted successfully"
 else
@@ -3007,7 +3007,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 188/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 188 submitted successfully"
 else
@@ -3023,7 +3023,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 189/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 189 submitted successfully"
 else
@@ -3039,7 +3039,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 190/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 190 submitted successfully"
 else
@@ -3055,7 +3055,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 191/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 191 submitted successfully"
 else
@@ -3071,7 +3071,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 192/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 192 submitted successfully"
 else
@@ -3087,7 +3087,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 193/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 193 submitted successfully"
 else
@@ -3103,7 +3103,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 194/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 194 submitted successfully"
 else
@@ -3119,7 +3119,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 195/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 195 submitted successfully"
 else
@@ -3135,7 +3135,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 196/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 196 submitted successfully"
 else
@@ -3151,7 +3151,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 197/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 197 submitted successfully"
 else
@@ -3167,7 +3167,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 198/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 198 submitted successfully"
 else
@@ -3183,7 +3183,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 199/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 199 submitted successfully"
 else
@@ -3199,7 +3199,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 200/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 200 submitted successfully"
 else
@@ -3215,7 +3215,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 201/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 201 submitted successfully"
 else
@@ -3231,7 +3231,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 202/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 202 submitted successfully"
 else
@@ -3247,7 +3247,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 203/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 203 submitted successfully"
 else
@@ -3263,7 +3263,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 204/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 204 submitted successfully"
 else
@@ -3279,7 +3279,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 205/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 205 submitted successfully"
 else
@@ -3295,7 +3295,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 206/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 206 submitted successfully"
 else
@@ -3311,7 +3311,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 207/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 207 submitted successfully"
 else
@@ -3327,7 +3327,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 208/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 208 submitted successfully"
 else
@@ -3343,7 +3343,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 209/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 209 submitted successfully"
 else
@@ -3359,7 +3359,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 210/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 210 submitted successfully"
 else
@@ -3375,7 +3375,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 211/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 211 submitted successfully"
 else
@@ -3391,7 +3391,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 212/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 212 submitted successfully"
 else
@@ -3407,7 +3407,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 213/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 213 submitted successfully"
 else
@@ -3423,7 +3423,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 214/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 214 submitted successfully"
 else
@@ -3439,7 +3439,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 215/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 215 submitted successfully"
 else
@@ -3455,7 +3455,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 216/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false eegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false eegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 216 submitted successfully"
 else
@@ -3471,7 +3471,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 217/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 217 submitted successfully"
 else
@@ -3487,7 +3487,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 218/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 218 submitted successfully"
 else
@@ -3503,7 +3503,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 219/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 219 submitted successfully"
 else
@@ -3519,7 +3519,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 220/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 220 submitted successfully"
 else
@@ -3535,7 +3535,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 221/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 221 submitted successfully"
 else
@@ -3551,7 +3551,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 222/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 222 submitted successfully"
 else
@@ -3567,7 +3567,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 223/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 223 submitted successfully"
 else
@@ -3583,7 +3583,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 224/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 224 submitted successfully"
 else
@@ -3599,7 +3599,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 225/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 225 submitted successfully"
 else
@@ -3615,7 +3615,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 226/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 226 submitted successfully"
 else
@@ -3631,7 +3631,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 227/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 227 submitted successfully"
 else
@@ -3647,7 +3647,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 228/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 228 submitted successfully"
 else
@@ -3663,7 +3663,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 229/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 229 submitted successfully"
 else
@@ -3679,7 +3679,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 230/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 230 submitted successfully"
 else
@@ -3695,7 +3695,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 231/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 231 submitted successfully"
 else
@@ -3711,7 +3711,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 232/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 232 submitted successfully"
 else
@@ -3727,7 +3727,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 233/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 233 submitted successfully"
 else
@@ -3743,7 +3743,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 234/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 234 submitted successfully"
 else
@@ -3759,7 +3759,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 235/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 235 submitted successfully"
 else
@@ -3775,7 +3775,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 236/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 236 submitted successfully"
 else
@@ -3791,7 +3791,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 237/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 237 submitted successfully"
 else
@@ -3807,7 +3807,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 238/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 238 submitted successfully"
 else
@@ -3823,7 +3823,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 239/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 239 submitted successfully"
 else
@@ -3839,7 +3839,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 240/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 240 submitted successfully"
 else
@@ -3855,7 +3855,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 241/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 241 submitted successfully"
 else
@@ -3871,7 +3871,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 242/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 242 submitted successfully"
 else
@@ -3887,7 +3887,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 243/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 243 submitted successfully"
 else
@@ -3903,7 +3903,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 244/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 244 submitted successfully"
 else
@@ -3919,7 +3919,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 245/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 245 submitted successfully"
 else
@@ -3935,7 +3935,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 246/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 246 submitted successfully"
 else
@@ -3951,7 +3951,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 247/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 247 submitted successfully"
 else
@@ -3967,7 +3967,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 248/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 248 submitted successfully"
 else
@@ -3983,7 +3983,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 249/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 249 submitted successfully"
 else
@@ -3999,7 +3999,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 250/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 250 submitted successfully"
 else
@@ -4015,7 +4015,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 251/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 251 submitted successfully"
 else
@@ -4031,7 +4031,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 252/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 252 submitted successfully"
 else
@@ -4047,7 +4047,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 253/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 253 submitted successfully"
 else
@@ -4063,7 +4063,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 254/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 254 submitted successfully"
 else
@@ -4079,7 +4079,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 255/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 255 submitted successfully"
 else
@@ -4095,7 +4095,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 256/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 256 submitted successfully"
 else
@@ -4111,7 +4111,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 257/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 257 submitted successfully"
 else
@@ -4127,7 +4127,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 258/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 258 submitted successfully"
 else
@@ -4143,7 +4143,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 259/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 259 submitted successfully"
 else
@@ -4159,7 +4159,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 260/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 260 submitted successfully"
 else
@@ -4175,7 +4175,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 261/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 261 submitted successfully"
 else
@@ -4191,7 +4191,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 262/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 262 submitted successfully"
 else
@@ -4207,7 +4207,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 263/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 263 submitted successfully"
 else
@@ -4223,7 +4223,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 264/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 264 submitted successfully"
 else
@@ -4239,7 +4239,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 265/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 265 submitted successfully"
 else
@@ -4255,7 +4255,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 266/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 266 submitted successfully"
 else
@@ -4271,7 +4271,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 267/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 267 submitted successfully"
 else
@@ -4287,7 +4287,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 268/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 268 submitted successfully"
 else
@@ -4303,7 +4303,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 269/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 269 submitted successfully"
 else
@@ -4319,7 +4319,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 270/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false eegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false eegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 270 submitted successfully"
 else
@@ -4335,7 +4335,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 271/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 271 submitted successfully"
 else
@@ -4351,7 +4351,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 272/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 272 submitted successfully"
 else
@@ -4367,7 +4367,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 273/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 273 submitted successfully"
 else
@@ -4383,7 +4383,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 274/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 274 submitted successfully"
 else
@@ -4399,7 +4399,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 275/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 275 submitted successfully"
 else
@@ -4415,7 +4415,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 276/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 276 submitted successfully"
 else
@@ -4431,7 +4431,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 277/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 277 submitted successfully"
 else
@@ -4447,7 +4447,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 278/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 278 submitted successfully"
 else
@@ -4463,7 +4463,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 279/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 279 submitted successfully"
 else
@@ -4479,7 +4479,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 280/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 280 submitted successfully"
 else
@@ -4495,7 +4495,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 281/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 281 submitted successfully"
 else
@@ -4511,7 +4511,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 282/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 282 submitted successfully"
 else
@@ -4527,7 +4527,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 283/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 283 submitted successfully"
 else
@@ -4543,7 +4543,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 284/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 284 submitted successfully"
 else
@@ -4559,7 +4559,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 285/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 285 submitted successfully"
 else
@@ -4575,7 +4575,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 286/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 286 submitted successfully"
 else
@@ -4591,7 +4591,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 287/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 287 submitted successfully"
 else
@@ -4607,7 +4607,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 288/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 288 submitted successfully"
 else
@@ -4623,7 +4623,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 289/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 289 submitted successfully"
 else
@@ -4639,7 +4639,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 290/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 290 submitted successfully"
 else
@@ -4655,7 +4655,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 291/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 291 submitted successfully"
 else
@@ -4671,7 +4671,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 292/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 292 submitted successfully"
 else
@@ -4687,7 +4687,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 293/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 293 submitted successfully"
 else
@@ -4703,7 +4703,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 294/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 294 submitted successfully"
 else
@@ -4719,7 +4719,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 295/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 295 submitted successfully"
 else
@@ -4735,7 +4735,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 296/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 296 submitted successfully"
 else
@@ -4751,7 +4751,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 297/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 297 submitted successfully"
 else
@@ -4767,7 +4767,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 298/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 298 submitted successfully"
 else
@@ -4783,7 +4783,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 299/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 299 submitted successfully"
 else
@@ -4799,7 +4799,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 300/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 300 submitted successfully"
 else
@@ -4815,7 +4815,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 301/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 301 submitted successfully"
 else
@@ -4831,7 +4831,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 302/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 302 submitted successfully"
 else
@@ -4847,7 +4847,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 303/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 303 submitted successfully"
 else
@@ -4863,7 +4863,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 304/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 304 submitted successfully"
 else
@@ -4879,7 +4879,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 305/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 305 submitted successfully"
 else
@@ -4895,7 +4895,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 306/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 306 submitted successfully"
 else
@@ -4911,7 +4911,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 307/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 307 submitted successfully"
 else
@@ -4927,7 +4927,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 308/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 308 submitted successfully"
 else
@@ -4943,7 +4943,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 309/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 309 submitted successfully"
 else
@@ -4959,7 +4959,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 310/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 310 submitted successfully"
 else
@@ -4975,7 +4975,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 311/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 311 submitted successfully"
 else
@@ -4991,7 +4991,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 312/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 312 submitted successfully"
 else
@@ -5007,7 +5007,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 313/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 313 submitted successfully"
 else
@@ -5023,7 +5023,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 314/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 314 submitted successfully"
 else
@@ -5039,7 +5039,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 315/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 315 submitted successfully"
 else
@@ -5055,7 +5055,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 316/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 316 submitted successfully"
 else
@@ -5071,7 +5071,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 317/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 317 submitted successfully"
 else
@@ -5087,7 +5087,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 318/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 318 submitted successfully"
 else
@@ -5103,7 +5103,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 319/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 319 submitted successfully"
 else
@@ -5119,7 +5119,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 320/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 320 submitted successfully"
 else
@@ -5135,7 +5135,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 321/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 321 submitted successfully"
 else
@@ -5151,7 +5151,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 322/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 322 submitted successfully"
 else
@@ -5167,7 +5167,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 323/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 323 submitted successfully"
 else
@@ -5183,7 +5183,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 324/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false ctnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false ctnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 324 submitted successfully"
 else
@@ -5199,7 +5199,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 325/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 325 submitted successfully"
 else
@@ -5215,7 +5215,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 326/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 326 submitted successfully"
 else
@@ -5231,7 +5231,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 327/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 327 submitted successfully"
 else
@@ -5247,7 +5247,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 328/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 328 submitted successfully"
 else
@@ -5263,7 +5263,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 329/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 329 submitted successfully"
 else
@@ -5279,7 +5279,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 330/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 330 submitted successfully"
 else
@@ -5295,7 +5295,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 331/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 331 submitted successfully"
 else
@@ -5311,7 +5311,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 332/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 332 submitted successfully"
 else
@@ -5327,7 +5327,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 333/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 333 submitted successfully"
 else
@@ -5343,7 +5343,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 334/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 334 submitted successfully"
 else
@@ -5359,7 +5359,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 335/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 335 submitted successfully"
 else
@@ -5375,7 +5375,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 336/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 336 submitted successfully"
 else
@@ -5391,7 +5391,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 337/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 337 submitted successfully"
 else
@@ -5407,7 +5407,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 338/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 338 submitted successfully"
 else
@@ -5423,7 +5423,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 339/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 339 submitted successfully"
 else
@@ -5439,7 +5439,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 340/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 340 submitted successfully"
 else
@@ -5455,7 +5455,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 341/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 341 submitted successfully"
 else
@@ -5471,7 +5471,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 342/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 342 submitted successfully"
 else
@@ -5487,7 +5487,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 343/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 343 submitted successfully"
 else
@@ -5503,7 +5503,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 344/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 344 submitted successfully"
 else
@@ -5519,7 +5519,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 345/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 345 submitted successfully"
 else
@@ -5535,7 +5535,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 346/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 346 submitted successfully"
 else
@@ -5551,7 +5551,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 347/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 347 submitted successfully"
 else
@@ -5567,7 +5567,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 348/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 348 submitted successfully"
 else
@@ -5583,7 +5583,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 349/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 349 submitted successfully"
 else
@@ -5599,7 +5599,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 350/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 350 submitted successfully"
 else
@@ -5615,7 +5615,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 351/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 351 submitted successfully"
 else
@@ -5631,7 +5631,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 352/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 352 submitted successfully"
 else
@@ -5647,7 +5647,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 353/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 353 submitted successfully"
 else
@@ -5663,7 +5663,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 354/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 354 submitted successfully"
 else
@@ -5679,7 +5679,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 355/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 355 submitted successfully"
 else
@@ -5695,7 +5695,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 356/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 356 submitted successfully"
 else
@@ -5711,7 +5711,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 357/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 357 submitted successfully"
 else
@@ -5727,7 +5727,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 358/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 358 submitted successfully"
 else
@@ -5743,7 +5743,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 359/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 359 submitted successfully"
 else
@@ -5759,7 +5759,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 360/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 360 submitted successfully"
 else
@@ -5775,7 +5775,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 361/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 361 submitted successfully"
 else
@@ -5791,7 +5791,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 362/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 362 submitted successfully"
 else
@@ -5807,7 +5807,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 363/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 363 submitted successfully"
 else
@@ -5823,7 +5823,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 364/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 364 submitted successfully"
 else
@@ -5839,7 +5839,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 365/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 365 submitted successfully"
 else
@@ -5855,7 +5855,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 366/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 366 submitted successfully"
 else
@@ -5871,7 +5871,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 367/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 367 submitted successfully"
 else
@@ -5887,7 +5887,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 368/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 368 submitted successfully"
 else
@@ -5903,7 +5903,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 369/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 369 submitted successfully"
 else
@@ -5919,7 +5919,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 370/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 370 submitted successfully"
 else
@@ -5935,7 +5935,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 371/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 371 submitted successfully"
 else
@@ -5951,7 +5951,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 372/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 372 submitted successfully"
 else
@@ -5967,7 +5967,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 373/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 373 submitted successfully"
 else
@@ -5983,7 +5983,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 374/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 374 submitted successfully"
 else
@@ -5999,7 +5999,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 375/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 375 submitted successfully"
 else
@@ -6015,7 +6015,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 376/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 376 submitted successfully"
 else
@@ -6031,7 +6031,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 377/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 377 submitted successfully"
 else
@@ -6047,7 +6047,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 378/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false ctnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false ctnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 378 submitted successfully"
 else
@@ -6063,7 +6063,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 379/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 379 submitted successfully"
 else
@@ -6079,7 +6079,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 380/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 380 submitted successfully"
 else
@@ -6095,7 +6095,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 381/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 381 submitted successfully"
 else
@@ -6111,7 +6111,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 382/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 382 submitted successfully"
 else
@@ -6127,7 +6127,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 383/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 383 submitted successfully"
 else
@@ -6143,7 +6143,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 384/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 384 submitted successfully"
 else
@@ -6159,7 +6159,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 385/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 385 submitted successfully"
 else
@@ -6175,7 +6175,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 386/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 386 submitted successfully"
 else
@@ -6191,7 +6191,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 387/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 387 submitted successfully"
 else
@@ -6207,7 +6207,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 388/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 388 submitted successfully"
 else
@@ -6223,7 +6223,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 389/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 389 submitted successfully"
 else
@@ -6239,7 +6239,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 390/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 390 submitted successfully"
 else
@@ -6255,7 +6255,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 391/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 391 submitted successfully"
 else
@@ -6271,7 +6271,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 392/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 392 submitted successfully"
 else
@@ -6287,7 +6287,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 393/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 393 submitted successfully"
 else
@@ -6303,7 +6303,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 394/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 394 submitted successfully"
 else
@@ -6319,7 +6319,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 395/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 395 submitted successfully"
 else
@@ -6335,7 +6335,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 396/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 396 submitted successfully"
 else
@@ -6351,7 +6351,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 397/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 397 submitted successfully"
 else
@@ -6367,7 +6367,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 398/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 398 submitted successfully"
 else
@@ -6383,7 +6383,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 399/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 399 submitted successfully"
 else
@@ -6399,7 +6399,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 400/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 400 submitted successfully"
 else
@@ -6415,7 +6415,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 401/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 401 submitted successfully"
 else
@@ -6431,7 +6431,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 402/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 402 submitted successfully"
 else
@@ -6447,7 +6447,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 403/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 403 submitted successfully"
 else
@@ -6463,7 +6463,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 404/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 404 submitted successfully"
 else
@@ -6479,7 +6479,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 405/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 405 submitted successfully"
 else
@@ -6495,7 +6495,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 406/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 406 submitted successfully"
 else
@@ -6511,7 +6511,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 407/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 407 submitted successfully"
 else
@@ -6527,7 +6527,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 408/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 408 submitted successfully"
 else
@@ -6543,7 +6543,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 409/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 409 submitted successfully"
 else
@@ -6559,7 +6559,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 410/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 410 submitted successfully"
 else
@@ -6575,7 +6575,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 411/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 411 submitted successfully"
 else
@@ -6591,7 +6591,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 412/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 412 submitted successfully"
 else
@@ -6607,7 +6607,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 413/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 413 submitted successfully"
 else
@@ -6623,7 +6623,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 414/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 414 submitted successfully"
 else
@@ -6639,7 +6639,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 415/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 415 submitted successfully"
 else
@@ -6655,7 +6655,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 416/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 416 submitted successfully"
 else
@@ -6671,7 +6671,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 417/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 417 submitted successfully"
 else
@@ -6687,7 +6687,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 418/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 418 submitted successfully"
 else
@@ -6703,7 +6703,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 419/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 419 submitted successfully"
 else
@@ -6719,7 +6719,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 420/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 420 submitted successfully"
 else
@@ -6735,7 +6735,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 421/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 421 submitted successfully"
 else
@@ -6751,7 +6751,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 422/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 422 submitted successfully"
 else
@@ -6767,7 +6767,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 423/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 423 submitted successfully"
 else
@@ -6783,7 +6783,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 424/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 424 submitted successfully"
 else
@@ -6799,7 +6799,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 425/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 425 submitted successfully"
 else
@@ -6815,7 +6815,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 426/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 426 submitted successfully"
 else
@@ -6831,7 +6831,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 427/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 427 submitted successfully"
 else
@@ -6847,7 +6847,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 428/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 428 submitted successfully"
 else
@@ -6863,7 +6863,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 429/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 429 submitted successfully"
 else
@@ -6879,7 +6879,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 430/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 430 submitted successfully"
 else
@@ -6895,7 +6895,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 431/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 431 submitted successfully"
 else
@@ -6911,7 +6911,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 432/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false ctnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false ctnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 432 submitted successfully"
 else
@@ -6927,7 +6927,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 433/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 433 submitted successfully"
 else
@@ -6943,7 +6943,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 434/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 434 submitted successfully"
 else
@@ -6959,7 +6959,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 435/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 435 submitted successfully"
 else
@@ -6975,7 +6975,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 436/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 436 submitted successfully"
 else
@@ -6991,7 +6991,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 437/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 437 submitted successfully"
 else
@@ -7007,7 +7007,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 438/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 438 submitted successfully"
 else
@@ -7023,7 +7023,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 439/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 439 submitted successfully"
 else
@@ -7039,7 +7039,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 440/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 440 submitted successfully"
 else
@@ -7055,7 +7055,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 441/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 441 submitted successfully"
 else
@@ -7071,7 +7071,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 442/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 442 submitted successfully"
 else
@@ -7087,7 +7087,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 443/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 443 submitted successfully"
 else
@@ -7103,7 +7103,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 444/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 444 submitted successfully"
 else
@@ -7119,7 +7119,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 445/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 445 submitted successfully"
 else
@@ -7135,7 +7135,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 446/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 446 submitted successfully"
 else
@@ -7151,7 +7151,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 447/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 447 submitted successfully"
 else
@@ -7167,7 +7167,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 448/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 448 submitted successfully"
 else
@@ -7183,7 +7183,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 449/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 449 submitted successfully"
 else
@@ -7199,7 +7199,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 450/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 450 submitted successfully"
 else
@@ -7215,7 +7215,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 451/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 451 submitted successfully"
 else
@@ -7231,7 +7231,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 452/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 452 submitted successfully"
 else
@@ -7247,7 +7247,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 453/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 453 submitted successfully"
 else
@@ -7263,7 +7263,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 454/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 454 submitted successfully"
 else
@@ -7279,7 +7279,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 455/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 455 submitted successfully"
 else
@@ -7295,7 +7295,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 456/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 456 submitted successfully"
 else
@@ -7311,7 +7311,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 457/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 457 submitted successfully"
 else
@@ -7327,7 +7327,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 458/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 458 submitted successfully"
 else
@@ -7343,7 +7343,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 459/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 459 submitted successfully"
 else
@@ -7359,7 +7359,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 460/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 460 submitted successfully"
 else
@@ -7375,7 +7375,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 461/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 461 submitted successfully"
 else
@@ -7391,7 +7391,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 462/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 462 submitted successfully"
 else
@@ -7407,7 +7407,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 463/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 463 submitted successfully"
 else
@@ -7423,7 +7423,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 464/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 464 submitted successfully"
 else
@@ -7439,7 +7439,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 465/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 465 submitted successfully"
 else
@@ -7455,7 +7455,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 466/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 466 submitted successfully"
 else
@@ -7471,7 +7471,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 467/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 467 submitted successfully"
 else
@@ -7487,7 +7487,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 468/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 468 submitted successfully"
 else
@@ -7503,7 +7503,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 469/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 469 submitted successfully"
 else
@@ -7519,7 +7519,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 470/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 470 submitted successfully"
 else
@@ -7535,7 +7535,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 471/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 471 submitted successfully"
 else
@@ -7551,7 +7551,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 472/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 472 submitted successfully"
 else
@@ -7567,7 +7567,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 473/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 473 submitted successfully"
 else
@@ -7583,7 +7583,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 474/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 474 submitted successfully"
 else
@@ -7599,7 +7599,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 475/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 475 submitted successfully"
 else
@@ -7615,7 +7615,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 476/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 476 submitted successfully"
 else
@@ -7631,7 +7631,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 477/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 477 submitted successfully"
 else
@@ -7647,7 +7647,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 478/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 478 submitted successfully"
 else
@@ -7663,7 +7663,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 479/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 479 submitted successfully"
 else
@@ -7679,7 +7679,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 480/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 480 submitted successfully"
 else
@@ -7695,7 +7695,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 481/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 481 submitted successfully"
 else
@@ -7711,7 +7711,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 482/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 482 submitted successfully"
 else
@@ -7727,7 +7727,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 483/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 483 submitted successfully"
 else
@@ -7743,7 +7743,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 484/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 484 submitted successfully"
 else
@@ -7759,7 +7759,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 485/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 485 submitted successfully"
 else
@@ -7775,7 +7775,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 486/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false ctnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false ctnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 486 submitted successfully"
 else
@@ -7791,7 +7791,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 487/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 487 submitted successfully"
 else
@@ -7807,7 +7807,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 488/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 488 submitted successfully"
 else
@@ -7823,7 +7823,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 489/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 489 submitted successfully"
 else
@@ -7839,7 +7839,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 490/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 490 submitted successfully"
 else
@@ -7855,7 +7855,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 491/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 491 submitted successfully"
 else
@@ -7871,7 +7871,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 492/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 492 submitted successfully"
 else
@@ -7887,7 +7887,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 493/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 493 submitted successfully"
 else
@@ -7903,7 +7903,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 494/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 494 submitted successfully"
 else
@@ -7919,7 +7919,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 495/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 495 submitted successfully"
 else
@@ -7935,7 +7935,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 496/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 496 submitted successfully"
 else
@@ -7951,7 +7951,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 497/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 497 submitted successfully"
 else
@@ -7967,7 +7967,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 498/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 498 submitted successfully"
 else
@@ -7983,7 +7983,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 499/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 499 submitted successfully"
 else
@@ -7999,7 +7999,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 500/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 500 submitted successfully"
 else
@@ -8015,7 +8015,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 501/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 501 submitted successfully"
 else
@@ -8031,7 +8031,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 502/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 502 submitted successfully"
 else
@@ -8047,7 +8047,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 503/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 503 submitted successfully"
 else
@@ -8063,7 +8063,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 504/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 504 submitted successfully"
 else
@@ -8079,7 +8079,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 505/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 505 submitted successfully"
 else
@@ -8095,7 +8095,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 506/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 506 submitted successfully"
 else
@@ -8111,7 +8111,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 507/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 507 submitted successfully"
 else
@@ -8127,7 +8127,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 508/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 508 submitted successfully"
 else
@@ -8143,7 +8143,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 509/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 509 submitted successfully"
 else
@@ -8159,7 +8159,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 510/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 510 submitted successfully"
 else
@@ -8175,7 +8175,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 511/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 511 submitted successfully"
 else
@@ -8191,7 +8191,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 512/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 512 submitted successfully"
 else
@@ -8207,7 +8207,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 513/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 513 submitted successfully"
 else
@@ -8223,7 +8223,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 514/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 514 submitted successfully"
 else
@@ -8239,7 +8239,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 515/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 515 submitted successfully"
 else
@@ -8255,7 +8255,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 516/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 516 submitted successfully"
 else
@@ -8271,7 +8271,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 517/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 517 submitted successfully"
 else
@@ -8287,7 +8287,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 518/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 518 submitted successfully"
 else
@@ -8303,7 +8303,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 519/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 519 submitted successfully"
 else
@@ -8319,7 +8319,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 520/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 520 submitted successfully"
 else
@@ -8335,7 +8335,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 521/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 521 submitted successfully"
 else
@@ -8351,7 +8351,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 522/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 522 submitted successfully"
 else
@@ -8367,7 +8367,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 523/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 523 submitted successfully"
 else
@@ -8383,7 +8383,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 524/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 524 submitted successfully"
 else
@@ -8399,7 +8399,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 525/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 525 submitted successfully"
 else
@@ -8415,7 +8415,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 526/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 526 submitted successfully"
 else
@@ -8431,7 +8431,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 527/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 527 submitted successfully"
 else
@@ -8447,7 +8447,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 528/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 528 submitted successfully"
 else
@@ -8463,7 +8463,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 529/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 529 submitted successfully"
 else
@@ -8479,7 +8479,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 530/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 530 submitted successfully"
 else
@@ -8495,7 +8495,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 531/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 531 submitted successfully"
 else
@@ -8511,7 +8511,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 532/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 532 submitted successfully"
 else
@@ -8527,7 +8527,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 533/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 533 submitted successfully"
 else
@@ -8543,7 +8543,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 534/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 534 submitted successfully"
 else
@@ -8559,7 +8559,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 535/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 535 submitted successfully"
 else
@@ -8575,7 +8575,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 536/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 536 submitted successfully"
 else
@@ -8591,7 +8591,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 537/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 537 submitted successfully"
 else
@@ -8607,7 +8607,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 538/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 538 submitted successfully"
 else
@@ -8623,7 +8623,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 539/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 539 submitted successfully"
 else
@@ -8639,7 +8639,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 540/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false ctnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false ctnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 540 submitted successfully"
 else
@@ -8655,7 +8655,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 541/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 541 submitted successfully"
 else
@@ -8671,7 +8671,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 542/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 542 submitted successfully"
 else
@@ -8687,7 +8687,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 543/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 543 submitted successfully"
 else
@@ -8703,7 +8703,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 544/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 544 submitted successfully"
 else
@@ -8719,7 +8719,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 545/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 545 submitted successfully"
 else
@@ -8735,7 +8735,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 546/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 546 submitted successfully"
 else
@@ -8751,7 +8751,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 547/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 547 submitted successfully"
 else
@@ -8767,7 +8767,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 548/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 548 submitted successfully"
 else
@@ -8783,7 +8783,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 549/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 549 submitted successfully"
 else
@@ -8799,7 +8799,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 550/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 550 submitted successfully"
 else
@@ -8815,7 +8815,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 551/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 551 submitted successfully"
 else
@@ -8831,7 +8831,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 552/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 552 submitted successfully"
 else
@@ -8847,7 +8847,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 553/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 553 submitted successfully"
 else
@@ -8863,7 +8863,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 554/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 554 submitted successfully"
 else
@@ -8879,7 +8879,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 555/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 555 submitted successfully"
 else
@@ -8895,7 +8895,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 556/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 556 submitted successfully"
 else
@@ -8911,7 +8911,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 557/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 557 submitted successfully"
 else
@@ -8927,7 +8927,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 558/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 558 submitted successfully"
 else
@@ -8943,7 +8943,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 559/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 559 submitted successfully"
 else
@@ -8959,7 +8959,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 560/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 560 submitted successfully"
 else
@@ -8975,7 +8975,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 561/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 561 submitted successfully"
 else
@@ -8991,7 +8991,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 562/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 562 submitted successfully"
 else
@@ -9007,7 +9007,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 563/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 563 submitted successfully"
 else
@@ -9023,7 +9023,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 564/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 564 submitted successfully"
 else
@@ -9039,7 +9039,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 565/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 565 submitted successfully"
 else
@@ -9055,7 +9055,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 566/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 566 submitted successfully"
 else
@@ -9071,7 +9071,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 567/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 567 submitted successfully"
 else
@@ -9087,7 +9087,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 568/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 568 submitted successfully"
 else
@@ -9103,7 +9103,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 569/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 569 submitted successfully"
 else
@@ -9119,7 +9119,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 570/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 570 submitted successfully"
 else
@@ -9135,7 +9135,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 571/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 571 submitted successfully"
 else
@@ -9151,7 +9151,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 572/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 572 submitted successfully"
 else
@@ -9167,7 +9167,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 573/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 573 submitted successfully"
 else
@@ -9183,7 +9183,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 574/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 574 submitted successfully"
 else
@@ -9199,7 +9199,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 575/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 575 submitted successfully"
 else
@@ -9215,7 +9215,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 576/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 576 submitted successfully"
 else
@@ -9231,7 +9231,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 577/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 577 submitted successfully"
 else
@@ -9247,7 +9247,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 578/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 578 submitted successfully"
 else
@@ -9263,7 +9263,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 579/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 579 submitted successfully"
 else
@@ -9279,7 +9279,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 580/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 580 submitted successfully"
 else
@@ -9295,7 +9295,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 581/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 581 submitted successfully"
 else
@@ -9311,7 +9311,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 582/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 582 submitted successfully"
 else
@@ -9327,7 +9327,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 583/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 583 submitted successfully"
 else
@@ -9343,7 +9343,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 584/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 584 submitted successfully"
 else
@@ -9359,7 +9359,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 585/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 585 submitted successfully"
 else
@@ -9375,7 +9375,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 586/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 586 submitted successfully"
 else
@@ -9391,7 +9391,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 587/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 587 submitted successfully"
 else
@@ -9407,7 +9407,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 588/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 588 submitted successfully"
 else
@@ -9423,7 +9423,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 589/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 589 submitted successfully"
 else
@@ -9439,7 +9439,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 590/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 590 submitted successfully"
 else
@@ -9455,7 +9455,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 591/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 591 submitted successfully"
 else
@@ -9471,7 +9471,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 592/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 592 submitted successfully"
 else
@@ -9487,7 +9487,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 593/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 593 submitted successfully"
 else
@@ -9503,7 +9503,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 594/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false reegnet 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false reegnet 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 594 submitted successfully"
 else
@@ -9519,7 +9519,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 595/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 595 submitted successfully"
 else
@@ -9535,7 +9535,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 596/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 596 submitted successfully"
 else
@@ -9551,7 +9551,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 597/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 597 submitted successfully"
 else
@@ -9567,7 +9567,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 598/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 598 submitted successfully"
 else
@@ -9583,7 +9583,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 599/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 599 submitted successfully"
 else
@@ -9599,7 +9599,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 600/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 600 submitted successfully"
 else
@@ -9615,7 +9615,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 601/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 601 submitted successfully"
 else
@@ -9631,7 +9631,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 602/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 602 submitted successfully"
 else
@@ -9647,7 +9647,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 603/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 603 submitted successfully"
 else
@@ -9663,7 +9663,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 604/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 604 submitted successfully"
 else
@@ -9679,7 +9679,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 605/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 605 submitted successfully"
 else
@@ -9695,7 +9695,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 606/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 606 submitted successfully"
 else
@@ -9711,7 +9711,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 607/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 607 submitted successfully"
 else
@@ -9727,7 +9727,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 608/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 608 submitted successfully"
 else
@@ -9743,7 +9743,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 609/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 609 submitted successfully"
 else
@@ -9759,7 +9759,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 610/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 610 submitted successfully"
 else
@@ -9775,7 +9775,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 611/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 611 submitted successfully"
 else
@@ -9791,7 +9791,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 612/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 612 submitted successfully"
 else
@@ -9807,7 +9807,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 613/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 613 submitted successfully"
 else
@@ -9823,7 +9823,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 614/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 614 submitted successfully"
 else
@@ -9839,7 +9839,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 615/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 615 submitted successfully"
 else
@@ -9855,7 +9855,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 616/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 616 submitted successfully"
 else
@@ -9871,7 +9871,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 617/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 617 submitted successfully"
 else
@@ -9887,7 +9887,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 618/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 618 submitted successfully"
 else
@@ -9903,7 +9903,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 619/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 619 submitted successfully"
 else
@@ -9919,7 +9919,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 620/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 620 submitted successfully"
 else
@@ -9935,7 +9935,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 621/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 621 submitted successfully"
 else
@@ -9951,7 +9951,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 622/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 622 submitted successfully"
 else
@@ -9967,7 +9967,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 623/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 623 submitted successfully"
 else
@@ -9983,7 +9983,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 624/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 624 submitted successfully"
 else
@@ -9999,7 +9999,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 625/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 625 submitted successfully"
 else
@@ -10015,7 +10015,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 626/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 626 submitted successfully"
 else
@@ -10031,7 +10031,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 627/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 627 submitted successfully"
 else
@@ -10047,7 +10047,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 628/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 628 submitted successfully"
 else
@@ -10063,7 +10063,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 629/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 629 submitted successfully"
 else
@@ -10079,7 +10079,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 630/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 630 submitted successfully"
 else
@@ -10095,7 +10095,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 631/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 631 submitted successfully"
 else
@@ -10111,7 +10111,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 632/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 632 submitted successfully"
 else
@@ -10127,7 +10127,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 633/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 633 submitted successfully"
 else
@@ -10143,7 +10143,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 634/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 634 submitted successfully"
 else
@@ -10159,7 +10159,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 635/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 635 submitted successfully"
 else
@@ -10175,7 +10175,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 636/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 636 submitted successfully"
 else
@@ -10191,7 +10191,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 637/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 637 submitted successfully"
 else
@@ -10207,7 +10207,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 638/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 638 submitted successfully"
 else
@@ -10223,7 +10223,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 639/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 639 submitted successfully"
 else
@@ -10239,7 +10239,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 640/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 640 submitted successfully"
 else
@@ -10255,7 +10255,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 641/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 641 submitted successfully"
 else
@@ -10271,7 +10271,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 642/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 642 submitted successfully"
 else
@@ -10287,7 +10287,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 643/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 643 submitted successfully"
 else
@@ -10303,7 +10303,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 644/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 644 submitted successfully"
 else
@@ -10319,7 +10319,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 645/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 645 submitted successfully"
 else
@@ -10335,7 +10335,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 646/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 646 submitted successfully"
 else
@@ -10351,7 +10351,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 647/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 647 submitted successfully"
 else
@@ -10367,7 +10367,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 648/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false reegnet 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false reegnet 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 648 submitted successfully"
 else
@@ -10383,7 +10383,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 649/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 649 submitted successfully"
 else
@@ -10399,7 +10399,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 650/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 650 submitted successfully"
 else
@@ -10415,7 +10415,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 651/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 651 submitted successfully"
 else
@@ -10431,7 +10431,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 652/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 652 submitted successfully"
 else
@@ -10447,7 +10447,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 653/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 653 submitted successfully"
 else
@@ -10463,7 +10463,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 654/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 654 submitted successfully"
 else
@@ -10479,7 +10479,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 655/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 655 submitted successfully"
 else
@@ -10495,7 +10495,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 656/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 656 submitted successfully"
 else
@@ -10511,7 +10511,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 657/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 657 submitted successfully"
 else
@@ -10527,7 +10527,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 658/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 658 submitted successfully"
 else
@@ -10543,7 +10543,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 659/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 659 submitted successfully"
 else
@@ -10559,7 +10559,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 660/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 660 submitted successfully"
 else
@@ -10575,7 +10575,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 661/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 661 submitted successfully"
 else
@@ -10591,7 +10591,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 662/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 662 submitted successfully"
 else
@@ -10607,7 +10607,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 663/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 663 submitted successfully"
 else
@@ -10623,7 +10623,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 664/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 664 submitted successfully"
 else
@@ -10639,7 +10639,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 665/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 665 submitted successfully"
 else
@@ -10655,7 +10655,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 666/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 666 submitted successfully"
 else
@@ -10671,7 +10671,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 667/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 667 submitted successfully"
 else
@@ -10687,7 +10687,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 668/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 668 submitted successfully"
 else
@@ -10703,7 +10703,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 669/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 669 submitted successfully"
 else
@@ -10719,7 +10719,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 670/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 670 submitted successfully"
 else
@@ -10735,7 +10735,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 671/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 671 submitted successfully"
 else
@@ -10751,7 +10751,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 672/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 672 submitted successfully"
 else
@@ -10767,7 +10767,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 673/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 673 submitted successfully"
 else
@@ -10783,7 +10783,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 674/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 674 submitted successfully"
 else
@@ -10799,7 +10799,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 675/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 675 submitted successfully"
 else
@@ -10815,7 +10815,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 676/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 676 submitted successfully"
 else
@@ -10831,7 +10831,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 677/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 677 submitted successfully"
 else
@@ -10847,7 +10847,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 678/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 678 submitted successfully"
 else
@@ -10863,7 +10863,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 679/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 679 submitted successfully"
 else
@@ -10879,7 +10879,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 680/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 680 submitted successfully"
 else
@@ -10895,7 +10895,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 681/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 681 submitted successfully"
 else
@@ -10911,7 +10911,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 682/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 682 submitted successfully"
 else
@@ -10927,7 +10927,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 683/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 683 submitted successfully"
 else
@@ -10943,7 +10943,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 684/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 684 submitted successfully"
 else
@@ -10959,7 +10959,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 685/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 685 submitted successfully"
 else
@@ -10975,7 +10975,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 686/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 686 submitted successfully"
 else
@@ -10991,7 +10991,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 687/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 687 submitted successfully"
 else
@@ -11007,7 +11007,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 688/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 688 submitted successfully"
 else
@@ -11023,7 +11023,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 689/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 689 submitted successfully"
 else
@@ -11039,7 +11039,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 690/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 690 submitted successfully"
 else
@@ -11055,7 +11055,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 691/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 691 submitted successfully"
 else
@@ -11071,7 +11071,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 692/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 692 submitted successfully"
 else
@@ -11087,7 +11087,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 693/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 693 submitted successfully"
 else
@@ -11103,7 +11103,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 694/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 694 submitted successfully"
 else
@@ -11119,7 +11119,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 695/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 695 submitted successfully"
 else
@@ -11135,7 +11135,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 696/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 696 submitted successfully"
 else
@@ -11151,7 +11151,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 697/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 697 submitted successfully"
 else
@@ -11167,7 +11167,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 698/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 698 submitted successfully"
 else
@@ -11183,7 +11183,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 699/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 699 submitted successfully"
 else
@@ -11199,7 +11199,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 700/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 700 submitted successfully"
 else
@@ -11215,7 +11215,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 701/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 701 submitted successfully"
 else
@@ -11231,7 +11231,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 702/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false reegnet 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false reegnet 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 702 submitted successfully"
 else
@@ -11247,7 +11247,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 703/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 703 submitted successfully"
 else
@@ -11263,7 +11263,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 704/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 704 submitted successfully"
 else
@@ -11279,7 +11279,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 705/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 705 submitted successfully"
 else
@@ -11295,7 +11295,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 706/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 706 submitted successfully"
 else
@@ -11311,7 +11311,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 707/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 707 submitted successfully"
 else
@@ -11327,7 +11327,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 708/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 708 submitted successfully"
 else
@@ -11343,7 +11343,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 709/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 709 submitted successfully"
 else
@@ -11359,7 +11359,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 710/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 710 submitted successfully"
 else
@@ -11375,7 +11375,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 711/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 711 submitted successfully"
 else
@@ -11391,7 +11391,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 712/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 712 submitted successfully"
 else
@@ -11407,7 +11407,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 713/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 713 submitted successfully"
 else
@@ -11423,7 +11423,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 714/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 714 submitted successfully"
 else
@@ -11439,7 +11439,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 715/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 715 submitted successfully"
 else
@@ -11455,7 +11455,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 716/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 716 submitted successfully"
 else
@@ -11471,7 +11471,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 717/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 717 submitted successfully"
 else
@@ -11487,7 +11487,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 718/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 718 submitted successfully"
 else
@@ -11503,7 +11503,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 719/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 719 submitted successfully"
 else
@@ -11519,7 +11519,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 720/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 720 submitted successfully"
 else
@@ -11535,7 +11535,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 721/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 721 submitted successfully"
 else
@@ -11551,7 +11551,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 722/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 722 submitted successfully"
 else
@@ -11567,7 +11567,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 723/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 723 submitted successfully"
 else
@@ -11583,7 +11583,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 724/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 724 submitted successfully"
 else
@@ -11599,7 +11599,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 725/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 725 submitted successfully"
 else
@@ -11615,7 +11615,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 726/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 726 submitted successfully"
 else
@@ -11631,7 +11631,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 727/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 727 submitted successfully"
 else
@@ -11647,7 +11647,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 728/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 728 submitted successfully"
 else
@@ -11663,7 +11663,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 729/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 729 submitted successfully"
 else
@@ -11679,7 +11679,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 730/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 730 submitted successfully"
 else
@@ -11695,7 +11695,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 731/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 731 submitted successfully"
 else
@@ -11711,7 +11711,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 732/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 732 submitted successfully"
 else
@@ -11727,7 +11727,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 733/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 733 submitted successfully"
 else
@@ -11743,7 +11743,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 734/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 734 submitted successfully"
 else
@@ -11759,7 +11759,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 735/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 735 submitted successfully"
 else
@@ -11775,7 +11775,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 736/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 736 submitted successfully"
 else
@@ -11791,7 +11791,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 737/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 737 submitted successfully"
 else
@@ -11807,7 +11807,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 738/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 738 submitted successfully"
 else
@@ -11823,7 +11823,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 739/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 739 submitted successfully"
 else
@@ -11839,7 +11839,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 740/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 740 submitted successfully"
 else
@@ -11855,7 +11855,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 741/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 741 submitted successfully"
 else
@@ -11871,7 +11871,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 742/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 742 submitted successfully"
 else
@@ -11887,7 +11887,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 743/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 743 submitted successfully"
 else
@@ -11903,7 +11903,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 744/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 744 submitted successfully"
 else
@@ -11919,7 +11919,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 745/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 745 submitted successfully"
 else
@@ -11935,7 +11935,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 746/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 746 submitted successfully"
 else
@@ -11951,7 +11951,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 747/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 747 submitted successfully"
 else
@@ -11967,7 +11967,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 748/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 748 submitted successfully"
 else
@@ -11983,7 +11983,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 749/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 749 submitted successfully"
 else
@@ -11999,7 +11999,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 750/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 750 submitted successfully"
 else
@@ -12015,7 +12015,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 751/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 751 submitted successfully"
 else
@@ -12031,7 +12031,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 752/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 752 submitted successfully"
 else
@@ -12047,7 +12047,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 753/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 753 submitted successfully"
 else
@@ -12063,7 +12063,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 754/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 754 submitted successfully"
 else
@@ -12079,7 +12079,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 755/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 755 submitted successfully"
 else
@@ -12095,7 +12095,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 756/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false reegnet 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false reegnet 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 756 submitted successfully"
 else
@@ -12111,7 +12111,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 757/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 757 submitted successfully"
 else
@@ -12127,7 +12127,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 758/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 758 submitted successfully"
 else
@@ -12143,7 +12143,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 759/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 759 submitted successfully"
 else
@@ -12159,7 +12159,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 760/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 760 submitted successfully"
 else
@@ -12175,7 +12175,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 761/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 761 submitted successfully"
 else
@@ -12191,7 +12191,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 762/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 762 submitted successfully"
 else
@@ -12207,7 +12207,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 763/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 763 submitted successfully"
 else
@@ -12223,7 +12223,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 764/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 764 submitted successfully"
 else
@@ -12239,7 +12239,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 765/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 765 submitted successfully"
 else
@@ -12255,7 +12255,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 766/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 766 submitted successfully"
 else
@@ -12271,7 +12271,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 767/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 767 submitted successfully"
 else
@@ -12287,7 +12287,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 768/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 768 submitted successfully"
 else
@@ -12303,7 +12303,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 769/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 769 submitted successfully"
 else
@@ -12319,7 +12319,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 770/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 770 submitted successfully"
 else
@@ -12335,7 +12335,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 771/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 771 submitted successfully"
 else
@@ -12351,7 +12351,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 772/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 772 submitted successfully"
 else
@@ -12367,7 +12367,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 773/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 773 submitted successfully"
 else
@@ -12383,7 +12383,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 774/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 774 submitted successfully"
 else
@@ -12399,7 +12399,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 775/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 775 submitted successfully"
 else
@@ -12415,7 +12415,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 776/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 776 submitted successfully"
 else
@@ -12431,7 +12431,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 777/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 777 submitted successfully"
 else
@@ -12447,7 +12447,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 778/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 778 submitted successfully"
 else
@@ -12463,7 +12463,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 779/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 779 submitted successfully"
 else
@@ -12479,7 +12479,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 780/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 780 submitted successfully"
 else
@@ -12495,7 +12495,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 781/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 781 submitted successfully"
 else
@@ -12511,7 +12511,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 782/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 782 submitted successfully"
 else
@@ -12527,7 +12527,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 783/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 783 submitted successfully"
 else
@@ -12543,7 +12543,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 784/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 784 submitted successfully"
 else
@@ -12559,7 +12559,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 785/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 785 submitted successfully"
 else
@@ -12575,7 +12575,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 786/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 786 submitted successfully"
 else
@@ -12591,7 +12591,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 787/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 787 submitted successfully"
 else
@@ -12607,7 +12607,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 788/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 788 submitted successfully"
 else
@@ -12623,7 +12623,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 789/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 789 submitted successfully"
 else
@@ -12639,7 +12639,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 790/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 790 submitted successfully"
 else
@@ -12655,7 +12655,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 791/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 791 submitted successfully"
 else
@@ -12671,7 +12671,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 792/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 792 submitted successfully"
 else
@@ -12687,7 +12687,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 793/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 793 submitted successfully"
 else
@@ -12703,7 +12703,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 794/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 794 submitted successfully"
 else
@@ -12719,7 +12719,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 795/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 795 submitted successfully"
 else
@@ -12735,7 +12735,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 796/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 796 submitted successfully"
 else
@@ -12751,7 +12751,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 797/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 797 submitted successfully"
 else
@@ -12767,7 +12767,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 798/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 798 submitted successfully"
 else
@@ -12783,7 +12783,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 799/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 799 submitted successfully"
 else
@@ -12799,7 +12799,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 800/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 800 submitted successfully"
 else
@@ -12815,7 +12815,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 801/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 801 submitted successfully"
 else
@@ -12831,7 +12831,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 802/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 802 submitted successfully"
 else
@@ -12847,7 +12847,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 803/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 803 submitted successfully"
 else
@@ -12863,7 +12863,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 804/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 804 submitted successfully"
 else
@@ -12879,7 +12879,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 805/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 805 submitted successfully"
 else
@@ -12895,7 +12895,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 806/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 806 submitted successfully"
 else
@@ -12911,7 +12911,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 807/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 807 submitted successfully"
 else
@@ -12927,7 +12927,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 808/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 808 submitted successfully"
 else
@@ -12943,7 +12943,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 809/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 809 submitted successfully"
 else
@@ -12959,7 +12959,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 810/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false reegnet 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false reegnet 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 810 submitted successfully"
 else
@@ -12975,7 +12975,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 811/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 811 submitted successfully"
 else
@@ -12991,7 +12991,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 812/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 812 submitted successfully"
 else
@@ -13007,7 +13007,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 813/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 813 submitted successfully"
 else
@@ -13023,7 +13023,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 814/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 814 submitted successfully"
 else
@@ -13039,7 +13039,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 815/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 815 submitted successfully"
 else
@@ -13055,7 +13055,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 816/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 816 submitted successfully"
 else
@@ -13071,7 +13071,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 817/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 817 submitted successfully"
 else
@@ -13087,7 +13087,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 818/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 818 submitted successfully"
 else
@@ -13103,7 +13103,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 819/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 819 submitted successfully"
 else
@@ -13119,7 +13119,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 820/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 820 submitted successfully"
 else
@@ -13135,7 +13135,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 821/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 821 submitted successfully"
 else
@@ -13151,7 +13151,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 822/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 822 submitted successfully"
 else
@@ -13167,7 +13167,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 823/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 823 submitted successfully"
 else
@@ -13183,7 +13183,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 824/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 824 submitted successfully"
 else
@@ -13199,7 +13199,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 825/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 825 submitted successfully"
 else
@@ -13215,7 +13215,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 826/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 826 submitted successfully"
 else
@@ -13231,7 +13231,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 827/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 827 submitted successfully"
 else
@@ -13247,7 +13247,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 828/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 828 submitted successfully"
 else
@@ -13263,7 +13263,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 829/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 829 submitted successfully"
 else
@@ -13279,7 +13279,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 830/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 830 submitted successfully"
 else
@@ -13295,7 +13295,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 831/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 831 submitted successfully"
 else
@@ -13311,7 +13311,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 832/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 832 submitted successfully"
 else
@@ -13327,7 +13327,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 833/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 833 submitted successfully"
 else
@@ -13343,7 +13343,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 834/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 834 submitted successfully"
 else
@@ -13359,7 +13359,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 835/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 835 submitted successfully"
 else
@@ -13375,7 +13375,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 836/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 836 submitted successfully"
 else
@@ -13391,7 +13391,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 837/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 837 submitted successfully"
 else
@@ -13407,7 +13407,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 838/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 838 submitted successfully"
 else
@@ -13423,7 +13423,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 839/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 839 submitted successfully"
 else
@@ -13439,7 +13439,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 840/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 840 submitted successfully"
 else
@@ -13455,7 +13455,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 841/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 841 submitted successfully"
 else
@@ -13471,7 +13471,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 842/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 842 submitted successfully"
 else
@@ -13487,7 +13487,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 843/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 843 submitted successfully"
 else
@@ -13503,7 +13503,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 844/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 844 submitted successfully"
 else
@@ -13519,7 +13519,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 845/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 845 submitted successfully"
 else
@@ -13535,7 +13535,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 846/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 846 submitted successfully"
 else
@@ -13551,7 +13551,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 847/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 847 submitted successfully"
 else
@@ -13567,7 +13567,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 848/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 848 submitted successfully"
 else
@@ -13583,7 +13583,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 849/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 849 submitted successfully"
 else
@@ -13599,7 +13599,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 850/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 850 submitted successfully"
 else
@@ -13615,7 +13615,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 851/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 851 submitted successfully"
 else
@@ -13631,7 +13631,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 852/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 852 submitted successfully"
 else
@@ -13647,7 +13647,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 853/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 853 submitted successfully"
 else
@@ -13663,7 +13663,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 854/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 854 submitted successfully"
 else
@@ -13679,7 +13679,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 855/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 855 submitted successfully"
 else
@@ -13695,7 +13695,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 856/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 856 submitted successfully"
 else
@@ -13711,7 +13711,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 857/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 857 submitted successfully"
 else
@@ -13727,7 +13727,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 858/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 858 submitted successfully"
 else
@@ -13743,7 +13743,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 859/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 859 submitted successfully"
 else
@@ -13759,7 +13759,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 860/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 860 submitted successfully"
 else
@@ -13775,7 +13775,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 861/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 861 submitted successfully"
 else
@@ -13791,7 +13791,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 862/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 862 submitted successfully"
 else
@@ -13807,7 +13807,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 863/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 863 submitted successfully"
 else
@@ -13823,7 +13823,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 864/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false cnn_ncp 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false cnn_ncp 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 864 submitted successfully"
 else
@@ -13839,7 +13839,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 865/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 865 submitted successfully"
 else
@@ -13855,7 +13855,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 866/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 866 submitted successfully"
 else
@@ -13871,7 +13871,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 867/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 867 submitted successfully"
 else
@@ -13887,7 +13887,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 868/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 868 submitted successfully"
 else
@@ -13903,7 +13903,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 869/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 869 submitted successfully"
 else
@@ -13919,7 +13919,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 870/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 870 submitted successfully"
 else
@@ -13935,7 +13935,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 871/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 871 submitted successfully"
 else
@@ -13951,7 +13951,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 872/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 872 submitted successfully"
 else
@@ -13967,7 +13967,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 873/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 873 submitted successfully"
 else
@@ -13983,7 +13983,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 874/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 874 submitted successfully"
 else
@@ -13999,7 +13999,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 875/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 875 submitted successfully"
 else
@@ -14015,7 +14015,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 876/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 876 submitted successfully"
 else
@@ -14031,7 +14031,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 877/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 877 submitted successfully"
 else
@@ -14047,7 +14047,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 878/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 878 submitted successfully"
 else
@@ -14063,7 +14063,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 879/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 879 submitted successfully"
 else
@@ -14079,7 +14079,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 880/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 880 submitted successfully"
 else
@@ -14095,7 +14095,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 881/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 881 submitted successfully"
 else
@@ -14111,7 +14111,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 882/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 882 submitted successfully"
 else
@@ -14127,7 +14127,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 883/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 883 submitted successfully"
 else
@@ -14143,7 +14143,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 884/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 884 submitted successfully"
 else
@@ -14159,7 +14159,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 885/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 885 submitted successfully"
 else
@@ -14175,7 +14175,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 886/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 886 submitted successfully"
 else
@@ -14191,7 +14191,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 887/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 887 submitted successfully"
 else
@@ -14207,7 +14207,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 888/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 888 submitted successfully"
 else
@@ -14223,7 +14223,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 889/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 889 submitted successfully"
 else
@@ -14239,7 +14239,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 890/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 890 submitted successfully"
 else
@@ -14255,7 +14255,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 891/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 891 submitted successfully"
 else
@@ -14271,7 +14271,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 892/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 892 submitted successfully"
 else
@@ -14287,7 +14287,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 893/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 893 submitted successfully"
 else
@@ -14303,7 +14303,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 894/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 894 submitted successfully"
 else
@@ -14319,7 +14319,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 895/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 895 submitted successfully"
 else
@@ -14335,7 +14335,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 896/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 896 submitted successfully"
 else
@@ -14351,7 +14351,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 897/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 897 submitted successfully"
 else
@@ -14367,7 +14367,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 898/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 898 submitted successfully"
 else
@@ -14383,7 +14383,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 899/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 899 submitted successfully"
 else
@@ -14399,7 +14399,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 900/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 900 submitted successfully"
 else
@@ -14415,7 +14415,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 901/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 901 submitted successfully"
 else
@@ -14431,7 +14431,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 902/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 902 submitted successfully"
 else
@@ -14447,7 +14447,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 903/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 903 submitted successfully"
 else
@@ -14463,7 +14463,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 904/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 904 submitted successfully"
 else
@@ -14479,7 +14479,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 905/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 905 submitted successfully"
 else
@@ -14495,7 +14495,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 906/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 906 submitted successfully"
 else
@@ -14511,7 +14511,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 907/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 907 submitted successfully"
 else
@@ -14527,7 +14527,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 908/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 908 submitted successfully"
 else
@@ -14543,7 +14543,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 909/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 909 submitted successfully"
 else
@@ -14559,7 +14559,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 910/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 910 submitted successfully"
 else
@@ -14575,7 +14575,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 911/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 911 submitted successfully"
 else
@@ -14591,7 +14591,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 912/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 912 submitted successfully"
 else
@@ -14607,7 +14607,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 913/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 913 submitted successfully"
 else
@@ -14623,7 +14623,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 914/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 914 submitted successfully"
 else
@@ -14639,7 +14639,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 915/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 915 submitted successfully"
 else
@@ -14655,7 +14655,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 916/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 916 submitted successfully"
 else
@@ -14671,7 +14671,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 917/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 917 submitted successfully"
 else
@@ -14687,7 +14687,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 918/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false cnn_ncp 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false cnn_ncp 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 918 submitted successfully"
 else
@@ -14703,7 +14703,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 919/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 919 submitted successfully"
 else
@@ -14719,7 +14719,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 920/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 920 submitted successfully"
 else
@@ -14735,7 +14735,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 921/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 921 submitted successfully"
 else
@@ -14751,7 +14751,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 922/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 922 submitted successfully"
 else
@@ -14767,7 +14767,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 923/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 923 submitted successfully"
 else
@@ -14783,7 +14783,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 924/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 924 submitted successfully"
 else
@@ -14799,7 +14799,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 925/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 925 submitted successfully"
 else
@@ -14815,7 +14815,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 926/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 926 submitted successfully"
 else
@@ -14831,7 +14831,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 927/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 927 submitted successfully"
 else
@@ -14847,7 +14847,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 928/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 928 submitted successfully"
 else
@@ -14863,7 +14863,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 929/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 929 submitted successfully"
 else
@@ -14879,7 +14879,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 930/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 930 submitted successfully"
 else
@@ -14895,7 +14895,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 931/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 931 submitted successfully"
 else
@@ -14911,7 +14911,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 932/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 932 submitted successfully"
 else
@@ -14927,7 +14927,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 933/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 933 submitted successfully"
 else
@@ -14943,7 +14943,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 934/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 934 submitted successfully"
 else
@@ -14959,7 +14959,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 935/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 935 submitted successfully"
 else
@@ -14975,7 +14975,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 936/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 936 submitted successfully"
 else
@@ -14991,7 +14991,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 937/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 937 submitted successfully"
 else
@@ -15007,7 +15007,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 938/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 938 submitted successfully"
 else
@@ -15023,7 +15023,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 939/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 939 submitted successfully"
 else
@@ -15039,7 +15039,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 940/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 940 submitted successfully"
 else
@@ -15055,7 +15055,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 941/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 941 submitted successfully"
 else
@@ -15071,7 +15071,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 942/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 942 submitted successfully"
 else
@@ -15087,7 +15087,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 943/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 943 submitted successfully"
 else
@@ -15103,7 +15103,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 944/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 944 submitted successfully"
 else
@@ -15119,7 +15119,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 945/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 945 submitted successfully"
 else
@@ -15135,7 +15135,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 946/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 946 submitted successfully"
 else
@@ -15151,7 +15151,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 947/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 947 submitted successfully"
 else
@@ -15167,7 +15167,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 948/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 948 submitted successfully"
 else
@@ -15183,7 +15183,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 949/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 949 submitted successfully"
 else
@@ -15199,7 +15199,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 950/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 950 submitted successfully"
 else
@@ -15215,7 +15215,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 951/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 951 submitted successfully"
 else
@@ -15231,7 +15231,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 952/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 952 submitted successfully"
 else
@@ -15247,7 +15247,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 953/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 953 submitted successfully"
 else
@@ -15263,7 +15263,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 954/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 954 submitted successfully"
 else
@@ -15279,7 +15279,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 955/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 955 submitted successfully"
 else
@@ -15295,7 +15295,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 956/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 956 submitted successfully"
 else
@@ -15311,7 +15311,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 957/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 957 submitted successfully"
 else
@@ -15327,7 +15327,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 958/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 958 submitted successfully"
 else
@@ -15343,7 +15343,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 959/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 959 submitted successfully"
 else
@@ -15359,7 +15359,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 960/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 960 submitted successfully"
 else
@@ -15375,7 +15375,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 961/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 961 submitted successfully"
 else
@@ -15391,7 +15391,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 962/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 962 submitted successfully"
 else
@@ -15407,7 +15407,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 963/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 963 submitted successfully"
 else
@@ -15423,7 +15423,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 964/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 964 submitted successfully"
 else
@@ -15439,7 +15439,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 965/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 965 submitted successfully"
 else
@@ -15455,7 +15455,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 966/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 966 submitted successfully"
 else
@@ -15471,7 +15471,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 967/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 967 submitted successfully"
 else
@@ -15487,7 +15487,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 968/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 968 submitted successfully"
 else
@@ -15503,7 +15503,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 969/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 969 submitted successfully"
 else
@@ -15519,7 +15519,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 970/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 970 submitted successfully"
 else
@@ -15535,7 +15535,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 971/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 971 submitted successfully"
 else
@@ -15551,7 +15551,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 972/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false cnn_ncp 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false cnn_ncp 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 972 submitted successfully"
 else
@@ -15567,7 +15567,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 973/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 973 submitted successfully"
 else
@@ -15583,7 +15583,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 974/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 974 submitted successfully"
 else
@@ -15599,7 +15599,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 975/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 975 submitted successfully"
 else
@@ -15615,7 +15615,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 976/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 976 submitted successfully"
 else
@@ -15631,7 +15631,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 977/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 977 submitted successfully"
 else
@@ -15647,7 +15647,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 978/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 978 submitted successfully"
 else
@@ -15663,7 +15663,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 979/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 979 submitted successfully"
 else
@@ -15679,7 +15679,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 980/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 980 submitted successfully"
 else
@@ -15695,7 +15695,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 981/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 981 submitted successfully"
 else
@@ -15711,7 +15711,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 982/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 982 submitted successfully"
 else
@@ -15727,7 +15727,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 983/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 983 submitted successfully"
 else
@@ -15743,7 +15743,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 984/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 984 submitted successfully"
 else
@@ -15759,7 +15759,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 985/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 985 submitted successfully"
 else
@@ -15775,7 +15775,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 986/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 986 submitted successfully"
 else
@@ -15791,7 +15791,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 987/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 987 submitted successfully"
 else
@@ -15807,7 +15807,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 988/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 988 submitted successfully"
 else
@@ -15823,7 +15823,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 989/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 989 submitted successfully"
 else
@@ -15839,7 +15839,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 990/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 990 submitted successfully"
 else
@@ -15855,7 +15855,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 991/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 991 submitted successfully"
 else
@@ -15871,7 +15871,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 992/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 992 submitted successfully"
 else
@@ -15887,7 +15887,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 993/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 993 submitted successfully"
 else
@@ -15903,7 +15903,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 994/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 994 submitted successfully"
 else
@@ -15919,7 +15919,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 995/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 995 submitted successfully"
 else
@@ -15935,7 +15935,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 996/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 996 submitted successfully"
 else
@@ -15951,7 +15951,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 997/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 997 submitted successfully"
 else
@@ -15967,7 +15967,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 998/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 998 submitted successfully"
 else
@@ -15983,7 +15983,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 999/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 999 submitted successfully"
 else
@@ -15999,7 +15999,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1000/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1000 submitted successfully"
 else
@@ -16015,7 +16015,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1001/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1001 submitted successfully"
 else
@@ -16031,7 +16031,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1002/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1002 submitted successfully"
 else
@@ -16047,7 +16047,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1003/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1003 submitted successfully"
 else
@@ -16063,7 +16063,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1004/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1004 submitted successfully"
 else
@@ -16079,7 +16079,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1005/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1005 submitted successfully"
 else
@@ -16095,7 +16095,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1006/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1006 submitted successfully"
 else
@@ -16111,7 +16111,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1007/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1007 submitted successfully"
 else
@@ -16127,7 +16127,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1008/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1008 submitted successfully"
 else
@@ -16143,7 +16143,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1009/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1009 submitted successfully"
 else
@@ -16159,7 +16159,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1010/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1010 submitted successfully"
 else
@@ -16175,7 +16175,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1011/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1011 submitted successfully"
 else
@@ -16191,7 +16191,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1012/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1012 submitted successfully"
 else
@@ -16207,7 +16207,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1013/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1013 submitted successfully"
 else
@@ -16223,7 +16223,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1014/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1014 submitted successfully"
 else
@@ -16239,7 +16239,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1015/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1015 submitted successfully"
 else
@@ -16255,7 +16255,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1016/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1016 submitted successfully"
 else
@@ -16271,7 +16271,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1017/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1017 submitted successfully"
 else
@@ -16287,7 +16287,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1018/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1018 submitted successfully"
 else
@@ -16303,7 +16303,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1019/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1019 submitted successfully"
 else
@@ -16319,7 +16319,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1020/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1020 submitted successfully"
 else
@@ -16335,7 +16335,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1021/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1021 submitted successfully"
 else
@@ -16351,7 +16351,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1022/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1022 submitted successfully"
 else
@@ -16367,7 +16367,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1023/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1023 submitted successfully"
 else
@@ -16383,7 +16383,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1024/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1024 submitted successfully"
 else
@@ -16399,7 +16399,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1025/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1025 submitted successfully"
 else
@@ -16415,7 +16415,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1026/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false cnn_ncp 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false cnn_ncp 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1026 submitted successfully"
 else
@@ -16431,7 +16431,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1027/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1027 submitted successfully"
 else
@@ -16447,7 +16447,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1028/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1028 submitted successfully"
 else
@@ -16463,7 +16463,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1029/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1029 submitted successfully"
 else
@@ -16479,7 +16479,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1030/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1030 submitted successfully"
 else
@@ -16495,7 +16495,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1031/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1031 submitted successfully"
 else
@@ -16511,7 +16511,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1032/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1032 submitted successfully"
 else
@@ -16527,7 +16527,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1033/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1033 submitted successfully"
 else
@@ -16543,7 +16543,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1034/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1034 submitted successfully"
 else
@@ -16559,7 +16559,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1035/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1035 submitted successfully"
 else
@@ -16575,7 +16575,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1036/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1036 submitted successfully"
 else
@@ -16591,7 +16591,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1037/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1037 submitted successfully"
 else
@@ -16607,7 +16607,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1038/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1038 submitted successfully"
 else
@@ -16623,7 +16623,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1039/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1039 submitted successfully"
 else
@@ -16639,7 +16639,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1040/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1040 submitted successfully"
 else
@@ -16655,7 +16655,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1041/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1041 submitted successfully"
 else
@@ -16671,7 +16671,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1042/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1042 submitted successfully"
 else
@@ -16687,7 +16687,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1043/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1043 submitted successfully"
 else
@@ -16703,7 +16703,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1044/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1044 submitted successfully"
 else
@@ -16719,7 +16719,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1045/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1045 submitted successfully"
 else
@@ -16735,7 +16735,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1046/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1046 submitted successfully"
 else
@@ -16751,7 +16751,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1047/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1047 submitted successfully"
 else
@@ -16767,7 +16767,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1048/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1048 submitted successfully"
 else
@@ -16783,7 +16783,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1049/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1049 submitted successfully"
 else
@@ -16799,7 +16799,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1050/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1050 submitted successfully"
 else
@@ -16815,7 +16815,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1051/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1051 submitted successfully"
 else
@@ -16831,7 +16831,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1052/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1052 submitted successfully"
 else
@@ -16847,7 +16847,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1053/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1053 submitted successfully"
 else
@@ -16863,7 +16863,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1054/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1054 submitted successfully"
 else
@@ -16879,7 +16879,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1055/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1055 submitted successfully"
 else
@@ -16895,7 +16895,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1056/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1056 submitted successfully"
 else
@@ -16911,7 +16911,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1057/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1057 submitted successfully"
 else
@@ -16927,7 +16927,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1058/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1058 submitted successfully"
 else
@@ -16943,7 +16943,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1059/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1059 submitted successfully"
 else
@@ -16959,7 +16959,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1060/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1060 submitted successfully"
 else
@@ -16975,7 +16975,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1061/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1061 submitted successfully"
 else
@@ -16991,7 +16991,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1062/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1062 submitted successfully"
 else
@@ -17007,7 +17007,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1063/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1063 submitted successfully"
 else
@@ -17023,7 +17023,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1064/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1064 submitted successfully"
 else
@@ -17039,7 +17039,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1065/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1065 submitted successfully"
 else
@@ -17055,7 +17055,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1066/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1066 submitted successfully"
 else
@@ -17071,7 +17071,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1067/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1067 submitted successfully"
 else
@@ -17087,7 +17087,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1068/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1068 submitted successfully"
 else
@@ -17103,7 +17103,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1069/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1069 submitted successfully"
 else
@@ -17119,7 +17119,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1070/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1070 submitted successfully"
 else
@@ -17135,7 +17135,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1071/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1071 submitted successfully"
 else
@@ -17151,7 +17151,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1072/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1072 submitted successfully"
 else
@@ -17167,7 +17167,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1073/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1073 submitted successfully"
 else
@@ -17183,7 +17183,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1074/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1074 submitted successfully"
 else
@@ -17199,7 +17199,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1075/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1075 submitted successfully"
 else
@@ -17215,7 +17215,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1076/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1076 submitted successfully"
 else
@@ -17231,7 +17231,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1077/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1077 submitted successfully"
 else
@@ -17247,7 +17247,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1078/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1078 submitted successfully"
 else
@@ -17263,7 +17263,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1079/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1079 submitted successfully"
 else
@@ -17279,7 +17279,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1080/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false cnn_ncp 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false cnn_ncp 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1080 submitted successfully"
 else
@@ -17295,7 +17295,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1081/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1081 submitted successfully"
 else
@@ -17311,7 +17311,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1082/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1082 submitted successfully"
 else
@@ -17327,7 +17327,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1083/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1083 submitted successfully"
 else
@@ -17343,7 +17343,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1084/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1084 submitted successfully"
 else
@@ -17359,7 +17359,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1085/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1085 submitted successfully"
 else
@@ -17375,7 +17375,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1086/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1086 submitted successfully"
 else
@@ -17391,7 +17391,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1087/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1087 submitted successfully"
 else
@@ -17407,7 +17407,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1088/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1088 submitted successfully"
 else
@@ -17423,7 +17423,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1089/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1089 submitted successfully"
 else
@@ -17439,7 +17439,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1090/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1090 submitted successfully"
 else
@@ -17455,7 +17455,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1091/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1091 submitted successfully"
 else
@@ -17471,7 +17471,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1092/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1092 submitted successfully"
 else
@@ -17487,7 +17487,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1093/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1093 submitted successfully"
 else
@@ -17503,7 +17503,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1094/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1094 submitted successfully"
 else
@@ -17519,7 +17519,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1095/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1095 submitted successfully"
 else
@@ -17535,7 +17535,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1096/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1096 submitted successfully"
 else
@@ -17551,7 +17551,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1097/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1097 submitted successfully"
 else
@@ -17567,7 +17567,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1098/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1098 submitted successfully"
 else
@@ -17583,7 +17583,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1099/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1099 submitted successfully"
 else
@@ -17599,7 +17599,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1100/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1100 submitted successfully"
 else
@@ -17615,7 +17615,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1101/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1101 submitted successfully"
 else
@@ -17631,7 +17631,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1102/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1102 submitted successfully"
 else
@@ -17647,7 +17647,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1103/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1103 submitted successfully"
 else
@@ -17663,7 +17663,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1104/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1104 submitted successfully"
 else
@@ -17679,7 +17679,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1105/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1105 submitted successfully"
 else
@@ -17695,7 +17695,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1106/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1106 submitted successfully"
 else
@@ -17711,7 +17711,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1107/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1107 submitted successfully"
 else
@@ -17727,7 +17727,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1108/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1108 submitted successfully"
 else
@@ -17743,7 +17743,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1109/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1109 submitted successfully"
 else
@@ -17759,7 +17759,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1110/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1110 submitted successfully"
 else
@@ -17775,7 +17775,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1111/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1111 submitted successfully"
 else
@@ -17791,7 +17791,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1112/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1112 submitted successfully"
 else
@@ -17807,7 +17807,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1113/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1113 submitted successfully"
 else
@@ -17823,7 +17823,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1114/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1114 submitted successfully"
 else
@@ -17839,7 +17839,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1115/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1115 submitted successfully"
 else
@@ -17855,7 +17855,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1116/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1116 submitted successfully"
 else
@@ -17871,7 +17871,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1117/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1117 submitted successfully"
 else
@@ -17887,7 +17887,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1118/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1118 submitted successfully"
 else
@@ -17903,7 +17903,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1119/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1119 submitted successfully"
 else
@@ -17919,7 +17919,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1120/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1120 submitted successfully"
 else
@@ -17935,7 +17935,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1121/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1121 submitted successfully"
 else
@@ -17951,7 +17951,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1122/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1122 submitted successfully"
 else
@@ -17967,7 +17967,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1123/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1123 submitted successfully"
 else
@@ -17983,7 +17983,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1124/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1124 submitted successfully"
 else
@@ -17999,7 +17999,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1125/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1125 submitted successfully"
 else
@@ -18015,7 +18015,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1126/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1126 submitted successfully"
 else
@@ -18031,7 +18031,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1127/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1127 submitted successfully"
 else
@@ -18047,7 +18047,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1128/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1128 submitted successfully"
 else
@@ -18063,7 +18063,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1129/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1129 submitted successfully"
 else
@@ -18079,7 +18079,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1130/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1130 submitted successfully"
 else
@@ -18095,7 +18095,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1131/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1131 submitted successfully"
 else
@@ -18111,7 +18111,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1132/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1132 submitted successfully"
 else
@@ -18127,7 +18127,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1133/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1133 submitted successfully"
 else
@@ -18143,7 +18143,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 100
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1134/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false branched_wiredcfc_arch4 100 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1134 submitted successfully"
 else
@@ -18159,7 +18159,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1135/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1135 submitted successfully"
 else
@@ -18175,7 +18175,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1136/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1136 submitted successfully"
 else
@@ -18191,7 +18191,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1137/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1137 submitted successfully"
 else
@@ -18207,7 +18207,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1138/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1138 submitted successfully"
 else
@@ -18223,7 +18223,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1139/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1139 submitted successfully"
 else
@@ -18239,7 +18239,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1140/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1140 submitted successfully"
 else
@@ -18255,7 +18255,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1141/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1141 submitted successfully"
 else
@@ -18271,7 +18271,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1142/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1142 submitted successfully"
 else
@@ -18287,7 +18287,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1143/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1143 submitted successfully"
 else
@@ -18303,7 +18303,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1144/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1144 submitted successfully"
 else
@@ -18319,7 +18319,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1145/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1145 submitted successfully"
 else
@@ -18335,7 +18335,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1146/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1146 submitted successfully"
 else
@@ -18351,7 +18351,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1147/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1147 submitted successfully"
 else
@@ -18367,7 +18367,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1148/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1148 submitted successfully"
 else
@@ -18383,7 +18383,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1149/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1149 submitted successfully"
 else
@@ -18399,7 +18399,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1150/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1150 submitted successfully"
 else
@@ -18415,7 +18415,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1151/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1151 submitted successfully"
 else
@@ -18431,7 +18431,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1152/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1152 submitted successfully"
 else
@@ -18447,7 +18447,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1153/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1153 submitted successfully"
 else
@@ -18463,7 +18463,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1154/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1154 submitted successfully"
 else
@@ -18479,7 +18479,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1155/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1155 submitted successfully"
 else
@@ -18495,7 +18495,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1156/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1156 submitted successfully"
 else
@@ -18511,7 +18511,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1157/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1157 submitted successfully"
 else
@@ -18527,7 +18527,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1158/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1158 submitted successfully"
 else
@@ -18543,7 +18543,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1159/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1159 submitted successfully"
 else
@@ -18559,7 +18559,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1160/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1160 submitted successfully"
 else
@@ -18575,7 +18575,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1161/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1161 submitted successfully"
 else
@@ -18591,7 +18591,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1162/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1162 submitted successfully"
 else
@@ -18607,7 +18607,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1163/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1163 submitted successfully"
 else
@@ -18623,7 +18623,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1164/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1164 submitted successfully"
 else
@@ -18639,7 +18639,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1165/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1165 submitted successfully"
 else
@@ -18655,7 +18655,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1166/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1166 submitted successfully"
 else
@@ -18671,7 +18671,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1167/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1167 submitted successfully"
 else
@@ -18687,7 +18687,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1168/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1168 submitted successfully"
 else
@@ -18703,7 +18703,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1169/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1169 submitted successfully"
 else
@@ -18719,7 +18719,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1170/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1170 submitted successfully"
 else
@@ -18735,7 +18735,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1171/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1171 submitted successfully"
 else
@@ -18751,7 +18751,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1172/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1172 submitted successfully"
 else
@@ -18767,7 +18767,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1173/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1173 submitted successfully"
 else
@@ -18783,7 +18783,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1174/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1174 submitted successfully"
 else
@@ -18799,7 +18799,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1175/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1175 submitted successfully"
 else
@@ -18815,7 +18815,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1176/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1176 submitted successfully"
 else
@@ -18831,7 +18831,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1177/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1177 submitted successfully"
 else
@@ -18847,7 +18847,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1178/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1178 submitted successfully"
 else
@@ -18863,7 +18863,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1179/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1179 submitted successfully"
 else
@@ -18879,7 +18879,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1180/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1180 submitted successfully"
 else
@@ -18895,7 +18895,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1181/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1181 submitted successfully"
 else
@@ -18911,7 +18911,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1182/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1182 submitted successfully"
 else
@@ -18927,7 +18927,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1183/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1183 submitted successfully"
 else
@@ -18943,7 +18943,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1184/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1184 submitted successfully"
 else
@@ -18959,7 +18959,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1185/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1185 submitted successfully"
 else
@@ -18975,7 +18975,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1186/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1186 submitted successfully"
 else
@@ -18991,7 +18991,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1187/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1187 submitted successfully"
 else
@@ -19007,7 +19007,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 200
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1188/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false branched_wiredcfc_arch4 200 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1188 submitted successfully"
 else
@@ -19023,7 +19023,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1189/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1189 submitted successfully"
 else
@@ -19039,7 +19039,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1190/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1190 submitted successfully"
 else
@@ -19055,7 +19055,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1191/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1191 submitted successfully"
 else
@@ -19071,7 +19071,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1192/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1192 submitted successfully"
 else
@@ -19087,7 +19087,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1193/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1193 submitted successfully"
 else
@@ -19103,7 +19103,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1194/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1194 submitted successfully"
 else
@@ -19119,7 +19119,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1195/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1195 submitted successfully"
 else
@@ -19135,7 +19135,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1196/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1196 submitted successfully"
 else
@@ -19151,7 +19151,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1197/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1197 submitted successfully"
 else
@@ -19167,7 +19167,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1198/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1198 submitted successfully"
 else
@@ -19183,7 +19183,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1199/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1199 submitted successfully"
 else
@@ -19199,7 +19199,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1200/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1200 submitted successfully"
 else
@@ -19215,7 +19215,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1201/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1201 submitted successfully"
 else
@@ -19231,7 +19231,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1202/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1202 submitted successfully"
 else
@@ -19247,7 +19247,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1203/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1203 submitted successfully"
 else
@@ -19263,7 +19263,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1204/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1204 submitted successfully"
 else
@@ -19279,7 +19279,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1205/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1205 submitted successfully"
 else
@@ -19295,7 +19295,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1206/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1206 submitted successfully"
 else
@@ -19311,7 +19311,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1207/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1207 submitted successfully"
 else
@@ -19327,7 +19327,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1208/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1208 submitted successfully"
 else
@@ -19343,7 +19343,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1209/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1209 submitted successfully"
 else
@@ -19359,7 +19359,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1210/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1210 submitted successfully"
 else
@@ -19375,7 +19375,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1211/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1211 submitted successfully"
 else
@@ -19391,7 +19391,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1212/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1212 submitted successfully"
 else
@@ -19407,7 +19407,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1213/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1213 submitted successfully"
 else
@@ -19423,7 +19423,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1214/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1214 submitted successfully"
 else
@@ -19439,7 +19439,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1215/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1215 submitted successfully"
 else
@@ -19455,7 +19455,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1216/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1216 submitted successfully"
 else
@@ -19471,7 +19471,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1217/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1217 submitted successfully"
 else
@@ -19487,7 +19487,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1218/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1218 submitted successfully"
 else
@@ -19503,7 +19503,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1219/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1219 submitted successfully"
 else
@@ -19519,7 +19519,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1220/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1220 submitted successfully"
 else
@@ -19535,7 +19535,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1221/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1221 submitted successfully"
 else
@@ -19551,7 +19551,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1222/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1222 submitted successfully"
 else
@@ -19567,7 +19567,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1223/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1223 submitted successfully"
 else
@@ -19583,7 +19583,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1224/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1224 submitted successfully"
 else
@@ -19599,7 +19599,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1225/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1225 submitted successfully"
 else
@@ -19615,7 +19615,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1226/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1226 submitted successfully"
 else
@@ -19631,7 +19631,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1227/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1227 submitted successfully"
 else
@@ -19647,7 +19647,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1228/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1228 submitted successfully"
 else
@@ -19663,7 +19663,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1229/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1229 submitted successfully"
 else
@@ -19679,7 +19679,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1230/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1230 submitted successfully"
 else
@@ -19695,7 +19695,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1231/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1231 submitted successfully"
 else
@@ -19711,7 +19711,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1232/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1232 submitted successfully"
 else
@@ -19727,7 +19727,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1233/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1233 submitted successfully"
 else
@@ -19743,7 +19743,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1234/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1234 submitted successfully"
 else
@@ -19759,7 +19759,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1235/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1235 submitted successfully"
 else
@@ -19775,7 +19775,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1236/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1236 submitted successfully"
 else
@@ -19791,7 +19791,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1237/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1237 submitted successfully"
 else
@@ -19807,7 +19807,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1238/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1238 submitted successfully"
 else
@@ -19823,7 +19823,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1239/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1239 submitted successfully"
 else
@@ -19839,7 +19839,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1240/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1240 submitted successfully"
 else
@@ -19855,7 +19855,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1241/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1241 submitted successfully"
 else
@@ -19871,7 +19871,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 300
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1242/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false branched_wiredcfc_arch4 300 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1242 submitted successfully"
 else
@@ -19887,7 +19887,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1243/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1243 submitted successfully"
 else
@@ -19903,7 +19903,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1244/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1244 submitted successfully"
 else
@@ -19919,7 +19919,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1245/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1245 submitted successfully"
 else
@@ -19935,7 +19935,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1246/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1246 submitted successfully"
 else
@@ -19951,7 +19951,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1247/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1247 submitted successfully"
 else
@@ -19967,7 +19967,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1248/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1248 submitted successfully"
 else
@@ -19983,7 +19983,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1249/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1249 submitted successfully"
 else
@@ -19999,7 +19999,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1250/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1250 submitted successfully"
 else
@@ -20015,7 +20015,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1251/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1251 submitted successfully"
 else
@@ -20031,7 +20031,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1252/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1252 submitted successfully"
 else
@@ -20047,7 +20047,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1253/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1253 submitted successfully"
 else
@@ -20063,7 +20063,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1254/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1254 submitted successfully"
 else
@@ -20079,7 +20079,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1255/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1255 submitted successfully"
 else
@@ -20095,7 +20095,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1256/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1256 submitted successfully"
 else
@@ -20111,7 +20111,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1257/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1257 submitted successfully"
 else
@@ -20127,7 +20127,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1258/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1258 submitted successfully"
 else
@@ -20143,7 +20143,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1259/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1259 submitted successfully"
 else
@@ -20159,7 +20159,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1260/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1260 submitted successfully"
 else
@@ -20175,7 +20175,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1261/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1261 submitted successfully"
 else
@@ -20191,7 +20191,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1262/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1262 submitted successfully"
 else
@@ -20207,7 +20207,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1263/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1263 submitted successfully"
 else
@@ -20223,7 +20223,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1264/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1264 submitted successfully"
 else
@@ -20239,7 +20239,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1265/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1265 submitted successfully"
 else
@@ -20255,7 +20255,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1266/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1266 submitted successfully"
 else
@@ -20271,7 +20271,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1267/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1267 submitted successfully"
 else
@@ -20287,7 +20287,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1268/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1268 submitted successfully"
 else
@@ -20303,7 +20303,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1269/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1269 submitted successfully"
 else
@@ -20319,7 +20319,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1270/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1270 submitted successfully"
 else
@@ -20335,7 +20335,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1271/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1271 submitted successfully"
 else
@@ -20351,7 +20351,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1272/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1272 submitted successfully"
 else
@@ -20367,7 +20367,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1273/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1273 submitted successfully"
 else
@@ -20383,7 +20383,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1274/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1274 submitted successfully"
 else
@@ -20399,7 +20399,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1275/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1275 submitted successfully"
 else
@@ -20415,7 +20415,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1276/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1276 submitted successfully"
 else
@@ -20431,7 +20431,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1277/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1277 submitted successfully"
 else
@@ -20447,7 +20447,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1278/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1278 submitted successfully"
 else
@@ -20463,7 +20463,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1279/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1279 submitted successfully"
 else
@@ -20479,7 +20479,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1280/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1280 submitted successfully"
 else
@@ -20495,7 +20495,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1281/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1281 submitted successfully"
 else
@@ -20511,7 +20511,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1282/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1282 submitted successfully"
 else
@@ -20527,7 +20527,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1283/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1283 submitted successfully"
 else
@@ -20543,7 +20543,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1284/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1284 submitted successfully"
 else
@@ -20559,7 +20559,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1285/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1285 submitted successfully"
 else
@@ -20575,7 +20575,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1286/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1286 submitted successfully"
 else
@@ -20591,7 +20591,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1287/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1287 submitted successfully"
 else
@@ -20607,7 +20607,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1288/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1288 submitted successfully"
 else
@@ -20623,7 +20623,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1289/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1289 submitted successfully"
 else
@@ -20639,7 +20639,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1290/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1290 submitted successfully"
 else
@@ -20655,7 +20655,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1291/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1291 submitted successfully"
 else
@@ -20671,7 +20671,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1292/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1292 submitted successfully"
 else
@@ -20687,7 +20687,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1293/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1293 submitted successfully"
 else
@@ -20703,7 +20703,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1294/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1294 submitted successfully"
 else
@@ -20719,7 +20719,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1295/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1295 submitted successfully"
 else
@@ -20735,7 +20735,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 400
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1296/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false branched_wiredcfc_arch4 400 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1296 submitted successfully"
 else
@@ -20751,7 +20751,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1297/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 1 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1297 submitted successfully"
 else
@@ -20767,7 +20767,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1298/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 2 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1298 submitted successfully"
 else
@@ -20783,7 +20783,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1299/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 3 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1299 submitted successfully"
 else
@@ -20799,7 +20799,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1300/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 4 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1300 submitted successfully"
 else
@@ -20815,7 +20815,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1301/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 5 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1301 submitted successfully"
 else
@@ -20831,7 +20831,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1302/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 6 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1302 submitted successfully"
 else
@@ -20847,7 +20847,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1303/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 7 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1303 submitted successfully"
 else
@@ -20863,7 +20863,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1304/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 8 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1304 submitted successfully"
 else
@@ -20879,7 +20879,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1305/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 9 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1305 submitted successfully"
 else
@@ -20895,7 +20895,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1306/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 10 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1306 submitted successfully"
 else
@@ -20911,7 +20911,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1307/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 11 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1307 submitted successfully"
 else
@@ -20927,7 +20927,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1308/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 12 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1308 submitted successfully"
 else
@@ -20943,7 +20943,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1309/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 13 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1309 submitted successfully"
 else
@@ -20959,7 +20959,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1310/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 14 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1310 submitted successfully"
 else
@@ -20975,7 +20975,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1311/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 15 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1311 submitted successfully"
 else
@@ -20991,7 +20991,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1312/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 16 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1312 submitted successfully"
 else
@@ -21007,7 +21007,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1313/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 17 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1313 submitted successfully"
 else
@@ -21023,7 +21023,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1314/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 18 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1314 submitted successfully"
 else
@@ -21039,7 +21039,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1315/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 19 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1315 submitted successfully"
 else
@@ -21055,7 +21055,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1316/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 20 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1316 submitted successfully"
 else
@@ -21071,7 +21071,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1317/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 21 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1317 submitted successfully"
 else
@@ -21087,7 +21087,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1318/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 22 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1318 submitted successfully"
 else
@@ -21103,7 +21103,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1319/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 23 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1319 submitted successfully"
 else
@@ -21119,7 +21119,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1320/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 24 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1320 submitted successfully"
 else
@@ -21135,7 +21135,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1321/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 25 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1321 submitted successfully"
 else
@@ -21151,7 +21151,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1322/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 26 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1322 submitted successfully"
 else
@@ -21167,7 +21167,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1323/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 27 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1323 submitted successfully"
 else
@@ -21183,7 +21183,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1324/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 28 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1324 submitted successfully"
 else
@@ -21199,7 +21199,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1325/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 29 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1325 submitted successfully"
 else
@@ -21215,7 +21215,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1326/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 30 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1326 submitted successfully"
 else
@@ -21231,7 +21231,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1327/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 31 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1327 submitted successfully"
 else
@@ -21247,7 +21247,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1328/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 32 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1328 submitted successfully"
 else
@@ -21263,7 +21263,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1329/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 33 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1329 submitted successfully"
 else
@@ -21279,7 +21279,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1330/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 34 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1330 submitted successfully"
 else
@@ -21295,7 +21295,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1331/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 35 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1331 submitted successfully"
 else
@@ -21311,7 +21311,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1332/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 36 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1332 submitted successfully"
 else
@@ -21327,7 +21327,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1333/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 37 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1333 submitted successfully"
 else
@@ -21343,7 +21343,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1334/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 38 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1334 submitted successfully"
 else
@@ -21359,7 +21359,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1335/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 39 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1335 submitted successfully"
 else
@@ -21375,7 +21375,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1336/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 40 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1336 submitted successfully"
 else
@@ -21391,7 +21391,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1337/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 41 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1337 submitted successfully"
 else
@@ -21407,7 +21407,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1338/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 42 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1338 submitted successfully"
 else
@@ -21423,7 +21423,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1339/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 43 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1339 submitted successfully"
 else
@@ -21439,7 +21439,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1340/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 44 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1340 submitted successfully"
 else
@@ -21455,7 +21455,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1341/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 45 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1341 submitted successfully"
 else
@@ -21471,7 +21471,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1342/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 46 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1342 submitted successfully"
 else
@@ -21487,7 +21487,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1343/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 47 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1343 submitted successfully"
 else
@@ -21503,7 +21503,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1344/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 48 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1344 submitted successfully"
 else
@@ -21519,7 +21519,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1345/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 49 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1345 submitted successfully"
 else
@@ -21535,7 +21535,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1346/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 50 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1346 submitted successfully"
 else
@@ -21551,7 +21551,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1347/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 51 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1347 submitted successfully"
 else
@@ -21567,7 +21567,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1348/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 52 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1348 submitted successfully"
 else
@@ -21583,7 +21583,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1349/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 53 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1349 submitted successfully"
 else
@@ -21599,7 +21599,7 @@ sleep 1  # Brief pause between submissions
 # This multirun will generate test_perturb results for seed: 500
 # This multirun will generate test_perturb results for all noise types and intensities
 echo "Submitting multirun job 1350/1350..."
-sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500
+sbatch --time=0-02:00:00 --mem=12G unified_eval_script.sh 54 Lee2019_MI WithinSession false branched_wiredcfc_arch4 500 true
 if [ $? -eq 0 ]; then
     echo "[SUCCESS] Multirun job 1350 submitted successfully"
 else

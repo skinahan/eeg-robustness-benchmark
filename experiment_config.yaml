@@ -8,15 +8,21 @@ datasets:
   #   paradigm: "MotorImagery"
   #   subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9]  # All subjects
     
-  # Lee2019_MI:
-  #   name: "Lee2019_MI"
-  #   paradigm: "MotorImagery"
-  #   subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54]
-
-  Shin2017A:
-    name: "Shin2017A"
+  Lee2019_MI:
+    name: "Lee2019_MI"
     paradigm: "MotorImagery"
-    subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+    subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54]
+    # MOABB paradigm + unified runner defaults (see config.resolve_paradigm_resample_hz)
+    pipeline:
+      resample: 128.0
+      train_sliding_window: true
+
+  # Shin2017A:
+  #   name: "Shin2017A"
+  #   paradigm: "MotorImagery"
+  #   subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+  #   pipeline:
+  #     train_sliding_window: true   # Lee-style 1s/0.5s stride on train; val/eval fixed crop (CLI can override)
 
   # Lee2019_SSVEP:
   #   name: "Lee2019_SSVEP"

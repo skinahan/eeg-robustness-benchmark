@@ -16,6 +16,8 @@ EVAL_MODE=$3
 TUNE_FLAG=$4
 MODEL=$5
 SEED=$6
+# Optional: pass "true" or "false" (default true for backward compatibility with 6-arg invocations)
+OVERWRITE_FLAG=${7:-true}
 
 # Note: Time and memory limits are passed as sbatch command line arguments
 # when this script is submitted (e.g., sbatch --time=4-12:00:00 --mem=12G ...)
@@ -23,13 +25,14 @@ SEED=$6
 # Validate required arguments
 if [ -z "$SUBJECTS" ] || [ -z "$DATASET" ] || [ -z "$EVAL_MODE" ] || [ -z "$TUNE_FLAG" ] || [ -z "$MODEL" ] || [ -z "$SEED" ]; then
     echo "Error: Missing required arguments"
-    echo "Usage: sbatch unified_eval_script.sh <subjects> <dataset> <eval_mode> <tune_flag> <model> <seed>"
+    echo "Usage: sbatch unified_eval_script.sh <subjects> <dataset> <eval_mode> <tune_flag> <model> <seed> [overwrite_flag]"
     echo "  subjects: space-separated list of subject IDs (e.g., '1' or '1 2 3 4 5 6 7 8 9')"
     echo "  dataset: dataset name (e.g., 'BNCI2014_001')"
     echo "  eval_mode: evaluation mode ('CrossSession' or 'WithinSession')"
     echo "  tune_flag: tuning flag ('true' or 'false')"
     echo "  model: model name (e.g., 'eegnet', 'reegnet', 'cnn_ncp')"
     echo "  seed: random seed (e.g., '100', '200', '300', '400', '500')"
+    echo "  overwrite_flag: optional, 'true' or 'false' — pass --overwrite to unified_experiment_runner (default: true)"
     exit 1
 fi
 
@@ -59,6 +62,12 @@ else
     TUNE_ARG=""
 fi
 
+if [ "$OVERWRITE_FLAG" = "true" ]; then
+    OVERWRITE_ARG="--overwrite"
+else
+    OVERWRITE_ARG=""
+fi
+
 # Handle CrossSubject evaluation mode (for future use)
 if [ "$EVAL_MODE" = "CrossSubject" ]; then
     echo "Warning: CrossSubject evaluation mode requires special handling - not yet implemented"
@@ -77,6 +86,7 @@ echo "Evaluation Mode: $EVAL_MODE"
 echo "Subjects: $SUBJECTS"
 echo "Tuning: $TUNE_FLAG"
 echo "Seed: $SEED"
+echo "Overwrite: $OVERWRITE_FLAG"
 echo "=========================================="
 
 # Run the multirun experiment
@@ -95,7 +105,7 @@ python evaluation/unified_experiment_runner.py \
     --intensity 10.0 \
     --eval_mode $EVAL_MODE \
     $TUNE_ARG \
-    --overwrite
+    $OVERWRITE_ARG
 
 # Check exit status
 if [ $? -eq 0 ]; then

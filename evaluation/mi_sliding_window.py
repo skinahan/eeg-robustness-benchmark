@@ -1,8 +1,9 @@
 """
-Training-side sliding-window helpers for MotorImagery (Lee2019_MI).
+Training-side sliding-window helpers for MotorImagery (Lee2019_MI, Shin2017A, …).
 
 Use only after train/validation trial indices are fixed. Validation uses a single
-fixed crop per trial; training uses sliding windows (1 s, 0.5 s stride at sfreq).
+fixed crop per trial (first ``win_samples``); training uses sliding windows
+(1 s window, 0.5 s stride in samples at ``sfreq_hz``).
 """
 from __future__ import annotations
 
@@ -17,6 +18,11 @@ def lee2019_mi_sliding_params(sfreq_hz: float) -> Tuple[int, int, int]:
     win = int(round(1.0 * sfreq_hz))
     stride = int(round(0.5 * sfreq_hz))
     return win, stride, 0
+
+
+def shin2017a_sliding_params(sfreq_hz: float) -> Tuple[int, int, int]:
+    """Same protocol as Lee2019_MI (1 s / 0.5 s stride); epoch must be at least 1 s long."""
+    return lee2019_mi_sliding_params(sfreq_hz)
 
 
 def fixed_crop_batch(

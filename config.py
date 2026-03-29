@@ -1,5 +1,6 @@
 import os
 import sys
+from typing import Any, Mapping, Optional
 
 os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
 
@@ -572,20 +573,84 @@ def get_dataset_sampling_rate(dataset="BNCI2014_001"):
     }
     return dataset_rates.get(dataset, 250.0)  # Default to 250 Hz if unknown
 
+
+def resolve_default_pipeline_resample(dataset: str) -> Optional[float]:
+    """
+    Default MOABB paradigm ``resample`` (Hz) for unified_experiment_runner when no YAML/CLI override.
+
+    Returns ``None`` to mean: fall back to ``get_dataset_sampling_rate(dataset)`` (native storage rate).
+
+    Dataset policy (keep in sync with ``experiment_config.yaml`` ``datasets.<name>.pipeline``):
+
+    - **Lee2019_MI**: ``128.0`` — downsampled training/eval pipeline (native OpenBMI MI is 1000 Hz in
+      ``get_dataset_sampling_rate``).
+    - **Shin2017A**: ``None`` — use native **200 Hz** (see ``get_dataset_sampling_rate``); YAML may set
+      ``pipeline.resample`` explicitly (e.g. ``200.0``) for documentation.
+    """
+    if dataset == "Lee2019_MI":
+        return 128.0
+    return None
+
+
+def resolve_paradigm_resample_hz(
+    dataset: str,
+    pipeline: Optional[Mapping[str, Any]] = None,
+    cli_resample_hz: Optional[float] = None,
+) -> float:
+    """
+    Effective paradigm resample frequency (Hz) for a run.
+
+    Precedence: ``cli_resample_hz`` > ``pipeline['resample']`` >
+    ``resolve_default_pipeline_resample`` (if not None) >
+    ``get_dataset_sampling_rate(dataset)``.
+    """
+    if cli_resample_hz is not None:
+        return float(cli_resample_hz)
+    if pipeline is not None and pipeline.get("resample") is not None:
+        return float(pipeline["resample"])
+    default = resolve_default_pipeline_resample(dataset)
+    if default is not None:
+        return float(default)
+    return float(get_dataset_sampling_rate(dataset))
+
+
+def get_shin2017a_eegnet_factory_extras() -> dict:
+    """
+    Extra kwargs passed to ``create_eegnet_classifier`` when dataset is Shin2017A (via unified runner).
+
+    Complements ``get_paradigm(..., dataset="Shin2017A")`` (mid-trial window ``[2, 6]`` s, native
+    resample via ``resolve_paradigm_resample_hz``) and training-side sliding windows (default on in
+    ``UnifiedExperimentRunner``; YAML ``train_sliding_window`` / ``--no-shin2017a-train-sliding-window``).
+
+    Rationale: full-length or mid-trial crops still yield long inputs and small stratified folds;
+    default AdamW at 1e-3 with batch 64 often shows flat valid_loss (early exit at epoch ~1). A
+    slightly lower learning rate, smaller batches, and mild weight decay (vs PyTorch AdamW
+    default 0.01) improve optimization stability on this dataset in practice.
+
+    Override per run via ``UnifiedExperimentRunner(..., shin2017a_eegnet_optimizer_lr=...)`` or CLI.
+    """
+    return {
+        "optimizer__lr": 5e-4,
+        "batch_size": 32,
+        "optimizer__weight_decay": 1e-4,
+    }
+
+
 def get_paradigm(resample=None, dataset="BNCI2014_001"):
     """
     Get the appropriate paradigm based on dataset.
-    
+
     Args:
-        resample: Target sampling rate in Hz. If None, uses dataset-specific default.
+        resample: Target sampling rate in Hz. If ``None``, uses ``resolve_paradigm_resample_hz``
+            with no YAML/CLI override — same effective rate as ``UnifiedExperimentRunner`` (e.g.
+            Lee2019_MI **128 Hz**, Shin2017A **200 Hz**, BNCI2014_001 **250 Hz**).
         dataset: Dataset name
-    
+
     Returns:
         Configured paradigm instance
     """
-    # If resample not specified, use dataset-specific default
     if resample is None:
-        resample = get_dataset_sampling_rate(dataset)
+        resample = resolve_paradigm_resample_hz(dataset, None, None)
     
     if dataset == "Lee2019_SSVEP":
         return SSVEP(
@@ -624,13 +689,17 @@ def get_paradigm(resample=None, dataset="BNCI2014_001"):
             n_classes=2,
         )
     elif dataset == "Shin2017A":
-        # Feasibility smoke: full 10 s task window per MOABB (tmin/tmax relative to MI event).
+        # MOABB epochs are 10 s after the MI cue; using the full window yields very long inputs
+        # (2000 samples @ 200 Hz) and EEGNet often plateaus at ~chance with flat valid_loss.
+        # Crop to a mid-task 4 s segment [2, 6] s: sustained imagery with less onset/transient
+        # noise than [0, 4] and comparable length to other MI benchmarks (e.g. Yang2025 4 s).
+        # For the full 10 s window, use tmin=0, tmax=10 via get_paradigm override in a local script.
         return MotorImagery(
             events=["left_hand", "right_hand"],
             fmin=8,
             fmax=35,
-            tmin=0.0,
-            tmax=10.0,
+            tmin=2.0,
+            tmax=6.0,
             baseline=None,
             resample=resample,
             n_classes=2,
