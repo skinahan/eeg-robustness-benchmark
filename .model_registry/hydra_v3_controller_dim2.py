@@ -11,9 +11,10 @@ sys.path.insert(0, str(script_dir))
 from config import MODEL_REGISTRY, get_model_registry, _runtime_model_registry
 from models.hydra import create_hydra_v3_classifier
 from architecture_refinement.arbitrary_wiring import load_architecture_from_file
+from project_paths import resolve_architecture_json_path
 
 # Load wiring
-wiring = load_architecture_from_file(r"E:\Research\Dissertation\full_backup_7_16_2025\moabb_experiments\outputs\architectures\best_architecture_4_trial_178.json")
+wiring = load_architecture_from_file(str(resolve_architecture_json_path()))
 
 # Feature configuration
 feature_config = {'controller_dim': 2, 'use_cfc_carry_controller': True, 'use_ssvep_head': True}

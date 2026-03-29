@@ -13,6 +13,7 @@ sys.path.insert(0, str(script_dir))
 
 from config import MODEL_REGISTRY, get_model_registry, _runtime_model_registry, add_branched_wiredcfc_architecture
 from architecture_refinement.arbitrary_wiring import load_architecture_from_file
+from project_paths import resolve_architecture_json_path
 from ablations.ablation_models import (
     create_branched_wiredcfc_no_carry_gate_classifier,
     create_branched_wiredcfc_no_branching_classifier,
@@ -31,22 +32,7 @@ from ablations.ablation_models import (
     create_branched_lstm_no_carry_gate_no_branching_no_snr_gate_classifier,
 )
 
-# Try to find architecture file in common locations
-possible_paths = [
-    script_dir / "outputs" / "architectures" / "best_architecture_4_trial_178.json",
-    script_dir / "architecture_refinement" / "outputs" / "architectures" / "best_architecture_4_trial_178.json",
-]
-
-architecture_path = None
-for path in possible_paths:
-    if path.exists():
-        architecture_path = str(path)
-        break
-
-if architecture_path is None:
-    raise FileNotFoundError(
-        f"Could not find architecture file. Tried: {[str(p) for p in possible_paths]}"
-    )
+architecture_path = str(resolve_architecture_json_path())
 
 # Load wiring for CFC-based models
 wiring = load_architecture_from_file(architecture_path)

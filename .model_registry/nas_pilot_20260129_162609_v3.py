@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 import numpy as np
 import networkx as nx
@@ -9,10 +8,11 @@ import networkx as nx
 import config as _cfg
 from architecture_refinement.arbitrary_wiring import WsFlexHiddenWiring
 from models.cnn_wiredcfc_min import create_cnnwiredcfc_min_classifier
+from project_paths import nas_pilot_dir
 
 
 _RUN_ID = '20260129_162609_v3'
-_PILOT_DIR = Path('E:/Research/Dissertation/full_backup_7_16_2025/moabb_experiments/architecture_refinement/outputs/nas_pilot/20260129_162609_v3')
+_PILOT_DIR = nas_pilot_dir('20260129_162609_v3')
 
 
 def _load_arch_jsons() -> list[dict]:
