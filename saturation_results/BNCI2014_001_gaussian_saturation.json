@@ -1,15 +1,15 @@
 {
   "noise_type": "gaussian",
   "dataset": "BNCI2014_001",
-  "saturation_point": 100.0,
+  "saturation_point": 84.375,
   "confidence_interval": [
-    0.6219650205761318,
-    0.8219650205761317
+    0.6043810054751954,
+    0.6526405994630761
   ],
-  "chance_threshold": 0.56,
-  "performance_at_saturation": 0.7219650205761318,
-  "performance_std": 0.1,
-  "is_statistically_significant": false,
-  "detection_method": "coarse_exploration_only",
-  "timestamp": "2026-03-27 12:43:48"
+  "chance_threshold": 0.5712,
+  "performance_at_saturation": 0.6285108024691357,
+  "performance_std": 0.03893118264200804,
+  "is_statistically_significant": true,
+  "detection_method": "adaptive_three_phase",
+  "timestamp": "2026-03-29 00:36:51"
 }

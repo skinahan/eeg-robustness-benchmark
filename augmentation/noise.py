@@ -1,12 +1,13 @@
 # augmentation/noise.py
-from typing import Tuple
+from functools import lru_cache
+from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin, ClassifierMixin
 import mne
 from mne.simulation import add_eog
 from mne.io import RawArray
-from mne.channels import make_standard_montage
+from mne.channels import make_dig_montage, make_standard_montage
 from mne.preprocessing import compute_current_source_density
 from scipy.interpolate import griddata
 from scipy.signal import butter, filtfilt
@@ -14,10 +15,53 @@ from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
 
+# MOABB Shin2017A: 30 EEG channels in acquisition order (dataset docstring / BrainAmp cap).
+SHIN2017A_EEG_30 = [
+    "AFp1", "AFp2", "AFF1h", "AFF2h", "AFF5h", "AFF6h", "F3", "F4", "F7", "F8",
+    "FCC3h", "FCC4h", "FCC5h", "FCC6h", "T7", "T8", "Cz", "CCP3h", "CCP4h", "CCP5h",
+    "CCP6h", "Pz", "P3", "P4", "P7", "P8", "PPO1h", "PPO2h", "POO1", "POO2",
+]
+
+# MOABB Yang2025 (Neuracle 59 EEG; same order as moabb.datasets.yang2025._CH_NAMES_EEG).
+YANG2025_EEG_59 = [
+    "Fpz", "Fp1", "Fp2", "AF3", "AF4", "AF7", "AF8",
+    "Fz", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8",
+    "FCz", "FC1", "FC2", "FC3", "FC4", "FC5", "FC6", "FT7", "FT8",
+    "Cz", "C1", "C2", "C3", "C4", "C5", "C6", "T7", "T8",
+    "CP1", "CP2", "CP3", "CP4", "CP5", "CP6", "TP7", "TP8",
+    "Pz", "P3", "P4", "P5", "P6", "P7", "P8",
+    "POz", "PO3", "PO4", "PO5", "PO6", "PO7", "PO8",
+    "Oz", "O1", "O2",
+]
+
+# 19-channel layout matching generic_eog_mixing_template.npz training layout.
+_EOG_TEMPLATE_SOURCE_CHANNELS = (
+    "Fp1", "Fp2", "F3", "F4", "C3", "C4", "P3", "P4", "O1", "O2",
+    "F7", "F8", "T3", "T4", "T5", "T6", "Fz", "Cz", "Pz",
+)
+
+
+@lru_cache(maxsize=8)
+def _get_standard_montage_cached(montage_name: str):
+    """Cache MNE standard montages; avoids thousands of redundant parses in EOG mixing."""
+    return make_standard_montage(montage_name)
+
+
 # === Enhanced EOG Injection Functions ===
 
-def load_generic_eog_template(template_path):
+@lru_cache(maxsize=8)
+def _load_generic_eog_template_cached(resolved_path: str) -> Dict[str, Any]:
+    """Load npz once per path; arrays copied so callers cannot corrupt the cache."""
+    data = np.load(resolved_path)
+    return {
+        "mixing_matrix": np.asarray(data["mixing_matrix"], dtype=np.float64).copy(),
+        "veog_std": float(np.asarray(data["veog_std"]).squeeze()),
+        "heog_std": float(np.asarray(data["heog_std"]).squeeze()),
+        "target_rms_median": float(np.asarray(data["target_rms_median"]).squeeze()),
+    }
 
+
+def load_generic_eog_template(template_path):
     """
     Load the generic EOG mixing template created in Step 2.
     
@@ -36,14 +80,8 @@ def load_generic_eog_template(template_path):
     - target_rms_median: Target EOG artifact RMS for calibration
     """
     try:
-        data = np.load(template_path)
-        template = {
-            'mixing_matrix': data['mixing_matrix'],
-            'veog_std': data['veog_std'],
-            'heog_std': data['heog_std'],
-            'target_rms_median': data['target_rms_median']
-        }        
-        return template
+        p = str(Path(template_path).resolve())
+        return _load_generic_eog_template_cached(p)
     except Exception as e:
         raise ValueError(f"Failed to load EOG template from {template_path}: {e}")
  
@@ -65,52 +103,120 @@ def interpolate_eog_topography_to_montage(source_montage, target_montage, source
     np.ndarray
     Interpolated mixing matrix (n_target_channels, n_regressors)
     """
-    # Get montage information
-    source_montage_obj = make_standard_montage(source_montage)
-    
-    # Handle target montage - could be string or montage object
+    source_montage_obj = (
+        _get_standard_montage_cached(source_montage)
+        if isinstance(source_montage, str)
+        else source_montage
+    )
+
     if isinstance(target_montage, str):
-        target_montage_obj = make_standard_montage(target_montage)
+        target_montage_obj = _get_standard_montage_cached(target_montage)
     else:
-        target_montage_obj = target_montage # Already a montage object
-    
-    # Extract 3D positions
-    source_pos = source_montage_obj.get_positions()['ch_pos']
-    target_pos = target_montage_obj.get_positions()['ch_pos']
-    
-    # For the source montage, we need to filter to only the channels that correspond to our source matrix
-    # The source matrix has 19 channels, so we need to find the 19 channels from standard_1020
-    # that correspond to our training data channels
-    expected_source_channels = ['Fp1', 'Fp2', 'F3', 'F4', 'C3', 'C4', 'P3', 'P4', 'O1', 'O2',
-    'F7', 'F8', 'T3', 'T4', 'T5', 'T6', 'Fz', 'Cz', 'Pz']
-    
-    # Filter source positions to only include our expected channels
+        target_montage_obj = target_montage
+
+    source_pos = source_montage_obj.get_positions()["ch_pos"]
+    target_pos = target_montage_obj.get_positions()["ch_pos"]
+
+    expected_source_channels = list(_EOG_TEMPLATE_SOURCE_CHANNELS)
+
     filtered_source_pos = {ch: source_pos[ch] for ch in expected_source_channels if ch in source_pos}
-    
-    # Convert to arrays
-    source_channels = list(filtered_source_pos.keys())
+
     target_channels = list(target_pos.keys())
-    
-    source_coords = np.array([filtered_source_pos[ch] for ch in source_channels])
+
+    source_coords = np.array([filtered_source_pos[ch] for ch in filtered_source_pos])
     target_coords = np.array([target_pos[ch] for ch in target_channels])
-    
-    # Check if we have the right number of source coordinates
+
     if len(source_coords) != source_matrix.shape[0]:
-        raise ValueError(f"Source matrix has {source_matrix.shape[0]} channels but filtered montage has {len(source_coords)} channels")
-    
-    # CRITICAL FIX: Use nearest neighbor interpolation instead of linear to avoid zero-filling
-    # This ensures that each target channel gets the value from the closest source channel
-    n_regressors = source_matrix.shape[1]
-    interpolated_matrix = np.zeros((len(target_channels), n_regressors))
-    
-    for reg_idx in range(n_regressors):
-        for target_idx in range(len(target_channels)):
-            target_coord = target_coords[target_idx]
-            distances = np.linalg.norm(source_coords - target_coord, axis=1)
-            closest_source_idx = np.argmin(distances)
-            interpolated_matrix[target_idx, reg_idx] = source_matrix[closest_source_idx, reg_idx]
-    
-    return interpolated_matrix
+        raise ValueError(
+            f"Source matrix has {source_matrix.shape[0]} channels but filtered montage has {len(source_coords)} channels"
+        )
+
+    # Nearest-neighbor: same as legacy double loop (closest source row per target channel).
+    diff = target_coords[:, None, :] - source_coords[None, :, :]
+    dists = np.linalg.norm(diff, axis=2)
+    closest_source_idx = np.argmin(dists, axis=1)
+    return source_matrix[closest_source_idx, :]
+
+
+# Alternate 10-20 labels used in some datasets vs MNE standard montages (positions align).
+_EOG_MONTAGE_POSITION_ALIASES = {
+    "T3": ("T7",),
+    "T4": ("T8",),
+    "T5": ("P7",),
+    "T6": ("P8",),
+}
+
+
+def _channel_position_in_montage(ch_name: str, montage_name: str):
+    """Return 3D head coords for ``ch_name`` in ``make_standard_montage(montage_name)``, with aliases."""
+    full = _get_standard_montage_cached(montage_name)
+    pos = full.get_positions()["ch_pos"]
+    if ch_name in pos:
+        return pos[ch_name]
+    for alt in _EOG_MONTAGE_POSITION_ALIASES.get(ch_name, ()):
+        if alt in pos:
+            return pos[alt]
+    return None
+
+
+def make_ordered_montage_subset(ch_names, montage_name="standard_1005"):
+    """
+    Build a DigMontage with exactly ``ch_names`` (in order) for EOG topography interpolation.
+
+    Returns None if any channel has no position in the montage (even after aliases).
+    """
+    ch_pos = {}
+    for ch in ch_names:
+        xyz = _channel_position_in_montage(ch, montage_name)
+        if xyz is None:
+            return None
+        ch_pos[ch] = xyz
+    return make_dig_montage(ch_pos=ch_pos, coord_frame="head")
+
+
+def build_eog_mixing_matrix(template, current_ch_names, montage_name):
+    """
+    Build (n_channels, 2) mixing matrix for [VEOG, HEOG] matching ``current_ch_names`` order.
+
+    Uses the 19-channel template directly when the layout matches; otherwise interpolates
+    in 3D from standard_1020 to the ordered subset of ``montage_name``.
+    """
+    if len(current_ch_names) == 19 and all(
+        ch in current_ch_names for ch in _EOG_TEMPLATE_SOURCE_CHANNELS
+    ):
+        return template["mixing_matrix"]
+    target_montage = make_ordered_montage_subset(current_ch_names, montage_name)
+    if target_montage is None:
+        raise ValueError(
+            f"EOG mixing: could not place {len(current_ch_names)} channels on montage {montage_name!r}. "
+            "Check channel names match the dataset layout."
+        )
+    return interpolate_eog_topography_to_montage(
+        "standard_1020", target_montage, template["mixing_matrix"]
+    )
+
+
+def _eog_needs_interpolation(current_ch_names):
+    """True if channel layout differs from the 19-channel template training layout."""
+    if len(current_ch_names) != 19:
+        return True
+    ch_set = set(current_ch_names)
+    return not all(ch in ch_set for ch in _EOG_TEMPLATE_SOURCE_CHANNELS)
+
+
+def compute_scaled_eog_mixing_matrix(template, info, montage_name, artifact_scale_factor):
+    """
+    Build (n_channels, 2) mixing matrix scaled by ``artifact_scale_factor``.
+
+    Matches the non-preloaded path in ``inject_realistic_eog_artifacts_with_coverage``.
+    """
+    ch_names = list(info.ch_names)
+    if not _eog_needs_interpolation(ch_names):
+        mm = template["mixing_matrix"]
+    else:
+        mm = build_eog_mixing_matrix(template, ch_names, montage_name)
+    return np.asarray(mm, dtype=np.float64) * float(artifact_scale_factor)
+
 
 def generate_realistic_eog_regressors(n_times, sfreq, template_stats, seed=42, allow_boundary_intersection=True):
     """
@@ -248,23 +354,10 @@ def inject_realistic_eog_artifacts(data, info, template_path, montage_name='stan
         info.set_montage(montage_name, on_missing='warn')
         current_montage = info.get_montage()
     
-    # Determine if interpolation is needed
-    source_channels = ['Fp1', 'Fp2', 'F3', 'F4', 'C3', 'C4', 'P3', 'P4', 'O1', 'O2',
-    'F7', 'F8', 'T3', 'T4', 'T5', 'T6', 'Fz', 'Cz', 'Pz']
-    
-    current_ch_names = info.ch_names
-    needs_interpolation = (len(current_ch_names) != 19 or 
-    not all(ch in current_ch_names for ch in source_channels))
-    
-    if needs_interpolation:
-        # print(f"Interpolating EOG topography from 19-channel to {len(current_ch_names)}-channel montage")
-        # Use standard_1020 montage for source, but pass the actual target montage object
-        # so we only interpolate to the channels that actually exist in our data
-        mixing_matrix = interpolate_eog_topography_to_montage(
-        'standard_1020', current_montage, template['mixing_matrix']
-        )
+    current_ch_names = list(info.ch_names)
+    if _eog_needs_interpolation(current_ch_names):
+        mixing_matrix = build_eog_mixing_matrix(template, current_ch_names, montage_name)
     else:
-        # Use template directly if montage matches
         mixing_matrix = template['mixing_matrix']
     
     # Generate realistic EOG regressors
@@ -348,7 +441,8 @@ def to_volts(arr: np.ndarray, verbose: bool = False) -> Tuple[np.ndarray, str]:
 
 def inject_realistic_eog_artifacts_with_coverage(data, info, template_path, montage_name='standard_1005', 
  temporal_coverage=0.1, seed=42, apply_car=True, artifact_scale_factor=15000.0, allow_boundary_intersection=True,
- include_slow_drift=True, include_microsaccades=True, include_blink_clusters=True):
+ include_slow_drift=True, include_microsaccades=True, include_blink_clusters=True,
+ template_preloaded=None, scaled_mixing_matrix=None):
     """
     Inject realistic EOG artifacts using the learned generic mixing template with controlled temporal coverage.
     
@@ -384,14 +478,22 @@ def inject_realistic_eog_artifacts_with_coverage(data, info, template_path, mont
     Whether to include microsaccades during blinks (default: True)
     include_blink_clusters : bool
     Whether to include blink clusters (rapid successive blinks) (default: True)
+    template_preloaded : dict, optional
+        If provided, skip loading ``template_path`` from disk (same dict as ``load_generic_eog_template``).
+    scaled_mixing_matrix : np.ndarray, optional
+        If provided, use this (n_channels, 2) matrix already scaled by ``artifact_scale_factor``;
+        skips interpolation/build. Typically passed with ``template_preloaded`` from
+        ``compute_scaled_eog_mixing_matrix`` for batch speed.
     
     Returns
     -------
     np.ndarray
     Contaminated EEG data in same units as input
     """
-    # Load the generic EOG template
-    template = load_generic_eog_template(template_path)
+    if template_preloaded is not None:
+        template = template_preloaded
+    else:
+        template = load_generic_eog_template(template_path)
     
     # Ensure data is in Volts
     data_volts, unit = to_volts(data)
@@ -408,41 +510,17 @@ def inject_realistic_eog_artifacts_with_coverage(data, info, template_path, mont
         info.set_montage(montage_name, on_missing='warn')
         current_montage = info.get_montage()
     
-    # Determine if interpolation is needed
-    source_channels = ['Fp1', 'Fp2', 'F3', 'F4', 'C3', 'C4', 'P3', 'P4', 'O1', 'O2',
-    'F7', 'F8', 'T3', 'T4', 'T5', 'T6', 'Fz', 'Cz', 'Pz']
-    
-    current_ch_names = info.ch_names
-    needs_interpolation = (len(current_ch_names) != 19 or 
-    not all(ch in current_ch_names for ch in source_channels))
-    
-    if needs_interpolation:
-        # Use standard_1020 for BOTH source and target so coordinates match (DigMontage from
-        # info can have different coord_frame, causing wrong nearest-neighbor mapping).
-        full_matrix = interpolate_eog_topography_to_montage(
-            'standard_1020', 'standard_1020', template['mixing_matrix']
-        )
-        # Filter to our channels: full_matrix is (94, 2) for standard_1020; extract rows for current_ch_names
-        montage_1020 = make_standard_montage('standard_1020')
-        full_ch_names = list(montage_1020.get_positions()['ch_pos'].keys())
-        mixing_matrix = np.zeros((len(current_ch_names), full_matrix.shape[1]))
-        for i, ch in enumerate(current_ch_names):
-            if ch in full_ch_names:
-                j = full_ch_names.index(ch)
-                mixing_matrix[i] = full_matrix[j]
-            else:
-                # Fallback: nearest of the 19 source channels by name similarity
-                src_ch = ['Fp1', 'Fp2', 'F3', 'F4', 'C3', 'C4', 'P3', 'P4', 'O1', 'O2',
-                          'F7', 'F8', 'T3', 'T4', 'T5', 'T6', 'Fz', 'Cz', 'Pz']
-                j = min(range(len(src_ch)), key=lambda k: abs(ord(ch[0]) - ord(src_ch[k][0])) if len(ch) else 99)
-                mixing_matrix[i] = template['mixing_matrix'][j]
+    if scaled_mixing_matrix is not None:
+        mixing_matrix = np.asarray(scaled_mixing_matrix, dtype=np.float64)
     else:
-        # Use template directly if montage matches
-        mixing_matrix = template['mixing_matrix']
-        
-    # CRITICAL FIX: Scale up the mixing matrix to make artifacts impactful
-    # The original values were too small (10^-4 to 10^-6) compared to EEG signals (10^0)
-    mixing_matrix = mixing_matrix * artifact_scale_factor
+        current_ch_names = list(info.ch_names)
+        if _eog_needs_interpolation(current_ch_names):
+            mixing_matrix = build_eog_mixing_matrix(template, current_ch_names, montage_name)
+        else:
+            mixing_matrix = template['mixing_matrix']
+        # CRITICAL FIX: Scale up the mixing matrix to make artifacts impactful
+        # The original values were too small (10^-4 to 10^-6) compared to EEG signals (10^0)
+        mixing_matrix = mixing_matrix * artifact_scale_factor
     
     # Generate realistic EOG regressors with controlled temporal coverage
     n_times = data_volts.shape[1]
@@ -726,6 +804,10 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
     For EOG noise: whether to include microsaccades during blinks (default: True).
     include_blink_clusters : bool, optional
     For EOG noise: whether to include blink clusters (rapid successive blinks) (default: True).
+    eog_sfreq : float, optional
+    Sampling rate (Hz) used for MNE info and EOG time-course generation. Defaults to 250 when
+    omitted (legacy); pass the dataset native rate (e.g. from ``get_dataset_sampling_rate``) for
+    correct blink/artifact timing on non-250 Hz data (Shin2017A=200, Yang2025/Lee2019=1000, etc.).
     """
 
     def __init__(self, noise_type='dropout', intensity=10.0, seed=42,
@@ -733,12 +815,14 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
     artifact_scale_factor=10000.0, use_improved_gaussian=True, allow_boundary_intersection=True,
     include_slow_drift=True, include_microsaccades=True, include_blink_clusters=True,
     spatial_ell_multiplier=1.0, emg_f_low=20.0, emg_f_high=80.0, emg_use_envelope=False, ar1_rho=0.97,
-    gain_drift_rho=0.995, offset_drift_rho=0.995, jitter_sfreq=250.0, jitter_max_ms=None, spatial_dropout_cluster_size=0.25):
+    gain_drift_rho=0.995, offset_drift_rho=0.995, jitter_sfreq=250.0, jitter_max_ms=None, spatial_dropout_cluster_size=0.25,
+    eog_sfreq: Optional[float] = None):
         self.noise_type = noise_type
         self.intensity = intensity
         self.seed = seed
         self.eog_template_path = eog_template_path
         self.montage_name = montage_name
+        self.eog_sfreq = eog_sfreq
         self.artifact_scale_factor = artifact_scale_factor
         self.use_improved_gaussian = use_improved_gaussian
         self.allow_boundary_intersection = allow_boundary_intersection
@@ -923,7 +1007,7 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
             'PO9', 'PO10'
             ]
         elif n_channels == 62:
-            # Lee2019_SSVEP dataset (62 EEG channels following 10-20 system)
+            # Lee2019_MI / Lee2019_SSVEP (62 EEG, 10-10 / extended layout)
             return [
             'Fp1', 'Fp2', 'F3', 'F4', 'C3', 'C4', 'P3', 'P4', 'O1', 'O2',
             'F7', 'F8', 'T3', 'T4', 'T5', 'T6', 'Fz', 'Cz', 'Pz', 'Oz',
@@ -934,9 +1018,23 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
             'FT7', 'FT8', 'TP7', 'TP8', 'PO9', 'PO10', 'P9', 'P10',
             'F9', 'F10', 'FT9', 'FT10'
             ]
+        elif n_channels == 30:
+            # Shin2017A (30 EEG; MOABB BrainAmp 10-5 cap, acquisition order)
+            return list(SHIN2017A_EEG_30)
+        elif n_channels == 59:
+            # Yang2025 (59 EEG; Neuracle 10-10, MOABB order)
+            return list(YANG2025_EEG_59)
         else:
             # Generic fallback - generate channel names
             return [f'EEG{i+1:03d}' for i in range(n_channels)]
+
+    def _resolve_eog_montage_name(self, n_channels: int) -> str:
+        """Montage used for set_montage + EOG mixing interpolation (must match channel naming)."""
+        if n_channels in (30, 59):
+            return "standard_1005"
+        if n_channels in (22, 32, 62):
+            return "standard_1020"
+        return self.montage_name
 
     def _apply_realistic_eog_noise(self, data):
         """
@@ -945,13 +1043,14 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         For test_perturb mode: intensity controls temporal coverage of EOG artifacts (10% = 10% of time covered by artifacts)
         For other modes: intensity controls prevalence (percentage of epochs to contaminate)
         """
-        rng = np.random.RandomState(self.seed)
         n_epochs, n_channels, n_times = data.shape
         
         # Generate channel names based on the number of channels
         ch_names = self._generate_channel_names(n_channels)
-        info = mne.create_info(ch_names=ch_names, sfreq=250, ch_types=['eeg'] * n_channels)
-        info.set_montage(self.montage_name, on_missing='warn')
+        resolved_montage = self._resolve_eog_montage_name(n_channels)
+        sfreq_eog = float(self.eog_sfreq) if self.eog_sfreq is not None else 250.0
+        info = mne.create_info(ch_names=ch_names, sfreq=sfreq_eog, ch_types=['eeg'] * n_channels)
+        info.set_montage(resolved_montage, on_missing='warn')
         
         # FIXED: Always use intensity to control temporal coverage for consistent behavior
         # This makes EOG behave like true transient artifacts regardless of mode
@@ -960,14 +1059,19 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
         # Use a more gradual scaling for better control
         temporal_coverage = min(1.0, self.intensity / 100.0)
         contamination_idxs = np.random.choice(n_epochs, size=prevalence, replace=False)
-        
+
+        template = load_generic_eog_template(self.eog_template_path)
+        scaled_mixing_matrix = compute_scaled_eog_mixing_matrix(
+            template, info, resolved_montage, self.artifact_scale_factor
+        )
+
         data_aug = data.copy()
         for i in contamination_idxs:
             # temporal_coverage = rng.uniform(0.1, 0.9)
             # Inject realistic EOG artifacts with controlled temporal coverage
             contaminated_epoch = inject_realistic_eog_artifacts_with_coverage(
                 data[i], info, self.eog_template_path, 
-                montage_name=self.montage_name,
+                montage_name=resolved_montage,
                 temporal_coverage=temporal_coverage, # Control temporal coverage
                 seed=self.seed + i, # Different seed for each epoch
                 apply_car=True,
@@ -975,7 +1079,9 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
                 allow_boundary_intersection=self.allow_boundary_intersection, # Pass boundary intersection setting
                 include_slow_drift=self.include_slow_drift, # Control slow drift
                 include_microsaccades=self.include_microsaccades, # Control microsaccades
-                include_blink_clusters=self.include_blink_clusters # Control blink clusters
+                include_blink_clusters=self.include_blink_clusters, # Control blink clusters
+                template_preloaded=template,
+                scaled_mixing_matrix=scaled_mixing_matrix,
             )
             data_aug[i] = contaminated_epoch
             
@@ -1251,17 +1357,16 @@ class EEGNoiseAugmentor(BaseEstimator, TransformerMixin):
 
 # Creates an augmented sample for every sample in the set X
 class ConcatenatedNoiseAugmenter(ClassifierMixin, BaseEstimator):
-    def __init__(self, base_pipeline, noise_type='dropout', intensity=25.0, seed=42, return_groups=False):
+    def __init__(self, base_pipeline, noise_type='dropout', intensity=25.0, seed=42, return_groups=False,
+                 noise_augmentor_kwargs=None):
         self.base_pipeline = base_pipeline
         self.noise_type = noise_type
         self.intensity = intensity
         self.seed = seed
         self.return_groups = return_groups # If True, returns group labels for splitting
-        self.augmenter = EEGNoiseAugmentor(
-        noise_type=self.noise_type,
-        intensity=self.intensity,
-        seed=self.seed
-        )
+        _kw = dict(noise_type=self.noise_type, intensity=self.intensity, seed=self.seed)
+        _kw.update(noise_augmentor_kwargs or {})
+        self.augmenter = EEGNoiseAugmentor(**_kw)
 
     def concat_and_augment(self, X, y, groups=None):
         X_aug = self.augmenter.transform(X)
@@ -1354,18 +1459,17 @@ class ConcatenatedNoiseAugmenter(ClassifierMixin, BaseEstimator):
     # Replaces input with noise-augmented version
 
 class TrainOnlyNoiseClassifier(ClassifierMixin, BaseEstimator):
-    def __init__(self, base_pipeline, noise_type='dropout', intensity=25.0, seed=42):
+    def __init__(self, base_pipeline, noise_type='dropout', intensity=25.0, seed=42, noise_augmentor_kwargs=None):
         self.base_pipeline = base_pipeline
         self.noise_type = noise_type
         self.intensity = intensity
         self.seed = seed
+        self.noise_augmentor_kwargs = noise_augmentor_kwargs or {}
 
     def fit(self, X, y):
-        augmenter = EEGNoiseAugmentor(
-            noise_type=self.noise_type,
-            intensity=self.intensity,
-            seed=self.seed
-        )
+        _kw = dict(noise_type=self.noise_type, intensity=self.intensity, seed=self.seed)
+        _kw.update(self.noise_augmentor_kwargs)
+        augmenter = EEGNoiseAugmentor(**_kw)
         X_aug = augmenter.fit_transform(X)
         self.base_pipeline.fit(X_aug, y)
         self.is_fitted_ = True

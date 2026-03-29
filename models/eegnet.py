@@ -1,4 +1,7 @@
 import torch
+
+import moabb_braindecode_compat  # noqa: F401 — before braindecode
+
 from braindecode.models import EEGNetv4
 from braindecode import EEGClassifier
 from skorch.dataset import ValidSplit

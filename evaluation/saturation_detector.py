@@ -27,7 +27,7 @@ import numpy as np
 import pandas as pd
 import json
 import time
-from typing import Dict, List, Tuple, Optional, Union
+from typing import Any, Dict, List, Tuple, Optional, Union
 from dataclasses import dataclass
 from pathlib import Path
 import warnings
@@ -38,8 +38,15 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.insert(0, project_root)
 
-from moabb.datasets import BNCI2014_001, Lee2019_MI, Lee2019_SSVEP, BI2015a
+from moabb.datasets import BNCI2014_001, Lee2019_MI, Lee2019_SSVEP, BI2015a, Shin2017A
+
+try:
+    from moabb.datasets import Yang2025
+except ImportError:  # older MOABB (e.g. < 1.4)
+    Yang2025 = None  # type: ignore[misc, assignment]
+
 from moabb.paradigms import MotorImagery, SSVEP, P300
+from moabb_braindecode_compat import fix_moabb_lee2019_session_filter
 from models.eegnet import create_eegnet_classifier
 from augmentation.noise import TrainOnlyNoiseClassifier, EEGNoiseAugmentor
 from evaluation.unified_experiment_runner import UnifiedExperimentRunner
@@ -135,19 +142,31 @@ class AdaptiveSaturationDetector:
     def __init__(self, 
                  model_name: str = "eegnet",
                  base_seed: int = 42,
-                 output_dir: str = "saturation_results"):
+                 output_dir: str = "saturation_results",
+                 lee2019_mi_train_sliding_window: bool = True,
+                 shin2017a_only: bool = False):
         """
         Initialize the saturation detector.
         
         Args:
             model_name: Model to use for saturation detection (default: eegnet for speed)
-            base_seed: Base random seed for reproducibility
+            base_seed: Base random seed for reproducibility (use 42 for Shin2017A stability)
             output_dir: Directory to save results
+            lee2019_mi_train_sliding_window: For Lee2019_MI, match UnifiedExperimentRunner:
+                train = sliding windows (1 s / 0.5 s stride), test = fixed first 1 s crop.
+                Set False to train on full paradigm epochs (legacy / ablation).
+            shin2017a_only: When True, detect_saturation_points() runs only Shin2017A (unless
+                ``datasets`` is passed explicitly). Default False runs all entries in
+                dataset_configs. Shin2017A-specific training/split behavior is unchanged
+                whenever ``dataset_name`` is Shin2017A (session sweep, train_split=None, etc.).
         """
         self.model_name = model_name
         self.base_seed = base_seed
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(exist_ok=True)
+        self.lee2019_mi_train_sliding_window = bool(lee2019_mi_train_sliding_window)
+        self.shin2017a_only = bool(shin2017a_only)
+        self._lee2019_mi_sliding_logged = False
         
         # Dataset configurations
         self.dataset_configs = {
@@ -178,8 +197,26 @@ class AdaptiveSaturationDetector:
                 "n_classes": 2,
                 "subjects": [3],  # Use first few subjects for speed
                 "resample": None
-            }
+            },
+            "Shin2017A": {
+                "dataset_class": Shin2017A,
+                "dataset_init_kwargs": {"accept": True},
+                "paradigm_type": "MotorImagery",
+                "n_classes": 2,
+                # Default subject/seed pair for saturation runs: use base_seed=42 on AdaptiveSaturationDetector
+                "subjects": [1],
+                "resample": None
+            },
         }
+        # if Yang2025 is not None:
+        #     self.dataset_configs["Yang2025"] = {
+        #         "dataset_class": Yang2025,
+        #         "dataset_init_kwargs": {"paradigm_type": "2C"},
+        #         "paradigm_type": "MotorImagery",
+        #         "n_classes": 2,
+        #         "subjects": [1],
+        #         "resample": None
+        #     }
         
         # Noise types to test
         # self.noise_types = ["eog"]
@@ -203,6 +240,51 @@ class AdaptiveSaturationDetector:
         # Debugging parameters
         self.debug_mode = False
         self.debug_output_dir = self.output_dir / "debug_output"
+
+    def _lee2019_mi_sliding_window_enabled(self) -> bool:
+        return getattr(self, "lee2019_mi_train_sliding_window", True)
+
+    def _maybe_log_lee2019_mi_sliding_window_once(self) -> None:
+        if getattr(self, "_lee2019_mi_sliding_logged", False):
+            return
+        self._lee2019_mi_sliding_logged = True
+        if not self._lee2019_mi_sliding_window_enabled():
+            return
+        from evaluation.mi_sliding_window import lee2019_mi_sliding_params
+        from config import get_dataset_sampling_rate
+
+        sf = float(get_dataset_sampling_rate("Lee2019_MI"))
+        win, stride, crop = lee2019_mi_sliding_params(sf)
+        print(
+            f"[Lee2019_MI] Training-side sliding windows enabled: win_samples={win}, "
+            f"stride_samples={stride}, eval_crop_start={crop} "
+            f"(set lee2019_mi_train_sliding_window=False to disable)"
+        )
+
+    def _apply_lee2019_mi_sliding_window_fold(
+        self,
+        X_train: np.ndarray,
+        y_train: np.ndarray,
+        X_test: np.ndarray,
+        y_test: np.ndarray,
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """Same protocol as UnifiedExperimentRunner._apply_lee2019_mi_sliding_window_fold."""
+        from evaluation.mi_sliding_window import (
+            fixed_crop_batch,
+            lee2019_mi_sliding_params,
+            sliding_window_tensor,
+        )
+        from config import get_dataset_sampling_rate
+
+        sf = float(get_dataset_sampling_rate("Lee2019_MI"))
+        win, stride, crop_start = lee2019_mi_sliding_params(sf)
+        if X_train.dtype == np.float64:
+            X_train = X_train.astype(np.float32)
+        if X_test.dtype == np.float64:
+            X_test = X_test.astype(np.float32)
+        X_tr, y_tr = sliding_window_tensor(X_train, y_train, win, stride)
+        X_te, y_te = fixed_crop_batch(X_test, y_test, crop_start, win)
+        return X_tr, y_tr, X_te, y_te
         
     def detect_saturation_points(self, 
                                 datasets: List[str] = None,
@@ -211,7 +293,8 @@ class AdaptiveSaturationDetector:
         Detect saturation points for specified datasets and noise types.
         
         Args:
-            datasets: List of dataset names to test (default: all configured)
+            datasets: List of dataset names to test (default: all configured; optionally
+                restricted to Shin2017A when ``shin2017a_only`` is True on the detector)
             noise_types: List of noise types to test (default: all configured)
             
         Returns:
@@ -219,6 +302,18 @@ class AdaptiveSaturationDetector:
         """
         if datasets is None:
             datasets = list(self.dataset_configs.keys())
+            if getattr(self, "shin2017a_only", False):
+                if "Shin2017A" in self.dataset_configs:
+                    datasets = ["Shin2017A"]
+                    print(
+                        "shin2017a_only=True: restricting run to Shin2017A only "
+                        "(pass datasets=[...] explicitly or set shin2017a_only=False)."
+                    )
+                else:
+                    print(
+                        "Warning: shin2017a_only=True but Shin2017A not in dataset_configs; "
+                        "using all configured datasets."
+                    )
         if noise_types is None:
             noise_types = self.noise_types
             
@@ -301,7 +396,9 @@ class AdaptiveSaturationDetector:
         print("-" * 60)
         
         config = self.dataset_configs[dataset_name]
-        dataset = config["dataset_class"]()
+        init_kw = config.get("dataset_init_kwargs", {})
+        dataset = config["dataset_class"](**init_kw)
+        fix_moabb_lee2019_session_filter(dataset)
         dataset.subject_list = [subject_id]
         
         paradigm = get_paradigm(resample=None, dataset=dataset_name)
@@ -627,17 +724,22 @@ class AdaptiveSaturationDetector:
         """Detect saturation point for a single dataset-noise combination using a pre-trained model."""
         
         config = self.dataset_configs[dataset_name]
+        n_test = int(len(y_test))
         chance_threshold = StatisticalThresholds.get_chance_threshold(
-            config["n_classes"], 
-            sample_size=200  # Approximate test set size
+            config["n_classes"],
+            sample_size=max(1, n_test),
         )
-        
-        print(f"Chance threshold for {config['n_classes']}-class, ~200 samples: {chance_threshold:.3f}")
+
+        print(
+            f"Chance threshold for {config['n_classes']}-class, n_test={n_test}: "
+            f"{chance_threshold:.3f}"
+        )
         
         # Phase 1: Coarse exploration
         print("Phase 1: Coarse exploration...")
+        n_cls = int(config["n_classes"])
         coarse_results = self._coarse_exploration_with_trained_model(
-            trained_model, X_test, y_test, noise_type
+            trained_model, X_test, y_test, noise_type, n_cls
         )
         
         # SIMPLIFIED APPROACH: Check if any intensity shows below-chance performance
@@ -645,9 +747,21 @@ class AdaptiveSaturationDetector:
         
         if below_chance_intensity is not None:
             print(f"Found below-chance performance at intensity {below_chance_intensity}%, using as saturation point")
+            if below_chance_intensity == 0:
+                print(
+                    "  NOTE: saturation_point=0 here means clean test ROC-AUC (0% noise) was already "
+                    "below the Combrisson chance threshold. That is not a meaningful noise saturation "
+                    "intensity—usually weak clean decoding or a threshold/sample-size mismatch. "
+                    "Run evaluation/shin2017a_within_session_seed_sweep.py for details."
+                )
             return self._create_saturation_result_from_coarse(
-                dataset_name, noise_type, below_chance_intensity, chance_threshold, 
-                coarse_results, "simplified_below_chance"
+                dataset_name,
+                noise_type,
+                below_chance_intensity,
+                chance_threshold,
+                coarse_results,
+                "simplified_below_chance",
+                sample_size=n_test,
             )
         
         # If no below-chance performance found, use the complex three-phase approach
@@ -660,24 +774,313 @@ class AdaptiveSaturationDetector:
         if saturation_region is None:
             print("No saturation region found in coarse exploration, using maximum intensity")
             return self._create_saturation_result(
-                dataset_name, noise_type, 100.0, chance_threshold, 
-                coarse_results, "coarse_exploration_only"
+                dataset_name,
+                noise_type,
+                100.0,
+                chance_threshold,
+                coarse_results,
+                "coarse_exploration_only",
+                sample_size=n_test,
             )
         
         # Phase 2: Refined binary search
         print("Phase 2: Refined binary search...")
         refined_result = self._refined_binary_search_with_trained_model(
-            trained_model, X_test, y_test, noise_type, saturation_region, chance_threshold
+            trained_model,
+            X_test,
+            y_test,
+            noise_type,
+            saturation_region,
+            chance_threshold,
+            n_cls,
         )
         
         # Phase 3: Statistical validation
         print("Phase 3: Statistical validation...")
         final_result = self._statistical_validation_with_trained_model(
-            trained_model, X_test, y_test, dataset_name, noise_type, 
-            refined_result, chance_threshold
+            trained_model,
+            X_test,
+            y_test,
+            dataset_name,
+            noise_type,
+            refined_result,
+            chance_threshold,
+            sample_size=n_test,
+            n_classes=n_cls,
         )
-        
+
         return final_result
+
+    def _split_train_test_cross_session(
+        self,
+        X: np.ndarray,
+        y_encoded: np.ndarray,
+        metadata,
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """CrossSession-style split: 0train vs rest, else LeaveOneGroupOut first fold, else stratified holdout."""
+        print(f"  [DEBUG] Checking session information (CrossSession-style split)...")
+        if "session" in metadata.columns:
+            print(f"  [DEBUG] Found session column. Unique sessions: {sorted(metadata['session'].unique())}")
+            train_mask = metadata["session"] == "0train"
+            test_mask = metadata["session"] != "0train"
+            print(f"  [DEBUG] '0train' session found: {train_mask.sum()} samples")
+            print(f"  [DEBUG] Other sessions found: {test_mask.sum()} samples")
+
+            if train_mask.sum() > 0 and test_mask.sum() > 0:
+                print(f"  [DEBUG] Using standard '0train' session split")
+                return (
+                    X[train_mask],
+                    y_encoded[train_mask],
+                    X[test_mask],
+                    y_encoded[test_mask],
+                )
+            print(f"  [DEBUG] '0train' not found, using LeaveOneGroupOut for multi-session dataset")
+            from sklearn.model_selection import LeaveOneGroupOut
+
+            groups = metadata["session"].values
+            print(f"  [DEBUG] Session groups: {sorted(set(groups))}")
+            logo = LeaveOneGroupOut()
+            splits = list(logo.split(X, y_encoded, groups=groups))
+            print(f"  [DEBUG] LeaveOneGroupOut created {len(splits)} splits")
+
+            if len(splits) > 0:
+                train_idx, test_idx = splits[0]
+                print(
+                    f"  [DEBUG] Using LeaveOneGroupOut: training on {len(train_idx)} samples, "
+                    f"testing on {len(test_idx)} samples"
+                )
+                return (
+                    X[train_idx],
+                    y_encoded[train_idx],
+                    X[test_idx],
+                    y_encoded[test_idx],
+                )
+            print(f"  [DEBUG] No splits found, using train_test_split fallback")
+            from sklearn.model_selection import train_test_split
+
+            X_train, X_test, y_train, y_test = train_test_split(
+                X,
+                y_encoded,
+                test_size=0.3,
+                random_state=self.base_seed,
+                stratify=y_encoded,
+            )
+            return X_train, y_train, X_test, y_test
+        print(f"  [DEBUG] No session column found, using train_test_split")
+        from sklearn.model_selection import train_test_split
+
+        X_train, X_test, y_train, y_test = train_test_split(
+            X,
+            y_encoded,
+            test_size=0.3,
+            random_state=self.base_seed,
+            stratify=y_encoded,
+        )
+        return X_train, y_train, X_test, y_test
+
+    def _split_train_test_within_session(
+        self,
+        X: np.ndarray,
+        y_encoded: np.ndarray,
+        metadata,
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """
+        WithinSession-style split: stratified train/test within a single session (same idea as
+        UnifiedExperimentRunner's StratifiedKFold per session; we use one stratified holdout in
+        the largest session with both classes represented).
+        """
+        from sklearn.model_selection import train_test_split
+
+        if "session" not in metadata.columns:
+            raise RuntimeError("metadata has no 'session' column; cannot build WithinSession split")
+
+        sess_col = metadata["session"].astype(str).values
+        unique_sessions = np.unique(sess_col)
+        best: Optional[Tuple[int, str, np.ndarray]] = None
+        for sess in unique_sessions:
+            m = sess_col == sess
+            n = int(m.sum())
+            if n < 6:
+                continue
+            y_s = y_encoded[m]
+            if len(np.unique(y_s)) < 2:
+                continue
+            c = np.bincount(y_s)
+            if c.min() < 2:
+                continue
+            if best is None or n > best[0]:
+                best = (n, str(sess), m)
+
+        if best is None:
+            raise RuntimeError(
+                "no session with enough trials and at least two trials per class for stratified WithinSession split"
+            )
+
+        _, _, m = best
+        X_s = X[m]
+        y_s = y_encoded[m]
+        print(
+            f"  [DEBUG] WithinSession: stratified 75/25 split within one session "
+            f"({len(y_s)} trials in that session)"
+        )
+        X_train, X_test, y_train, y_test = train_test_split(
+            X_s,
+            y_s,
+            test_size=0.25,
+            random_state=self.base_seed,
+            stratify=y_s,
+        )
+        return X_train, y_train, X_test, y_test
+
+    def _eligible_shin2017a_sessions(self, metadata, y_encoded: np.ndarray) -> List[str]:
+        """MOABB sessions usable for stratified WithinSession split (same rules as _split_train_test_within_session)."""
+        if "session" not in metadata.columns:
+            return []
+        sess_col = metadata["session"].astype(str).values
+        stats: List[Tuple[int, str]] = []
+        for sess in np.unique(sess_col):
+            m = sess_col == sess
+            n = int(m.sum())
+            if n < 6:
+                continue
+            y_s = y_encoded[m]
+            if len(np.unique(y_s)) < 2:
+                continue
+            c = np.bincount(y_s)
+            if c.min() < 2:
+                continue
+            stats.append((n, str(sess)))
+        stats.sort(key=lambda x: -x[0])
+        return [s for _, s in stats]
+
+    def _train_shin2017a_best_within_session(
+        self,
+        X: np.ndarray,
+        y_encoded: np.ndarray,
+        metadata,
+        n_outputs: int,
+    ) -> Tuple[Any, np.ndarray, np.ndarray, np.ndarray, np.ndarray, float, str]:
+        """
+        Train one EEGNet per eligible MOABB session (stratified 75/25 within session) and keep
+        the fold with highest clean test ROC-AUC. CrossSession LOGO is not used here: it often
+        yields ~20 test trials and poor decode; falling back to LOGO after WithinSession made
+        results worse (see user runs with base_seed=100).
+        """
+        from sklearn.model_selection import train_test_split
+
+        sessions = self._eligible_shin2017a_sessions(metadata, y_encoded)
+        if not sessions:
+            raise RuntimeError(
+                "No eligible Shin2017A sessions (need >=6 trials and >=2 per class)."
+            )
+        best: Optional[Tuple[Any, np.ndarray, np.ndarray, np.ndarray, np.ndarray, float, str]] = None
+        best_score = -1.0
+        for i, sess in enumerate(sessions):
+            sess_col = metadata["session"].astype(str).values
+            m = sess_col == sess
+            X_s = X[m]
+            y_s = y_encoded[m]
+            X_train, X_test, y_train, y_test = train_test_split(
+                X_s,
+                y_s,
+                test_size=0.25,
+                random_state=self.base_seed,
+                stratify=y_s,
+            )
+            model_seed = int(self.base_seed) + i * 17
+            n_te = len(y_test)
+            thr = StatisticalThresholds.get_chance_threshold(
+                n_outputs, sample_size=max(1, n_te)
+            )
+            print(
+                f"  [DEBUG] Shin2017A WithinSession candidate session={sess!r} "
+                f"n_train={len(y_train)} n_test={n_te} Combrisson_thr={thr:.3f} model_seed={model_seed}"
+            )
+            model, score = self._fit_model_with_underfit_retrain(
+                X_train,
+                y_train,
+                X_test,
+                y_test,
+                "Shin2017A",
+                n_outputs,
+                eval_mode="WithinSession",
+                model_seed=model_seed,
+            )
+            if score > best_score:
+                best_score = score
+                best = (model, X_train, y_train, X_test, y_test, score, sess)
+        assert best is not None
+        _, X_tr, y_tr, X_te, y_te, sc, win = best
+        print(
+            f"  [DEBUG] Shin2017A: selected session={win!r} clean ROC-AUC={sc:.3f} "
+            f"(best of {len(sessions)} session candidate(s))"
+        )
+        return best[0], X_tr, y_tr, X_te, y_te, sc, win
+
+    def _maybe_apply_lee2019_mi_fold(
+        self, dataset_name: str, X_train, y_train, X_test, y_test
+    ):
+        if dataset_name != "Lee2019_MI" or not self._lee2019_mi_sliding_window_enabled():
+            return X_train, y_train, X_test, y_test
+        self._maybe_log_lee2019_mi_sliding_window_once()
+        X_train, y_train, X_test, y_test = self._apply_lee2019_mi_sliding_window_fold(
+            X_train, y_train, X_test, y_test
+        )
+        print(
+            f"  [DEBUG] After Lee2019_MI sliding-window preprocessing: "
+            f"X_train: {X_train.shape}, X_test: {X_test.shape}"
+        )
+        return X_train, y_train, X_test, y_test
+
+    def _fit_model_with_underfit_retrain(
+        self,
+        X_train: np.ndarray,
+        y_train: np.ndarray,
+        X_test: np.ndarray,
+        y_test: np.ndarray,
+        dataset_name: str,
+        n_classes: int,
+        eval_mode: Optional[str] = None,
+        model_seed: Optional[int] = None,
+    ):
+        """Train EEGNet; optional underfitting retrain without early stopping."""
+        import torch
+
+        seed = int(self.base_seed if model_seed is None else model_seed)
+        n_chans = X_train.shape[1]
+        n_times = X_train.shape[2]
+        model = create_eegnet_classifier(n_chans, n_times, n_classes, seed=seed)
+        model.max_epochs = get_max_epochs_for_dataset(dataset_name, eval_mode=eval_mode)
+        if dataset_name == "Shin2017A":
+            # WithinSession folds are small; ValidSplit(0.2)+early stopping often yields stuck
+            # valid_acc / premature stop. Train on the full training set; test ROC-AUC uses X_test.
+            model.set_params(train_split=None, callbacks=[])
+        model.initialize()
+        model.module_.train()
+        model.fit(X_train, y_train)
+        model.module_.eval()
+        with torch.no_grad():
+            y_pred_proba = model.predict_proba(X_test)
+            metrics_clean = compute_classification_metrics(y_test, y_pred_proba, n_classes)
+            clean_score = metrics_clean["roc_auc"]
+        print(f"  Initial clean score: {clean_score:.3f}")
+        underfitting_threshold = get_underfitting_threshold_for_dataset(dataset_name)
+        if clean_score < underfitting_threshold:
+            print(
+                f"  Re-training model without EarlyStopping due to underfitting "
+                f"(threshold: {underfitting_threshold:.3f})"
+            )
+            model.callbacks = []
+            model.module_.train()
+            model.fit(X_train, y_train)
+            model.module_.eval()
+            with torch.no_grad():
+                y_pred_proba = model.predict_proba(X_test)
+                metrics_retrain = compute_classification_metrics(y_test, y_pred_proba, n_classes)
+                new_clean_score = metrics_retrain["roc_auc"]
+            clean_score = max(clean_score, new_clean_score)
+            print(f"  Retrained clean score: {clean_score:.3f}")
+        return model, float(clean_score)
     
     def _train_model_once(self, dataset_name: str):
         """Train model once on clean data (like test_perturb mode)."""
@@ -693,7 +1096,9 @@ class AdaptiveSaturationDetector:
         
         # Load dataset and paradigm using the exact same pattern as test_perturb
         print(f"  [DEBUG] Creating dataset instance...")
-        dataset = config["dataset_class"]()
+        init_kw = config.get("dataset_init_kwargs", {})
+        dataset = config["dataset_class"](**init_kw)
+        fix_moabb_lee2019_session_filter(dataset)
         subject_id = config["subjects"][0]
         print(f"  [DEBUG] Using subject: {subject_id}")
         dataset.subject_list = [subject_id]
@@ -710,110 +1115,130 @@ class AdaptiveSaturationDetector:
         # CRITICAL: Encode labels the same way as test_perturb
         from sklearn.preprocessing import LabelEncoder
         y_encoded = LabelEncoder().fit_transform(y)
-        
-        # Use session-based splitting like test_perturb does
-        print(f"  [DEBUG] Checking session information...")
-        if 'session' in metadata.columns:
-            print(f"  [DEBUG] Found session column. Unique sessions: {sorted(metadata['session'].unique())}")
-            # Check if dataset uses '0train' session naming (BNCI2014_001, Lee2019_SSVEP)
-            train_mask = metadata['session'] == '0train'
-            test_mask = metadata['session'] != '0train'
-            print(f"  [DEBUG] '0train' session found: {train_mask.sum()} samples")
-            print(f"  [DEBUG] Other sessions found: {test_mask.sum()} samples")
-            
-            if train_mask.sum() > 0 and test_mask.sum() > 0:
-                # Standard session-based split (BNCI2014_001, Lee2019_SSVEP)
-                print(f"  [DEBUG] Using standard '0train' session split")
-                X_train = X[train_mask]
-                y_train = y_encoded[train_mask]
-                X_test = X[test_mask]
-                y_test = y_encoded[test_mask]
-            else:
-                # For datasets like BI2015a with multiple sessions, use LeaveOneGroupOut
-                # Use 2 sessions for training, 1 session for testing
-                print(f"  [DEBUG] '0train' not found, using LeaveOneGroupOut for multi-session dataset")
-                from sklearn.model_selection import LeaveOneGroupOut
-                groups = metadata['session'].values
-                print(f"  [DEBUG] Session groups: {sorted(set(groups))}")
-                logo = LeaveOneGroupOut()
-                splits = list(logo.split(X, y_encoded, groups=groups))
-                print(f"  [DEBUG] LeaveOneGroupOut created {len(splits)} splits")
-                
-                if len(splits) > 0:
-                    # Use the first split (test on first session, train on others)
-                    train_idx, test_idx = splits[0]
-                    X_train = X[train_idx]
-                    y_train = y_encoded[train_idx]
-                    X_test = X[test_idx]
-                    y_test = y_encoded[test_idx]
-                    print(f"  [DEBUG] Using LeaveOneGroupOut: training on {len(train_idx)} samples, testing on {len(test_idx)} samples")
-                else:
-                    # Fallback: use simple split
-                    print(f"  [DEBUG] No splits found, using train_test_split fallback")
-                    from sklearn.model_selection import train_test_split
-                    X_train, X_test, y_train, y_test = train_test_split(
-                        X, y_encoded, test_size=0.3, random_state=self.base_seed, stratify=y_encoded
-                    )
-        else:
-            # No session info, use simple split
-            print(f"  [DEBUG] No session column found, using train_test_split")
-            from sklearn.model_selection import train_test_split
-            X_train, X_test, y_train, y_test = train_test_split(
-                X, y_encoded, test_size=0.3, random_state=self.base_seed, stratify=y_encoded
-            )
-        
-        print(f"  [DEBUG] Data split complete - X_train: {X_train.shape}, X_test: {X_test.shape}")
-        
-        # Create model using the same pattern as test_perturb
-        print(f"  [DEBUG] Creating model...")
-        print(f"  [DEBUG] X_train shape: {X_train.shape}")
-        n_chans = X_train.shape[1]
-        n_times = X_train.shape[2]
+
         n_outputs = config["n_classes"]
-        print(f"  [DEBUG] Model params - n_chans: {n_chans}, n_times: {n_times}, n_outputs: {n_outputs}")
-        print(f"  [DEBUG] base_seed for model creation: {self.base_seed} (type: {type(self.base_seed)})")
-        
-        model = create_eegnet_classifier(n_chans, n_times, n_outputs, seed=self.base_seed)
-        print(f"  [DEBUG] Model created successfully")
-        model.max_epochs = get_max_epochs_for_dataset(dataset_name)
-        print(f"  [DEBUG] Training with max_epochs={model.max_epochs} for dataset {dataset_name}")
-        model.initialize()
-        
-        # Train on clean data (same as test_perturb)
-        model.module_.train()
-        model.fit(X_train, y_train)
-        
-        # Evaluate on clean test data to check for underfitting
-        model.module_.eval()
-        import torch
-        
-        with torch.no_grad():
-            y_pred_proba = model.predict_proba(X_test)
-            metrics_clean = compute_classification_metrics(y_test, y_pred_proba, config["n_classes"])
-            clean_score = metrics_clean["roc_auc"]
-        
-        print(f"  Initial clean score: {clean_score:.3f}")
-        
-        # Check for underfitting and retrain if necessary (same as test_perturb)
-        underfitting_threshold = get_underfitting_threshold_for_dataset(dataset_name)
-        if clean_score < underfitting_threshold:
-            print(f"  Re-training model without EarlyStopping due to underfitting (threshold: {underfitting_threshold:.3f})")
-            model.callbacks = []
-            model.module_.train()          
-            model.fit(X_train, y_train)
-            model.module_.eval()
-            with torch.no_grad():
-                y_pred_proba = model.predict_proba(X_test)
-                metrics_retrain = compute_classification_metrics(y_test, y_pred_proba, config["n_classes"])
-                new_clean_score = metrics_retrain["roc_auc"]
-            clean_score = max(clean_score, new_clean_score)
-            print(f"  Retrained clean score: {clean_score:.3f}")
-        
-        print(f"  Final model trained on {len(X_train)} samples, will evaluate on {len(X_test)} test samples")
+        if dataset_name == "Shin2017A":
+            print(
+                "  [DEBUG] Shin2017A: train one EEGNet per eligible MOABB session (WithinSession) "
+                "and keep the best clean test ROC-AUC. CrossSession LOGO is not used as a fallback "
+                "(it often yields worse decode than a good within-session fold)."
+            )
+            try:
+                model, X_train, y_train, X_test, y_test, clean_score, _sess = (
+                    self._train_shin2017a_best_within_session(
+                        X, y_encoded, metadata, n_outputs
+                    )
+                )
+                started_within_session = True
+            except RuntimeError as err:
+                print(f"  Shin2017A: session sweep failed ({err}); using CrossSession only.")
+                started_within_session = False
+                X_train, y_train, X_test, y_test = self._split_train_test_cross_session(
+                    X, y_encoded, metadata
+                )
+                X_train, y_train, X_test, y_test = self._maybe_apply_lee2019_mi_fold(
+                    dataset_name, X_train, y_train, X_test, y_test
+                )
+                print(f"  [DEBUG] Creating model (CrossSession eval path)...")
+                model, clean_score = self._fit_model_with_underfit_retrain(
+                    X_train,
+                    y_train,
+                    X_test,
+                    y_test,
+                    dataset_name,
+                    n_outputs,
+                    eval_mode="CrossSession",
+                )
+        else:
+            started_within_session = False
+            X_train, y_train, X_test, y_test = self._split_train_test_cross_session(
+                X, y_encoded, metadata
+            )
+            print(
+                f"  [DEBUG] Primary split — X_train: {X_train.shape}, X_test: {X_test.shape} "
+                f"(within_session={started_within_session})"
+            )
+
+            X_train, y_train, X_test, y_test = self._maybe_apply_lee2019_mi_fold(
+                dataset_name, X_train, y_train, X_test, y_test
+            )
+
+            print(f"  [DEBUG] Creating model (CrossSession eval path)...")
+            model, clean_score = self._fit_model_with_underfit_retrain(
+                X_train,
+                y_train,
+                X_test,
+                y_test,
+                dataset_name,
+                n_outputs,
+                eval_mode="CrossSession",
+            )
+
+            n_test = len(y_test)
+            chance_threshold = StatisticalThresholds.get_chance_threshold(
+                n_outputs,
+                sample_size=max(1, n_test),
+            )
+            if clean_score < chance_threshold:
+                print(
+                    f"  Clean ROC-AUC {clean_score:.3f} is below Combrisson chance threshold "
+                    f"{chance_threshold:.3f} (CrossSession-style split). "
+                    f"Retrying with WithinSession stratified split within one session."
+                )
+                try:
+                    X_train, y_train, X_test, y_test = self._split_train_test_within_session(
+                        X, y_encoded, metadata
+                    )
+                except RuntimeError as err:
+                    print(f"  WithinSession retry skipped: {err}")
+                else:
+                    print(
+                        f"  [DEBUG] WithinSession split complete - X_train: {X_train.shape}, X_test: {X_test.shape}"
+                    )
+                    X_train, y_train, X_test, y_test = self._maybe_apply_lee2019_mi_fold(
+                        dataset_name, X_train, y_train, X_test, y_test
+                    )
+                    print(f"  [DEBUG] Creating model (WithinSession eval path)...")
+                    model, clean_score = self._fit_model_with_underfit_retrain(
+                        X_train,
+                        y_train,
+                        X_test,
+                        y_test,
+                        dataset_name,
+                        n_outputs,
+                        eval_mode="WithinSession",
+                    )
+                    n_ts = len(y_test)
+                    thr_ws = StatisticalThresholds.get_chance_threshold(
+                        n_outputs,
+                        sample_size=max(1, n_ts),
+                    )
+                    print(
+                        f"  After WithinSession retry: clean ROC-AUC {clean_score:.3f} "
+                        f"(Combrisson chance threshold for n_test={n_ts}: {thr_ws:.3f})"
+                    )
+
+        if dataset_name == "Shin2017A":
+            print(
+                f"  [DEBUG] Primary split — X_train: {X_train.shape}, X_test: {X_test.shape} "
+                f"(within_session={started_within_session})"
+            )
+
+        print(
+            f"  Final model trained on {len(X_train)} samples, "
+            f"will evaluate on {len(X_test)} test samples"
+        )
         
         return model, X_test, y_test
     
-    def _coarse_exploration_with_trained_model(self, trained_model, X_test, y_test, noise_type) -> List[Tuple[float, float, float]]:
+    def _coarse_exploration_with_trained_model(
+        self,
+        trained_model,
+        X_test,
+        y_test,
+        noise_type,
+        n_classes: int,
+    ) -> List[Tuple[float, float, float]]:
         """Phase 1: Coarse exploration of performance across intensity range using pre-trained model."""
         results = []
         
@@ -825,7 +1250,13 @@ class AdaptiveSaturationDetector:
             for trial in range(self.n_trials_coarse):
                 seed = self.base_seed + trial * 100
                 performance = self._evaluate_intensity_with_trained_model(
-                    trained_model, X_test, y_test, noise_type, intensity, seed
+                    trained_model,
+                    X_test,
+                    y_test,
+                    noise_type,
+                    intensity,
+                    seed,
+                    n_classes,
                 )
                 if performance is not None:
                     performances.append(performance)
@@ -840,7 +1271,16 @@ class AdaptiveSaturationDetector:
                 
         return results
     
-    def _evaluate_intensity_with_trained_model(self, trained_model, X_test, y_test, noise_type, intensity, seed):
+    def _evaluate_intensity_with_trained_model(
+        self,
+        trained_model,
+        X_test,
+        y_test,
+        noise_type,
+        intensity,
+        seed,
+        n_classes: int,
+    ):
         """Evaluate a single intensity using a pre-trained model (like test_perturb mode)."""
         
         try:
@@ -857,7 +1297,8 @@ class AdaptiveSaturationDetector:
             
             with torch.no_grad():
                 y_pred_proba = trained_model.predict_proba(X_test_corrupted)
-                n_classes = y_pred_proba.shape[1]
+                # Must use dataset n_classes, not y_pred_proba.shape[1]: binary predict_proba can be
+                # (n,1) or (n,2); mixing with shape[1] breaks ROC-AUC vs _fit_model_with_underfit_retrain.
                 metrics = compute_classification_metrics(y_test, y_pred_proba, n_classes)
                 score = metrics["roc_auc"]
             
@@ -916,7 +1357,7 @@ class AdaptiveSaturationDetector:
     def _create_saturation_result_from_coarse(self, dataset_name: str, noise_type: str,
                                             intensity: float, chance_threshold: float,
                                             coarse_results: List[Tuple[float, float, float]],
-                                            method: str) -> SaturationResult:
+                                            method: str, sample_size: int) -> SaturationResult:
         """Create a saturation result from coarse exploration with below-chance performance."""
         
         # Find performance at the intensity
@@ -947,7 +1388,7 @@ class AdaptiveSaturationDetector:
             dataset=dataset_name,
             saturation_point=intensity,
             confidence_interval=confidence_interval,
-            sample_size=200,  # Approximate
+            sample_size=sample_size,
             chance_threshold=chance_threshold,
             validation_trials=self.n_trials_coarse,
             performance_at_saturation=performance,
@@ -956,9 +1397,16 @@ class AdaptiveSaturationDetector:
             detection_method=method
         )
     
-    def _refined_binary_search_with_trained_model(self, trained_model, X_test, y_test, noise_type,
-                                                 saturation_region: Tuple[float, float], 
-                                                 chance_threshold: float) -> Tuple[float, float, float]:
+    def _refined_binary_search_with_trained_model(
+        self,
+        trained_model,
+        X_test,
+        y_test,
+        noise_type,
+        saturation_region: Tuple[float, float],
+        chance_threshold: float,
+        n_classes: int,
+    ) -> Tuple[float, float, float]:
         """Phase 2: Refined binary search in saturation region."""
         
         low_intensity, high_intensity = saturation_region
@@ -974,7 +1422,13 @@ class AdaptiveSaturationDetector:
             for trial in range(self.n_trials_fine):
                 seed = self.base_seed + trial * 100 + step * 50
                 performance = self._evaluate_intensity_with_trained_model(
-                    trained_model, X_test, y_test, noise_type, mid_intensity, seed
+                    trained_model,
+                    X_test,
+                    y_test,
+                    noise_type,
+                    mid_intensity,
+                    seed,
+                    n_classes,
                 )
                 if performance is not None:
                     performances.append(performance)
@@ -1002,7 +1456,13 @@ class AdaptiveSaturationDetector:
         for trial in range(self.n_trials_fine):
             seed = self.base_seed + trial * 100 + 1000
             performance = self._evaluate_intensity_with_trained_model(
-                trained_model, X_test, y_test, noise_type, final_intensity, seed
+                trained_model,
+                X_test,
+                y_test,
+                noise_type,
+                final_intensity,
+                seed,
+                n_classes,
             )
             if performance is not None:
                 performances.append(performance)
@@ -1018,7 +1478,9 @@ class AdaptiveSaturationDetector:
     def _statistical_validation_with_trained_model(self, trained_model, X_test, y_test, 
                                                   dataset_name: str, noise_type: str,
                                                   refined_result: Tuple[float, float, float],
-                                                  chance_threshold: float) -> SaturationResult:
+                                                  chance_threshold: float,
+                                                  sample_size: int,
+                                                  n_classes: int) -> SaturationResult:
         """Phase 3: Statistical validation of saturation point."""
         
         saturation_intensity, _, _ = refined_result
@@ -1029,7 +1491,13 @@ class AdaptiveSaturationDetector:
         for trial in range(self.n_trials_validation):
             seed = self.base_seed + trial * 100 + 2000
             performance = self._evaluate_intensity_with_trained_model(
-                trained_model, X_test, y_test, noise_type, saturation_intensity, seed
+                trained_model,
+                X_test,
+                y_test,
+                noise_type,
+                saturation_intensity,
+                seed,
+                n_classes,
             )
             if performance is not None:
                 performances.append(performance)
@@ -1059,7 +1527,7 @@ class AdaptiveSaturationDetector:
             dataset=dataset_name,
             saturation_point=saturation_intensity,
             confidence_interval=confidence_interval,
-            sample_size=200,  # Approximate
+            sample_size=sample_size,
             chance_threshold=chance_threshold,
             validation_trials=self.n_trials_validation,
             performance_at_saturation=mean_perf,
@@ -1071,7 +1539,7 @@ class AdaptiveSaturationDetector:
     def _create_saturation_result(self, dataset_name: str, noise_type: str,
                                  intensity: float, chance_threshold: float,
                                  coarse_results: List[Tuple[float, float, float]],
-                                 method: str) -> SaturationResult:
+                                 method: str, sample_size: int) -> SaturationResult:
         """Create a saturation result from coarse exploration only."""
         
         # Find performance at the intensity
@@ -1089,7 +1557,7 @@ class AdaptiveSaturationDetector:
             dataset=dataset_name,
             saturation_point=intensity,
             confidence_interval=(performance - 0.1, performance + 0.1),
-            sample_size=200,
+            sample_size=sample_size,
             chance_threshold=chance_threshold,
             validation_trials=self.n_trials_coarse,
             performance_at_saturation=performance,
@@ -1182,21 +1650,41 @@ class AdaptiveSaturationDetector:
 
 def main():
     """Main function to run saturation point detection."""
-    
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Saturation point detection for noise benchmarking")
+    parser.add_argument(
+        "--shin2017a-only",
+        action="store_true",
+        help="Run only Shin2017A (default: all datasets in dataset_configs)",
+    )
+    parser.add_argument(
+        "--base-seed",
+        type=int,
+        default=42,
+        help="Experimental seed (default: 42; recommended for Shin2017A)",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=str,
+        default="saturation_results",
+        help="Directory for JSON/CSV outputs",
+    )
+    args = parser.parse_args()
+
     print("Adaptive Saturation Point Detection for Noise Benchmarking")
     print("Using Combrisson & Jerbi (2015) statistical significance thresholds")
-    print("="*80)
-    
-    # Initialize detector
+    print("=" * 80)
+
     detector = AdaptiveSaturationDetector(
         model_name="eegnet",
-        base_seed=100,
-        output_dir="saturation_results"
+        base_seed=args.base_seed,
+        output_dir=args.output_dir,
+        shin2017a_only=args.shin2017a_only,
     )
-    
-    # Detect saturation points for all configured datasets and noise types
+
     results = detector.detect_saturation_points()
-    
+
     print("\nSaturation point detection completed!")
     return results
 
@@ -1210,8 +1698,9 @@ def debug_main():
     # Initialize detector
     detector = AdaptiveSaturationDetector(
         model_name="eegnet",
-        base_seed=100,
-        output_dir="saturation_results"
+        base_seed=42,
+        output_dir="saturation_results",
+        shin2017a_only=False,
     )
     
     # Run comprehensive debugging

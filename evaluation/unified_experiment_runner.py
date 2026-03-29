@@ -49,6 +49,9 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.insert(0, project_root)
 
+import moabb_braindecode_compat  # noqa: F401 — MOABB BNCI2014_001 vs braindecode BNCI2014001
+from moabb_braindecode_compat import fix_moabb_lee2019_session_filter
+
 from config import (
     MODEL_REGISTRY,
     get_model_registry,
@@ -99,7 +102,6 @@ def _require_moabb_dataset_ctor(name: str, ctor):
 
 
 from moabb.evaluations import WithinSessionEvaluation, CrossSessionEvaluation
-from moabb.evaluations.utils import create_save_path, save_model_cv, save_model_list
 from mne.epochs import BaseEpochs
 
 # Try to import carbon footprint tracking
@@ -677,6 +679,10 @@ class UnifiedExperimentRunner:
         self._correlated_alpha_max_cache[key] = alpha_max
         return alpha_max
 
+    def _eog_noise_augmentor_kwargs(self) -> Dict[str, Any]:
+        """Extra kwargs for EEGNoiseAugmentor when applying EOG (montage + timing)."""
+        return {"eog_sfreq": float(get_dataset_sampling_rate(self.dataset))}
+
     def _make_correlated_noise_augmentor(self, noise_type: str, intensity: float, seed: Optional[int] = None):
         """Build EEGNoiseAugmentor for correlated noise with optional escalation params. seed=None uses self.seed (Spec 3)."""
         rng = seed if seed is not None else self.seed
@@ -716,10 +722,12 @@ class UnifiedExperimentRunner:
             self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
         elif self.dataset == "Lee2019_MI":
             self.dataset_obj = Lee2019_MI()
+            fix_moabb_lee2019_session_filter(self.dataset_obj)
             self.dataset_obj.subject_list = self.subjects
             self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
         elif self.dataset == "Lee2019_SSVEP":
             self.dataset_obj = Lee2019_SSVEP()
+            fix_moabb_lee2019_session_filter(self.dataset_obj)
             self.dataset_obj.subject_list = self.subjects
             self.paradigm = get_paradigm(resample=None, dataset=self.dataset)
         elif self.dataset == "BI2015a":
@@ -1069,11 +1077,17 @@ class UnifiedExperimentRunner:
                         n_outputs = classification_num_classes(self.dataset)
                 base_model = self.model_fn(**self._model_factory_kwargs(n_chans, n_times, n_outputs))
                 base_model.max_epochs = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
+                eog_kw = (
+                    self._eog_noise_augmentor_kwargs()
+                    if self.noise_dict["noise_type"] == "eog"
+                    else {}
+                )
                 return TrainOnlyNoiseClassifier(
                     base_pipeline=base_model,
                     noise_type=self.noise_dict["noise_type"],
                     intensity=self.noise_dict["intensity"],
-                    seed=self.seed
+                    seed=self.seed,
+                    noise_augmentor_kwargs=eog_kw,
                 )
         elif self.mode in ['augment', 'augment_notune']:
             def wrapped_model_fn(n_chans, n_times, n_outputs=None):
@@ -1084,11 +1098,17 @@ class UnifiedExperimentRunner:
                         n_outputs = classification_num_classes(self.dataset)
                 base_model = self.model_fn(**self._model_factory_kwargs(n_chans, n_times, n_outputs))
                 base_model.max_epochs = get_max_epochs_for_dataset(self.dataset, eval_mode=self.eval_mode)
+                eog_kw = (
+                    self._eog_noise_augmentor_kwargs()
+                    if self.noise_dict["noise_type"] == "eog"
+                    else {}
+                )
                 return ConcatenatedNoiseAugmenter(
                     base_pipeline=base_model,
                     noise_type=self.noise_dict["noise_type"],
                     intensity=self.noise_dict["intensity"],
-                    seed=self.seed
+                    seed=self.seed,
+                    noise_augmentor_kwargs=eog_kw,
                 )
         elif is_test_perturb_mode(self.mode):
             def wrapped_model_fn(n_chans, n_times, n_outputs=None):
@@ -2003,10 +2023,16 @@ class UnifiedExperimentRunner:
                             f"Augmentor noise_type must be {noise_type!r} for correlated path"
                         )
                     else:
+                        eog_extra = (
+                            self._eog_noise_augmentor_kwargs()
+                            if noise_type == "eog"
+                            else {}
+                        )
                         noise_augmentor = EEGNoiseAugmentor(
                             noise_type=noise_type,
                             intensity=intensity,
-                            seed=self.seed
+                            seed=self.seed,
+                            **eog_extra,
                         )
                     X_valid_corrupted = noise_augmentor.transform(X_valid)
                     # PATCH 0.2: Perturbation fingerprint diagnostic (lag-1 + residual mean/std)
@@ -3381,9 +3407,11 @@ def main():
                 temp_dataset_obj.subject_list = args.subjects
             elif args.dataset == "Lee2019_MI":
                 temp_dataset_obj = Lee2019_MI()
+                fix_moabb_lee2019_session_filter(temp_dataset_obj)
                 temp_dataset_obj.subject_list = args.subjects
             elif args.dataset == "Lee2019_SSVEP":
                 temp_dataset_obj = Lee2019_SSVEP()
+                fix_moabb_lee2019_session_filter(temp_dataset_obj)
                 temp_dataset_obj.subject_list = args.subjects
             elif args.dataset == "BI2015a":
                 temp_dataset_obj = BI2015a()
@@ -3479,9 +3507,11 @@ def main():
                 temp_dataset_obj.subject_list = args.subjects
             elif args.dataset == "Lee2019_MI":
                 temp_dataset_obj = Lee2019_MI()
+                fix_moabb_lee2019_session_filter(temp_dataset_obj)
                 temp_dataset_obj.subject_list = args.subjects
             elif args.dataset == "Lee2019_SSVEP":
                 temp_dataset_obj = Lee2019_SSVEP()
+                fix_moabb_lee2019_session_filter(temp_dataset_obj)
                 temp_dataset_obj.subject_list = args.subjects
             elif args.dataset == "BI2015a":
                 temp_dataset_obj = BI2015a()

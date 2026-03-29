@@ -3,6 +3,8 @@ import sys
 
 os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
 
+import moabb_braindecode_compat  # noqa: F401 — before braindecode (via models.*)
+
 from moabb.datasets import BNCI2014_001, Lee2019_SSVEP, BI2015a
 from moabb.paradigms import MotorImagery, SSVEP, P300
 from models.eegnet import create_eegnet_classifier
