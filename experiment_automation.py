@@ -1295,7 +1295,8 @@ class ExperimentAutomation:
             
             f.write(
                 "from evaluation.unified_experiment_runner import "
-                "UnifiedExperimentRunner, _resolve_lee2019_mi_train_sliding_window\n"
+                "UnifiedExperimentRunner, _resolve_lee2019_mi_train_sliding_window, "
+                "_resolve_shin2017a_train_sliding_window\n"
             )
             f.write("from evaluation.experiment_utils import collect_all_results_unified\n")
             f.write("from globals import set_seeds\n\n")
@@ -1336,7 +1337,8 @@ class ExperimentAutomation:
             f.write("    sys.path.insert(0, os.path.join(project_root, 'evaluation'))\n")
             f.write(
                 "    from evaluation.unified_experiment_runner import "
-                "UnifiedExperimentRunner, _resolve_lee2019_mi_train_sliding_window\n"
+                "UnifiedExperimentRunner, _resolve_lee2019_mi_train_sliding_window, "
+                "_resolve_shin2017a_train_sliding_window\n"
             )
             f.write("    from globals import set_seeds\n")
             f.write("    \n")
@@ -1352,6 +1354,10 @@ class ExperimentAutomation:
             f.write("    try:\n")
             f.write(
                 "        lee2019_sw = _resolve_lee2019_mi_train_sliding_window("
+                "exp_config.get('pipeline'), False)\n"
+            )
+            f.write(
+                "        shin2017a_sw = _resolve_shin2017a_train_sliding_window("
                 "exp_config.get('pipeline'), False)\n"
             )
             f.write("        # Create and run experiment\n")
@@ -1375,6 +1381,7 @@ class ExperimentAutomation:
             f.write("            legacy=USE_LEGACY_MODE,  # Use legacy experimental protocol if enabled\n")
             f.write("            pipeline=exp_config.get('pipeline'),\n")
             f.write("            lee2019_mi_train_sliding_window=lee2019_sw,\n")
+            f.write("            shin2017a_train_sliding_window=shin2017a_sw,\n")
             f.write("        )\n\n")
             
             f.write("        results = runner.run_experiment()\n")
@@ -1842,7 +1849,14 @@ class ExperimentAutomation:
                             slurm_args = "--time=0-02:00:00 --mem=12G"
                             
                     elif exp['eval_mode'] == 'WithinSession':
-                        if exp['tune']:
+                        if exp['dataset'] in ('Lee2019_MI', 'Shin2017A'):
+                            if exp['tune']:
+                                # WithinSession with tuning (Lee/Shin): same 1d budget as other MI; partition htc
+                                slurm_args = "--time=1-00:00:00 -p htc --mem=12G"
+                            else:
+                                # WithinSession without tuning: ~40m budget; partition htc
+                                slurm_args = "--time=0-00:40:00 -p htc --mem=12G"
+                        elif exp['tune']:
                             # WithinSession with tuning: Increased from 3 days to 5 days due to timeout failures
                             # Original estimate was ~12.5 days / 5 = ~2.5 days, but actual runtime is longer
                             slurm_args = "--time=1-00:00:00 --mem=12G"

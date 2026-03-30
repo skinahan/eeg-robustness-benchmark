@@ -34,7 +34,6 @@ import argparse
 import json
 import os
 import sys
-import types
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
@@ -66,22 +65,10 @@ CHANCE = 0.5
 
 
 def _apply_resample_override(runner: UnifiedExperimentRunner, resample_hz: float) -> None:
-    """Align paradigm resample, EEGNet sfreq, and sliding-window sample counts with resample_hz."""
+    """Align paradigm resample, model sfreq, and sliding-window sample counts with resample_hz."""
     ds = runner.dataset
     runner.paradigm = get_paradigm(resample=float(resample_hz), dataset=ds)
     runner._paradigm_resample_hz = float(resample_hz)
-
-    def _patched_mfk(
-        self: UnifiedExperimentRunner, n_chans: int, n_times: int, n_outputs: int
-    ) -> Dict[str, Any]:
-        return {
-            "n_chans": n_chans,
-            "n_times": n_times,
-            "n_outputs": n_outputs,
-            "sfreq": float(resample_hz),
-        }
-
-    runner._model_factory_kwargs = types.MethodType(_patched_mfk, runner)  # type: ignore[method-assign]
 
 
 def _ensure_yang_available() -> None:

@@ -206,10 +206,25 @@ class BranchedWiredCfC(BranchedDIVABase):
 
 
 def create_branched_wiredcfc_classifier(n_chans, n_times, n_outputs, wiring, **kwargs):
-    """Create the BranchedWiredCfC classifier."""
+    """Create the BranchedWiredCfC classifier.
+
+    Skorch / trainer kwargs (``optimizer__lr``, ``batch_size``, ``optimizer__weight_decay``,
+    ``max_epochs``, or other ``optimizer__*``) are applied to ``EEGClassifier``; remaining
+    ``kwargs`` update the module hyperparameter dict (``drop_prob``, ``F1``, ``kernel_length``, …).
+    """
     seed = get_seed()
     gradient_clip_value = 1.0
-    
+
+    trainer_keys: dict = {}
+    for k in list(kwargs.keys()):
+        if k in ("batch_size", "max_epochs") or k.startswith("optimizer__"):
+            trainer_keys[k] = kwargs.pop(k)
+
+    opt_lr = trainer_keys.pop("optimizer__lr", 1e-2)
+    opt_wd = trainer_keys.pop("optimizer__weight_decay", 0)
+    batch_size = trainer_keys.pop("batch_size", 64)
+    max_epochs = trainer_keys.pop("max_epochs", DEFAULT_MAX_EPOCHS)
+
     # Default parameters
     default_params = {
         'lstm_hidden_dim': 32,
@@ -241,10 +256,11 @@ def create_branched_wiredcfc_classifier(n_chans, n_times, n_outputs, wiring, **k
         BranchedWiredCfC,
         criterion=torch.nn.CrossEntropyLoss,
         optimizer=torch.optim.AdamW,
-        optimizer__lr=1e-2,
-        optimizer__weight_decay=0,
-        batch_size=64,
-        max_epochs=DEFAULT_MAX_EPOCHS,
+        optimizer__lr=opt_lr,
+        optimizer__weight_decay=opt_wd,
+        batch_size=batch_size,
+        max_epochs=max_epochs,
+        **trainer_keys,
         module__n_chans=n_chans,
         module__n_times=n_times,
         module__n_outputs=n_outputs,

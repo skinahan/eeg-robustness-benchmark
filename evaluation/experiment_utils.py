@@ -1107,8 +1107,9 @@ def collect_all_results_unified():
     dataset_paradigms = [
         ("MotorImagery", "BNCI2014_001"),
         ("MotorImagery", "Lee2019_MI"),
+        ("MotorImagery", "Shin2017A"),
         ("SSVEP", "Lee2019_SSVEP"),
-        ("ERP", "BI2015a")
+        ("ERP", "BI2015a"),
     ]
     
     for paradigm, dataset in dataset_paradigms:

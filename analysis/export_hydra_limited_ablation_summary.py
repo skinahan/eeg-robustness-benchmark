@@ -57,6 +57,7 @@ PAPER_MAIN_ROW: Dict[str, str] = {
 DATASET_FAMILY: Dict[str, str] = {
     "BNCI2014_001": "MI",
     "Lee2019_MI": "MI",
+    "Shin2017A": "MI",
     "Lee2019_SSVEP": "SSVEP",
     "BI2015a": "ERP",
 }
@@ -343,7 +344,13 @@ def run_export(unified_file: Optional[Path], output_file: Path) -> int:
 
     inventory = inventory_ablation_presence(unified_path)
     if not inventory.empty:
-        _prio = {"BNCI2014_001": 0, "Lee2019_MI": 1, "Lee2019_SSVEP": 2, "BI2015a": 3}
+        _prio = {
+            "BNCI2014_001": 0,
+            "Lee2019_MI": 1,
+            "Shin2017A": 2,
+            "Lee2019_SSVEP": 3,
+            "BI2015a": 4,
+        }
         inventory = inventory.assign(
             _sort=inventory["dataset"].map(lambda d: _prio.get(str(d), 99))
         ).sort_values(["_sort", "dataset", "eval_mode_display"]).drop(columns="_sort")

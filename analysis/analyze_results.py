@@ -38,6 +38,12 @@ PLOT_YLIM_CONFIG = {
         'csv_dynamic': True,
         'csv_padding': 0.1,
     },
+    'Shin2017A': {
+        'performance_max': 1.0,
+        'rd_max': 1.0,
+        'csv_dynamic': True,
+        'csv_padding': 0.1,
+    },
     'BI2015a': {
         'performance_max': 1.0,
         'rd_max': 1.0,
@@ -427,6 +433,8 @@ def aggregate_results(input_dir):
                 combined_df['dataset'] = 'Lee2019_SSVEP'
             elif 'Lee2019_MI' in input_dir:
                 combined_df['dataset'] = 'Lee2019_MI'
+            elif 'Shin2017A' in input_dir:
+                combined_df['dataset'] = 'Shin2017A'
             elif 'BI2015a' in input_dir:
                 combined_df['dataset'] = 'BI2015a'
             else:
@@ -3751,6 +3759,7 @@ if __name__ == '__main__':
     dataset_configs = {
         'BNCI2014_001': {'label': 'MotorImagery/BNCI2014_001'},
         'Lee2019_MI': {'label': 'MotorImagery/Lee2019_MI'},
+        'Shin2017A': {'label': 'MotorImagery/Shin2017A'},
         'Lee2019_SSVEP': {'label': 'SSVEP/Lee2019_SSVEP'},
         'BI2015a': {'label': 'ERP/BI2015a'}
     }

@@ -3668,7 +3668,7 @@ def main():
                     test_perturb_gaussian_only=args.test_perturb_gaussian_only,
                     test_perturb_gaussian_alpha_grid=args.test_perturb_gaussian_alpha_grid,
                     test_perturb_target_snr_db=getattr(args, "test_perturb_target_snr_db", 0.0),
-                test_perturb_target_snr_dbs=getattr(args, "test_perturb_target_snr_dbs", None),
+                    test_perturb_target_snr_dbs=getattr(args, "test_perturb_target_snr_dbs", None),
                     test_perturb_spatial_ell_multiplier=getattr(args, "test_perturb_spatial_ell_multiplier", 1.0),
                     test_perturb_emg_f_high=getattr(args, "test_perturb_emg_f_high", 80.0),
                     test_perturb_emg_use_envelope=getattr(args, "test_perturb_emg_use_envelope", False),
