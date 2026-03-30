@@ -7,7 +7,7 @@ This script defines a single, flexible experiment runner.
 Supports:
 - Multiple evaluation modes: WithinSession, CrossSession, CrossSubject
 - Multiple experiment modes: baseline, tune, augment, perturb, augment_notune, perturb_notune, test_perturb
-- Noise types: dropout, gaussian, eog
+- Noise types: dropout, gaussian, eog, spike, ar1_drift, and other EEGNoiseAugmentor modes
 - Dynamic model instantiation based on dataset characteristics
 - Two-stage hyperparameter optimization
 - Comprehensive result logging and aggregation
@@ -116,6 +116,9 @@ except ImportError:
 # Fixed seed for alpha_max calibration so that re-running yields identical alpha_max (Spec 3 PATCH 2).
 _CALIBRATION_SEED = 202602
 
+# Default perturbation sweep when test_perturb does not override noise types (matches _evaluate_perturb fallbacks).
+_DEFAULT_TEST_PERTURB_NOISE_TYPES = ["eog", "gaussian", "dropout", "spike", "ar1_drift"]
+
 
 def _compute_lag1_autocorr_diagnostic(
     noise_type: str,
@@ -190,7 +193,7 @@ def _get_test_perturb_expected_scope(
     elif test_perturb_gaussian_only:
         noise_types = ["gaussian"]
     else:
-        noise_types = ["eog", "gaussian", "dropout", "spike"]
+        noise_types = list(_DEFAULT_TEST_PERTURB_NOISE_TYPES)
 
     expected_intensities_by_noise = {}
     for nt in noise_types:
@@ -1946,9 +1949,9 @@ class UnifiedExperimentRunner:
                     )
             except Exception as e:
                 print(f"[WARNING] Failed to derive noise types from saturation file: {e}")
-                noise_types = ["eog", "gaussian", "dropout", "spike"]
+                noise_types = list(_DEFAULT_TEST_PERTURB_NOISE_TYPES)
         else:
-            noise_types = ["eog", "gaussian", "dropout", "spike"]
+            noise_types = list(_DEFAULT_TEST_PERTURB_NOISE_TYPES)
 
         split_id = (getattr(self, "eval_mode", "CrossSession"), str(session))
         target_snr_dbs = getattr(self, "test_perturb_target_snr_dbs", None)

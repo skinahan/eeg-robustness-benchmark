@@ -136,13 +136,14 @@ models:
 # Evaluation modes
 eval_modes:
   - "CrossSession"
-  # - "WithinSession"
+  - "WithinSession"
   - "CrossSubject"
 
 noise_types:
   - "gaussian"
   - "dropout"
   - "eog"
+  - "ar1_drift"
   # - "spike"
 
 # Noise perturbation configuration
@@ -151,6 +152,8 @@ noise_perturbation:
   # Bounds are set based on saturation_points_summary.csv
   # Each dataset + noise_type combination has its own bounds
   # Format: min_intensity = 1.0, max_intensity = saturation_point
+  # Correlated types (e.g. ar1_drift): CSV stores a nominal saturation scale; test_perturb may also
+  # use data-derived alpha_max (SNR) via unified_experiment_runner when using alpha grids / correlated path.
   saturation_file: "saturation_results/saturation_points_summary.csv"
   num_steps: 20  # Number of intensity steps between min and max
   default_bounds: [1.0, 50.0]  # Fallback bounds if saturation data not available

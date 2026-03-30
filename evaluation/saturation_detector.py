@@ -144,7 +144,8 @@ class AdaptiveSaturationDetector:
                  base_seed: int = 42,
                  output_dir: str = "saturation_results",
                  lee2019_mi_train_sliding_window: bool = True,
-                 shin2017a_only: bool = False):
+                 shin2017a_only: bool = False,
+                 ar1_rho: float = 0.97):
         """
         Initialize the saturation detector.
         
@@ -159,9 +160,12 @@ class AdaptiveSaturationDetector:
                 ``datasets`` is passed explicitly). Default False runs all entries in
                 dataset_configs. Shin2017A-specific training/split behavior is unchanged
                 whenever ``dataset_name`` is Shin2017A (session sweep, train_split=None, etc.).
+            ar1_rho: AR(1) coefficient for ``ar1_drift`` noise (matches UnifiedExperimentRunner
+                ``--test_perturb_ar1_rho`` default).
         """
         self.model_name = model_name
         self.base_seed = base_seed
+        self.ar1_rho = float(ar1_rho)
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(exist_ok=True)
         self.lee2019_mi_train_sliding_window = bool(lee2019_mi_train_sliding_window)
@@ -220,7 +224,7 @@ class AdaptiveSaturationDetector:
         
         # Noise types to test
         # self.noise_types = ["eog"]
-        self.noise_types = ["gaussian", "dropout", "eog", "spike"]
+        self.noise_types = ["gaussian", "dropout", "eog", "spike", "ar1_drift"]
         
         # Phase 1: Coarse exploration parameters
         self.coarse_intensities = [0, 25, 50, 75, 100]
@@ -240,6 +244,19 @@ class AdaptiveSaturationDetector:
         # Debugging parameters
         self.debug_mode = False
         self.debug_output_dir = self.output_dir / "debug_output"
+
+    def _make_eeg_noise_augmentor(
+        self, noise_type: str, intensity: float, seed: int
+    ) -> EEGNoiseAugmentor:
+        """Build EEGNoiseAugmentor; pass ar1_rho for ar1_drift (matches UnifiedExperimentRunner)."""
+        kwargs: Dict[str, Any] = {
+            "noise_type": noise_type,
+            "intensity": intensity,
+            "seed": seed,
+        }
+        if noise_type == "ar1_drift":
+            kwargs["ar1_rho"] = float(self.ar1_rho)
+        return EEGNoiseAugmentor(**kwargs)
 
     def _lee2019_mi_sliding_window_enabled(self) -> bool:
         return getattr(self, "lee2019_mi_train_sliding_window", True)
@@ -536,7 +553,7 @@ class AdaptiveSaturationDetector:
         print("-" * 60)
         
         # Create noise augmentor
-        augmentor = EEGNoiseAugmentor(noise_type=noise_type, intensity=intensity, seed=self.base_seed)
+        augmentor = self._make_eeg_noise_augmentor(noise_type, intensity, self.base_seed)
         
         # Apply noise to test data
         print("Applying noise to test data...")
@@ -1286,7 +1303,7 @@ class AdaptiveSaturationDetector:
         try:
             # Apply noise to test data if intensity > 0 (same as test_perturb)
             if intensity > 0:
-                augmentor = EEGNoiseAugmentor(noise_type=noise_type, intensity=intensity, seed=seed)
+                augmentor = self._make_eeg_noise_augmentor(noise_type, intensity, seed)
                 X_test_corrupted = augmentor.transform(X_test)
             else:
                 X_test_corrupted = X_test
@@ -1670,6 +1687,12 @@ def main():
         default="saturation_results",
         help="Directory for JSON/CSV outputs",
     )
+    parser.add_argument(
+        "--ar1-rho",
+        type=float,
+        default=0.97,
+        help="AR(1) drift coefficient for ar1_drift noise (default 0.97), aligned with test_perturb_ar1_rho",
+    )
     args = parser.parse_args()
 
     print("Adaptive Saturation Point Detection for Noise Benchmarking")
@@ -1681,6 +1704,7 @@ def main():
         base_seed=args.base_seed,
         output_dir=args.output_dir,
         shin2017a_only=args.shin2017a_only,
+        ar1_rho=args.ar1_rho,
     )
 
     results = detector.detect_saturation_points()
