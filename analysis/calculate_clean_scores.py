@@ -30,6 +30,8 @@ _project_root = os.path.dirname(_current_dir)
 if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 
+from evaluation.experiment_utils import apply_perturb_sweep_mode_canonicalization
+
 
 def canonicalize_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -136,7 +138,10 @@ def load_results_dataframe(
     
     # Canonicalize column names (handles spaces, hyphens, case)
     df = canonicalize_columns(df)
-    
+    df = apply_perturb_sweep_mode_canonicalization(
+        df, log_label="calculate_clean_scores.load_results_for_clean_scores"
+    )
+
     # Map column names to expected format
     # Handle 'tuned' -> 'tune' mapping
     if 'tuned' in df.columns and 'tune' not in df.columns:

@@ -36,6 +36,7 @@ _project_root = os.path.dirname(_current_dir)
 if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 
+from evaluation.experiment_utils import apply_perturb_sweep_mode_canonicalization
 
 # ----------------------------
 # Configuration
@@ -1032,6 +1033,8 @@ def load_results_dataframe(
     
     # Canonicalize column names (handles spaces, hyphens, case)
     df = canonicalize_columns(df)
+    # Must run before any mode == test_perturb filter so multirun sweep rows are kept
+    df = apply_perturb_sweep_mode_canonicalization(df, log_label="robustness_metrics.load_results_for_metrics")
     
     # Filter to core models if specified
     if core_models is None:
@@ -1164,14 +1167,14 @@ def load_results_dataframe(
             f"Available columns: {list(df.columns)}"
         )
     
-    # Filter to test_perturb mode if available
-    if 'mode' in df.columns:
-        test_perturb_mask = df['mode'].astype(str).str.replace('_tune', '', regex=False) == 'test_perturb'
+    # Filter to perturbation sweep (multirun already mapped to test_perturb above)
+    if "mode" in df.columns:
+        test_perturb_mask = df["mode"].astype(str).str.replace("_tune", "", regex=False) == "test_perturb"
         if test_perturb_mask.any():
-            print(f"[INFO] Filtering to test_perturb mode: {test_perturb_mask.sum()} rows")
+            print(f"[INFO] Filtering to test_perturb sweep: {test_perturb_mask.sum()} rows")
             df = df[test_perturb_mask].copy()
         else:
-            print("[WARNING] No test_perturb results found in data")
+            print("[WARNING] No test_perturb / multirun sweep results found in data")
     
     # Add clean_score as intensity 0.0 (same logic as analyze_results.py)
     # This is critical for RD curve computation which needs baseline f(0)

@@ -20,8 +20,13 @@ Aligned with ``Figure Specifications_Architecture_Refinement_Paper3_Latest.md`` 
   - ``figure2_ws_flex_structural_limits.pdf`` — Figure 2 (TE distribution + G1+G2 run-level TE vs.\ $|\\widehat{\\mathrm{ORC}}|$ scatter, $\\mathrm{RD}_{\\max}$ viridis, 2D KDE).
   - ``figure3_out_of_family_rdmax.pdf`` — Figure 3 (family comparison: seaborn box + strip; writes ``option_b_family_contrast.json``).
   - ``figure4_clean_vs_rdmax_optional.pdf`` — Figure 4 optional (Clean ROC-AUC vs.\ RD_max).
+  - ``figure5_roc_auc_vs_intensity_by_family.pdf`` — ROC-AUC vs.\ noise intensity by topology family (G1–G5);
+    requires on-disk ``test_perturb`` CSVs under ``results/`` (see ``run_paper3_experiment3.load_test_perturb_longform_for_run``).
+    Enable with ``--only fig5`` (not part of the default figure set).
+  - ``figure6_clean_roc_auc_by_family.pdf`` — bar chart of mean clean ROC-AUC per family (topology means ± SD across topologies);
+    needs ``clean_roc_auc`` in ``experiment3_results.csv`` like the optional clean-accuracy scatter. Enable with ``--only fig6``.
 
-**Default** ``--only``: ``fig1``, ``fig2``, ``fig3``. Add ``fig4`` for the optional clean-accuracy figure.
+**Default** ``--only``: ``fig1``, ``fig2``, ``fig3``. Add ``fig4`` for the optional clean-accuracy scatter; ``fig5`` for family ROC–intensity curves; ``fig6`` for the clean ROC-AUC bar chart.
 
 **Legacy keys** (prior pipeline): ``legacy_te_orc_space``, ``legacy_metrics_two_panel``,
 ``legacy_runlevel_all_groups``, ``legacy_proxy_bins``, ``coverage``.
@@ -37,7 +42,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
 import pandas as pd
@@ -47,6 +52,7 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from architecture_refinement.paper3.run_paper3_forensic_pass import _topology_table_main_exp3
+from architecture_refinement.paper3.run_paper3_experiment3 import load_test_perturb_longform_for_run
 from architecture_refinement.paper3.run_paper3_option_b_family_contrast import (
     GROUP_LABELS,
     GROUP_ORDER,
@@ -86,7 +92,7 @@ LEGACY_KEYS = frozenset({
     "legacy_runlevel_all_groups",
     "legacy_proxy_bins",
 })
-VALID_ONLY = DEFAULT_FIGS | {"fig4"} | LEGACY_KEYS | {"coverage"}
+VALID_ONLY = DEFAULT_FIGS | {"fig4"} | LEGACY_KEYS | {"coverage"} | {"fig5"} | {"fig6"}
 
 
 def apply_figure_style() -> None:
@@ -1027,6 +1033,57 @@ def plot_fig5(topo: pd.DataFrame, out_path: Path) -> None:
     _savefig(out_path)
 
 
+def plot_clean_roc_auc_bar_by_family(topo: pd.DataFrame, out_path: Path) -> None:
+    """Mean clean ROC-AUC per family (mean of topology-level seed means); error bars = SD across topologies."""
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots(figsize=(8.0, 4.5))
+    t = topo.dropna(subset=["clean_roc_auc_mean", "group"])
+    if t.empty:
+        ax.text(0.5, 0.5, "Need clean_roc_auc in results", ha="center", va="center", transform=ax.transAxes)
+        _savefig(out_path)
+        return
+
+    groups_present: List[str] = []
+    means: List[float] = []
+    yerrs: List[float] = []
+    for g in GROUP_ORDER:
+        vals = t.loc[t["group"] == g, "clean_roc_auc_mean"].dropna().to_numpy(dtype=float)
+        if len(vals) == 0:
+            continue
+        groups_present.append(g)
+        means.append(float(np.mean(vals)))
+        yerrs.append(float(np.std(vals, ddof=1)) if len(vals) >= 2 else 0.0)
+
+    if not groups_present:
+        ax.text(0.5, 0.5, "Need clean_roc_auc in results", ha="center", va="center", transform=ax.transAxes)
+        _savefig(out_path)
+        return
+
+    x = np.arange(len(groups_present))
+    colors = [GROUP_COLORS[g] for g in groups_present]
+    ax.bar(
+        x,
+        means,
+        yerr=yerrs,
+        color=colors,
+        alpha=0.85,
+        capsize=4.0,
+        edgecolor="black",
+        linewidth=0.6,
+        error_kw={"linewidth": 0.9, "ecolor": "0.35"},
+    )
+    ax.set_xticks(x)
+    ax.set_xticklabels([GROUP_LABELS[g] for g in groups_present], rotation=22, ha="right")
+    ax.set_xlabel("")
+    ax.set_ylabel("Mean ROC-AUC")
+    ax.set_title("Clean ROC-AUC by topology family")
+    ax.set_ylim(0.7, 0.9)
+    _axes_grid(ax)
+    fig.tight_layout()
+    _savefig(out_path)
+
+
 def plot_fig6_fixed(df: pd.DataFrame, out_path: Path) -> None:
     """Box + jitter by group order G1..G5 with stable positions."""
     import matplotlib.pyplot as plt
@@ -1138,6 +1195,176 @@ def plot_coverage(
     _savefig(out_path)
 
 
+def _build_run_level_roc_vs_intensity_long(
+    df_exp3: pd.DataFrame,
+    repo_root: Path,
+    dataset: str,
+    noise_type: str,
+) -> Tuple[pd.DataFrame, List[str]]:
+    """
+    One row per (group, model, seed, intensity) with ROC-AUC averaged within-run at each intensity.
+    Intensity 0 uses clean ROC-AUC (same convention as ``analysis/analyze_results``); non-zero
+    intensities from ``test_perturb`` CSVs exclude duplicate zero rows before prepending clean.
+    """
+    import warnings as warn_mod
+
+    rows: List[Dict[str, Any]] = []
+    log_warns: List[str] = []
+    need = {"model", "seed", "group"}
+    if not need.issubset(df_exp3.columns):
+        return pd.DataFrame(), ["experiment3_results missing model, seed, or group"]
+    sub = df_exp3.dropna(subset=["model", "seed", "group"]).copy()
+    sub["seed"] = pd.to_numeric(sub["seed"], errors="coerce")
+    sub = sub.dropna(subset=["seed"])
+    sub = sub.drop_duplicates(subset=["model", "seed"], keep="first")
+    if sub.empty:
+        return pd.DataFrame(), ["no valid model/seed/group rows"]
+
+    for _, r in sub.iterrows():
+        model = str(r["model"])
+        seed = int(r["seed"])
+        group = str(r["group"])
+        if group not in GROUP_ORDER:
+            continue
+        lf = load_test_perturb_longform_for_run(repo_root, dataset, model, seed, noise_type)
+        if lf is None or lf.empty:
+            log_warns.append(f"{model} seed={seed}: no test_perturb CSV for noise_type={noise_type}")
+            continue
+        lf = lf.dropna(subset=["intensity", "corrupted_roc_auc"])
+        if lf.empty:
+            log_warns.append(f"{model} seed={seed}: empty after dropna")
+            continue
+        g = lf.groupby("intensity", as_index=False).agg(roc_auc=("corrupted_roc_auc", "mean"))
+        g = g[np.abs(pd.to_numeric(g["intensity"], errors="coerce")) > 1e-9]
+        for _, gr in g.iterrows():
+            rows.append({
+                "group": group,
+                "model": model,
+                "seed": seed,
+                "intensity": float(gr["intensity"]),
+                "roc_auc": float(gr["roc_auc"]),
+            })
+        if lf["clean_roc_auc"].notna().any():
+            clean = float(lf["clean_roc_auc"].dropna().iloc[0])
+            rows.append({
+                "group": group,
+                "model": model,
+                "seed": seed,
+                "intensity": 0.0,
+                "roc_auc": clean,
+            })
+        else:
+            log_warns.append(f"{model} seed={seed}: missing clean_roc_auc for intensity-0 point")
+
+    out = pd.DataFrame(rows)
+    return out, log_warns
+
+
+def plot_topology_family_roc_vs_intensity(
+    df_long: pd.DataFrame,
+    out_path: Path,
+    *,
+    dataset: str,
+    noise_type: str,
+    run_warnings: Optional[List[str]] = None,
+) -> None:
+    """ROC-AUC vs noise intensity (G1–G5 lines), same colors as ``figure3_out_of_family_rdmax``."""
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    from matplotlib.lines import Line2D
+
+    fig, ax = plt.subplots(figsize=(8.0, 4.5))
+    if df_long.empty:
+        ax.text(
+            0.5,
+            0.5,
+            "No test_perturb rows loaded.\n"
+            "Ensure experiment3_results (model, seed, group) matches on-disk results under\n"
+            "results/<paradigm>/<dataset>/<model>/CrossSessionEvaluation/<seed>/ (test_perturb CSVs).",
+            ha="center",
+            va="center",
+            transform=ax.transAxes,
+            fontsize=9,
+        )
+        print("[fig5] No data for ROC–intensity curves (missing results/ or mismatched paths).")
+        if run_warnings:
+            for w in run_warnings[:20]:
+                print(f"[fig5] {w}")
+            if len(run_warnings) > 20:
+                print(f"[fig5] ... and {len(run_warnings) - 20} more warnings")
+        _axes_grid(ax)
+        _savefig(out_path)
+        return
+
+    d = df_long.copy()
+    d["family_label"] = d["group"].map(lambda x: GROUP_LABELS.get(x, x))
+    groups_present = [g for g in GROUP_ORDER if g in d["group"].unique()]
+    if not groups_present:
+        ax.text(0.5, 0.5, "No G1–G5 rows", ha="center", va="center", transform=ax.transAxes)
+        _savefig(out_path)
+        return
+
+    palette = [GROUP_COLORS[g] for g in groups_present]
+    try:
+        sns.lineplot(
+            data=d,
+            x="intensity",
+            y="roc_auc",
+            hue="group",
+            hue_order=groups_present,
+            palette=palette,
+            marker="o",
+            markersize=5,
+            linestyle="-",
+            errorbar=("ci", 95),
+            err_style="band",
+            ax=ax,
+            legend=False,
+        )
+    except TypeError:
+        sns.lineplot(
+            data=d,
+            x="intensity",
+            y="roc_auc",
+            hue="group",
+            hue_order=groups_present,
+            palette=palette,
+            marker="o",
+            markersize=5,
+            linestyle="-",
+            ci=95,
+            ax=ax,
+            legend=False,
+        )
+    handles = []
+    for g in groups_present:
+        handles.append(
+            Line2D(
+                [0],
+                [0],
+                color=GROUP_COLORS[g],
+                marker=GROUP_MARKERS.get(g, "o"),
+                linestyle="-",
+                linewidth=1.2,
+                markersize=5,
+                label=GROUP_LABELS.get(g, g),
+            )
+        )
+    ax.legend(handles=handles, loc="best", frameon=False, fontsize=10)
+    ax.set_xlabel("Noise intensity")
+    ax.set_ylabel("ROC-AUC")
+    ax.set_title(f"ROC-AUC vs. noise intensity by topology family ({dataset}, {noise_type})")
+    _axes_grid(ax)
+    fig.tight_layout()
+    _savefig(out_path)
+    if run_warnings:
+        for w in run_warnings[:20]:
+            print(f"[fig5] {w}")
+        if len(run_warnings) > 20:
+            print(f"[fig5] ... and {len(run_warnings) - 20} more warnings")
+    print(f"[fig5] Wrote {out_path} (n={len(d)} run-level points)")
+
+
 def _parse_only(s: Optional[str]) -> Optional[Set[str]]:
     if not s:
         return None
@@ -1160,11 +1387,18 @@ def run(
     stratified_pilot_root: Optional[Path] = None,
     forensic_dir: Optional[Path] = None,
     fig1_metric: str = "te",
+    repo_root: Optional[Path] = None,
+    dataset: str = "BNCI2014_001",
+    noise_type: str = "ar1_drift",
 ) -> None:
     apply_figure_style()
     exp3_dir = Path(experiment3_dir)
     if not exp3_dir.is_absolute():
         exp3_dir = _REPO_ROOT / exp3_dir
+    repo_root_p = Path(repo_root) if repo_root is not None else _REPO_ROOT
+    if not repo_root_p.is_absolute():
+        repo_root_p = _REPO_ROOT / repo_root_p
+    repo_root_p = repo_root_p.resolve()
     out_dir = Path(output_dir)
     if not out_dir.is_absolute():
         out_dir = _REPO_ROOT / out_dir
@@ -1226,6 +1460,8 @@ def run(
             (out_dir / "option_b_family_contrast.json").write_text(json.dumps(st, indent=2, default=str), encoding="utf-8")
     if "fig4" in want:
         plot_fig5(topo, out_dir / "figure4_clean_vs_rdmax_optional.pdf")
+    if "fig6" in want:
+        plot_clean_roc_auc_bar_by_family(topo, out_dir / "figure6_clean_roc_auc_by_family.pdf")
 
     if "legacy_te_orc_space" in want:
         plot_legacy_te_orc_space(topo, out_dir / "legacy_te_orc_metric_space_trained.pdf")
@@ -1249,6 +1485,18 @@ def run(
             plot_coverage(e1p, topo, out_dir / "fig_coverage_te_orc.pdf")
         else:
             print("[coverage] Skipped: pass --experiment1-dir for proxy_pool.csv")
+
+    if "fig5" in want:
+        long_df, fig5_warns = _build_run_level_roc_vs_intensity_long(
+            df, repo_root_p, dataset, noise_type
+        )
+        plot_topology_family_roc_vs_intensity(
+            long_df,
+            out_dir / "figure5_roc_auc_vs_intensity_by_family.pdf",
+            dataset=dataset,
+            noise_type=noise_type,
+            run_warnings=fig5_warns,
+        )
 
 
 def main() -> int:
@@ -1297,7 +1545,26 @@ def main() -> int:
         "--only",
         type=str,
         default=None,
-        help="Comma-separated. Main: fig1,fig2,fig3[,fig4]. Legacy: legacy_te_orc_space,legacy_metrics_two_panel,... coverage",
+        help="Comma-separated. Main: fig1,fig2,fig3[,fig4,fig6]. fig5: ROC-AUC vs intensity by family (needs results/). Legacy: ... coverage",
+    )
+    parser.add_argument(
+        "--repo-root",
+        type=str,
+        default=None,
+        help="Repo root containing results/ (default: project root). Used for fig5 test_perturb CSV discovery.",
+    )
+    parser.add_argument(
+        "--dataset",
+        type=str,
+        default="BNCI2014_001",
+        help="Dataset name for fig5 path results/<paradigm>/<dataset>/...",
+    )
+    parser.add_argument(
+        "--noise-type",
+        type=str,
+        default="ar1_drift",
+        dest="noise_type",
+        help="Noise type column in test_perturb CSVs (default: ar1_drift, matches Experiment 3)",
     )
     args = parser.parse_args()
     only = _parse_only(args.only)
@@ -1312,6 +1579,9 @@ def main() -> int:
         stratified_pilot_root=Path(args.stratified_pilot_root) if args.stratified_pilot_root else None,
         forensic_dir=Path(args.forensic_dir) if args.forensic_dir else None,
         fig1_metric=str(args.fig1_metric),
+        repo_root=Path(args.repo_root) if args.repo_root else None,
+        dataset=str(args.dataset),
+        noise_type=str(args.noise_type),
     )
     print(f"[OK] Figures written under {args.output_dir}")
     return 0

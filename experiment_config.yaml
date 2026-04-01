@@ -135,15 +135,15 @@ models:
     
 # Evaluation modes
 eval_modes:
-  - "CrossSession"
+  # - "CrossSession"
   - "WithinSession"
-  - "CrossSubject"
+  # - "CrossSubject"
 
 noise_types:
   - "gaussian"
   - "dropout"
   - "eog"
-  - "ar1_drift"
+  # - "ar1_drift"
   # - "spike"
 
 # Noise perturbation configuration

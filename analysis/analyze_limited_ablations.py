@@ -45,6 +45,7 @@ if str(_project_root) not in sys.path:
 from analysis.calculate_clean_scores import (
     canonicalize_columns,
 )
+from evaluation.experiment_utils import apply_perturb_sweep_mode_canonicalization
 from analysis.statistical_analysis import (
     AnalysisConfig,
     aggregate_seeds,
@@ -115,6 +116,7 @@ def load_limited_ablation_results(
 
     # Canonicalize column names
     df = canonicalize_columns(df)
+    df = apply_perturb_sweep_mode_canonicalization(df, log_label="analyze_limited_ablations.load_limited_ablation_results")
 
     # Filter dataset
     if "dataset" in df.columns:

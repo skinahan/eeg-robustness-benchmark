@@ -36,6 +36,7 @@ if str(_project_root) not in sys.path:
 
 # Analysis utilities
 from analysis.calculate_clean_scores import canonicalize_columns
+from evaluation.experiment_utils import apply_perturb_sweep_mode_canonicalization
 from analysis.statistical_analysis import (
     AnalysisConfig,
     aggregate_seeds,
@@ -138,6 +139,7 @@ def load_hydra_comparison_results(
 
     # Canonicalize column names
     df = canonicalize_columns(df)
+    df = apply_perturb_sweep_mode_canonicalization(df, log_label="compare_hydra_v2.load_hydra_comparison_results")
 
     # Filter to Hydra models (baseline + V2 variants)
     if "model" not in df.columns:

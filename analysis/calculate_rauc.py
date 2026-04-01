@@ -17,11 +17,17 @@ Usage:
 """
 
 import os
+import sys
 import pandas as pd
 import numpy as np
 import json
 from typing import Dict, List, Tuple, Optional
 import warnings
+
+_project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _project_root not in sys.path:
+    sys.path.insert(0, _project_root)
+from evaluation.experiment_utils import apply_perturb_sweep_mode_canonicalization
 
 # Import helper functions from analyze_results
 from analyze_results import load_saturation_points, get_correct_intensities
@@ -153,7 +159,9 @@ def calculate_rauc_summary(
     """
     if group_by_cols is None:
         group_by_cols = ['seed', 'subject', 'session']
-    
+
+    df = apply_perturb_sweep_mode_canonicalization(df, log_label="calculate_rauc.calculate_rauc_summary")
+
     # Filter for test_perturb mode (can be 'test_perturb' or 'test_perturb_tune')
     df_filtered = df[df['mode'].str.contains('test_perturb', na=False)].copy()
     
@@ -302,7 +310,9 @@ def calculate_normalized_rauc(
     """
     if saturation_dict is None:
         saturation_dict = load_saturation_points()
-    
+
+    df = apply_perturb_sweep_mode_canonicalization(df, log_label="calculate_rauc.calculate_normalized_rauc")
+
     # Calculate regular RAUC first
     rauc_df = calculate_rauc_summary(df, dataset, saturation_dict, group_by_cols)
     

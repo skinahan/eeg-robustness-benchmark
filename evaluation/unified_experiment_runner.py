@@ -65,12 +65,16 @@ from evaluation.two_stage_hp_opt import alternate_two_stage_optuna, run_two_stag
 from utils import (
     create_output_path,
     create_hdf5_model_path,
-    get_noise_intensities,
     get_noise_perturbation_bounds,
     get_short_session_id,
     _CORRELATED_NOISE_TYPES,
 )
-from evaluation.experiment_utils import check_skip_eval, log_all_subjects, collect_all_results
+from evaluation.experiment_utils import (
+    check_skip_eval,
+    log_all_subjects,
+    collect_all_results,
+    get_effective_noise_intensities,
+)
 from evaluation.metrics import compute_classification_metrics
 from evaluation.model_cache_manager import ModelCacheManager
 from evaluation.periodic_checkpoint_callback import create_periodic_checkpoint_callback, create_model_cache_callback
@@ -116,8 +120,10 @@ except ImportError:
 # Fixed seed for alpha_max calibration so that re-running yields identical alpha_max (Spec 3 PATCH 2).
 _CALIBRATION_SEED = 202602
 
-# Default perturbation sweep when test_perturb does not override noise types (matches _evaluate_perturb fallbacks).
-_DEFAULT_TEST_PERTURB_NOISE_TYPES = ["eog", "gaussian", "dropout", "spike", "ar1_drift"]
+# Default IID benchmark sweep when test_perturb does not override noise types (matches _evaluate_perturb fallbacks).
+# Correlated types (ar1_drift, spatial_gaussian, emg_band, ...) require explicit --test_perturb_noise_types.
+_IID_BENCHMARK_NOISE_TYPES = frozenset({"gaussian", "dropout", "eog", "spike"})
+_DEFAULT_TEST_PERTURB_NOISE_TYPES = ["eog", "gaussian", "dropout", "spike"]
 
 
 def _compute_lag1_autocorr_diagnostic(
@@ -175,6 +181,12 @@ def _compute_perturbation_fingerprint(
     return out
 
 
+def _resolve_saturation_path_for_runner(sat_file: str) -> str:
+    if os.path.isabs(sat_file):
+        return sat_file
+    return os.path.join(project_root, sat_file)
+
+
 def _get_test_perturb_expected_scope(
     dataset: str,
     test_perturb_noise_types: Optional[List[str]] = None,
@@ -182,12 +194,14 @@ def _get_test_perturb_expected_scope(
     test_perturb_gaussian_alpha_grid: Optional[List[float]] = None,
     test_perturb_num_steps: int = 20,
     saturation_file: Optional[str] = None,
+    base_dir: Optional[str] = None,
 ):
     """Return (expected_noise_types, expected_intensities_by_noise) for check_skip_eval.
     Matches the logic in _evaluate_perturb so the skip check only requires what this run will produce
     (e.g. gaussian + alpha grid for Plot2), not all four noise types and full saturation steps.
     """
     sat_file = saturation_file or "saturation_results/saturation_points_summary.csv"
+    sat_abs = _resolve_saturation_path_for_runner(sat_file)
     if test_perturb_noise_types:
         noise_types = list(test_perturb_noise_types)
     elif test_perturb_gaussian_only:
@@ -198,16 +212,21 @@ def _get_test_perturb_expected_scope(
     expected_intensities_by_noise = {}
     for nt in noise_types:
         if nt == "gaussian" and test_perturb_gaussian_alpha_grid and len(test_perturb_gaussian_alpha_grid) > 0:
-            _, sigma_max = get_noise_perturbation_bounds(dataset, "gaussian", saturation_file=sat_file)
+            _, sigma_max = get_noise_perturbation_bounds(dataset, "gaussian", saturation_file=sat_abs)
             intensities = [float(alpha) * float(sigma_max) for alpha in test_perturb_gaussian_alpha_grid]
             expected_intensities_by_noise[nt] = sorted(set(float(x) for x in intensities))
         elif nt in _CORRELATED_NOISE_TYPES and test_perturb_gaussian_alpha_grid and len(test_perturb_gaussian_alpha_grid) > 0:
-            _, nominal_max = get_noise_perturbation_bounds(dataset, nt, saturation_file=sat_file)
+            _, nominal_max = get_noise_perturbation_bounds(dataset, nt, saturation_file=sat_abs)
             intensities = [float(alpha) * float(nominal_max) for alpha in test_perturb_gaussian_alpha_grid]
             expected_intensities_by_noise[nt] = sorted(set(float(x) for x in intensities))
         else:
-            intensities = get_noise_intensities(
-                dataset, nt, num_steps=test_perturb_num_steps, saturation_file=sat_file
+            repo = base_dir if base_dir else project_root
+            intensities = get_effective_noise_intensities(
+                dataset,
+                nt,
+                num_steps=test_perturb_num_steps,
+                base_dir=repo,
+                saturation_file=sat_abs,
             )
             expected_intensities_by_noise[nt] = [float(x) for x in intensities]
     return noise_types, expected_intensities_by_noise
@@ -476,19 +495,18 @@ def _verify_and_log_max_epochs(model, dataset: str, training_context: str = ""):
 
 def is_test_perturb_mode(mode: str) -> bool:
     """
-    Check if a mode is test_perturb (including test_perturb_tune).
-    
-    This helper function ensures that logic that applies to test_perturb mode
-    also applies to test_perturb_tune mode, unless it's appropriate to branch
-    between non-tuned and tuned cases.
-    
-    Args:
-        mode: Mode string (e.g., "test_perturb", "test_perturb_tune")
-        
-    Returns:
-        True if mode is test_perturb or test_perturb_tune, False otherwise
+    Check if a mode is the perturbation sweep (per-noise / per-intensity evaluation).
+
+    ``multirun`` is the batch entrypoint that runs the same sweep as ``test_perturb``;
+    result rows still record ``mode`` as ``multirun`` in CSVs (see ``results_df['mode']``),
+    but all logic that must not overwrite per-row ``noise_type`` / ``intensity`` should
+    treat ``multirun`` like ``test_perturb``.
     """
-    return mode == 'test_perturb' or mode == 'test_perturb_tune' or mode.startswith('test_perturb')
+    if mode is None:
+        return False
+    if mode == "multirun":
+        return True
+    return mode == "test_perturb" or mode == "test_perturb_tune" or mode.startswith("test_perturb")
 
 
 class UnifiedExperimentRunner:
@@ -1941,12 +1959,21 @@ class UnifiedExperimentRunner:
                         f"(need 'dataset' and 'noise_type'; got {list(sat.columns)})"
                     )
                 sat = sat[sat["dataset"].astype(str) == str(self.dataset)]
-                # Preserve file order (stable unique)
-                noise_types = [_norm_nt(nt) for nt in dict.fromkeys(sat["noise_type"].astype(str).tolist())]
-                if not noise_types:
+                # Preserve file order (stable unique), but only IID benchmark types unless explicitly overridden
+                # via --test_perturb_noise_types (handled above). Saturation CSV may list ar1_drift etc. for
+                # analysis; multirun should not run them unless requested.
+                raw_order = [_norm_nt(nt) for nt in dict.fromkeys(sat["noise_type"].astype(str).tolist())]
+                if not raw_order:
                     raise ValueError(
                         f"Saturation file has no rows for dataset='{self.dataset}': {self.test_perturb_saturation_file}"
                     )
+                noise_types = [nt for nt in raw_order if nt in _IID_BENCHMARK_NOISE_TYPES]
+                if not noise_types:
+                    print(
+                        f"[INFO] Saturation file lists only non-IID types for dataset='{self.dataset}'; "
+                        f"using IID benchmark default {list(_DEFAULT_TEST_PERTURB_NOISE_TYPES)}"
+                    )
+                    noise_types = list(_DEFAULT_TEST_PERTURB_NOISE_TYPES)
             except Exception as e:
                 print(f"[WARNING] Failed to derive noise types from saturation file: {e}")
                 noise_types = list(_DEFAULT_TEST_PERTURB_NOISE_TYPES)
@@ -1970,7 +1997,9 @@ class UnifiedExperimentRunner:
             # Memory optimization: Delete prediction array after computing metrics
             del y_pred_proba_clean
             gc.collect()
-            
+
+            sat_path_eval = _resolve_saturation_path_for_runner(self._get_test_perturb_saturation_file())
+
             for noise_type in noise_types:
                 target_snr_db = target_snr_db_list[0]
                 # Runtime assertion: ar1_drift must use correlated path and valid rho (Plot 2 bug fix)
@@ -1992,7 +2021,7 @@ class UnifiedExperimentRunner:
                     and len(self.test_perturb_gaussian_alpha_grid) > 0
                 ):
                     _, sigma_max = get_noise_perturbation_bounds(
-                        self.dataset, "gaussian", saturation_file=self._get_test_perturb_saturation_file()
+                        self.dataset, "gaussian", saturation_file=sat_path_eval
                     )
                     intensities = [
                         float(alpha) * float(sigma_max) for alpha in self.test_perturb_gaussian_alpha_grid
@@ -2082,11 +2111,14 @@ class UnifiedExperimentRunner:
                     self._eval_target_snr_db_override = None
                     continue
                 else:
-                    intensities = get_noise_intensities(
+                    sat_tp = self._get_test_perturb_saturation_file()
+                    sat_tp_abs = _resolve_saturation_path_for_runner(sat_tp)
+                    intensities = get_effective_noise_intensities(
                         self.dataset,
                         noise_type,
                         num_steps=self.test_perturb_num_steps,
-                        saturation_file=self._get_test_perturb_saturation_file(),
+                        base_dir=project_root,
+                        saturation_file=sat_tp_abs,
                     )
                     this_alpha_max = float(np.max(intensities)) if len(intensities) and np.isfinite(intensities).any() else None
 
@@ -2336,6 +2368,7 @@ class UnifiedExperimentRunner:
                     test_perturb_gaussian_alpha_grid=self.test_perturb_gaussian_alpha_grid,
                     test_perturb_num_steps=self.test_perturb_num_steps,
                     saturation_file=self._get_test_perturb_saturation_file(),
+                    base_dir=project_root,
                 )
                 expected_noise_types = exp_types
                 expected_intensities_by_noise = exp_by_noise
@@ -2347,6 +2380,7 @@ class UnifiedExperimentRunner:
                 expected_intensities_by_noise=expected_intensities_by_noise,
                 test_perturb_num_steps=self.test_perturb_num_steps,
                 test_perturb_saturation_file=self._get_test_perturb_saturation_file(),
+                intensity_grid_base_dir=project_root,
             ):
                 print(f"Skipping evaluation due to existing output files.")
                 return None
@@ -3636,6 +3670,7 @@ def main():
                     test_perturb_gaussian_alpha_grid=args.test_perturb_gaussian_alpha_grid,
                     test_perturb_num_steps=getattr(args, "noise_perturbation_num_steps", 20),
                     saturation_file=getattr(args, "noise_perturbation_saturation_file", None),
+                    base_dir=project_root,
                 )
                 if check_skip_eval(
                     model, seed, args.subjects, mode_str, args.noise_type, args.intensity,
@@ -3645,6 +3680,7 @@ def main():
                     expected_intensities_by_noise=exp_by_noise,
                     test_perturb_num_steps=getattr(args, "noise_perturbation_num_steps", 20),
                     test_perturb_saturation_file=getattr(args, "noise_perturbation_saturation_file", None),
+                    intensity_grid_base_dir=project_root,
                 ):
                     continue
             try:
@@ -3742,6 +3778,7 @@ def main():
                     test_perturb_gaussian_alpha_grid=args.test_perturb_gaussian_alpha_grid,
                     test_perturb_num_steps=args.noise_perturbation_num_steps,
                     saturation_file=args.noise_perturbation_saturation_file,
+                    base_dir=project_root,
                 )
                 expected_noise_types = exp_types
                 expected_intensities_by_noise = exp_by_noise
@@ -3752,6 +3789,7 @@ def main():
                 expected_intensities_by_noise=expected_intensities_by_noise,
                 test_perturb_num_steps=args.noise_perturbation_num_steps,
                 test_perturb_saturation_file=args.noise_perturbation_saturation_file,
+                intensity_grid_base_dir=project_root,
             ):
                 sys.exit(0)
 

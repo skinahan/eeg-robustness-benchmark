@@ -28,9 +28,18 @@ from collections import defaultdict
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
 
-from evaluation.experiment_utils import collect_all_results_unified
-from utils import get_noise_intensities
+from evaluation.experiment_utils import (
+    collect_all_results_unified,
+    get_effective_noise_intensities,
+    PERTURB_SWEEP_MODES_NORMALIZED,
+    apply_perturb_sweep_mode_canonicalization,
+    normalize_bool,
+)
 from tqdm import tqdm
+
+# Project root (same directory as this script)
+_EXPERIMENT_AUTOMATION_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 
 class ExperimentAutomation:
     """Main class for experiment automation."""
@@ -190,11 +199,11 @@ class ExperimentAutomation:
         return metadata
     
     def _get_noise_intensities_cached(self, dataset: str, noise_type: str) -> np.ndarray:
-        """Get noise intensities with caching to avoid repeated calls."""
+        """Sol-preferred intensity grid (same as collect_all_results filter)."""
         cache_key = (dataset, noise_type)
         if cache_key not in self._cached_noise_intensities:
-            self._cached_noise_intensities[cache_key] = get_noise_intensities(
-                dataset, noise_type, num_steps=20
+            self._cached_noise_intensities[cache_key] = get_effective_noise_intensities(
+                dataset, noise_type, num_steps=20, base_dir=_EXPERIMENT_AUTOMATION_ROOT
             )
         return self._cached_noise_intensities[cache_key]
         
@@ -220,7 +229,11 @@ class ExperimentAutomation:
         
         try:
             self.existing_results = pd.read_csv(self.preaggregated_results_file)
-            
+            self.existing_results = apply_perturb_sweep_mode_canonicalization(
+                self.existing_results,
+                log_label="experiment_automation.load_preaggregated_results",
+            )
+
             # Invalidate caches when new results are loaded
             self._invalidate_caches()
             
@@ -248,7 +261,12 @@ class ExperimentAutomation:
         
         # Use the updated aggregation function
         self.existing_results = collect_all_results_unified()
-        
+        if self.existing_results is not None and not self.existing_results.empty:
+            self.existing_results = apply_perturb_sweep_mode_canonicalization(
+                self.existing_results,
+                log_label="experiment_automation.aggregate_existing_results",
+            )
+
         # Invalidate caches when new results are loaded
         self._invalidate_caches()
         
@@ -316,7 +334,9 @@ class ExperimentAutomation:
         for dataset_name, dataset_config in dataset_items:
             for noise_type in noise_types:
                 cache_key = (dataset_name, noise_type)
-                intensities = get_noise_intensities(dataset_name, noise_type, num_steps=20)
+                intensities = get_effective_noise_intensities(
+                    dataset_name, noise_type, num_steps=20, base_dir=_EXPERIMENT_AUTOMATION_ROOT
+                )
                 intensity_cache[cache_key] = intensities
                 total_combinations += len(model_names) * len(eval_modes) * len(seeds) * len(intensities) * len(tune_flags)
         
@@ -467,27 +487,40 @@ class ExperimentAutomation:
             Nested dictionary index structure
         """
         print("[INFO] Building indexed structure for existing results (optimized)...")
-        
+
+        existing_df = apply_perturb_sweep_mode_canonicalization(
+            existing_df.copy(),
+            log_label="experiment_automation._build_existing_index",
+        )
+
         # Normalize columns
         if 'eval_mode' in existing_df.columns:
-            existing_df = existing_df.copy()
-            existing_df['eval_mode_norm'] = existing_df['eval_mode'].str.replace('Evaluation', '', regex=False)
+            existing_df['eval_mode_norm'] = (
+                existing_df['eval_mode']
+                .astype(str)
+                .str.replace('Evaluation', '', regex=False)
+                .str.strip()
+            )
         else:
             existing_df['eval_mode_norm'] = 'Unknown'
-        
+
         if 'mode' in existing_df.columns:
-            existing_df['is_tuned'] = existing_df['mode'].str.contains('_tune', na=False)
-            existing_df['mode_norm'] = existing_df['mode'].str.replace('_tune', '', regex=False)
+            existing_df['mode_norm'] = existing_df['mode'].astype(str).str.replace('_tune', '', regex=False)
+        else:
+            existing_df['mode_norm'] = 'Unknown'
+
+        # Prefer explicit ``tune`` column; ``astype(bool)`` breaks on CSV strings like 'False' (becomes True).
+        if 'tune' in existing_df.columns:
+            existing_df['is_tuned'] = existing_df['tune'].map(
+                lambda x: normalize_bool(x) if pd.notna(x) else False
+            )
+        elif 'mode' in existing_df.columns:
+            existing_df['is_tuned'] = existing_df['mode'].astype(str).str.contains('_tune', na=False)
         else:
             existing_df['is_tuned'] = False
-            existing_df['mode_norm'] = 'Unknown'
         
-        # Check if 'tune' column exists (preferred), otherwise use inferred value
-        if 'tune' in existing_df.columns:
-            existing_df['is_tuned'] = existing_df['tune'].astype(bool)
-        
-        # Filter to test_perturb results only
-        test_perturb_mask = existing_df['mode_norm'] == 'test_perturb'
+        # Perturbation sweeps: same rows whether the runner used mode test_perturb or multirun
+        test_perturb_mask = existing_df["mode_norm"].isin(PERTURB_SWEEP_MODES_NORMALIZED)
         test_perturb_df = existing_df[test_perturb_mask].copy()
         
         if test_perturb_df.empty:
@@ -499,14 +532,21 @@ class ExperimentAutomation:
         
         # Use vectorized operations to build index
         for _, row in test_perturb_df.iterrows():
-            dataset = row.get('dataset', '')
-            model = row.get('model', '')
-            eval_mode = row.get('eval_mode_norm', '')
-            seed = row.get('seed', '')
-            noise_type = row.get('noise_type', '')
-            is_tuned = row.get('is_tuned', False)
+            dataset = str(row.get('dataset', '')).strip()
+            model = str(row.get('model', '')).strip()
+            eval_mode = str(row.get('eval_mode_norm', '')).strip()
+            seed_raw = row.get('seed', '')
+            noise_type = str(row.get('noise_type', '')).strip()
+            is_tuned = bool(row.get('is_tuned', False))
             intensity = row.get('intensity', None)
-            
+
+            if pd.isna(seed_raw):
+                continue
+            try:
+                seed = int(round(float(seed_raw)))
+            except (TypeError, ValueError):
+                continue
+
             if pd.isna(intensity):
                 continue
                 
@@ -562,9 +602,16 @@ class ExperimentAutomation:
             True if job appears complete, False otherwise
         """
         dataset, model, eval_mode, seed, noise_type, is_tuned, subject_info = job_key
-        
-        # Look up in index
-        index_key = (dataset, model, eval_mode, seed, noise_type, is_tuned)
+
+        # Match keys built in _build_existing_index (strip, int seed, bool tune)
+        index_key = (
+            str(dataset).strip(),
+            str(model).strip(),
+            str(eval_mode).strip(),
+            int(round(float(seed))),
+            str(noise_type).strip(),
+            bool(is_tuned),
+        )
         
         if index_key not in existing_index:
             return False
@@ -696,9 +743,8 @@ class ExperimentAutomation:
             if self._cached_existing_df_normalized is None:
                 # Create a minimal normalized DataFrame for cache compatibility
                 if 'mode' in self.existing_results.columns:
-                    test_perturb_df = self.existing_results[
-                        self.existing_results['mode'].str.replace('_tune', '', regex=False) == 'test_perturb'
-                    ].copy()
+                    _mn = self.existing_results["mode"].str.replace("_tune", "", regex=False)
+                    test_perturb_df = self.existing_results[_mn.isin(PERTURB_SWEEP_MODES_NORMALIZED)].copy()
                 else:
                     test_perturb_df = pd.DataFrame()
                 self._cached_existing_df_normalized = test_perturb_df
@@ -808,8 +854,7 @@ class ExperimentAutomation:
                     # Fall back to inferring from mode string
                     df_work['is_tuned'] = df_work['mode'].astype(str).str.contains('_tune', na=False)
                 
-                # Filter to test_perturb results only
-                test_perturb_mask = df_work['mode_normalized'] == 'test_perturb'
+                test_perturb_mask = df_work["mode_normalized"].isin(PERTURB_SWEEP_MODES_NORMALIZED)
                 df_test_perturb = df_work[test_perturb_mask].copy()
                 
                 if not df_test_perturb.empty:

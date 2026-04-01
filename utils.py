@@ -1,6 +1,8 @@
 import os
 import re
 import hashlib
+from typing import Optional
+
 import pandas as pd
 import numpy as np
 
@@ -124,6 +126,50 @@ _CORRELATED_NOISE_TYPES = (
     "ar1_plus_gain_drift", "ar1_plus_offset_drift",
 )
 
+# Cache: (dataset, noise_type) -> min physical intensity from sol_results or None
+_SOL_PHYSICAL_MIN_CACHE: dict[tuple[str, str], Optional[float]] = {}
+
+
+def _physical_min_intensity_from_sol_results_motor_imagery(
+    dataset: str, noise_type: str
+) -> Optional[float]:
+    """
+    Minimum physical intensity (> 1) in ``sol_results/MotorImagery/{dataset}/all_results.csv``
+    for this noise_type. When historical sweeps did not use 1.0 as the lower bound (merged CSVs),
+    aligning linspace(min, saturation_max, n) with this value matches stored rows and the runner.
+    """
+    key = (str(dataset), str(noise_type))
+    if key in _SOL_PHYSICAL_MIN_CACHE:
+        return _SOL_PHYSICAL_MIN_CACHE[key]
+    root = os.path.dirname(os.path.abspath(__file__))
+    path = os.path.join(root, "sol_results", "MotorImagery", str(dataset), "all_results.csv")
+    if not os.path.isfile(path):
+        _SOL_PHYSICAL_MIN_CACHE[key] = None
+        return None
+    try:
+        df = pd.read_csv(path, usecols=["noise_type", "intensity"], low_memory=False)
+    except (ValueError, FileNotFoundError, OSError, KeyError):
+        try:
+            df = pd.read_csv(path, low_memory=False)
+        except (FileNotFoundError, OSError):
+            _SOL_PHYSICAL_MIN_CACHE[key] = None
+            return None
+    if "noise_type" not in df.columns or "intensity" not in df.columns:
+        _SOL_PHYSICAL_MIN_CACHE[key] = None
+        return None
+    sub = df[df["noise_type"].astype(str) == str(noise_type)]
+    if sub.empty:
+        _SOL_PHYSICAL_MIN_CACHE[key] = None
+        return None
+    raw = pd.to_numeric(sub["intensity"], errors="coerce").dropna()
+    vals = raw[raw > 1.0].to_numpy(dtype=float)
+    if vals.size == 0:
+        _SOL_PHYSICAL_MIN_CACHE[key] = None
+        return None
+    gmin = float(np.min(vals))
+    _SOL_PHYSICAL_MIN_CACHE[key] = gmin
+    return gmin
+
 
 def get_noise_perturbation_bounds(dataset: str, noise_type: str, saturation_file: str = "saturation_results/saturation_points_summary.csv") -> tuple[float, float]:
     """
@@ -175,16 +221,21 @@ def get_noise_perturbation_bounds(dataset: str, noise_type: str, saturation_file
             return 1.0, 50.0
         
         # Get the saturation point
-        saturation_point = filtered_df.iloc[0]['saturation_point']
-        
-        # Set bounds based on saturation point
-        # Use 1.0 as minimum intensity and saturation point as maximum
+        saturation_point = float(filtered_df.iloc[0]["saturation_point"])
+
+        # Default: [1, saturation_point]. If sol_results shows physical intensities strictly above 1.0,
+        # use that minimum so np.linspace matches merged CSVs and multirun sweeps (Lee2019_MI, Shin2017A).
         min_intensity = 1.0
         max_intensity = saturation_point
-        
-        # print(f"[INFO] Using dynamic bounds for {dataset} + {noise_type}: {min_intensity} to {max_intensity} (saturation point: {saturation_point})")
-        
-        return min_intensity, max_intensity
+        gmin = _physical_min_intensity_from_sol_results_motor_imagery(dataset, noise_type)
+        if (
+            gmin is not None
+            and gmin > 1.0 + 1e-9
+            and gmin < max_intensity - 1e-9
+        ):
+            min_intensity = gmin
+
+        return float(min_intensity), float(max_intensity)
         
     except FileNotFoundError:
         print(f"[WARNING] Saturation file {saturation_file} not found, using default bounds (1.0, 50.0)")

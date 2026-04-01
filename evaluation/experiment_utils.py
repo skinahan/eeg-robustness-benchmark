@@ -7,12 +7,21 @@ to reduce code duplication and improve maintainability.
 
 import os
 import json
+from collections import Counter
+
 import pandas as pd
 import numpy as np
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Tuple
 from sklearn.preprocessing import LabelEncoder
 
-from utils import create_output_path, create_hdf5_model_path, get_noise_intensities, get_short_session_id, short_run_id, _CORRELATED_NOISE_TYPES
+from utils import (
+    create_output_path,
+    create_hdf5_model_path,
+    get_noise_intensities,
+    get_short_session_id,
+    short_run_id,
+    _CORRELATED_NOISE_TYPES,
+)
 from evaluation.two_stage_hp_opt import run_two_stage_optuna
 
 
@@ -23,7 +32,7 @@ def extract_model_params(model) -> Dict[str, Any]:
     return {}
 
 
-def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity, eval_mode='CrossSession', paradigm='MotorImagery', dataset='BNCI2014_001', cache_manager=None, config=None, tuned=False, paradigm_obj=None, dataset_obj=None, expected_noise_types=None, expected_intensities_by_noise=None, test_perturb_num_steps=20, test_perturb_saturation_file=None):
+def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity, eval_mode='CrossSession', paradigm='MotorImagery', dataset='BNCI2014_001', cache_manager=None, config=None, tuned=False, paradigm_obj=None, dataset_obj=None, expected_noise_types=None, expected_intensities_by_noise=None, test_perturb_num_steps=20, test_perturb_saturation_file=None, intensity_grid_base_dir=None):
 
     if not eval_mode.endswith("Evaluation"):
         eval_mode = f"{eval_mode}Evaluation"
@@ -253,6 +262,7 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
         # all four noise types with full saturation-step intensities (stricter legacy behavior).
         missing_intensities_info = []
         saturation_file = test_perturb_saturation_file or "saturation_results/saturation_points_summary.csv"
+        sat_abs = _resolve_saturation_file(saturation_file, intensity_grid_base_dir)
         num_steps = int(test_perturb_num_steps)
 
         if expected_noise_types is not None and expected_intensities_by_noise is not None and len(expected_noise_types) > 0 and len(expected_intensities_by_noise) > 0:
@@ -268,8 +278,12 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
                 expected_by_noise = {}
                 for nt in noise_types:
                     try:
-                        expected_intensities = get_noise_intensities(
-                            dataset=dataset, noise_type=nt, num_steps=num_steps, saturation_file=saturation_file
+                        expected_intensities = get_effective_noise_intensities(
+                            dataset=dataset,
+                            noise_type=nt,
+                            num_steps=num_steps,
+                            base_dir=intensity_grid_base_dir,
+                            saturation_file=sat_abs,
                         )
                         expected_by_noise[nt] = [float(x) for x in expected_intensities]
                     except Exception as e:
@@ -281,11 +295,12 @@ def check_skip_eval(model_name, seed, subject_list, mode, noise_type, intensity,
             expected_by_noise = {}
             for nt in noise_types:
                 try:
-                    expected_intensities = get_noise_intensities(
+                    expected_intensities = get_effective_noise_intensities(
                         dataset=dataset,
                         noise_type=nt,
                         num_steps=num_steps,
-                        saturation_file=saturation_file
+                        base_dir=intensity_grid_base_dir,
+                        saturation_file=sat_abs,
                     )
                     expected_by_noise[nt] = [float(x) for x in expected_intensities]
                 except Exception as e:
@@ -557,6 +572,253 @@ def two_stage_opt(dataset, subj, paradigm, model_name, model_fn, seed, mode, res
 # Intensity Filtering Functions (using saturation-based bounds)
 # ============================================================================
 
+def _repo_root_from_this_file() -> str:
+    """Project root (parent of ``evaluation/``)."""
+    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def load_allowed_noise_types_from_experiment_config(repo_root: str) -> Optional[List[str]]:
+    """
+    Load ``noise_types`` from ``experiment_config.yaml`` at repo root.
+
+    Used to drop rows for perturbation types that are commented out / removed from the config
+    when building aggregated result sets (e.g. ar1_drift present in saturation CSV but not in YAML).
+    Returns None if the file or key is missing (no filtering).
+    """
+    path = os.path.join(repo_root, "experiment_config.yaml")
+    if not os.path.isfile(path):
+        return None
+    try:
+        import yaml
+
+        with open(path, "r", encoding="utf-8") as f:
+            cfg = yaml.safe_load(f)
+        if not cfg or "noise_types" not in cfg:
+            return None
+        raw = cfg["noise_types"]
+        if not isinstance(raw, list) or not raw:
+            return None
+        out = [str(x).strip() for x in raw if x is not None and str(x).strip()]
+        return out if out else None
+    except Exception:
+        return None
+
+
+def _filter_dataframe_to_allowed_noise_types(
+    df: pd.DataFrame,
+    allowed: Optional[List[str]],
+    label: str,
+) -> pd.DataFrame:
+    if df is None or df.empty or not allowed:
+        return df
+    if "noise_type" not in df.columns:
+        return df
+    n0 = len(df)
+    out = df[df["noise_type"].isin(allowed)].copy()
+    if len(out) < n0:
+        print(
+            f"[INFO] {label}: kept {len(out)}/{n0} rows (noise_type in experiment_config.yaml: {allowed})"
+        )
+    return out
+
+
+_SOL_GROUP_KEYS = ("model", "seed", "eval_mode", "mode", "session", "tuned", "tune")
+
+
+def _sol_subframe_with_physical_intensity(
+    sub: pd.DataFrame, noise_type: str
+) -> Optional[pd.DataFrame]:
+    """
+    Rows with positive intensity, plus ``_phys`` column (physical scale).
+
+    For non-correlated types, α∈(0,1] is mapped with global min/max from physical values (>1)
+    in this noise slice (same convention as historical ``load_sol_results_intensity_grid``).
+    """
+    if sub.empty or "intensity" not in sub.columns:
+        return None
+    raw = pd.to_numeric(sub["intensity"], errors="coerce")
+    mask = raw.notna() & (raw > 0)
+    out = sub.loc[mask].copy()
+    if out.empty:
+        return None
+    vals = raw.loc[mask].to_numpy(dtype=float)
+    nt = str(noise_type)
+    if nt in _CORRELATED_NOISE_TYPES:
+        out["_phys"] = vals
+        return out
+    physical = vals[vals > 1.0]
+    if physical.size == 0:
+        return None
+    min_i = float(np.min(physical))
+    max_i = float(np.max(physical))
+    phys = np.where(vals > 1.0, vals, min_i + vals * (max_i - min_i))
+    out["_phys"] = phys.astype(float)
+    return out
+
+
+def load_sol_results_intensity_grid(
+    dataset: str,
+    noise_type: str,
+    paradigm: str = "MotorImagery",
+    base_dir: str = ".",
+) -> Optional[np.ndarray]:
+    """
+    Infer allowed physical intensities from ``sol_results/{paradigm}/{dataset}/all_results.csv``.
+
+    Returns sorted **unique** values (legacy helper). Prefer
+    :func:`load_sol_results_dominant_intensity_grid` for automation/filtering.
+
+    Returns None if the file is missing or has no usable intensities for this noise type.
+    """
+    path = os.path.join(base_dir, "sol_results", paradigm, dataset, "all_results.csv")
+    if not os.path.isfile(path):
+        return None
+    try:
+        sdf = pd.read_csv(path, low_memory=False)
+    except Exception:
+        return None
+    if "intensity" not in sdf.columns or "noise_type" not in sdf.columns:
+        return None
+    sub = sdf[sdf["noise_type"].astype(str) == str(noise_type)]
+    out = _sol_subframe_with_physical_intensity(sub, noise_type)
+    if out is None or out.empty:
+        return None
+    return np.sort(np.unique(np.asarray(out["_phys"], dtype=float)))
+
+
+def load_sol_results_dominant_intensity_grid(
+    dataset: str,
+    noise_type: str,
+    paradigm: str = "MotorImagery",
+    base_dir: str = ".",
+    rtol: float = 1e-5,
+) -> Optional[np.ndarray]:
+    """
+    Infer the **dominant** intensity sweep from ``sol_results/.../all_results.csv``.
+
+    Rows are mapped to physical ``_phys`` (same rules as :func:`load_sol_results_intensity_grid`).
+    Then:
+
+    * If grouping columns exist (``model``, ``seed``, ``eval_mode``, ``mode``, ``session``,
+      ``tuned``/``tune`` — whichever are present), each group yields a multiset signature
+      ``tuple(sorted(unique rounded intensities))``. The signature with the highest count wins;
+      ties break toward the **longest** signature (more complete sweep).
+
+    * Otherwise, **marginal** counts per rounded intensity: keep values with
+      ``count >= 0.5 * max_count`` (drops rare one-off intensities from merged history).
+
+    Returns sorted unique intensities for the dominant set, or None if unavailable.
+    """
+    path = os.path.join(base_dir, "sol_results", paradigm, dataset, "all_results.csv")
+    if not os.path.isfile(path):
+        return None
+    try:
+        sdf = pd.read_csv(path, low_memory=False)
+    except Exception:
+        return None
+    if "intensity" not in sdf.columns or "noise_type" not in sdf.columns:
+        return None
+    sub = sdf[sdf["noise_type"].astype(str) == str(noise_type)]
+    out = _sol_subframe_with_physical_intensity(sub, noise_type)
+    if out is None or out.empty:
+        return None
+
+    phys = np.asarray(out["_phys"], dtype=float)
+
+    group_keys = [k for k in _SOL_GROUP_KEYS if k in out.columns]
+    if group_keys:
+        sig_counter = Counter()
+        for _, g in out.groupby(group_keys, dropna=False):
+            gv = np.asarray(g["_phys"], dtype=float)
+            if gv.size == 0:
+                continue
+            gr = np.round(np.round(gv / rtol) * rtol, 8)
+            sig = tuple(np.sort(np.unique(gr)))
+            if len(sig) == 0:
+                continue
+            sig_counter[sig] += 1
+        if not sig_counter:
+            return None
+        max_c = max(sig_counter.values())
+        tied = [sig for sig, c in sig_counter.items() if c == max_c]
+        best = max(tied, key=len)
+        return np.asarray(best, dtype=float)
+
+    rounded = np.round(np.round(phys / rtol) * rtol, 8)
+    cnt = Counter(rounded.tolist())
+    max_c = max(cnt.values())
+    threshold = max_c * 0.5
+    dom = sorted({float(v) for v, n in cnt.items() if n >= threshold})
+    return np.asarray(dom, dtype=float) if dom else None
+
+
+def get_effective_noise_intensities(
+    dataset: str,
+    noise_type: str,
+    num_steps: int = 20,
+    saturation_file: Optional[str] = None,
+    base_dir: Optional[str] = None,
+) -> np.ndarray:
+    """
+    Intensity grid for filtering, skip checks, test_perturb sweeps, and automation.
+
+    Prefer the **dominant** sweep from ``sol_results/MotorImagery/{dataset}/all_results.csv``
+    when present (see :func:`load_sol_results_dominant_intensity_grid`); otherwise fall back
+    to ``utils.get_noise_intensities`` (saturation CSV).
+
+    Search order for ``sol_results``: ``base_dir`` if given, then ``os.getcwd()``, then
+    project root next to ``evaluation/``.
+    """
+    sat = saturation_file or "saturation_results/saturation_points_summary.csv"
+    candidates: List[str] = []
+    if base_dir:
+        candidates.append(base_dir)
+    candidates.append(os.getcwd())
+    candidates.append(_repo_root_from_this_file())
+    seen: set[str] = set()
+    ordered = []
+    for b in candidates:
+        if b and b not in seen:
+            seen.add(b)
+            ordered.append(b)
+    for b in ordered:
+        grid = load_sol_results_dominant_intensity_grid(dataset, noise_type, base_dir=b)
+        if grid is not None and len(grid) > 0:
+            return grid.astype(float)
+    sat_resolved = _resolve_saturation_file(sat, base_dir)
+    return get_noise_intensities(
+        dataset, noise_type, num_steps=num_steps, saturation_file=sat_resolved
+    )
+
+
+def get_union_perturbation_intensity_grid(
+    dataset: str,
+    noise_type: str,
+    num_steps: int = 20,
+    base_dir: Optional[str] = None,
+    saturation_file: Optional[str] = None,
+) -> np.ndarray:
+    """
+    Backward-compatible alias for :func:`get_effective_noise_intensities`.
+
+    The name is historical. The grid is **not** a union of saturation linspace and sol:
+    merging those produced linspace-only "expected" intensities that real multirun jobs
+    (which follow sol when present) could never satisfy, so completeness checks always failed.
+
+    Contract: prefer dominant sweep intensities from ``sol_results/.../all_results.csv`` when
+    present; otherwise fall back to saturation ``get_noise_intensities`` linspace.
+    """
+    sat_rel = saturation_file or "saturation_results/saturation_points_summary.csv"
+    sat_abs = _resolve_saturation_file(sat_rel, base_dir)
+    return get_effective_noise_intensities(
+        dataset,
+        str(noise_type),
+        num_steps=num_steps,
+        saturation_file=sat_abs,
+        base_dir=base_dir,
+    )
+
+
 def intensity_matches(intensity_values, target_intensities, rtol=1e-5, atol=1e-8):
     """
     Check if intensity values match target intensities using tolerance-based comparison.
@@ -604,14 +866,71 @@ def intensity_matches(intensity_values, target_intensities, rtol=1e-5, atol=1e-8
     return matches
 
 
-def filter_by_intensity_bounds(df: pd.DataFrame, dataset: str, num_steps: int = 20) -> pd.DataFrame:
+def _coerce_alpha_stored_as_physical_intensity(
+    noise_df: pd.DataFrame,
+    correct_intensities: np.ndarray,
+    noise_type: str,
+) -> Tuple[pd.DataFrame, int]:
     """
-    Filter DataFrame to only include rows with intensities within defined bounds.
-    
-    Uses saturation points to determine correct intensity ranges for each dataset/noise_type
-    combination. Intensity bounds vary by both dataset AND noise_type, so we handle each
-    combination separately. This filtering happens BEFORE deduplication to ensure we only
-    retain experiments that match our defined experimental parameters.
+    Map legacy/normalized rows where α∈[0,1] was written to `intensity` instead of physical values.
+
+    Canonical physical sweeps use ``np.linspace(min, max, n)`` from ``get_noise_intensities``; the same
+    index grid is sometimes logged as ``np.linspace(0, 1, n)`` (α). The relationship is linear:
+    ``physical = min + α * (max - min)`` (same as numpy linspace endpoints).
+
+    Current ``unified_experiment_runner._evaluate_perturb`` logs physical intensities; mixed CSVs
+    (e.g. merged ``all_results``) can still contain older or external rows with α in the intensity column.
+
+    Does not alter correlated-noise types whose physical grid is already in [0, 1] from saturation logic.
+    """
+    if noise_df.empty or noise_type in _CORRELATED_NOISE_TYPES:
+        return noise_df, 0
+    min_i = float(np.min(correct_intensities))
+    max_i = float(np.max(correct_intensities))
+    if max_i <= min_i or min_i < 1.0 - 1e-9:
+        return noise_df, 0
+
+    out = noise_df.copy()
+    n_coerced = 0
+    for idx in out.index:
+        val = out.at[idx, "intensity"]
+        if pd.isna(val):
+            continue
+        v = float(val)
+        if v <= 0.0 or v > 1.0:
+            continue
+        if bool(intensity_matches(pd.Series([v]), correct_intensities).iloc[0]):
+            continue
+        cand = min_i + v * (max_i - min_i)
+        if bool(intensity_matches(pd.Series([cand]), correct_intensities).iloc[0]):
+            out.at[idx, "intensity"] = cand
+            n_coerced += 1
+    return out, n_coerced
+
+
+def _resolved_saturation_csv_path(base_dir: Optional[str]) -> str:
+    root = base_dir if base_dir else _repo_root_from_this_file()
+    return os.path.join(root, "saturation_results", "saturation_points_summary.csv")
+
+
+def _resolve_saturation_file(saturation_file: str, base_dir: Optional[str]) -> str:
+    if os.path.isabs(saturation_file):
+        return saturation_file
+    root = base_dir if base_dir else _repo_root_from_this_file()
+    return os.path.join(root, saturation_file)
+
+
+def filter_by_intensity_bounds(
+    df: pd.DataFrame,
+    dataset: str,
+    num_steps: int = 20,
+    base_dir: Optional[str] = None,
+) -> pd.DataFrame:
+    """
+    Filter DataFrame to rows whose intensities appear on the effective perturbation grid.
+
+    Uses :func:`get_effective_noise_intensities` (sol-preferred when ``sol_results`` exists),
+    aligned with ``unified_experiment_runner`` and ``experiment_automation``.
     
     Parameters:
     -----------
@@ -620,7 +939,9 @@ def filter_by_intensity_bounds(df: pd.DataFrame, dataset: str, num_steps: int = 
     dataset : str
         Dataset name (e.g., 'BNCI2014_001', 'Lee2019_SSVEP', 'BI2015a')
     num_steps : int
-        Number of intensity steps (default: 20)
+        Passed through when falling back to saturation-based linspace (default: 20)
+    base_dir : str, optional
+        Directory containing ``sol_results/`` (defaults: cwd + project root search)
         
     Returns:
     --------
@@ -663,10 +984,11 @@ def filter_by_intensity_bounds(df: pd.DataFrame, dataset: str, num_steps: int = 
         # Get correct intensity range for this SPECIFIC dataset/noise_type combination
         # This is critical - bounds vary by both dataset and noise_type
         try:
-            correct_intensities = get_noise_intensities(
+            correct_intensities = get_effective_noise_intensities(
                 dataset=dataset,
-                noise_type=noise_type,
-                num_steps=num_steps
+                noise_type=str(noise_type),
+                num_steps=num_steps,
+                base_dir=base_dir,
             )
             
             # Store bounds for logging
@@ -689,6 +1011,15 @@ def filter_by_intensity_bounds(df: pd.DataFrame, dataset: str, num_steps: int = 
         
         if noise_df.empty:
             continue
+
+        noise_df, n_alpha_coerced = _coerce_alpha_stored_as_physical_intensity(
+            noise_df, correct_intensities, str(noise_type)
+        )
+        if n_alpha_coerced > 0:
+            print(
+                f"[INFO] {dataset}/{noise_type}: Coerced {n_alpha_coerced} rows from alpha in (0,1] "
+                f"to physical intensities (min={min_intensity:.4g}, max={max_intensity:.4g})"
+            )
         
         # Get intensity series for this noise type
         intensity_series = noise_df['intensity']
@@ -757,11 +1088,79 @@ def normalize_eval_mode(eval_mode) -> str:
     return eval_mode
 
 
+# After stripping a trailing ``_tune``, these modes all log the same perturbation-sweep rows.
+# Cluster batch jobs typically use ``multirun``; interactive runs often use ``test_perturb``.
+PERTURB_SWEEP_MODES_NORMALIZED = frozenset({"test_perturb", "multirun"})
+
+
+def canonicalize_perturb_sweep_mode(mode):
+    """
+    Map stored CLI modes ``multirun`` / ``multirun_tune`` to ``test_perturb`` / ``test_perturb_tune``.
+
+    Used so aggregation, deduplication, and analysis all see the same logical mode for the
+    same perturbation sweep (avoids duplicate signatures for multirun vs test_perturb rows).
+    """
+    if pd.isna(mode) or mode == "":
+        return mode
+    s = str(mode).strip()
+    low = s.lower()
+    if low == "multirun":
+        return "test_perturb"
+    if low == "multirun_tune":
+        return "test_perturb_tune"
+    return mode
+
+
+def apply_perturb_sweep_mode_canonicalization(
+    df: pd.DataFrame,
+    log_label: str = "",
+) -> pd.DataFrame:
+    """
+    Copy ``df`` and replace ``mode`` multirun -> test_perturb (and tuned variants).
+
+    Call **before** any filter that keeps only ``mode == 'test_perturb'`` (otherwise multirun
+    rows are dropped first). Also use before ``drop_duplicates`` / signature creation so
+    equivalent sweep rows merge.
+    """
+    if df is None or df.empty or "mode" not in df.columns:
+        return df
+    out = df.copy()
+    as_str = out["mode"].astype(str)
+    n = 0
+    for old, new in (("multirun", "test_perturb"), ("multirun_tune", "test_perturb_tune")):
+        sel = as_str.str.strip().str.lower() == old
+        if sel.any():
+            out.loc[sel, "mode"] = new
+            n += int(sel.sum())
+    if n and log_label:
+        print(
+            f"[INFO] {log_label}: canonicalized mode for {n} row(s) "
+            f"(multirun -> test_perturb for perturbation sweep parity)"
+        )
+    return out
+
+
+def perturb_sweep_mode_mask(df: pd.DataFrame) -> pd.Series:
+    """
+    Boolean mask for rows whose ``mode`` is a perturbation sweep (``test_perturb`` or ``multirun``).
+
+    Compares after stripping a ``_tune`` suffix from the ``mode`` string. Use when filtering
+    raw CSVs that may not have been canonicalized yet.
+    """
+    if "mode" not in df.columns:
+        return pd.Series(False, index=df.index)
+    m = df["mode"].astype(str).str.replace("_tune", "", regex=False).str.strip().str.lower()
+    return m.isin(PERTURB_SWEEP_MODES_NORMALIZED)
+
+
 def normalize_mode(mode) -> str:
-    """Normalize mode to canonical form."""
-    if pd.isna(mode) or mode == '':
-        return 'unknown'
-    return str(mode).strip().lower()
+    """Normalize mode to canonical form (multirun is treated as test_perturb for signatures)."""
+    if pd.isna(mode) or mode == "":
+        return "unknown"
+    c = canonicalize_perturb_sweep_mode(mode)
+    if pd.isna(c) or c == "":
+        return "unknown"
+    return str(c).strip().lower()
 
 
 def normalize_bool(value) -> bool:
@@ -945,6 +1344,10 @@ def collect_from_directory(root_dir: str, source: str, paradigm: str, dataset: s
     
     if all_dfs:
         combined = pd.concat(all_dfs, ignore_index=True)
+        combined = apply_perturb_sweep_mode_canonicalization(
+            combined,
+            log_label=f"collect_from_directory({source}/{paradigm}/{dataset})",
+        )
         # Save combined dataframe to all_results.csv *IF* source is not 'sol_results'
         if source != 'sol_results':
             combined.to_csv(os.path.join(root_dir, "all_results.csv"), index=False)
@@ -952,7 +1355,12 @@ def collect_from_directory(root_dir: str, source: str, paradigm: str, dataset: s
     return pd.DataFrame()
 
 
-def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
+def collect_all_results(
+    paradigm: str,
+    dataset: str = "BNCI2014_001",
+    base_dir: Optional[str] = None,
+    allowed_noise_types: Optional[List[str]] = None,
+):
     """
     Aggregate all CSV results from both sol_results and results directories.
     
@@ -964,25 +1372,36 @@ def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
     Args:
         paradigm: Paradigm name (e.g., "MotorImagery")
         dataset: Dataset name (e.g., "BNCI2014_001")
+        base_dir: Project root containing sol_results/ and results/
+        allowed_noise_types: If set (e.g. from experiment_config.yaml), drop rows whose
+            ``noise_type`` is not in this list before intensity filtering.
         
     Returns:
         DataFrame with deduplicated results, or None if no results found
     """
     all_dfs = []
-    
+    root = base_dir if base_dir is not None else os.getcwd()
+    if allowed_noise_types is None:
+        cfg_root = base_dir if base_dir is not None else _repo_root_from_this_file()
+        allowed_noise_types = load_allowed_noise_types_from_experiment_config(cfg_root)
+
     # Phase 1: Collect from sol_results (primary source) - READ ONLY
-    sol_results_dir = os.path.join("sol_results", paradigm, dataset)
+    sol_results_dir = os.path.join(root, "sol_results", paradigm, dataset)
     print(f"[INFO] Phase 1: Collecting from sol_results/{paradigm}/{dataset} (read-only)")
     sol_results = collect_from_directory(sol_results_dir, source="sol_results", paradigm=paradigm, dataset=dataset)
     
     # Build index of existing signatures from sol_results
     sol_signatures = set()
     if sol_results is not None and not sol_results.empty:
+        sol_results = _filter_dataframe_to_allowed_noise_types(
+            sol_results, allowed_noise_types, f"sol_results/{paradigm}/{dataset}"
+        )
+    if sol_results is not None and not sol_results.empty:
         # STEP 1: Filter by intensity bounds BEFORE creating signatures
         # This ensures we only process experiments that match our defined experimental parameters
-        print(f"[INFO] Filtering sol_results by intensity bounds (using saturation points)...")
+        print(f"[INFO] Filtering sol_results by effective intensity grid (sol_results all_results.csv when present, else saturation)...")
         before_intensity_filter = len(sol_results)
-        sol_results = filter_by_intensity_bounds(sol_results, dataset=dataset, num_steps=20)
+        sol_results = filter_by_intensity_bounds(sol_results, dataset=dataset, num_steps=20, base_dir=base_dir)
         after_intensity_filter = len(sol_results)
         
         if before_intensity_filter != after_intensity_filter:
@@ -1006,16 +1425,20 @@ def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
         print(f"[INFO] No results found in sol_results/{paradigm}/{dataset}")
     
     # Phase 2: Collect from results (secondary source, with deduplication) - READ ONLY
-    results_dir = os.path.join("results", paradigm, dataset)
+    results_dir = os.path.join(root, "results", paradigm, dataset)
     print(f"[INFO] Phase 2: Collecting from results/{paradigm}/{dataset} (read-only)")
     if os.path.exists(results_dir):
         results_df = collect_from_directory(results_dir, source="results", paradigm=paradigm, dataset=dataset)
         if results_df is not None and not results_df.empty:
+            results_df = _filter_dataframe_to_allowed_noise_types(
+                results_df, allowed_noise_types, f"results/{paradigm}/{dataset}"
+            )
+        if results_df is not None and not results_df.empty:
             # STEP 1: Filter by intensity bounds BEFORE creating signatures
             # This ensures we only process experiments that match our defined experimental parameters
-            print(f"[INFO] Filtering results by intensity bounds (using saturation points)...")
+            print(f"[INFO] Filtering results by effective intensity grid (sol_results all_results.csv when present, else saturation)...")
             before_intensity_filter = len(results_df)
-            results_df = filter_by_intensity_bounds(results_df, dataset=dataset, num_steps=20)
+            results_df = filter_by_intensity_bounds(results_df, dataset=dataset, num_steps=20, base_dir=base_dir)
             after_intensity_filter = len(results_df)
             
             if before_intensity_filter != after_intensity_filter:
@@ -1089,7 +1512,7 @@ def collect_all_results(paradigm: str, dataset: str = "BNCI2014_001"):
         return None
 
 
-def collect_all_results_unified():
+def collect_all_results_unified(base_dir: Optional[str] = None):
     """
     Collect and aggregate results from all datasets and paradigms.
     
@@ -1098,10 +1521,18 @@ def collect_all_results_unified():
     - Performs deduplication across all datasets
     - Writes to a new unified output file (non-destructive - original files remain untouched)
     
+    base_dir : str, optional
+        Project root containing ``sol_results/`` and ``results/``. Defaults to repo root
+        (parent of ``evaluation/``).
+    
     Returns:
         DataFrame with unified, deduplicated results, or None if no results found
     """
     all_results = []
+    root = base_dir if base_dir is not None else _repo_root_from_this_file()
+    allowed_nt = load_allowed_noise_types_from_experiment_config(root)
+    if allowed_nt:
+        print(f"[INFO] Aggregating with experiment_config.yaml noise_types filter: {allowed_nt}")
     
     # Define all dataset-paradigm combinations
     dataset_paradigms = [
@@ -1114,7 +1545,7 @@ def collect_all_results_unified():
     
     for paradigm, dataset in dataset_paradigms:
         print(f"\n=== Collecting results for {paradigm} - {dataset} ===")
-        result_df = collect_all_results(paradigm, dataset)
+        result_df = collect_all_results(paradigm, dataset, base_dir=root, allowed_noise_types=allowed_nt)
         if result_df is not None and not result_df.empty:
             all_results.append(result_df)
     
@@ -1146,7 +1577,7 @@ def collect_all_results_unified():
         unified_df = unified_df.drop(columns=['source_priority', 'experiment_signature'], errors='ignore')
         
         # Save unified results to a NEW file (non-destructive - original files remain untouched)
-        unified_file = os.path.join("evaluation", "results", "unified_all_results.csv")
+        unified_file = os.path.join(root, "evaluation", "results", "unified_all_results.csv")
         os.makedirs(os.path.dirname(unified_file), exist_ok=True)
         unified_df.to_csv(unified_file, index=False)
         

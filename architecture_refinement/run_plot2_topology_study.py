@@ -2236,6 +2236,7 @@ def _should_skip_plot2_job(
         return False
 
     gaussian_only = perturbation_types == ["gaussian"]
+    _repo_root = str(Path(__file__).resolve().parent.parent)
     exp_types, exp_by_noise = _get_test_perturb_expected_scope(
         dataset,
         test_perturb_noise_types=None if gaussian_only else perturbation_types,
@@ -2243,6 +2244,7 @@ def _should_skip_plot2_job(
         test_perturb_gaussian_alpha_grid=alpha_grid,
         test_perturb_num_steps=20,
         saturation_file=saturation_file,
+        base_dir=_repo_root,
     )
     return check_skip_eval(
         model_name,
@@ -2261,6 +2263,7 @@ def _should_skip_plot2_job(
         expected_intensities_by_noise=exp_by_noise,
         test_perturb_num_steps=20,
         test_perturb_saturation_file=saturation_file,
+        intensity_grid_base_dir=_repo_root,
     )
 
 

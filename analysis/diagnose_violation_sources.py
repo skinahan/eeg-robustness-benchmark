@@ -11,6 +11,11 @@ import os
 import sys
 from pathlib import Path
 
+_root = Path(__file__).resolve().parent.parent
+if str(_root) not in sys.path:
+    sys.path.insert(0, str(_root))
+from evaluation.experiment_utils import apply_perturb_sweep_mode_canonicalization
+
 def diagnose_violation_sources(violation_csv_path, results_csv_path=None, dataset_name=None):
     """
     Examine the original data rows for each violation to identify varying columns.
@@ -64,7 +69,10 @@ def diagnose_violation_sources(violation_csv_path, results_csv_path=None, datase
     results_df = pd.read_csv(results_csv_path, low_memory=False)
     print(f"    Loaded {len(results_df)} rows")
     print(f"    Columns ({len(results_df.columns)}): {list(results_df.columns)[:20]}...")
-    
+    results_df = apply_perturb_sweep_mode_canonicalization(
+        results_df, log_label="diagnose_violation_sources"
+    )
+
     # Filter to test_perturb mode and valid clean scores (same as sanity check)
     if 'mode' in results_df.columns:
         results_df = results_df[results_df['mode'] == 'test_perturb'].copy()

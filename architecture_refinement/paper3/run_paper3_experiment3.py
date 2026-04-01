@@ -160,14 +160,20 @@ def summarize_parameter_counts_from_experiment3_csv(
     return base
 
 
-def _collect_perturb_results(
+def load_test_perturb_longform_for_run(
     repo_root: Path,
     dataset: str,
     model_name: str,
     seed: int,
     noise_type: str,
-) -> Optional[Dict[str, Any]]:
-    """Collect clean_roc_auc, RD_max for one (model, seed)."""
+) -> Optional[pd.DataFrame]:
+    """
+    Load rows for one trained run from on-disk ``test_perturb`` CSVs (same discovery as
+    ``_collect_perturb_results``): ``results/<paradigm>/<dataset>/<model>/CrossSessionEvaluation/<seed>/``.
+
+    Returns a dataframe filtered to ``noise_type`` with numeric ``intensity``, ``corrupted_roc_auc``,
+    and ``clean_roc_auc`` (from ``clean_roc_auc`` or ``clean_score``). Returns ``None`` if no file matches.
+    """
     paradigm = results_paradigm_folder(dataset)
     base = repo_root / "results" / paradigm / dataset
     for stem in [short_run_id(model_name), model_name]:
@@ -182,20 +188,35 @@ def _collect_perturb_results(
                 if "noise_type" not in df.columns or noise_type not in df["noise_type"].astype(str).values:
                     continue
                 sub = df[df["noise_type"].astype(str) == noise_type].copy()
-                if sub.empty:
+                if sub.empty or "intensity" not in sub.columns:
                     continue
                 sub["corrupted_roc_auc"] = pd.to_numeric(sub["corrupted_roc_auc"], errors="coerce")
                 sub["clean_roc_auc"] = pd.to_numeric(
                     sub.get("clean_roc_auc", sub.get("clean_score", np.nan)), errors="coerce"
                 )
-                clean = float(sub["clean_roc_auc"].iloc[0]) if sub["clean_roc_auc"].notna().any() else float("nan")
-                roc_vals = sub["corrupted_roc_auc"].to_numpy()
-                r_t = roc_vals / clean if np.isfinite(clean) and clean > 0 else np.full_like(roc_vals, np.nan)
-                rd_max = float(np.nanmax(1.0 - r_t)) if np.isfinite(r_t).any() else float("nan")
-                return {"clean_roc_auc": clean, "RD_max": rd_max}
+                sub["intensity"] = pd.to_numeric(sub["intensity"], errors="coerce")
+                return sub
             except Exception:
                 pass
     return None
+
+
+def _collect_perturb_results(
+    repo_root: Path,
+    dataset: str,
+    model_name: str,
+    seed: int,
+    noise_type: str,
+) -> Optional[Dict[str, Any]]:
+    """Collect clean_roc_auc, RD_max for one (model, seed)."""
+    sub = load_test_perturb_longform_for_run(repo_root, dataset, model_name, seed, noise_type)
+    if sub is None or sub.empty:
+        return None
+    clean = float(sub["clean_roc_auc"].iloc[0]) if sub["clean_roc_auc"].notna().any() else float("nan")
+    roc_vals = sub["corrupted_roc_auc"].to_numpy()
+    r_t = roc_vals / clean if np.isfinite(clean) and clean > 0 else np.full_like(roc_vals, np.nan)
+    rd_max = float(np.nanmax(1.0 - r_t)) if np.isfinite(r_t).any() else float("nan")
+    return {"clean_roc_auc": clean, "RD_max": rd_max}
 
 
 def _bootstrap_ci_diff(

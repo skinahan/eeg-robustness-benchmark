@@ -43,6 +43,7 @@ from analysis.analyze_limited_ablations import (  # noqa: E402
     prepare_subject_level_data,
 )
 from analysis.calculate_clean_scores import canonicalize_columns  # noqa: E402
+from evaluation.experiment_utils import apply_perturb_sweep_mode_canonicalization  # noqa: E402
 
 UNIFIED_REL = Path("evaluation") / "results" / "unified_all_results.csv"
 
@@ -98,6 +99,7 @@ def inventory_ablation_presence(unified_path: Path) -> pd.DataFrame:
     """
     df = pd.read_csv(unified_path, low_memory=False)
     df = canonicalize_columns(df)
+    df = apply_perturb_sweep_mode_canonicalization(df, log_label="export_hydra_limited_ablation_summary.inventory_ablation_presence")
 
     if "model" not in df.columns:
         raise KeyError("Expected 'model' in unified results")

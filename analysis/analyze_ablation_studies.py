@@ -58,6 +58,7 @@ from analysis.robustness_metrics import (
     find_subject_col,
     replace_hydra_model_name,
 )
+from evaluation.experiment_utils import apply_perturb_sweep_mode_canonicalization
 
 
 # ----------------------------
@@ -112,7 +113,8 @@ def load_baseline_from_unified(unified_file: Optional[str] = None) -> pd.DataFra
         
         # Canonicalize column names
         df = canonicalize_columns(df)
-        
+        df = apply_perturb_sweep_mode_canonicalization(df, log_label="analyze_ablation_studies.load_baseline_from_unified")
+
         # Filter to branched_wiredcfc_arch4 model
         if 'model' not in df.columns:
             print("  [WARNING] No 'model' column found in unified results")

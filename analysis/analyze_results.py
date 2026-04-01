@@ -1,6 +1,17 @@
 import os
 import sys
 import pandas as pd
+
+# Repo root (for evaluation.* imports when run as a script)
+_AR_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _AR_ROOT not in sys.path:
+    sys.path.insert(0, _AR_ROOT)
+from evaluation.experiment_utils import apply_perturb_sweep_mode_canonicalization
+
+
+def _canonicalize_df_for_test_perturb_plots(df, log_label: str = "analyze_results"):
+    """Map multirun -> test_perturb before any ``mode == 'test_perturb'`` filter (idempotent)."""
+    return apply_perturb_sweep_mode_canonicalization(df, log_label=log_label)
 import seaborn as sns
 import matplotlib.pyplot as plt
 import itertools
@@ -419,6 +430,9 @@ def aggregate_results(input_dir):
     # Concatenate all results into a single DataFrame
     if aggregated_dfs:
         combined_df = pd.concat(aggregated_dfs, ignore_index=True)
+        combined_df = apply_perturb_sweep_mode_canonicalization(
+            combined_df, log_label="aggregate_results(deprecated)"
+        )
 
         # Drop unnecessary columns
         combined_df.drop(columns=['time', 'samples', 'channels', 'n_sessions', 'pipeline'], inplace=True,
@@ -825,6 +839,7 @@ def plot_test_perturb_individual_model(df, model_name, noise_type, tune_setting,
     - dataset: str, dataset name (affects y-axis limits)
     - eval_mode: str, evaluation mode ('CrossSession', 'WithinSession', 'CrossSubject'). If None, uses all available.
     """
+    df = _canonicalize_df_for_test_perturb_plots(df, "plot_test_perturb_individual_model")
     # Load saturation points and get correct intensity values
     saturation_dict = load_saturation_points()
     correct_intensities = get_correct_intensities(dataset=dataset, noise_type=noise_type, saturation_dict=saturation_dict)
@@ -945,6 +960,7 @@ def plot_test_perturb_master_comparison(df, noise_type, tune_setting, models=Non
     - dataset: str, dataset name (affects y-axis limits)
     - eval_mode: str, evaluation mode ('CrossSession', 'WithinSession', 'CrossSubject'). If None, uses all available.
     """
+    df = _canonicalize_df_for_test_perturb_plots(df, "plot_test_perturb_master_comparison")
     # Load saturation points and get correct intensity values
     saturation_dict = load_saturation_points()
     valid_seeds = [100, 200, 300, 400, 500]
@@ -1067,6 +1083,7 @@ def generate_all_test_perturb_plots(df, models=None, output_dir='plots', metrics
     - output_dir: str, directory to save plots
     - dataset: str, dataset name (affects y-axis limits)
     """
+    df = _canonicalize_df_for_test_perturb_plots(df, "generate_all_test_perturb_plots")
     # Get unique values
     if models is None:
         models = df[df['mode'] == 'test_perturb']['model'].unique()
@@ -1117,6 +1134,7 @@ def plot_test_perturb_per_subject(df, model_name, noise_type, tune_setting, data
     - output_dir: str, base directory to save plots
     - eval_mode: str, evaluation mode ('CrossSession', 'WithinSession', 'CrossSubject'). If None, uses all available.
     """
+    df = _canonicalize_df_for_test_perturb_plots(df, "plot_test_perturb_per_subject")
     # Load saturation points and get correct intensity values
     saturation_dict = load_saturation_points()
     correct_intensities = get_correct_intensities(dataset=dataset, noise_type=noise_type, saturation_dict=saturation_dict)
@@ -1249,6 +1267,7 @@ def plot_test_perturb_multisubject_comparison(df, noise_type, tune_setting, mode
     - output_dir: str, base directory to save plots
     - eval_mode: str, evaluation mode ('CrossSession', 'WithinSession', 'CrossSubject'). If None, uses all available.
     """
+    df = _canonicalize_df_for_test_perturb_plots(df, "plot_test_perturb_multisubject_comparison")
     # Load saturation points and get correct intensity values
     saturation_dict = load_saturation_points()
     correct_intensities = get_correct_intensities(dataset=dataset, noise_type=noise_type, saturation_dict=saturation_dict)
@@ -2507,6 +2526,7 @@ def generate_organized_test_perturb_plots(df, models=None, dataset='BNCI2014_001
     - dataset: str, dataset name for directory organization
     - output_dir: str, base directory to save plots
     """
+    df = _canonicalize_df_for_test_perturb_plots(df, "generate_organized_test_perturb_plots")
     # Get unique values
     if models is None:
         models = df[df['mode'] == 'test_perturb']['model'].unique()
@@ -3733,6 +3753,9 @@ if __name__ == '__main__':
     
     print(f"[INFO] Loading unified results from: {unified_file}")
     unified_df = pd.read_csv(unified_file)
+    unified_df = apply_perturb_sweep_mode_canonicalization(
+        unified_df, log_label="analyze_results(unified_all_results.csv)"
+    )
     print(f"[INFO] Loaded {len(unified_df)} total rows from unified results")
     
     # Filter to only include intended experimental seeds: [100, 200, 300, 400, 500]
@@ -3780,13 +3803,13 @@ if __name__ == '__main__':
         # Include HYDRA (branched_wiredcfc_arch4) along with core models
         # Note: Use 'HYDRA' here since replace_hydra_model_name converts branched_wiredcfc_arch4 to HYDRA
         model_subsets = {
-            'main_models': ['eegnet', 'reegnet', 'cnn_ncp', 'HYDRA'],
+            'main_models': ['eegnet', 'reegnet', 'cnn_ncp', 'ctnet', 'HYDRA'],
             'all_models': None  # Will use all available models
         }
         print("[INFO] Hydra mode enabled: Including 'HYDRA' (branched_wiredcfc_arch4) with core models")
     else:
         model_subsets = {
-            'main_models': ['eegnet', 'reegnet', 'cnn_ncp'],
+            'main_models': ['eegnet', 'reegnet', 'cnn_ncp', 'ctnet'],
             # 'cfc_models': ['cnncfc_compact', 'cnncfc_v2'],
             # 'wired_models': ['wiredcfc_arch1', 'wiredcfc_arch2', 'wiredcfc_arch3'],
             'all_models': None  # Will use all available models
