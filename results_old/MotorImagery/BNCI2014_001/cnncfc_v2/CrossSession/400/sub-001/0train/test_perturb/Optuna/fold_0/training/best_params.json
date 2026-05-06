@@ -1,9 +1,0 @@
-{
-  "best_score": 0.9904761904761905,
-  "best_params": {
-    "optimizer__lr": 0.0009192157777207405,
-    "optimizer__weight_decay": 7.073600125572955e-05,
-    "max_epochs": 80,
-    "batch_size": 32
-  }
-}

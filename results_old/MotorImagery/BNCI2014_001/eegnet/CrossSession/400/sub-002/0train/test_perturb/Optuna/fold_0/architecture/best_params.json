@@ -1,8 +1,0 @@
-{
-  "best_score": 0.6142857142857143,
-  "best_params": {
-    "module__F1": 8,
-    "module__D": 1,
-    "module__kernel_length": 256
-  }
-}
